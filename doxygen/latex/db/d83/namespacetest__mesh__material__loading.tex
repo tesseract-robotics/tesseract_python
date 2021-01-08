@@ -1,0 +1,72 @@
+\hypertarget{namespacetest__mesh__material__loading}{}\doxysection{test\+\_\+mesh\+\_\+material\+\_\+loading Namespace Reference}
+\label{namespacetest__mesh__material__loading}\index{test\_mesh\_material\_loading@{test\_mesh\_material\_loading}}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{namespacetest__mesh__material__loading_a95a3aa3584e5fc9cdb6875e45d927f64}{\+\_\+locate\+\_\+resource}} (url)
+\item 
+def \mbox{\hyperlink{namespacetest__mesh__material__loading_a2baec056ca452e845d2df6ed601bc613}{get\+\_\+scene\+\_\+graph}} ()
+\item 
+def \mbox{\hyperlink{namespacetest__mesh__material__loading_a971dbe0c6a0cdba93d171df04092c5f1}{test\+\_\+mesh\+\_\+material\+\_\+loading}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+string \mbox{\hyperlink{namespacetest__mesh__material__loading_aa3985d94baa5b00f233e308369518ec8}{mesh\+\_\+urdf}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{namespacetest__mesh__material__loading_a95a3aa3584e5fc9cdb6875e45d927f64}\label{namespacetest__mesh__material__loading_a95a3aa3584e5fc9cdb6875e45d927f64}} 
+\index{test\_mesh\_material\_loading@{test\_mesh\_material\_loading}!\_locate\_resource@{\_locate\_resource}}
+\index{\_locate\_resource@{\_locate\_resource}!test\_mesh\_material\_loading@{test\_mesh\_material\_loading}}
+\doxysubsubsection{\texorpdfstring{\_locate\_resource()}{\_locate\_resource()}}
+{\footnotesize\ttfamily def test\+\_\+mesh\+\_\+material\+\_\+loading.\+\_\+locate\+\_\+resource (\begin{DoxyParamCaption}\item[{}]{url }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{namespacetest__mesh__material__loading_a2baec056ca452e845d2df6ed601bc613}\label{namespacetest__mesh__material__loading_a2baec056ca452e845d2df6ed601bc613}} 
+\index{test\_mesh\_material\_loading@{test\_mesh\_material\_loading}!get\_scene\_graph@{get\_scene\_graph}}
+\index{get\_scene\_graph@{get\_scene\_graph}!test\_mesh\_material\_loading@{test\_mesh\_material\_loading}}
+\doxysubsubsection{\texorpdfstring{get\_scene\_graph()}{get\_scene\_graph()}}
+{\footnotesize\ttfamily def test\+\_\+mesh\+\_\+material\+\_\+loading.\+get\+\_\+scene\+\_\+graph (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespacetest__mesh__material__loading_a971dbe0c6a0cdba93d171df04092c5f1}\label{namespacetest__mesh__material__loading_a971dbe0c6a0cdba93d171df04092c5f1}} 
+\index{test\_mesh\_material\_loading@{test\_mesh\_material\_loading}!test\_mesh\_material\_loading@{test\_mesh\_material\_loading}}
+\index{test\_mesh\_material\_loading@{test\_mesh\_material\_loading}!test\_mesh\_material\_loading@{test\_mesh\_material\_loading}}
+\doxysubsubsection{\texorpdfstring{test\_mesh\_material\_loading()}{test\_mesh\_material\_loading()}}
+{\footnotesize\ttfamily def test\+\_\+mesh\+\_\+material\+\_\+loading.\+test\+\_\+mesh\+\_\+material\+\_\+loading (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{namespacetest__mesh__material__loading_aa3985d94baa5b00f233e308369518ec8}\label{namespacetest__mesh__material__loading_aa3985d94baa5b00f233e308369518ec8}} 
+\index{test\_mesh\_material\_loading@{test\_mesh\_material\_loading}!mesh\_urdf@{mesh\_urdf}}
+\index{mesh\_urdf@{mesh\_urdf}!test\_mesh\_material\_loading@{test\_mesh\_material\_loading}}
+\doxysubsubsection{\texorpdfstring{mesh\_urdf}{mesh\_urdf}}
+{\footnotesize\ttfamily string test\+\_\+mesh\+\_\+material\+\_\+loading.\+mesh\+\_\+urdf}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 = \textcolor{stringliteral}{"{}"{}"{}}}
+\DoxyCodeLine{2 \textcolor{stringliteral}{<robot name="{}mesh\_viewer"{}>}}
+\DoxyCodeLine{3 \textcolor{stringliteral}{  }}
+\DoxyCodeLine{4 \textcolor{stringliteral}{  <link name="{}world"{}/>}}
+\DoxyCodeLine{5 \textcolor{stringliteral}{  <link name="{}mesh\_dae\_link"{}>}}
+\DoxyCodeLine{6 \textcolor{stringliteral}{    <visual>}}
+\DoxyCodeLine{7 \textcolor{stringliteral}{      <geometry>}}
+\DoxyCodeLine{8 \textcolor{stringliteral}{        <mesh filename="{}package://tesseract\_support/meshes/tesseract\_material\_mesh.dae"{}/>}}
+\DoxyCodeLine{9 \textcolor{stringliteral}{      </geometry>}}
+\DoxyCodeLine{10 \textcolor{stringliteral}{    </visual>}}
+\DoxyCodeLine{11 \textcolor{stringliteral}{  </link>}}
+\DoxyCodeLine{12 \textcolor{stringliteral}{}}
+\DoxyCodeLine{13 \textcolor{stringliteral}{  <joint name="{}mesh\_dae\_joint"{} type="{}revolute"{}>}}
+\DoxyCodeLine{14 \textcolor{stringliteral}{    <parent link="{}world"{}/>}}
+\DoxyCodeLine{15 \textcolor{stringliteral}{    <child link="{}mesh\_dae\_link"{}/>}}
+\DoxyCodeLine{16 \textcolor{stringliteral}{    <axis xyz="{}0 1 0"{}/>}}
+\DoxyCodeLine{17 \textcolor{stringliteral}{    <origin xyz="{}0 1 0.25"{}/>}}
+\DoxyCodeLine{18 \textcolor{stringliteral}{    <limit effort="{}0"{} lower="{}-\/2.0944"{} upper="{}2.0944"{} velocity="{}6.2832"{}/>}}
+\DoxyCodeLine{19 \textcolor{stringliteral}{  </joint>}}
+\DoxyCodeLine{20 \textcolor{stringliteral}{}}
+\DoxyCodeLine{21 \textcolor{stringliteral}{</robot>}}
+\DoxyCodeLine{22 \textcolor{stringliteral}{"{}"{}"{}}}
+
+\end{DoxyCode}
