@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/CommandLanguage
   pull_request:
   schedule:
     - cron: '0 5 * * *'
@@ -20,7 +19,7 @@ jobs:
       ROS_DISTRO: noetic
       ROS_REPO: main
       UPSTREAM_WORKSPACE: 'dependencies.rosinstall'
-      ROSDEP_SKIP_KEYS: "bullet3 fcl ompl orocos_kdl python-numpy ifopt python descartes_opw descartes_samplers descartes_light opw_kinematics cmake_common_scripts iwyu taskflow"
+      ROSDEP_SKIP_KEYS: "bullet bullet-extras fcl ompl orocos_kdl python-numpy ifopt python descartes_opw descartes_samplers descartes_light opw_kinematics cmake_common_scripts iwyu taskflow"
       DOCKER_IMAGE: "rosindustrial/tesseract:noetic"
       CCACHE_DIR: "/home/runner/work/tesseract_python/tesseract_python/Focal-Build/.ccache"
       PARALLEL_TESTS: false
