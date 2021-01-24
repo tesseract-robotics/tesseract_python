@@ -42,13 +42,11 @@
 #include <tesseract_motion_planners/core/profile_dictionary.h>
 
 // tesseract_motion_planners_simple
+#include <tesseract_motion_planners/simple/profile/simple_planner_utils.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_profile.h>
-#include <tesseract_motion_planners/simple/profile/simple_planner_default_plan_profile.h>
-#include <tesseract_motion_planners/simple/profile/simple_planner_default_lvs_plan_profile.h>
-#include <tesseract_motion_planners/simple/profile/simple_planner_interpolation_plan_profile.h>
-#include <tesseract_motion_planners/simple/step_generators/fixed_size_assign_position.h>
-#include <tesseract_motion_planners/simple/step_generators/fixed_size_interpolation.h>
-#include <tesseract_motion_planners/simple/step_generators/lvs_interpolation.h>
+#include <tesseract_motion_planners/simple/profile/simple_planner_lvs_plan_profile.h>
+#include <tesseract_motion_planners/simple/profile/simple_planner_fixed_size_plan_profile.h>
+#include <tesseract_motion_planners/simple/profile/simple_planner_fixed_size_assign_plan_profile.h>
 #include <tesseract_motion_planners/simple/simple_motion_planner.h>
 
 // tesseract_motion_planners_trajopt

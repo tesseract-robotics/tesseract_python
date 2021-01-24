@@ -35,7 +35,14 @@
 
 %{
 // tesseract_visualization
+#include <tesseract_visualization/markers/marker.h>
+#include <tesseract_visualization/markers/arrow_marker.h>
+#include <tesseract_visualization/markers/axis_marker.h>
+#include <tesseract_visualization/markers/contact_results_marker.h>
+#include <tesseract_visualization/markers/geometry_marker.h>
+#include <tesseract_visualization/markers/toolpath_marker.h>
 #include <tesseract_visualization/visualization.h>
+#include <tesseract_visualization/visualization_loader.h>
 
 #include <tesseract_common/status_code.h>
 #include <tesseract_common/resource.h>
@@ -47,6 +54,14 @@
 
 // tesseract_visualization
 #define TESSERACT_VISUALIZATION_PUBLIC
+
+%include "tesseract_visualization/markers/marker.h"
+%include "tesseract_visualization/markers/arrow_marker.h"
+%include "tesseract_visualization/markers/axis_marker.h"
+%include "tesseract_visualization/markers/contact_results_marker.h"
+%include "tesseract_visualization/markers/geometry_marker.h"
+%include "tesseract_visualization/markers/toolpath_marker.h"
 %include "tesseract_visualization/visualization.h"
+%include "tesseract_visualization/visualization_loader.h"
 
 
