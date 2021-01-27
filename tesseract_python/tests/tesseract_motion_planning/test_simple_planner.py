@@ -7,9 +7,10 @@ from tesseract.tesseract_scene_graph import SimpleResourceLocator, SimpleResourc
 from tesseract.tesseract_environment import Environment
 from tesseract.tesseract_common import FilesystemPath, ManipulatorInfo
 from tesseract.tesseract_command_language import JointWaypoint, CartesianWaypoint, Waypoint, \
-    PlanInstructionType_FREESPACE, PlanInstruction, Instruction, isMoveInstruction, isStateWaypoint
+    PlanInstructionType_FREESPACE, PlanInstructionType_START, PlanInstruction, Instruction, \
+    isMoveInstruction, isStateWaypoint
 from tesseract.tesseract_motion_planners import PlannerRequest
-from tesseract.tesseract_motion_planners_simple import LVSInterpolateStateWaypoint
+from tesseract.tesseract_motion_planners_simple import SimplePlannerLVSPlanProfile
 
 def _locate_resource(url):
     try:
@@ -49,14 +50,16 @@ def test_interpolatestatewaypoint_jointcart_freespace():
     fwd_kin = env.getManipulatorManager().getFwdKinematicSolver(manip_info.manipulator)
     wp1 = JointWaypoint(joint_names, np.zeros((7,),dtype=np.float64))
     wp2 = CartesianWaypoint(fwd_kin.calcFwdKin(np.ones((7,),dtype=np.float64))[1])
-    instr = PlanInstruction(Waypoint(wp1), PlanInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
+    instr1 = PlanInstruction(Waypoint(wp1), PlanInstructionType_START, "TEST_PROFILE", manip_info)
+    instr2 = PlanInstruction(Waypoint(wp2), PlanInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
 
-    composite = LVSInterpolateStateWaypoint(wp1,wp2,instr,request,ManipulatorInfo(),3.14,0.5,1.57,5)
+    profile = SimplePlannerLVSPlanProfile(3.14,0.5,1.57,5)
+    composite = profile.generate(instr1,instr2,request,ManipulatorInfo())
 
     for c in composite:
         assert isMoveInstruction(c)
         assert isStateWaypoint(c.cast_MoveInstruction().getWaypoint())
-        assert c.cast_MoveInstruction().getProfile() == instr.getProfile()
+        assert c.cast_MoveInstruction().getProfile() == instr2.getProfile()
 
     mi = composite[-1].cast_const_MoveInstruction()
     last_position = mi.getWaypoint().cast_const_StateWaypoint().position
