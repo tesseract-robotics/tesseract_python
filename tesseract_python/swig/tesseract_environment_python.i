@@ -66,6 +66,7 @@
 // tesseract_environment
 #define TESSERACT_ENVIRONMENT_CORE_PUBLIC
 %include "tesseract_environment/core/types.h"
+%include "tesseract_environment/core/command.h"
 %include "tesseract_environment/core/commands.h"
 %include "tesseract_environment/core/manipulator_manager.h"
 %include "tesseract_environment/core/state_solver.h"
