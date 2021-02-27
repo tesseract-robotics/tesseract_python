@@ -58,26 +58,6 @@
 
 %template(pair_bool_matrix) std::pair<bool,Eigen::MatrixXd>;
 
-%extend tesseract_kinematics::ForwardKinematics {
-
-  bool calcJacobian(Eigen::MatrixXd& jacobian, const Eigen::Ref<const Eigen::VectorXd>& joint_angles) const
-  {
-    jacobian = Eigen::MatrixXd(6, joint_angles.rows());
-    bool res = $self->calcJacobian(jacobian, joint_angles);
-    
-    return res;
-  }
-
-  bool calcJacobian(Eigen::MatrixXd& jacobian, const Eigen::Ref<const Eigen::VectorXd>& joint_angles, const std::string& link_name) const
-  {
-    jacobian = Eigen::MatrixXd(6, joint_angles.rows());
-    bool res = $self->calcJacobian(jacobian, joint_angles, link_name);
-    return res;
-  }
-}
-
-%ignore calcJacobian;
-
 // tesseract_kinematics
 #define TESSERACT_KINEMATICS_CORE_PUBLIC
 #define TESSERACT_KINEMATICS_IKFAST_PUBLIC

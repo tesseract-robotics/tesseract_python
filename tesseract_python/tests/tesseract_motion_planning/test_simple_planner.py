@@ -49,7 +49,7 @@ def test_interpolatestatewaypoint_jointcart_freespace():
     request.env_state = env.getCurrentState()
     fwd_kin = env.getManipulatorManager().getFwdKinematicSolver(manip_info.manipulator)
     wp1 = JointWaypoint(joint_names, np.zeros((7,),dtype=np.float64))
-    wp2 = CartesianWaypoint(fwd_kin.calcFwdKin(np.ones((7,),dtype=np.float64))[1])
+    wp2 = CartesianWaypoint(fwd_kin.calcFwdKin(np.ones((7,),dtype=np.float64)))
     instr1 = PlanInstruction(Waypoint(wp1), PlanInstructionType_START, "TEST_PROFILE", manip_info)
     instr2 = PlanInstruction(Waypoint(wp2), PlanInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
 
@@ -63,5 +63,5 @@ def test_interpolatestatewaypoint_jointcart_freespace():
 
     mi = composite[-1].cast_const_MoveInstruction()
     last_position = mi.getWaypoint().cast_const_StateWaypoint().position
-    _, final_pose = fwd_kin.calcFwdKin(last_position)
+    final_pose = fwd_kin.calcFwdKin(last_position)
     assert wp2.isApprox(final_pose, 1e-3)

@@ -41,6 +41,7 @@
 #include <tesseract_common/status_code.h>
 #include <tesseract_common/resource.h>
 #include <tesseract_common/manipulator_info.h>
+#include <tesseract_common/joint_state.h>
 
 %}
 
@@ -133,6 +134,7 @@ namespace tesseract_common
 %include "tesseract_common/status_code.h"
 %include "tesseract_common/resource.h"
 %include "tesseract_common/manipulator_info.h"
+%include "tesseract_common/joint_state.h"
 
 
 

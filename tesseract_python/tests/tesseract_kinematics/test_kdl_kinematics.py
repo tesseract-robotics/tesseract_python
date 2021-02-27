@@ -83,12 +83,11 @@ def run_inv_kin_test(inv_kin, fwd_kin):
     pose[2,3] = 1.306
 
     seed = np.array([-0.785398, 0.785398, -0.785398, 0.785398, -0.785398, 0.785398, -0.785398])
-    res, solutions = inv_kin.calcInvKin(tesseract_common.Isometry3d(pose),seed)
-    assert res
+    solutions = inv_kin.calcInvKin(tesseract_common.Isometry3d(pose),seed)
+    assert len(solutions) > 0
 
-    res, result = fwd_kin.calcFwdKin(solutions)
-    assert res
-
+    result = fwd_kin.calcFwdKin(solutions[0])
+    
     nptest.assert_almost_equal(pose,result.matrix(),decimal=3)
 
 def test_kdl_kin_chain_lma_inverse_kinematic():
@@ -117,7 +116,7 @@ def test_jacobian():
     jvals = np.array([-0.785398, 0.785398, -0.785398, 0.785398, -0.785398, 0.785398, -0.785398])
 
     link_name = "tool0"
-    res, jacobian = kin.calcJacobian(jvals,link_name)
-    assert res
+    jacobian = kin.calcJacobian(jvals,link_name)
+    
     assert jacobian.shape == (6,7)
 
