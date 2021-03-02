@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <script
+  src="https://code.jquery.com/jquery-3.5.1.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <iframe src="http://localhost:8000/index.html?noupdate=true" width="100%" height="100%" id="viewer"></iframe>
+
+            <script>
+
+                
+                function example_set_trajectory()
+                {
+                    
+                        viewer = document.getElementById("viewer")
+                        trajectory = [ 
+                            [0.6, 0.2, 0.3, 0.4, 0.5, 0.6, 0], // Joint positions, with time as last element
+                            [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 5],
+                            [-0.7, 0.4, -0.9, -0.1, 0.1, 0.2, 10],
+                        ]; // Array of waypoints for trajectory
+                        viewer.contentWindow.postMessage(
+                        {
+                            "command": "joint_trajectory",
+                            "joint_names": ["joint_1", "joint_2", "joint_3","joint_4","joint_5","joint_6"],
+                            "joint_trajectory": trajectory
+                        },
+                        "*")                    
+                }
+                
+                $("#viewer").ready(function(){
+                    console.log("Viewer loaded")
+                }
+                ).delay(5000).queue(function()
+                {
+                    example_set_trajectory();
+                })
+                
+            </script>
+    </body>
+
+</html>

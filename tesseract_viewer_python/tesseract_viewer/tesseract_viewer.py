@@ -53,7 +53,7 @@ class _TesseractViewerRequestHandler(BaseHTTPRequestHandler):
             super(_TesseractViewerRequestHandler,self).__init__(request,client_address,server)
 
     def do_file(self, send_data):
-        path = self.path
+        path = self.path.split("?")[0]
         if (self.path == "/"):
             path = "/index.html"
         path=path[1:]
