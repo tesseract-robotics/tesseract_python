@@ -27,6 +27,7 @@ class TesseractViewer {
     constructor(canvasElement) {
         this._scene_etag = null;
         this._trajectory_etag = null;
+        this._disable_update_trajectory = false;
         // Create canvas and engine.
         this._canvas = document.getElementById(canvasElement);
         this._engine = new BABYLON.Engine(this._canvas, true);
@@ -67,7 +68,17 @@ class TesseractViewer {
             });
             yield this.enableVR();
             let _this = this;
-            setTimeout(() => _this.updateTrajectory(), 2000);
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            let do_update = true;
+            if (urlParams.has("noupdate")) {
+                if (urlParams.get("noupdate") === "true") {
+                    do_update = false;
+                }
+            }
+            if (do_update) {
+                setTimeout(() => _this.updateTrajectory(), 2000);
+            }
             //this._scene.debugLayer.show();
         });
     }
@@ -157,6 +168,9 @@ class TesseractViewer {
     }
     updateTrajectory() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this._disable_update_trajectory) {
+                return;
+            }
             let fetch_res;
             let _this = this;
             try {
@@ -198,6 +212,36 @@ class TesseractViewer {
                 setTimeout(() => _this.updateTrajectory(), 1000);
             }
         });
+    }
+    disableUpdateTrajectory() {
+        this._disable_update_trajectory = true;
+    }
+    enableUpdateTrajectory() {
+        this._disable_update_trajectory = false;
+    }
+    setJointPositions(joint_names, joint_positions) {
+        let trajectory = [[...joint_positions, 0], [...joint_positions, 100000]];
+        this.setTrajectory(joint_names, trajectory);
+    }
+    /*
+    trajectory format:
+    [
+        [0.1,0.2,0.3,0.4,0.5,0.6, 0] // waypoint 1, last element is time
+        [0.11,0.21,0.31,0.41,0.51,0.61, 1] // waypoint 2, last element is time
+        ... // more waypoints
+    ]
+    Position is in radians or meters, time is in seconds
+    */
+    setTrajectory(joint_names, trajectory) {
+        try {
+            if (this._joint_trajectory !== null) {
+                this._joint_trajectory.stop();
+                this._joint_trajectory = null;
+            }
+        }
+        catch (_a) { }
+        this._joint_trajectory = new JointTrajectoryAnimation(this._scene, joint_names, trajectory, true, 0);
+        this._joint_trajectory.start();
     }
 }
 class JointTrajectoryAnimation {
@@ -343,8 +387,20 @@ window.addEventListener('DOMContentLoaded', function () {
     return __awaiter(this, void 0, void 0, function* () {
         // Create the game using the 'renderCanvas'.
         let viewer = new TesseractViewer('renderCanvas');
+        window.tesseract_viewer = viewer;
         // Create the scene.
         yield viewer.createScene();
+        window.addEventListener("message", function (event) {
+            let data = event.data;
+            if (data.command === "joint_positions") {
+                viewer.disableUpdateTrajectory();
+                viewer.setJointPositions(data.joint_names, data.joint_positions);
+            }
+            if (data.command === "joint_trajectory") {
+                viewer.disableUpdateTrajectory();
+                viewer.setTrajectory(data.joint_names, data.joint_trajectory);
+            }
+        });
         // Start render loop.
         viewer.doRender();
     });
