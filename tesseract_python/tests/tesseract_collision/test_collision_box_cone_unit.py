@@ -85,7 +85,7 @@ def run_test(checker):
 
     # Test when object is in collision
     checker.setActiveCollisionObjects(["box_link", "cone_link"])
-    checker.setCollisionMarginData(tesseract_collision.CollisionMarginData(0.1))
+    checker.setCollisionMarginData(tesseract_common.CollisionMarginData(0.1))
     nptest.assert_almost_equal(checker.getCollisionMarginData().getMaxCollisionMargin(), 0.1)
 
     # Set the collision object transforms

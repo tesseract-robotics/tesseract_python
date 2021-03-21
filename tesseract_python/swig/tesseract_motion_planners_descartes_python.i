@@ -48,6 +48,7 @@
 #include <tesseract_common/resource.h>
 
 #include "tesseract_command_language_python_std_functions.h"
+#include "tesseract_command_language_python_profile_dictionary_functions.h"
 
 #include "tesseract_environment_python_std_functions.h"
 #include <tesseract_kinematics/core/rep_inverse_kinematics.h>
