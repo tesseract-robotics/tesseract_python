@@ -42,6 +42,7 @@
 #include <tesseract_common/resource.h>
 #include <tesseract_common/manipulator_info.h>
 #include <tesseract_common/joint_state.h>
+#include <tesseract_common/collision_margin_data.h>
 
 %}
 
@@ -135,6 +136,7 @@ namespace tesseract_common
 %include "tesseract_common/resource.h"
 %include "tesseract_common/manipulator_info.h"
 %include "tesseract_common/joint_state.h"
+%include "tesseract_common/collision_margin_data.h"
 
 
 

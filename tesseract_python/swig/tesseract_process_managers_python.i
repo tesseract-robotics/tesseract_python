@@ -38,9 +38,6 @@
 
 %{
 
-// tesseract_motion_planners
-#include <tesseract_motion_planners/core/profile_dictionary.h>
-
 // tesseract_motion_planners_simple
 #include <tesseract_motion_planners/simple/profile/simple_planner_utils.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_profile.h>
@@ -92,11 +89,13 @@
 
 #include <tesseract_process_managers/task_generators/profile_switch_task_generator.h>
 #include <tesseract_process_managers/task_generators/iterative_spline_parameterization_task_generator.h>
+#include "tesseract_process_managers/task_generators/time_optimal_trajectory_generation_task_generator.h"
 
 #include <tesseract_common/status_code.h>
 #include <tesseract_common/resource.h>
 
 #include "tesseract_command_language_python_std_functions.h"
+#include "tesseract_command_language_python_profile_dictionary_functions.h"
 
 #include "tesseract_environment_python_std_functions.h"
 #include <tesseract_kinematics/core/rep_inverse_kinematics.h>
@@ -104,30 +103,8 @@
 
 %}
 
-%define %tesseract_process_managers_add_profile_type( TYPE )
-%template(hasProfileEntry_##TYPE) tesseract_planning::ProfileDictionary::hasProfileEntry<tesseract_planning::TYPE>;
-%template(removeProfileEntry_##TYPE) tesseract_planning::ProfileDictionary::removeProfileEntry<tesseract_planning::TYPE>;
-%template(getProfileEntry_##TYPE) tesseract_planning::ProfileDictionary::getProfileEntry<tesseract_planning::TYPE>;
-%template(addProfile_##TYPE) tesseract_planning::ProfileDictionary::addProfile<tesseract_planning::TYPE>;
-%template(getProfile_##TYPE) tesseract_planning::ProfileDictionary::getProfile<tesseract_planning::TYPE>;
-%template(hasProfile_##TYPE) tesseract_planning::ProfileDictionary::hasProfile<tesseract_planning::TYPE>;
-%template(removeProfile_##TYPE) tesseract_planning::ProfileDictionary::removeProfile<tesseract_planning::TYPE>;
-%enddef
-
-%define %tesseract_process_managers_add_profile_type2(NAME, TYPE )
-%template(hasProfileEntry_##NAME) tesseract_planning::ProfileDictionary::hasProfileEntry<tesseract_planning::TYPE>;
-%template(removeProfileEntry_##NAME) tesseract_planning::ProfileDictionary::removeProfileEntry<tesseract_planning::TYPE>;
-%template(getProfileEntry_##NAME) tesseract_planning::ProfileDictionary::getProfileEntry<tesseract_planning::TYPE>;
-%template(addProfile_##NAME) tesseract_planning::ProfileDictionary::addProfile<tesseract_planning::TYPE>;
-%template(getProfile_##NAME) tesseract_planning::ProfileDictionary::getProfile<tesseract_planning::TYPE>;
-%template(hasProfile_##NAME) tesseract_planning::ProfileDictionary::hasProfile<tesseract_planning::TYPE>;
-%template(removeProfile_##NAME) tesseract_planning::ProfileDictionary::removeProfile<tesseract_planning::TYPE>;
-%enddef
-
 %shared_ptr(tesseract_planning::IterativeSplineParameterizationProfile)
 %shared_ptr(tesseract_planning::ProfileSwitchProfile);
-
-%include "tesseract_motion_planners/core/profile_dictionary.h"
 
 %include "tesseract_process_managers/core/task_info.h"
 %include "tesseract_process_managers/core/taskflow_interface.h"
@@ -135,7 +112,8 @@
 %include "tesseract_process_managers/core/process_planning_future.h"
 %include "tesseract_process_managers/core/process_planning_server.h"
 
-//%include "tesseract_process_managers/task_generators/profile_switch_task_generator.h"
-//%include "tesseract_process_managers/task_generators/iterative_spline_parameterization_task_generator.h"
+%include "tesseract_process_managers/task_generators/profile_switch_task_generator.h"
+%include "tesseract_process_managers/task_generators/iterative_spline_parameterization_task_generator.h"
+%include "tesseract_process_managers/task_generators/time_optimal_trajectory_generation_task_generator.h"
 
 
