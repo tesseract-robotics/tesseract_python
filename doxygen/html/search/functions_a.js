@@ -1,11 +1,6 @@
 var searchData=
 [
-  ['_7econtinuouscontactmanagerfactorycreatemethodbase_300',['~ContinuousContactManagerFactoryCreateMethodBase',['../d5/d62/classContinuousContactManagerFactoryCreateMethodBase.html#a7147ba0d5d8f7a93e1bd2e9dbce39a56',1,'ContinuousContactManagerFactoryCreateMethodBase']]],
-  ['_7ediscretecontactmanagerfactorycreatemethodbase_301',['~DiscreteContactManagerFactoryCreateMethodBase',['../da/dfc/classDiscreteContactManagerFactoryCreateMethodBase.html#ab682cd1996b0e83609ff11bc98fd8e48',1,'DiscreteContactManagerFactoryCreateMethodBase']]],
-  ['_7efindtcpcallbackfnbase_302',['~FindTCPCallbackFnBase',['../d0/df2/classFindTCPCallbackFnBase.html#af2a93dc07f122da3a7fddee7b5581268',1,'FindTCPCallbackFnBase']]],
-  ['_7eflattenfilterfnbase_303',['~flattenFilterFnBase',['../d1/d32/classflattenFilterFnBase.html#a21263001ceea3780d831dcd92129f36a',1,'flattenFilterFnBase']]],
-  ['_7eiscontactallowedfnbase_304',['~IsContactAllowedFnBase',['../dd/d82/classIsContactAllowedFnBase.html#a42aabb9452f88e0ebbb73dea354250bc',1,'IsContactAllowedFnBase']]],
-  ['_7eiscontactvalidfnbase_305',['~IsContactValidFnBase',['../d3/dda/classIsContactValidFnBase.html#acd9b1077db826cdaf98874a4bdbbddf9',1,'IsContactValidFnBase']]],
-  ['_7elocatefilterfnbase_306',['~locateFilterFnBase',['../db/df5/classlocateFilterFnBase.html#a86feb11fa2461b7392fd8f431347568b',1,'locateFilterFnBase']]],
-  ['_7esimpleresourcelocatorfnbase_307',['~SimpleResourceLocatorFnBase',['../d2/d30/classSimpleResourceLocatorFnBase.html#a0f346a99ce049bf7a35ddb30bc107912',1,'SimpleResourceLocatorFnBase']]]
+  ['update_5fenvironment_315',['update_environment',['../df/de4/classtesseract__viewer_1_1tesseract__viewer_1_1TesseractViewer.html#ae9579b9de86dbf81667af0e8a6cac87e',1,'tesseract_viewer::tesseract_viewer::TesseractViewer']]],
+  ['update_5fjoint_5fpositions_316',['update_joint_positions',['../df/de4/classtesseract__viewer_1_1tesseract__viewer_1_1TesseractViewer.html#a7e7fe5f3aa0e5517216d91bc69d7dafb',1,'tesseract_viewer::tesseract_viewer::TesseractViewer']]],
+  ['update_5ftrajectory_317',['update_trajectory',['../df/de4/classtesseract__viewer_1_1tesseract__viewer_1_1TesseractViewer.html#a65c25b080d0e01ad58b083375532ae75',1,'tesseract_viewer::tesseract_viewer::TesseractViewer']]]
 ];
