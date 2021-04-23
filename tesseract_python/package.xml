@@ -19,6 +19,7 @@
   <depend>tesseract_visualization</depend>
   <depend>tesseract_collision</depend>
   <depend>tesseract_urdf</depend>
+  <depend>tesseract_srdf</depend>
   <depend>tesseract_kinematics</depend>
   <depend>tesseract_scene_graph</depend>
   <depend>tesseract_environment</depend>

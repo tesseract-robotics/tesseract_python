@@ -38,9 +38,8 @@
 // tesseract_command_language
 #include <tesseract_command_language/core/waypoint.h>
 #include <tesseract_command_language/core/instruction.h>
+#include <tesseract_command_language/core/serialization.h>
 #include <tesseract_command_language/command_language.h>
-#include <tesseract_command_language/serialize.h>
-#include <tesseract_command_language/deserialize.h>
 
 #include <tesseract_command_language/profile_dictionary.h>
 
@@ -71,14 +70,12 @@
 %enddef
 
 %define %tesseract_command_language_add_waypoint_type(TYPE)
-%template(cast_##TYPE) tesseract_planning::Waypoint::cast<tesseract_planning::TYPE>;
-%template(cast_const_##TYPE) tesseract_planning::Waypoint::cast_const<tesseract_planning::TYPE>;
+%template(as_##TYPE) tesseract_planning::Waypoint::as<tesseract_planning::TYPE>;
 %tesseract_erasure_ctor(Waypoint,TYPE);
 %enddef
 
 %define %tesseract_command_language_add_instruction_type(TYPE)
-%template(cast_##TYPE) tesseract_planning::Instruction::cast<tesseract_planning::TYPE>;
-%template(cast_const_##TYPE) tesseract_planning::Instruction::cast_const<tesseract_planning::TYPE>;
+%template(as_##TYPE) tesseract_planning::Instruction::as<tesseract_planning::TYPE>;
 %tesseract_erasure_ctor(Instruction,TYPE);
 %enddef
 
@@ -90,9 +87,8 @@
 %include "tesseract_command_language_python_profile_dictionary_functions.h"
 %include "tesseract_command_language/core/waypoint.h"
 %include "tesseract_command_language/core/instruction.h"
+%include "tesseract_command_language/core/serialization.h"
 %include "tesseract_command_language/command_language.h"
-%include "tesseract_command_language/serialize.h"
-%include "tesseract_command_language/deserialize.h"
 %include "tesseract_command_language/utils/filter_functions.h"
 %include "tesseract_command_language/utils/utils.h"
 %include "tesseract_command_language/utils/get_instruction_utils.h"
