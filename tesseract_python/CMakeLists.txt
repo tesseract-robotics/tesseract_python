@@ -52,6 +52,7 @@ include_directories(
   ${tesseract_kinematics_INCLUDE_DIRS}
   ${tesseract_urdf_INCLUDE_DIRS}
   ${tesseract_scene_graph_INCLUDE_DIRS}
+  ${tesseract_srdf_INCLUDE_DIRS}
   ${tesseract_environment_INCLUDE_DIRS}
   ${tesseract_command_language_INCLUDE_DIRS}
   ${tesseract_time_parameterization_INCLUDE_DIRS}
@@ -181,7 +182,7 @@ if(TESSERACT_ENABLE_TESTING)
     _tesseract_motion_planners_python _tesseract_motion_planners_simple_python
     _tesseract_motion_planners_trajopt_python _tesseract_motion_planners_ompl_python
     _tesseract_motion_planners_descartes_python _tesseract_time_parameterization_python
-    _tesseract_visualization_python)
+    _tesseract_visualization_python _tesseract_srdf_python)
     endif()
 
   add_test (NAME python-tests
