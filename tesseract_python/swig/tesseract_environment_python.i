@@ -32,6 +32,7 @@
 
 %import "tesseract_kinematics_python.i"
 %import "tesseract_collision_python.i"
+%import "tesseract_srdf_python.i"
 
 %{
 

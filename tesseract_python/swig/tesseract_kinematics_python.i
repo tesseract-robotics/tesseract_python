@@ -33,6 +33,7 @@
 //%import "tesseract_common_python.i"
 //%import "tesseract_geometry_python.i"
 %import "tesseract_scene_graph_python.i"
+%import "tesseract_srdf_python.i"
 
 %{
 
@@ -45,6 +46,7 @@
 #include <tesseract_common/status_code.h>
 #include <tesseract_geometry/geometries.h>
 #include <tesseract_scene_graph/resource_locator.h>
+#include <tesseract_srdf/kinematics_information.h>
 
 // tesseract_kinematics
 #include <tesseract_kinematics/core/forward_kinematics.h>

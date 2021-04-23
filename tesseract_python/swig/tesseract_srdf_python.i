@@ -30,9 +30,10 @@
 
 %include "tesseract_swig_include.i"
 
+%import "tesseract_scene_graph_python.i"
+
 %{
 
-#include <tesseract_scene_graph/graph.h>
 #include <tesseract_scene_graph/allowed_collision_matrix.h>
 #include <tesseract_common/collision_margin_data.h>
 
