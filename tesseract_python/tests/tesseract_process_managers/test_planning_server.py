@@ -67,14 +67,14 @@ def test_planning_server_freespace():
 
     assert response.interface.isSuccessful()
 
-    results = flatten(response.getResults().cast_CompositeInstruction())
+    results = flatten(response.getResults().as_CompositeInstruction())
 
     assert len(results) == 37
     for instr in results:
         assert isMoveInstruction(instr)
-        wp1 = instr.cast_MoveInstruction().getWaypoint()
+        wp1 = instr.as_MoveInstruction().getWaypoint()
         assert isStateWaypoint(wp1)
-        wp = wp1.cast_StateWaypoint()
+        wp = wp1.as_StateWaypoint()
         assert len(wp.joint_names) == 7
         assert isinstance(wp.position,np.ndarray)
         assert len(wp.position) == 7

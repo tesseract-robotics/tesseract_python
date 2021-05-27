@@ -6,6 +6,8 @@ from tesseract import tesseract_common
 from tesseract import tesseract_collision
 from tesseract import tesseract_collision_bullet
 from tesseract import tesseract_urdf
+from tesseract import tesseract_srdf
+import traceback
 import os
 import re
 
@@ -31,7 +33,7 @@ def get_scene_graph():
 def get_srdf_model(scene_graph):
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     path =  os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf")
-    srdf = tesseract_scene_graph.SRDFModel()    
+    srdf = tesseract_srdf.SRDFModel()    
     srdf.initFile(scene_graph, path)
     return srdf
 

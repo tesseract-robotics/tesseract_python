@@ -70,12 +70,20 @@
 %enddef
 
 %define %tesseract_command_language_add_waypoint_type(TYPE)
-%template(as_##TYPE) tesseract_planning::Waypoint::as<tesseract_planning::TYPE>;
+%rename(as_ ## TYPE) as;
+%template(as_ ## TYPE) tesseract_planning::Waypoint::as<tesseract_planning::TYPE>;
+%rename(as_const_ ## TYPE) as;
+%template(as_const_ ## TYPE) tesseract_planning::Waypoint::as<const tesseract_planning::TYPE>;
+%rename("%s") as;
 %tesseract_erasure_ctor(Waypoint,TYPE);
 %enddef
 
 %define %tesseract_command_language_add_instruction_type(TYPE)
-%template(as_##TYPE) tesseract_planning::Instruction::as<tesseract_planning::TYPE>;
+%rename(as_ ## TYPE) as;
+%template(as_ ## TYPE) tesseract_planning::Instruction::as<tesseract_planning::TYPE>;
+%rename(as_const_ ## TYPE) as;
+%template(as_const_ ## TYPE) tesseract_planning::Instruction::as<const tesseract_planning::TYPE>;
+%rename("%s") as;
 %tesseract_erasure_ctor(Instruction,TYPE);
 %enddef
 

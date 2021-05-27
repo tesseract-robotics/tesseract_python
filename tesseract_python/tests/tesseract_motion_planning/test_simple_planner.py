@@ -58,10 +58,10 @@ def test_interpolatestatewaypoint_jointcart_freespace():
 
     for c in composite:
         assert isMoveInstruction(c)
-        assert isStateWaypoint(c.cast_MoveInstruction().getWaypoint())
-        assert c.cast_MoveInstruction().getProfile() == instr2.getProfile()
+        assert isStateWaypoint(c.as_MoveInstruction().getWaypoint())
+        assert c.as_MoveInstruction().getProfile() == instr2.getProfile()
 
-    mi = composite[-1].cast_const_MoveInstruction()
-    last_position = mi.getWaypoint().cast_const_StateWaypoint().position
+    mi = composite[-1].as_const_MoveInstruction()
+    last_position = mi.getWaypoint().as_const_StateWaypoint().position
     final_pose = fwd_kin.calcFwdKin(last_position)
     assert wp2.isApprox(final_pose, 1e-3)

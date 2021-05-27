@@ -35,6 +35,9 @@
 
 %{
 
+#include <tesseract_common/status_code.h>
+#include <tesseract_scene_graph/resource_locator.h>
+
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/directed_graph.hpp>
 #include <boost/graph/properties.hpp>
