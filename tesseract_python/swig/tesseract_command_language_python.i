@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract.tesseract_command_language") tesseract_command_language_python
+%module(directors="1", package="tesseract_robotics.tesseract_command_language") tesseract_command_language_python
 
 #pragma SWIG nowarn=473
 

@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract.tesseract_collision") tesseract_collision_python
+%module(directors="1", package="tesseract_robotics.tesseract_collision") tesseract_collision_python
 
 #pragma SWIG nowarn=473
 

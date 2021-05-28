@@ -1,9 +1,9 @@
-from tesseract.tesseract_environment import Environment
-from tesseract.tesseract_scene_graph import SimpleResourceLocator, SimpleResourceLocatorFn
+from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_scene_graph import SimpleResourceLocator, SimpleResourceLocatorFn
 import os
 import re
 import traceback
-from tesseract_viewer import TesseractViewer
+from tesseract_robotics_viewer import TesseractViewer
 import numpy as np
 import time
 import sys

@@ -18,7 +18,7 @@
 from __future__ import absolute_import
 
 import threading
-from tesseract_viewer.tesseract_env_to_babylon_json import tesseract_env_to_babylon_json
+from tesseract_robotics_viewer.tesseract_env_to_babylon_json import tesseract_env_to_babylon_json
 import pkg_resources
 import mimetypes
 import posixpath
@@ -26,11 +26,11 @@ import traceback
 import os
 import numpy as np
 import json
-from tesseract import tesseract_environment
+from tesseract_robotics import tesseract_environment
 import hashlib
 import base64
 import sys
-from tesseract.tesseract_command_language import isStateWaypoint, isMoveInstruction
+from tesseract_robotics.tesseract_command_language import isStateWaypoint, isMoveInstruction
 
 if sys.version_info[0] < 3:
     from BaseHTTPServer import BaseHTTPRequestHandler

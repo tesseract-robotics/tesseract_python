@@ -1,6 +1,6 @@
-import tesseract.tesseract_scene_graph as sg
-from tesseract import tesseract_common
-from tesseract import tesseract_srdf
+import tesseract_robotics.tesseract_scene_graph as sg
+from tesseract_robotics import tesseract_common
+from tesseract_robotics import tesseract_srdf
 import numpy as np
 import re
 import os

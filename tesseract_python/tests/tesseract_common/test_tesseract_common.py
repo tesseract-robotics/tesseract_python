@@ -1,4 +1,4 @@
-from tesseract import tesseract_common
+from tesseract_robotics import tesseract_common
 
 def test_status_code():
     # Test that status codes can be created

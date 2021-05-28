@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract.tesseract_motion_planners_simple") tesseract_motion_planners_simple_python
+%module(directors="1", package="tesseract_robotics.tesseract_motion_planners_simple") tesseract_motion_planners_simple_python
 
 #pragma SWIG nowarn=473
 

@@ -18,8 +18,8 @@
 import json
 import numpy as np
 import math
-from tesseract import tesseract_geometry
-from tesseract.tesseract_common import Quaterniond
+from tesseract_robotics import tesseract_geometry
+from tesseract_robotics.tesseract_common import Quaterniond
 import pkgutil
 import re
 import base64

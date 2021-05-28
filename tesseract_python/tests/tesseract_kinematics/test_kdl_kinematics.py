@@ -1,8 +1,8 @@
-from tesseract import tesseract_kinematics
-from tesseract import tesseract_scene_graph
-from tesseract import tesseract_kinematics_kdl
-from tesseract import tesseract_urdf
-from tesseract import tesseract_common
+from tesseract_robotics import tesseract_kinematics
+from tesseract_robotics import tesseract_scene_graph
+from tesseract_robotics import tesseract_kinematics_kdl
+from tesseract_robotics import tesseract_urdf
+from tesseract_robotics import tesseract_common
 
 import re
 import os

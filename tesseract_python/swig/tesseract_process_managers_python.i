@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract.tesseract_process_managers") tesseract_process_managers_python
+%module(directors="1", package="tesseract_robotics.tesseract_process_managers") tesseract_process_managers_python
 
 #pragma SWIG nowarn=473
 
