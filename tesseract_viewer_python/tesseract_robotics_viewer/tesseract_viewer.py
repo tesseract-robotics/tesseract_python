@@ -74,7 +74,7 @@ class _TesseractViewerRequestHandler(BaseHTTPRequestHandler):
                 self.send_response(404)
                 return    
             try:
-                file_data = pkg_resources.resource_string('tesseract_viewer.resources', "static/" + path)
+                file_data = pkg_resources.resource_string('tesseract_robotics_viewer.resources', "static/" + path)
             except:
                 traceback.print_exc()
                 self.send_response(404)
@@ -188,8 +188,8 @@ class TesseractViewer():
         assert os.path.isdir(directory), "Invalid target directory %s" % directory
         assert self.scene_json is not None, "Tesseract environment not set"
 
-        index_html = pkg_resources.resource_string('tesseract_viewer.resources', "static/index.html")
-        tesseract_viewer_js = pkg_resources.resource_string('tesseract_viewer.resources', "static/tesseract_viewer.js")
+        index_html = pkg_resources.resource_string('tesseract_robotics_viewer.resources', "static/index.html")
+        tesseract_viewer_js = pkg_resources.resource_string('tesseract_robotics_viewer.resources', "static/tesseract_viewer.js")
 
         files = {"index.html": index_html, "tesseract_viewer.js": tesseract_viewer_js,
             "tesseract_scene.babylon": self.scene_json.encode()}
