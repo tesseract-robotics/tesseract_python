@@ -66,7 +66,13 @@ John Wason:
   template <typename T> int NumPyType() {return -1;};
 
   template<> int NumPyType<double>() {return NPY_DOUBLE;};
+  // TODO: Is there a cleaner way to deal with the weird type code on Windows?
+  #ifndef _WIN32
   template<> int NumPyType<int>() {return NPY_INT;};
+  #else
+  template<> int NumPyType<int>() {return NPY_LONG;};
+  #endif
+  
 
   template <class Derived>
   bool ConvertFromNumpyToEigenMatrix(Eigen::MatrixBase<Derived>* out, PyObject* in)
@@ -82,7 +88,8 @@ John Wason:
     // Check data type
     else if (array_type(in) != NumPyType<typename Derived::Scalar>())
     {
-      PyErr_SetString(PyExc_ValueError, "Type mismatch between NumPy and Eigen objects.");
+      PyErr_Format(PyExc_ValueError, "Type mismatch between NumPy and Eigen objects: got code %d, expected %d", array_type(in),
+        NumPyType<typename Derived::Scalar>());
       return false;
     }
     // Check dimensions
@@ -153,7 +160,8 @@ John Wason:
     // Check data type
     else if (array_type(out) != NumPyType<typename Derived::Scalar>())
     {
-      PyErr_SetString(PyExc_ValueError, "Type mismatch between NumPy and Eigen objects.");
+      PyErr_Format(PyExc_ValueError, "Type mismatch between NumPy and Eigen objects: got code %d, expected %d", array_type(in),
+        NumPyType<typename Derived::Scalar>());
       return false;
     }
     // Check dimensions

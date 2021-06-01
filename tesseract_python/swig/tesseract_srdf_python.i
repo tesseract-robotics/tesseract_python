@@ -1,5 +1,5 @@
 /**
- * @file tesseract_scene_graph_python.i
+ * @file tesseract_srdf_python.i
  * @brief The tesseract_scene_graph_python SWIG master file.
  *
  * @author John Wason
@@ -24,13 +24,12 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract.tesseract_urdf") tesseract_urdf_python
+%module(directors="1", package="tesseract.tesseract_srdf") tesseract_srdf_python
 
 #pragma SWIG nowarn=473
 
 %include "tesseract_swig_include.i"
 
-//%import "tesseract_common_python.i"
 %import "tesseract_scene_graph_python.i"
 
 %{
@@ -38,17 +37,19 @@
 #include <tesseract_common/status_code.h>
 #include <tesseract_scene_graph/resource_locator.h>
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/directed_graph.hpp>
-#include <boost/graph/properties.hpp>
-#include <boost/graph/depth_first_search.hpp>
-#include <boost/graph/breadth_first_search.hpp>
-
+#include <tesseract_scene_graph/allowed_collision_matrix.h>
+#include <tesseract_common/collision_margin_data.h>
 #include <tesseract_geometry/geometries.h>
 
-// tesseract_urdf
-#include <tesseract_urdf/urdf_parser.h>
+// tesseract_srdf
+#include <tesseract_srdf/kinematics_information.h>
+#include <tesseract_srdf/srdf_model.h>
+#include <tesseract_srdf/utils.h>
 
 %}
 
-%include "tesseract_urdf/urdf_parser.h"
+// tesseract_srdf
+#define TESSERACT_SRDF_PUBLIC
+%include "tesseract_srdf/kinematics_information.h"
+%include "tesseract_srdf/srdf_model.h"
+%include "tesseract_srdf/utils.h"

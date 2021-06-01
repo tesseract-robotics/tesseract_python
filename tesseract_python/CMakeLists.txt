@@ -29,6 +29,7 @@ find_package(tesseract_geometry REQUIRED)
 find_package(tesseract_visualization REQUIRED)
 find_package(tesseract_collision REQUIRED)
 find_package(tesseract_urdf REQUIRED)
+find_package(tesseract_srdf REQUIRED)
 find_package(tesseract_kinematics REQUIRED)
 find_package(tesseract_environment REQUIRED)
 find_package(tesseract_scene_graph REQUIRED)
@@ -51,6 +52,7 @@ include_directories(
   ${tesseract_kinematics_INCLUDE_DIRS}
   ${tesseract_urdf_INCLUDE_DIRS}
   ${tesseract_scene_graph_INCLUDE_DIRS}
+  ${tesseract_srdf_INCLUDE_DIRS}
   ${tesseract_environment_INCLUDE_DIRS}
   ${tesseract_command_language_INCLUDE_DIRS}
   ${tesseract_time_parameterization_INCLUDE_DIRS}
@@ -110,6 +112,7 @@ tesseract_python_module(tesseract_collision_python SWIG_SRCS swig/tesseract_coll
 tesseract_python_module(tesseract_collision_bullet_python SWIG_SRCS swig/tesseract_collision_bullet_python.i PACKAGE tesseract_collision_bullet LIBS tesseract::tesseract_collision_bullet )
 tesseract_python_module(tesseract_collision_fcl_python SWIG_SRCS swig/tesseract_collision_fcl_python.i PACKAGE tesseract_collision_fcl LIBS tesseract::tesseract_collision_fcl )
 tesseract_python_module(tesseract_scene_graph_python SWIG_SRCS swig/tesseract_scene_graph_python.i PACKAGE tesseract_scene_graph LIBS tesseract::tesseract_scene_graph )
+tesseract_python_module(tesseract_srdf_python SWIG_SRCS swig/tesseract_srdf_python.i PACKAGE tesseract_srdf LIBS tesseract::tesseract_srdf )
 tesseract_python_module(tesseract_urdf_python SWIG_SRCS swig/tesseract_urdf_python.i PACKAGE tesseract_urdf LIBS tesseract::tesseract_urdf )
 tesseract_python_module(tesseract_kinematics_python SWIG_SRCS swig/tesseract_kinematics_python.i PACKAGE tesseract_kinematics LIBS tesseract::tesseract_kinematics_core )
 tesseract_python_module(tesseract_kinematics_kdl_python SWIG_SRCS swig/tesseract_kinematics_kdl_python.i PACKAGE tesseract_kinematics_kdl LIBS tesseract::tesseract_kinematics_kdl )
@@ -179,7 +182,7 @@ if(TESSERACT_ENABLE_TESTING)
     _tesseract_motion_planners_python _tesseract_motion_planners_simple_python
     _tesseract_motion_planners_trajopt_python _tesseract_motion_planners_ompl_python
     _tesseract_motion_planners_descartes_python _tesseract_time_parameterization_python
-    _tesseract_visualization_python)
+    _tesseract_visualization_python _tesseract_srdf_python)
     endif()
 
   add_test (NAME python-tests

@@ -35,13 +35,15 @@
 
 %{
 
+#include <tesseract_common/status_code.h>
+#include <tesseract_scene_graph/resource_locator.h>
+
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/directed_graph.hpp>
 #include <boost/graph/properties.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/breadth_first_search.hpp>
 
-#include <tesseract_common/status_code.h>
 #include <tesseract_geometry/geometries.h>
 
 // tesseract_scene_graph
@@ -50,9 +52,6 @@
 #include <tesseract_scene_graph/allowed_collision_matrix.h>
 #include <tesseract_scene_graph/graph.h>
 #include <tesseract_scene_graph/resource_locator.h>
-#include <tesseract_scene_graph/kinematics_information.h>
-#include <tesseract_scene_graph/srdf_model.h>
-#include <tesseract_scene_graph/utils.h>
 
 #include "tesseract_scene_graph_python_std_functions.h"
 
@@ -71,6 +70,4 @@
 %include "tesseract_scene_graph/allowed_collision_matrix.h"
 %include "tesseract_scene_graph/graph.h"
 %include "tesseract_scene_graph/resource_locator.h"
-%include "tesseract_scene_graph/kinematics_information.h"
-%include "tesseract_scene_graph/srdf_model.h"
-%include "tesseract_scene_graph/utils.h"
+

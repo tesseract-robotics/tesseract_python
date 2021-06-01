@@ -32,6 +32,7 @@
 
 %import "tesseract_kinematics_python.i"
 %import "tesseract_collision_python.i"
+%import "tesseract_srdf_python.i"
 
 %{
 
@@ -72,7 +73,6 @@
 %include "tesseract_environment/core/commands/add_link_command.h"
 %include "tesseract_environment/core/commands/add_kinematics_information_command.h"
 %include "tesseract_environment/core/commands/add_scene_graph_command.h"
-%include "tesseract_environment/core/commands/change_default_contact_margin_command.h"
 %include "tesseract_environment/core/commands/change_joint_acceleration_limits_command.h"
 %include "tesseract_environment/core/commands/change_joint_origin_command.h"
 %include "tesseract_environment/core/commands/change_joint_position_limits_command.h"
@@ -80,7 +80,6 @@
 %include "tesseract_environment/core/commands/change_link_collision_enabled_command.h"
 %include "tesseract_environment/core/commands/change_link_origin_command.h"
 %include "tesseract_environment/core/commands/change_link_visibility_command.h"
-%include "tesseract_environment/core/commands/change_pair_contact_margin_command.h"
 %include "tesseract_environment/core/commands/move_joint_command.h"
 %include "tesseract_environment/core/commands/move_link_command.h"
 %include "tesseract_environment/core/commands/remove_allowed_collision_command.h"
@@ -88,6 +87,7 @@
 %include "tesseract_environment/core/commands/remove_joint_command.h"
 %include "tesseract_environment/core/commands/remove_link_command.h"
 %include "tesseract_environment/core/commands/replace_joint_command.h"
+%include "tesseract_environment/core/commands/change_collision_margins_command.h"
 
 %include "tesseract_environment/core/manipulator_manager.h"
 %include "tesseract_environment/core/state_solver.h"

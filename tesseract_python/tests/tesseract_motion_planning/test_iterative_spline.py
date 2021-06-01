@@ -36,8 +36,8 @@ def test_time_parameterization():
     max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
     max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
     assert time_parameterization.compute(program, max_velocity, max_acceleration)
-    assert program[-1].cast_MoveInstruction().getWaypoint().cast_StateWaypoint().time > 1.0
-    assert program[-1].cast_MoveInstruction().getWaypoint().cast_StateWaypoint().time < 5.0
+    assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time > 1.0
+    assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time < 5.0
 
 def test_time_parameterization_vec():
 
@@ -47,5 +47,5 @@ def test_time_parameterization_vec():
     max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
     max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
     assert time_parameterization.compute(program, max_velocity, max_acceleration)
-    assert program[-1].cast_MoveInstruction().getWaypoint().cast_StateWaypoint().time > 1.0
-    assert program[-1].cast_MoveInstruction().getWaypoint().cast_StateWaypoint().time < 5.0
+    assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time > 1.0
+    assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time < 5.0

@@ -74,7 +74,7 @@ planning_server.waitForAll()
 
 assert response.interface.isSuccessful()
 
-results = flatten(response.getResults().cast_CompositeInstruction())
+results = flatten(response.getResults().as_CompositeInstruction())
 
 viewer.update_trajectory(results)
 

@@ -148,9 +148,9 @@ class TesseractViewer():
         
         start_instruction_o = tesseract_trajectory[0]
         assert isMoveInstruction(start_instruction_o)
-        start_waypoint_o = start_instruction_o.cast_MoveInstruction().getWaypoint()
+        start_waypoint_o = start_instruction_o.as_MoveInstruction().getWaypoint()
         assert isStateWaypoint(start_waypoint_o)
-        start_waypoint = start_waypoint_o.cast_StateWaypoint()
+        start_waypoint = start_waypoint_o.as_StateWaypoint()
 
         trajectory_json = dict()
         trajectory_json["use_time"] = True
@@ -161,9 +161,9 @@ class TesseractViewer():
         for i in range(len(tesseract_trajectory)):
             instr = tesseract_trajectory[i]
             assert isMoveInstruction(instr)
-            wp = instr.cast_MoveInstruction().getWaypoint()
+            wp = instr.as_MoveInstruction().getWaypoint()
             assert isStateWaypoint(wp)
-            state_wp = wp.cast_StateWaypoint()
+            state_wp = wp.as_StateWaypoint()
             trajectory2.append(state_wp.position.flatten().tolist() + [state_wp.time])
         trajectory_json["trajectory"] = trajectory2
         self.trajectory_json=json.dumps(trajectory_json)
