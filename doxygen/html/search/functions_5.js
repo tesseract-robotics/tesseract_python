@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['log_5fmessage_265',['log_message',['../db/d87/classtesseract__viewer_1_1tesseract__viewer_1_1__TesseractViewerRequestHandler.html#a0d66f06decd73be1257c408e739455d2',1,'tesseract_viewer::tesseract_viewer::_TesseractViewerRequestHandler']]]
+  ['log_5fmessage_267',['log_message',['../dd/d6f/classtesseract__robotics__viewer_1_1tesseract__viewer_1_1__TesseractViewerRequestHandler.html#a13514c95b7844e5d955f33961be20411',1,'tesseract_robotics_viewer::tesseract_viewer::_TesseractViewerRequestHandler']]]
 ];
