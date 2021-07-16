@@ -3,14 +3,14 @@ import traceback
 import os
 import numpy as np
 
-from tesseract.tesseract_scene_graph import SimpleResourceLocator, SimpleResourceLocatorFn
-from tesseract.tesseract_environment import Environment
-from tesseract.tesseract_common import FilesystemPath, ManipulatorInfo
-from tesseract.tesseract_command_language import JointWaypoint, CartesianWaypoint, Waypoint, \
+from tesseract_robotics.tesseract_scene_graph import SimpleResourceLocator, SimpleResourceLocatorFn
+from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo
+from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, Waypoint, \
     PlanInstructionType_FREESPACE, PlanInstructionType_START, PlanInstruction, Instruction, \
     isMoveInstruction, isStateWaypoint
-from tesseract.tesseract_motion_planners import PlannerRequest
-from tesseract.tesseract_motion_planners_simple import SimplePlannerLVSPlanProfile
+from tesseract_robotics.tesseract_motion_planners import PlannerRequest
+from tesseract_robotics.tesseract_motion_planners_simple import SimplePlannerLVSPlanProfile
 
 def _locate_resource(url):
     try:

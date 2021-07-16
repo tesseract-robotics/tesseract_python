@@ -1,16 +1,16 @@
-from tesseract.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
+from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
-from tesseract.tesseract_environment import Environment
-from tesseract.tesseract_scene_graph import SimpleResourceLocator, SimpleResourceLocatorFn
-from tesseract.tesseract_command_language import CartesianWaypoint, Waypoint, \
+from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_scene_graph import SimpleResourceLocator, SimpleResourceLocatorFn
+from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Waypoint, \
     PlanInstructionType_FREESPACE, PlanInstructionType_START, PlanInstruction, Instruction, \
     CompositeInstruction, flatten
-from tesseract.tesseract_process_managers import ProcessPlanningServer, ProcessPlanningRequest, \
+from tesseract_robotics.tesseract_process_managers import ProcessPlanningServer, ProcessPlanningRequest, \
     FREESPACE_PLANNER_NAME
 import os
 import re
 import traceback
-from tesseract_viewer import TesseractViewer
+from tesseract_robotics_viewer import TesseractViewer
 import numpy as np
 import time
 import sys

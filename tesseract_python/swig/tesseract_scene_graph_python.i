@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract.tesseract_scene_graph") tesseract_scene_graph_python
+%module(directors="1", package="tesseract_robotics.tesseract_scene_graph") tesseract_scene_graph_python
 
 #pragma SWIG nowarn=473
 

@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract.tesseract_time_parameterization") tesseract_time_parameterization_python
+%module(directors="1", package="tesseract_robotics.tesseract_time_parameterization") tesseract_time_parameterization_python
 
 #pragma SWIG nowarn=473
 

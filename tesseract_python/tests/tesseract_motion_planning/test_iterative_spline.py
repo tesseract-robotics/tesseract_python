@@ -1,7 +1,7 @@
-from tesseract.tesseract_command_language import CompositeInstruction, StateWaypoint, Waypoint, \
+from tesseract_robotics.tesseract_command_language import CompositeInstruction, StateWaypoint, Waypoint, \
     Instruction, MoveInstruction, Instructions, MoveInstructionType_START, MoveInstructionType_FREESPACE, \
     flatten
-from tesseract.tesseract_time_parameterization import IterativeSplineParameterization
+from tesseract_robotics.tesseract_time_parameterization import IterativeSplineParameterization
 import numpy as np
 
 def create_straight_trajectory():

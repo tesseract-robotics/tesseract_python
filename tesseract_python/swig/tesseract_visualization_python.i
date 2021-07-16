@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract.tesseract_visualization") tesseract_visualization_python
+%module(directors="1", package="tesseract_robotics.tesseract_visualization") tesseract_visualization_python
 
 #pragma SWIG nowarn=473
 

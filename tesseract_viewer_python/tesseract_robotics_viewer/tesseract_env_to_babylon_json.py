@@ -18,8 +18,8 @@
 import json
 import numpy as np
 import math
-from tesseract import tesseract_geometry
-from tesseract.tesseract_common import Quaterniond
+from tesseract_robotics import tesseract_geometry
+from tesseract_robotics.tesseract_common import Quaterniond
 import pkgutil
 import re
 import base64
@@ -48,7 +48,7 @@ def tesseract_env_to_babylon_json_dict(t_env, origin_offset=[0,0,0]):
 
     transform_nodes.append({"name": "root", "id": "root", "isVisible": "true", "isEnabled": "true", "position": list(origin_offset), "parentId": "root0"})
 
-    geometries = json.loads(pkgutil.get_data("tesseract_viewer.resources","geometries.json"))["geometries"]
+    geometries = json.loads(pkgutil.get_data("tesseract_robotics_viewer.resources","geometries.json"))["geometries"]
     
     babylon_dict = {"geometries": geometries, "transformNodes": transform_nodes, "meshes": meshes, "materials": materials}
     return babylon_dict

@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract.tesseract_kinematic_kdl") tesseract_kinematics_kdl_python
+%module(directors="1", package="tesseract_robotics.tesseract_kinematic_kdl") tesseract_kinematics_kdl_python
 
 #pragma SWIG nowarn=473
 

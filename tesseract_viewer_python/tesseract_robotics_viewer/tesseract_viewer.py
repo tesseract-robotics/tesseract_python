@@ -18,7 +18,7 @@
 from __future__ import absolute_import
 
 import threading
-from tesseract_viewer.tesseract_env_to_babylon_json import tesseract_env_to_babylon_json
+from tesseract_robotics_viewer.tesseract_env_to_babylon_json import tesseract_env_to_babylon_json
 import pkg_resources
 import mimetypes
 import posixpath
@@ -26,11 +26,11 @@ import traceback
 import os
 import numpy as np
 import json
-from tesseract import tesseract_environment
+from tesseract_robotics import tesseract_environment
 import hashlib
 import base64
 import sys
-from tesseract.tesseract_command_language import isStateWaypoint, isMoveInstruction
+from tesseract_robotics.tesseract_command_language import isStateWaypoint, isMoveInstruction
 
 if sys.version_info[0] < 3:
     from BaseHTTPServer import BaseHTTPRequestHandler
@@ -74,7 +74,7 @@ class _TesseractViewerRequestHandler(BaseHTTPRequestHandler):
                 self.send_response(404)
                 return    
             try:
-                file_data = pkg_resources.resource_string('tesseract_viewer.resources', "static/" + path)
+                file_data = pkg_resources.resource_string('tesseract_robotics_viewer.resources', "static/" + path)
             except:
                 traceback.print_exc()
                 self.send_response(404)
@@ -188,8 +188,8 @@ class TesseractViewer():
         assert os.path.isdir(directory), "Invalid target directory %s" % directory
         assert self.scene_json is not None, "Tesseract environment not set"
 
-        index_html = pkg_resources.resource_string('tesseract_viewer.resources', "static/index.html")
-        tesseract_viewer_js = pkg_resources.resource_string('tesseract_viewer.resources', "static/tesseract_viewer.js")
+        index_html = pkg_resources.resource_string('tesseract_robotics_viewer.resources', "static/index.html")
+        tesseract_viewer_js = pkg_resources.resource_string('tesseract_robotics_viewer.resources', "static/tesseract_viewer.js")
 
         files = {"index.html": index_html, "tesseract_viewer.js": tesseract_viewer_js,
             "tesseract_scene.babylon": self.scene_json.encode()}

@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract.tesseract_srdf") tesseract_srdf_python
+%module(directors="1", package="tesseract_robotics.tesseract_srdf") tesseract_srdf_python
 
 #pragma SWIG nowarn=473
 
