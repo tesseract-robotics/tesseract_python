@@ -36,7 +36,8 @@
 %{
 
 #include <tesseract_common/status_code.h>
-#include <tesseract_scene_graph/resource_locator.h>
+#include <tesseract_common/resource_locator.h>
+#include <tesseract_common/allowed_collision_matrix.h>
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/directed_graph.hpp>
@@ -49,25 +50,17 @@
 // tesseract_scene_graph
 #include <tesseract_scene_graph/link.h>
 #include <tesseract_scene_graph/joint.h>
-#include <tesseract_scene_graph/allowed_collision_matrix.h>
 #include <tesseract_scene_graph/graph.h>
-#include <tesseract_scene_graph/resource_locator.h>
+#include <tesseract_scene_graph/scene_state.h>
 
-#include "tesseract_scene_graph_python_std_functions.h"
 
 %}
-
-%pythondynamic tesseract_scene_graph::ResourceLocator;
-
-%include "tesseract_std_function.i"
-
-%tesseract_std_function(SimpleResourceLocatorFn,tesseract_scene_graph,std::string,const std::string&,a);
 
 // tesseract_scene_graph
 #define TESSERACT_SCENE_GRAPH_PUBLIC
 %include "tesseract_scene_graph/joint.h"
 %include "tesseract_scene_graph/link.h"
-%include "tesseract_scene_graph/allowed_collision_matrix.h"
 %include "tesseract_scene_graph/graph.h"
-%include "tesseract_scene_graph/resource_locator.h"
+%include "tesseract_scene_graph/scene_state.h"
+
 

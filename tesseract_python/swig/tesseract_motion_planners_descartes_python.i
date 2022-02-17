@@ -40,19 +40,22 @@
 #include <tesseract_motion_planners/descartes/profile/descartes_profile.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_default_plan_profile.h>
 #include <tesseract_motion_planners/descartes/descartes_motion_planner.h>
-#include <tesseract_motion_planners/descartes/problem_generators/default_problem_generator.h>
 #include <tesseract_motion_planners/descartes/serialize.h>
 #include <tesseract_motion_planners/descartes/deserialize.h>
 
 #include <tesseract_common/status_code.h>
-#include <tesseract_common/resource.h>
+#include <tesseract_common/resource_locator.h>
+
+// tesseract_state_solver
+#include <tesseract_state_solver/mutable_state_solver.h>
+#include <tesseract_state_solver/state_solver.h>
+#include <tesseract_state_solver/kdl/kdl_state_solver.h>
+#include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
 #include "tesseract_command_language_python_std_functions.h"
 #include "tesseract_command_language_python_profile_dictionary_functions.h"
 
 #include "tesseract_environment_python_std_functions.h"
-#include <tesseract_kinematics/core/rep_inverse_kinematics.h>
-#include <tesseract_kinematics/core/rop_inverse_kinematics.h>
 %}
 
 // tesseract_motion_planner_descartes
@@ -66,22 +69,13 @@
 %include "tesseract_motion_planners/descartes/profile/descartes_profile.h"
 %include "tesseract_motion_planners/descartes/profile/descartes_default_plan_profile.h"
 
-%tesseract_std_function_base(DescartesProblemGeneratorFnD,tesseract_planning,std::shared_ptr<tesseract_planning::DescartesProblem<double>>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::DescartesPlanProfileMapD&,c);
-%tesseract_std_function(DescartesProblemGeneratorFnD,tesseract_planning,std::shared_ptr<tesseract_planning::DescartesProblem<double>>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::DescartesPlanProfileMapD&,c);
-
 %include "tesseract_motion_planners/descartes/descartes_motion_planner.h"
-//%include "tesseract_motion_planners/descartes/problem_generators/default_problem_generator.h"
 
-%inline
-{
-std::shared_ptr<tesseract_planning::DescartesProblem<double>>
-DefaultDescartesProblemGeneratorD(const std::string& name,
-                                 const tesseract_planning::PlannerRequest& request,
-                                 const tesseract_planning::DescartesPlanProfileMapD& plan_profiles)
-{
-    return tesseract_planning::DefaultDescartesProblemGenerator<double>(name,request,plan_profiles);
+%inline {
+    std::shared_ptr<tesseract_planning::DescartesPlanProfile<double>> cast_DescartesPlanProfileD(
+        const std::shared_ptr<tesseract_planning::DescartesDefaultPlanProfile<double>>& a
+    )
+    {
+        return a;
+    }
 }
-}
-
-%include "tesseract_motion_planners/descartes/serialize.h"
-%include "tesseract_motion_planners/descartes/deserialize.h"

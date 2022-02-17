@@ -16,7 +16,7 @@
 %shared_ptr(trajopt::JointJerkTermInfo);
 %shared_ptr(trajopt::CollisionTermInfo);
 %shared_ptr(trajopt::TotalTimeTermInfo);
-%shared_ptr(trajopt::SafetyMarginData);
+%shared_ptr(util::SafetyMarginData);
 %shared_ptr(trajopt::ProblemConstructionInfo);
 
 
@@ -56,7 +56,7 @@
 }
 
 
-%template(SafetyMarginDataPtr_vector) std::vector<std::shared_ptr<trajopt::SafetyMarginData>>;
+%template(SafetyMarginDataPtr_vector) std::vector<std::shared_ptr<util::SafetyMarginData>>;
 %template(TermInfoPtr_vector) std::vector<std::shared_ptr<trajopt::TermInfo>>;
 
 
@@ -71,9 +71,9 @@ public:
   enum Value
   {
     GUROBI,
-    BPMPD,
     OSQP,
     QPOASES,
+    BPMPD,
     AUTO_SOLVER
   };
 
@@ -121,6 +121,32 @@ struct BasicTrustRegionSQPParameters
 
 }
 
+namespace util
+{
+struct SafetyMarginData
+{
+
+    using Ptr = std::shared_ptr<SafetyMarginData>;
+    using ConstPtr = std::shared_ptr<const SafetyMarginData>;
+
+	SafetyMarginData(const double& default_safety_margin, const double& default_safety_margin_coeff);
+	
+	void setPairSafetyMarginData(const std::string& obj1,
+                               const std::string& obj2,
+                               const double& safety_margin,
+                               const double& safety_margin_coeff);
+	
+	Eigen::Vector2d getPairSafetyMarginData(const std::string& obj1, const std::string& obj2) const;
+	
+	const double getMaxSafetyMargin() const;	
+	
+};
+
+std::vector<std::shared_ptr<SafetyMarginData> > createSafetyMarginDataVector(int num_elements,
+                                                                const double& default_safety_margin,
+                                                                const double& default_safety_margin_coeff);
+}
+
 namespace trajopt
 {
 
@@ -156,7 +182,7 @@ public:
   // VarArray& GetVars();  
   int GetNumSteps();  
   int GetNumDOF();
-  tesseract_kinematics::ForwardKinematics::ConstPtr  GetKin();
+  tesseract_kinematics::JointGroup::ConstPtr GetKin();
   tesseract_environment::Environment::ConstPtr GetEnv();
   void SetInitTraj(const TrajArray& x);
   TrajArray GetInitTraj();  
@@ -229,9 +255,7 @@ public:
   InitInfo init_info;
 
   tesseract_environment::Environment::ConstPtr env;
-  tesseract_kinematics::ForwardKinematics::ConstPtr kin;
-
-  tesseract_kinematics::ForwardKinematics::ConstPtr getManipulator(const std::string& name) const;
+  tesseract_kinematics::JointGroup::ConstPtr kin;
 
   ProblemConstructionInfo(tesseract_environment::Environment::ConstPtr env);
   void fromJson(const Json::Value& v);
@@ -242,24 +266,23 @@ public:
 struct DynamicCartPoseTermInfo : public TermInfo
 {
   int timestep;
-  std::string target;  
-  Eigen::Vector3d pos_coeffs, rot_coeffs;  
-  std::string link;  
-  Eigen::Isometry3d tcp;
-  Eigen::Isometry3d target_tcp;
+  Eigen::Vector3d pos_coeffs, rot_coeffs;
+  std::string source_frame;
+  std::string target_frame;
+  Eigen::Isometry3d source_frame_offset;
+  Eigen::Isometry3d target_frame_offset;
   void fromJson(ProblemConstructionInfo& pci, const Json::Value& v);  
   void hatch(TrajOptProb& prob);  
 };
 
 struct CartPoseTermInfo : public TermInfo
 {  
-  int timestep;  
-  Eigen::Vector3d xyz;  
-  Eigen::Vector4d wxyz;
-  Eigen::Vector3d pos_coeffs, rot_coeffs;  
-  std::string link;  
-  Eigen::Isometry3d tcp;
-  std::string target;
+  int timestep;
+  Eigen::Vector3d pos_coeffs, rot_coeffs;
+  std::string source_frame;
+  std::string target_frame;
+  Eigen::Isometry3d source_frame_offset;
+  Eigen::Isometry3d target_frame_offset;
 
   void fromJson(ProblemConstructionInfo& pci, const Json::Value& v);
   
@@ -268,9 +291,10 @@ struct CartPoseTermInfo : public TermInfo
 
 struct CartVelTermInfo : public TermInfo
 {  
-  int first_step, last_step;  
+  int first_step{ -1 };
+  int last_step{ -1 };
   std::string link;
-  double max_displacement;  
+  double max_displacement{ 0 };  
   void fromJson(ProblemConstructionInfo& pci, const Json::Value& v);  
   void hatch(TrajOptProb& prob) override;  
 };
@@ -323,29 +347,6 @@ struct JointJerkTermInfo : public TermInfo
   void hatch(TrajOptProb& prob);  
 };
 
-struct SafetyMarginData
-{
-
-    using Ptr = std::shared_ptr<SafetyMarginData>;
-    using ConstPtr = std::shared_ptr<const SafetyMarginData>;
-
-	SafetyMarginData(const double& default_safety_margin, const double& default_safety_margin_coeff);
-	
-	void setPairSafetyMarginData(const std::string& obj1,
-                               const std::string& obj2,
-                               const double& safety_margin,
-                               const double& safety_margin_coeff);
-	
-	Eigen::Vector2d getPairSafetyMarginData(const std::string& obj1, const std::string& obj2) const;
-	
-	const double getMaxSafetyMargin() const;	
-	
-};
-
-std::vector<std::shared_ptr<SafetyMarginData> > createSafetyMarginDataVector(int num_elements,
-                                                                const double& default_safety_margin,
-                                                                const double& default_safety_margin_coeff);
-
 enum class CollisionEvaluatorType
 {
   SINGLE_TIMESTEP = 0,
@@ -360,7 +361,7 @@ public:
   CollisionEvaluatorType evaluator_type;
   std::vector<int> fixed_steps;
   double longest_valid_segment_length = 0.5;
-  std::vector<std::shared_ptr<SafetyMarginData> > info;
+  std::vector<std::shared_ptr<util::SafetyMarginData> > info;
   tesseract_collision::ContactTestType contact_test_type;
   void fromJson(ProblemConstructionInfo& pci, const Json::Value& v);
   void hatch(TrajOptProb& prob);

@@ -50,7 +50,7 @@ public:
     virtual ~Name##Base() {}     
 };
 
-%typemap(in) Name##Base (void *argp, int res = 0, std::shared_ptr< Name##Base > temp1) {
+%typemap(in) Namespace::Name (void *argp, int res = 0, std::shared_ptr< Name##Base > temp1) {
     // tesseract_std_function %typemap(in)
   int newmem = 0;
   res = SWIG_ConvertPtrAndOwn($input, &argp, $descriptor(std::shared_ptr< Name##Base > *), %convertptr_flags, &newmem);
@@ -66,7 +66,7 @@ public:
   }
 }
 
-%typemap(in) Name##Base const & (void *argp, int res = 0, std::shared_ptr< Name##Base > temp1, Namespace::Name temp2) {
+%typemap(in) Namespace::Name const & (void *argp, int res = 0, std::shared_ptr< Name##Base > temp1, Namespace::Name temp2) {
     // const tesseract_std_function& %typemap(in)
   int newmem = 0;
   res = SWIG_ConvertPtrAndOwn($input, &argp, $descriptor(std::shared_ptr< Name##Base > *), %convertptr_flags, &newmem);
@@ -83,15 +83,21 @@ public:
   }
 }
 
-%typemap(out) Name##Base const &  {
+%typemap(out) Namespace::Name const &  {
     // tesseract_std_function & %typemap(out)
     Py_INCREF(Py_None);
     %set_output(Py_None);
 }
 
+%typemap(typecheck, precedence=SWIG_TYPECHECK_POINTER, equivalent="TYPE *", noblock=1)
+                      Namespace::Name, Namespace::Name const & {
+  int res = SWIG_ConvertPtr($input, 0, $descriptor(std::shared_ptr< Name##Base > *), 0);
+  $1 = SWIG_CheckState(res);
+}
+
 namespace Namespace
 {
-using Name = ::Name##Base;
+//using Name = ::Name##Base;
 }
 
 %pythoncode %{
@@ -122,7 +128,7 @@ public:
 };
 
 
-%typemap(in) Name##Base (void *argp, int res = 0, std::shared_ptr< Name##Base > temp1) {
+%typemap(in) Namespace::Name (void *argp, int res = 0, std::shared_ptr< Name##Base > temp1) {
     // tesseract_std_function %typemap(in)
   int newmem = 0;
   res = SWIG_ConvertPtrAndOwn($input, &argp, $descriptor(std::shared_ptr< Name##Base > *), %convertptr_flags, &newmem);
@@ -138,7 +144,7 @@ public:
   }
 }
 
-%typemap(out) Name##Base*  {
+%typemap(out) Namespace::Name*  {
     // tesseract_std_function* %typemap(out)
     Py_INCREF(Py_None);
     %set_output(Py_None);
@@ -146,7 +152,7 @@ public:
 
 namespace Namespace
 {
-using Name = ::Name##Base;
+//using Name = ::Name##Base;
 }
 
 %pythoncode %{

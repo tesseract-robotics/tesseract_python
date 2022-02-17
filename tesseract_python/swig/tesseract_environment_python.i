@@ -33,6 +33,7 @@
 %import "tesseract_kinematics_python.i"
 %import "tesseract_collision_python.i"
 %import "tesseract_srdf_python.i"
+%import "tesseract_state_solver_python.i"
 
 %{
 
@@ -45,50 +46,28 @@
 #include <tesseract_common/status_code.h>
 #include <tesseract_geometry/geometries.h>
 
-#include <tesseract_scene_graph/resource_locator.h>
-#include <tesseract_kinematics/core/rep_inverse_kinematics.h>
-#include <tesseract_kinematics/core/rop_inverse_kinematics.h>
+#include <tesseract_common/resource_locator.h>
+
+// tesseract_state_solver
+#include <tesseract_state_solver/mutable_state_solver.h>
+#include <tesseract_state_solver/state_solver.h>
+#include <tesseract_state_solver/kdl/kdl_state_solver.h>
+#include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
 // tesseract_environment
-#include <tesseract_environment/core/types.h>
-#include <tesseract_environment/core/commands.h>
-#include <tesseract_environment/core/state_solver.h>
-#include <tesseract_environment/core/environment.h>
+#include <tesseract_environment/commands.h>
+#include <tesseract_environment/environment.h>
 
-#include "tesseract_scene_graph_python_std_functions.h"
+#include "tesseract_common_python_std_functions.h"
 #include "tesseract_collisions_python_std_functions.h"
-#include "tesseract_environment/kdl/kdl_state_solver.h"
 
 #include "tesseract_environment_python_std_functions.h"
 %}
 
-%tesseract_std_function(FindTCPCallbackFn,tesseract,Eigen::Isometry3d,const tesseract_common::ManipulatorInfo&,a);
+%tesseract_std_function(FindTCPOffsetCallbackFn,tesseract,Eigen::Isometry3d,const tesseract_common::ManipulatorInfo&,a);
 
 // tesseract_environment
 #define TESSERACT_ENVIRONMENT_CORE_PUBLIC
-%include "tesseract_environment/core/types.h"
-%include "tesseract_environment/core/commands.h"
-%include "tesseract_environment/core/command.h"
-%include "tesseract_environment/core/commands/add_allowed_collision_command.h"
-%include "tesseract_environment/core/commands/add_link_command.h"
-%include "tesseract_environment/core/commands/add_kinematics_information_command.h"
-%include "tesseract_environment/core/commands/add_scene_graph_command.h"
-%include "tesseract_environment/core/commands/change_joint_acceleration_limits_command.h"
-%include "tesseract_environment/core/commands/change_joint_origin_command.h"
-%include "tesseract_environment/core/commands/change_joint_position_limits_command.h"
-%include "tesseract_environment/core/commands/change_joint_velocity_limits_command.h"
-%include "tesseract_environment/core/commands/change_link_collision_enabled_command.h"
-%include "tesseract_environment/core/commands/change_link_origin_command.h"
-%include "tesseract_environment/core/commands/change_link_visibility_command.h"
-%include "tesseract_environment/core/commands/move_joint_command.h"
-%include "tesseract_environment/core/commands/move_link_command.h"
-%include "tesseract_environment/core/commands/remove_allowed_collision_command.h"
-%include "tesseract_environment/core/commands/remove_allowed_collision_link_command.h"
-%include "tesseract_environment/core/commands/remove_joint_command.h"
-%include "tesseract_environment/core/commands/remove_link_command.h"
-%include "tesseract_environment/core/commands/replace_joint_command.h"
-%include "tesseract_environment/core/commands/change_collision_margins_command.h"
+%include "tesseract_environment/commands.h"
 
-%include "tesseract_environment/core/manipulator_manager.h"
-%include "tesseract_environment/core/state_solver.h"
-%include "tesseract_environment/core/environment.h"
+%include "tesseract_environment/environment.h"

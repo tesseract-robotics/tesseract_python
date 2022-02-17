@@ -4,7 +4,6 @@ from tesseract_robotics import tesseract_environment
 from tesseract_robotics.tesseract_common import Isometry3d, Translation3d, AngleAxisd
 from tesseract_robotics import tesseract_common
 from tesseract_robotics import tesseract_collision
-from tesseract_robotics import tesseract_collision_bullet
 from tesseract_robotics import tesseract_urdf
 import os
 import re
@@ -47,9 +46,9 @@ def _locate_resource(url):
         traceback.print_exc()
 
 def get_scene_graph():
-    locator_fn = tesseract_scene_graph.SimpleResourceLocatorFn(_locate_resource)
-    locator = tesseract_scene_graph.SimpleResourceLocator(locator_fn)    
-    return tesseract_urdf.parseURDFString(mesh_urdf, locator)
+    locator_fn = tesseract_common.SimpleResourceLocatorFn(_locate_resource)
+    locator = tesseract_common.SimpleResourceLocator(locator_fn)    
+    return tesseract_urdf.parseURDFString(mesh_urdf, locator).release()
     
 def test_mesh_material_loading():
     scene = get_scene_graph()
@@ -61,14 +60,14 @@ def test_mesh_material_loading():
     mesh2 = visual[3].geometry
     mesh3 = visual[0].geometry
 
-    assert mesh0.getTriangleCount() == 34
-    assert mesh0.getVerticeCount() == 68
-    assert mesh1.getTriangleCount() == 15
-    assert mesh1.getVerticeCount() == 17
-    assert mesh2.getTriangleCount() == 15
-    assert mesh2.getVerticeCount() == 17
-    assert mesh3.getTriangleCount() == 2
-    assert mesh3.getVerticeCount() == 4
+    assert mesh0.getFaceCount() == 34
+    assert mesh0.getVertexCount() == 68
+    assert mesh1.getFaceCount() == 15
+    assert mesh1.getVertexCount() == 17
+    assert mesh2.getFaceCount() == 15
+    assert mesh2.getVertexCount() == 17
+    assert mesh3.getFaceCount() == 2
+    assert mesh3.getVertexCount() == 4
 
     mesh0_normals = mesh0.getNormals()
     assert mesh0_normals is not None

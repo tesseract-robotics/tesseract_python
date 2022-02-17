@@ -39,10 +39,15 @@
 // tesseract_common
 #include <tesseract_common/types.h>
 #include <tesseract_common/status_code.h>
-#include <tesseract_common/resource.h>
+#include <tesseract_common/resource_locator.h>
 #include <tesseract_common/manipulator_info.h>
 #include <tesseract_common/joint_state.h>
 #include <tesseract_common/collision_margin_data.h>
+#include <tesseract_common/allowed_collision_matrix.h>
+#include <tesseract_common/kinematic_limits.h>
+#include <tesseract_common/timer.h>
+
+#include "tesseract_common_python_std_functions.h"
 
 %}
 
@@ -53,6 +58,7 @@
 %pythondynamic sco::ModelType;
 
 %template(vector_string) std::vector<std::string>;
+%template(set_string) std::set<std::string>;
 %template(pair_string) std::pair<std::string, std::string>;
 %template(vector_pair_string) std::vector<std::pair<std::string, std::string> >;
 %template(map_string_vector_pair_string) std::unordered_map<std::string, std::vector<std::pair<std::string, std::string>>>;
@@ -64,6 +70,8 @@
 %template(map_string_map_string_double) std::unordered_map<std::string, std::unordered_map<std::string, double> >;
 %template(map_string_map_string_string) std::unordered_map<std::string, std::unordered_map<std::string, std::string> >;
 %template(map_string_map_string_map_string_double) std::unordered_map<std::string, std::unordered_map<std::string, std::unordered_map<std::string, double> > >;
+
+%template(vector_size_t) std::vector<std::size_t>;
 
 %template(array2_int) std::array<int,2>;
 %template(array2_string) std::array<std::string,2>;
@@ -89,6 +97,7 @@
 
 %tesseract_aligned_vector(VectorIsometry3d, Eigen::Isometry3d);
 %template(VectorVector3d) std::vector<Eigen::Vector3d>;
+%template(VectorVectorXd) std::vector<Eigen::VectorXd>;
 %tesseract_aligned_vector(VectorVector2d, Eigen::Vector2d);
 %tesseract_aligned_vector(VectorVector4d, Eigen::Vector4d);
 %tesseract_aligned_map(TransformMap, std::string, Eigen::Isometry3d);
@@ -115,6 +124,7 @@ namespace tesseract_common
 }
 
 %ignore toXML(tinyxml2::XMLDocument& doc) const;
+%ignore CONFIG_KEY;
 
 %typemap(out, fragment="SWIG_From_std_string") std::string& {
   $result = SWIG_From_std_string(*$1);
@@ -129,14 +139,23 @@ namespace tesseract_common
 #define TESSERACT_COMMON_IGNORE_WARNINGS_POP
 #define DEPRECATED(msg)
 
+%pythondynamic tesseract_common::ResourceLocator;
+
+%include "tesseract_std_function.i"
+
+%tesseract_std_function(SimpleResourceLocatorFn,tesseract_common,std::string,const std::string&,a);
+
 // tesseract_common
 #define TESSERACT_COMMON_PUBLIC
 %include "tesseract_common/types.h"
 %include "tesseract_common/status_code.h"
-%include "tesseract_common/resource.h"
+%include "tesseract_common/resource_locator.h"
 %include "tesseract_common/manipulator_info.h"
 %include "tesseract_common/joint_state.h"
 %include "tesseract_common/collision_margin_data.h"
+%include "tesseract_common/allowed_collision_matrix.h"
+%include "tesseract_common/kinematic_limits.h"
+%include "tesseract_common/timer.h"
 
 
 

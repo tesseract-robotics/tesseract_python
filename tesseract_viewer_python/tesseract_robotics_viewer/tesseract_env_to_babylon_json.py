@@ -101,7 +101,7 @@ def _process_link_recursive(link_map, joint_map, link_name, parent_joint_name):
             for i in range(len(vertices)):
                 positions[i*3:(i*3+3)] = vertices[i].flatten()
             
-            triangles = mesh.getTriangles().flatten()
+            triangles = mesh.getFaces().flatten()
             triangle_count = int(len(triangles)/4)
             indices = [0]*(triangle_count*3)
             for i in range(triangle_count):

@@ -1,9 +1,9 @@
 /**
- * @file tesseract_collision_python.i
- * @brief The tesseract_collision_python SWIG master file.
+ * @file tesseract_common_python_std_functions.h
+ * @brief Callback directors for tesseract_scene_graph_python module
  *
  * @author John Wason
- * @date December 8, 2020
+ * @date December 18, 2020
  * @version TODO
  * @bug No known bugs
  *
@@ -24,24 +24,13 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract_robotics.tesseract_collision_fcl") tesseract_collision_fcl_python
+#include <tesseract_common/resource_locator.h>
 
-#pragma SWIG nowarn=473
+#pragma once
 
-%include "tesseract_swig_include.i"
-
-%import "tesseract_common_python.i"
-%import "tesseract_geometry_python.i"
-%import "tesseract_collision_python.i"
-
-%{
-#include <tesseract_common/status_code.h>
-// tesseract_collision
-#include <tesseract_collision/fcl/fcl_discrete_managers.h>
-#include "tesseract_collisions_python_std_functions.h"
-%}
-
-// tesseract_collision
-#define TESSERACT_COLLISION_FCL_PUBLIC
-%include "tesseract_collision/fcl/fcl_discrete_managers.h"
-
+class SimpleResourceLocatorFnBase
+{
+public:
+  virtual std::string call(const std::string& a) = 0;
+  virtual ~SimpleResourceLocatorFnBase() {}
+};

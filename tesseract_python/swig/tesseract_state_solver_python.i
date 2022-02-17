@@ -1,13 +1,13 @@
 /**
- * @file tesseract_kinematics_python.i
- * @brief The tesseract_kinematics_python SWIG master file.
+ * @file tesseract_state_solver_python.i
+ * @brief The tesseract_state_solver_python SWIG master file.
  *
  * @author John Wason
- * @date December 8, 2020
+ * @date February 9, 2022
  * @version TODO
  * @bug No known bugs
  *
- * @copyright Copyright (c) 2020, Wason Technology, LLC
+ * @copyright Copyright (c) 2022, Wason Technology, LLC
  *
  * @par License
  * Software License Agreement (Apache License)
@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract_robotics.tesseract_kinematics") tesseract_kinematics_python
+%module(directors="1", package="tesseract_robotics.tesseract_state_solver") tesseract_state_solver_python
 
 #pragma SWIG nowarn=473
 
@@ -34,7 +34,6 @@
 //%import "tesseract_geometry_python.i"
 %import "tesseract_scene_graph_python.i"
 %import "tesseract_srdf_python.i"
-%import "tesseract_state_solver_python.i"
 
 %{
 
@@ -55,29 +54,21 @@
 #include <tesseract_state_solver/kdl/kdl_state_solver.h>
 #include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
-// tesseract_kinematics
-#include <tesseract_kinematics/core/forward_kinematics.h>
-#include <tesseract_kinematics/core/inverse_kinematics.h>
-#include <tesseract_kinematics/core/joint_group.h>
-#include <tesseract_kinematics/core/kinematic_group.h>
-#include <tesseract_kinematics/core/kinematics_plugin_factory.h>
-
-
 %}
 
-%template(pair_bool_matrix) std::pair<bool,Eigen::MatrixXd>;
+// tesseract_state_solver
+#define TESSERACT_STATE_SOLVER_CORE_PUBLIC
 
-//TODO: passing unique_ptr as parameter with move command
-%ignore tesseract_kinematics::KinematicGroup::KinematicGroup;
+namespace tesseract_scene_graph
+{
+    class KDLTreeData;
+}
 
-// tesseract_kinematics
-#define TESSERACT_KINEMATICS_CORE_PUBLIC
-#define TESSERACT_KINEMATICS_IKFAST_PUBLIC
-#define TESSERACT_KINEMATICS_KDL_PUBLIC
-#define TESSERACT_KINEMATICS_OPW_PUBLIC
-%include "tesseract_kinematics/core/types.h"
-%include "tesseract_kinematics/core/forward_kinematics.h"
-%include "tesseract_kinematics/core/inverse_kinematics.h"
-%include "tesseract_kinematics/core/joint_group.h"
-%include "tesseract_kinematics/core/kinematic_group.h"
-%include "tesseract_kinematics/core/kinematics_plugin_factory.h"
+%ignore KDLStateSolver(const tesseract_scene_graph::SceneGraph& scene_graph, tesseract_scene_graph::KDLTreeData data);
+
+%include "tesseract_state_solver/state_solver.h"
+%include "tesseract_state_solver/mutable_state_solver.h"
+%include "tesseract_state_solver/kdl/kdl_state_solver.h"
+%include "tesseract_state_solver/ofkt/ofkt_state_solver.h"
+
+

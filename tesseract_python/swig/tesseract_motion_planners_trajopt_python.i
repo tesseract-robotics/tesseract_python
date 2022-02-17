@@ -45,19 +45,23 @@
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_composite_profile.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_plan_profile.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h>
-#include <tesseract_motion_planners/trajopt/problem_generators/default_problem_generator.h>
 #include <tesseract_motion_planners/trajopt/serialize.h>
 #include <tesseract_motion_planners/trajopt/deserialize.h>
 
 #include <tesseract_common/status_code.h>
-#include <tesseract_common/resource.h>
+#include <tesseract_common/resource_locator.h>
+
+// tesseract_state_solver
+#include <tesseract_state_solver/mutable_state_solver.h>
+#include <tesseract_state_solver/state_solver.h>
+#include <tesseract_state_solver/kdl/kdl_state_solver.h>
+#include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
 #include "tesseract_command_language_python_std_functions.h"
 #include "tesseract_command_language_python_profile_dictionary_functions.h"
 
 #include "tesseract_environment_python_std_functions.h"
-#include <tesseract_kinematics/core/rep_inverse_kinematics.h>
-#include <tesseract_kinematics/core/rop_inverse_kinematics.h>
+
 %}
 
 // trajopt
@@ -74,10 +78,10 @@
 %include "tesseract_motion_planners/trajopt/trajopt_collision_config.h"
 %include "tesseract_motion_planners/trajopt/profile/trajopt_profile.h"
 %include "tesseract_motion_planners/trajopt/profile/trajopt_default_plan_profile.h"
+%include "tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h"
 %include "tesseract_motion_planners/trajopt/profile/trajopt_default_composite_profile.h"
 
 %include "tesseract_motion_planners/trajopt/trajopt_utils.h"
 %include "tesseract_motion_planners/trajopt/trajopt_motion_planner.h"
 %include "tesseract_motion_planners/trajopt/serialize.h"
 %include "tesseract_motion_planners/trajopt/deserialize.h"
-%include "tesseract_motion_planners/trajopt/problem_generators/default_problem_generator.h"
