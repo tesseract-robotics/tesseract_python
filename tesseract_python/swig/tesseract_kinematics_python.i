@@ -30,7 +30,7 @@
 
 %include "tesseract_swig_include.i"
 
-//%import "tesseract_common_python.i"
+%import "tesseract_common_python.i"
 //%import "tesseract_geometry_python.i"
 %import "tesseract_scene_graph_python.i"
 %import "tesseract_srdf_python.i"
