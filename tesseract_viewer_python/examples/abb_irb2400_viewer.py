@@ -1,7 +1,8 @@
+from pathlib import Path
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
 from tesseract_robotics.tesseract_environment import Environment
-from tesseract_robotics.tesseract_scene_graph import SimpleResourceLocator, SimpleResourceLocatorFn
+from tesseract_robotics.tesseract_common import SimpleResourceLocator, SimpleResourceLocatorFn
 from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Waypoint, \
     PlanInstructionType_FREESPACE, PlanInstructionType_START, PlanInstruction, Instruction, \
     CompositeInstruction, flatten
@@ -19,6 +20,11 @@ TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
 
 def _locate_resource(url):
     try:
+        try:
+            if Path(url).exists():
+                return url
+        except:
+            pass
         url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
         if (url_match is None):
             return ""    
@@ -39,7 +45,9 @@ locator_fn = SimpleResourceLocatorFn(_locate_resource)
 t_env.init(abb_irb2400_urdf_fname, abb_irb2400_srdf_fname, SimpleResourceLocator(locator_fn))
 
 manip_info = ManipulatorInfo()
+manip_info.tcp_frame = "tool0"
 manip_info.manipulator = "manipulator"
+manip_info.working_frame = "base_link"
 
 viewer = TesseractViewer()
 
@@ -52,8 +60,9 @@ viewer.start_serve_background()
 
 t_env.setState(joint_names, np.ones(6)*0.1)
 
-wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(.6,-.8,0.6) * Quaterniond(0,0,1.0,0))
-wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(.4,.8,1.5) * Quaterniond(0.7071,0,0.7071,0))
+wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,-0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
+wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
+wp3 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1) * Quaterniond(0.70710678,0,0.70710678,0))
 
 start_instruction = PlanInstruction(Waypoint(wp1), PlanInstructionType_START, "DEFAULT")
 plan_f1 = PlanInstruction(Waypoint(wp2), PlanInstructionType_FREESPACE, "DEFAULT")

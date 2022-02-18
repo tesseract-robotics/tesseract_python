@@ -93,7 +93,7 @@ def _process_link_recursive(link_map, joint_map, link_name, parent_joint_name):
         tf_material = None
 
         visual_geom = visual.geometry
-        if (isinstance(visual_geom,tesseract_geometry.Mesh)):
+        if (isinstance(visual_geom,tesseract_geometry.PolygonMesh)):
         
             mesh=visual_geom
             vertices = mesh.getVertices()

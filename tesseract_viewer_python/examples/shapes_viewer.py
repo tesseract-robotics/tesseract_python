@@ -1,5 +1,6 @@
+from pathlib import Path
 from tesseract_robotics.tesseract_environment import Environment
-from tesseract_robotics.tesseract_scene_graph import SimpleResourceLocator, SimpleResourceLocatorFn
+from tesseract_robotics.tesseract_common import SimpleResourceLocator, SimpleResourceLocatorFn
 import os
 import re
 import traceback
@@ -75,6 +76,11 @@ TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
 
 def _locate_resource(url):
     try:
+        try:
+            if Path(url).exists():
+                return url
+        except:
+            pass
         url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
         if (url_match is None):
             return ""    
