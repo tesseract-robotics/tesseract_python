@@ -2,14 +2,16 @@
     local-name: ros_industrial_cmake_boilerplate
     uri: https://github.com/ros-industrial/ros_industrial_cmake_boilerplate.git
     version: master
+
+# TODO: Change back to upstream before merging!!!
 - git:
     local-name: tesseract
-    uri: https://github.com/ros-industrial-consortium/tesseract.git
-    version: master
+    uri: https://github.com/johnwason/tesseract.git
+    version: pr/PythonFixup2
 - git:
     local-name: tesseract_planning
-    uri: https://github.com/ros-industrial-consortium/tesseract_planning.git
-    version: master
+    uri: https://github.com/johnwason/tesseract_planning.git
+    version: pr/PythonFixup3
 - git:
     local-name: trajopt
     uri: https://github.com/ros-industrial-consortium/trajopt_ros.git
