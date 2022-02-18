@@ -6,7 +6,7 @@
 # TODO: Change back to upstream before merging!!!
 - git:
     local-name: tesseract
-    uri: https://github.com/johnwason/tesseract.git
+    uri: https://github.com/johnwason/tesseract.git 
     version: pr/PythonFixup2
 - git:
     local-name: tesseract_planning
