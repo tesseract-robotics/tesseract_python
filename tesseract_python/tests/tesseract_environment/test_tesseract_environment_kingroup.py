@@ -1,4 +1,3 @@
-from pathlib import Path
 import re
 import traceback
 import os
@@ -12,7 +11,7 @@ from tesseract_robotics.tesseract_kinematics import KinGroupIKInput, KinGroupIKI
 def _locate_resource(url):
     try:
         try:
-            if Path(url).exists():
+            if os.path.exists(url):
                 return url
         except:
             pass

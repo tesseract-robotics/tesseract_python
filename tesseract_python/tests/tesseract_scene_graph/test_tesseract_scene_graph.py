@@ -1,4 +1,3 @@
-from pathlib import Path
 import traceback
 import tesseract_robotics.tesseract_scene_graph as sg
 from tesseract_robotics import tesseract_common
@@ -138,7 +137,7 @@ def test_tesseract_scene_graph():
 def _locate_resource(url):
     try:
         try:
-            if Path(url).exists():
+            if os.path.exists(url):
                 return url
         except:
             pass

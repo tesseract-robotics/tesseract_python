@@ -1,4 +1,3 @@
-from pathlib import Path
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import SimpleResourceLocator, SimpleResourceLocatorFn
 import os
@@ -53,7 +52,7 @@ TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
 def _locate_resource(url):
     try:
         try:
-            if Path(url).exists():
+            if os.path.exists(url):
                 return url
         except:
             pass

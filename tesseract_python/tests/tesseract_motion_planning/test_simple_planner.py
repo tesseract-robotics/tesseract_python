@@ -1,4 +1,3 @@
-from pathlib import Path
 import re
 import traceback
 import os
@@ -16,7 +15,7 @@ from tesseract_robotics.tesseract_motion_planners_simple import SimplePlannerLVS
 def _locate_resource(url):
     try:
         try:
-            if Path(url).exists():
+            if os.path.exists(url):
                 return url
         except:
             pass
