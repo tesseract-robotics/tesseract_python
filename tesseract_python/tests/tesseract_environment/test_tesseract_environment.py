@@ -1,4 +1,3 @@
-from pathlib import Path
 from tesseract_robotics import tesseract_scene_graph
 from tesseract_robotics import tesseract_collision
 from tesseract_robotics import tesseract_environment
@@ -14,7 +13,7 @@ import re
 def _locate_resource(url):
     try:
         try:
-            if Path(url).exists():
+            if os.path.exists(url):
                 return url
         except:
             pass
