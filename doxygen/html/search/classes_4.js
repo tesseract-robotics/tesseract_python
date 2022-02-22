@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['iscontactallowedfnbase_195',['IsContactAllowedFnBase',['../dd/d82/classIsContactAllowedFnBase.html',1,'']]],
-  ['iscontactvalidfnbase_196',['IsContactValidFnBase',['../d3/dda/classIsContactValidFnBase.html',1,'']]]
+  ['simpleresourcelocatorfnbase_0',['SimpleResourceLocatorFnBase',['../d2/d30/classSimpleResourceLocatorFnBase.html',1,'']]]
 ];

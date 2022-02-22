@@ -1,0 +1,52 @@
+\hypertarget{tesseract__command__language__python__profile__dictionary__functions_8h_source}{}\doxysection{tesseract\+\_\+command\+\_\+language\+\_\+python\+\_\+profile\+\_\+dictionary\+\_\+functions.\+h}
+\label{tesseract__command__language__python__profile__dictionary__functions_8h_source}\index{tesseract\_python/swig/tesseract\_command\_language\_python\_profile\_dictionary\_functions.h@{tesseract\_python/swig/tesseract\_command\_language\_python\_profile\_dictionary\_functions.h}}
+\mbox{\hyperlink{tesseract__command__language__python__profile__dictionary__functions_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 }
+\DoxyCodeLine{27 \textcolor{keyword}{namespace }\mbox{\hyperlink{namespacetesseract__planning}{tesseract\_planning}}}
+\DoxyCodeLine{28 \{}
+\DoxyCodeLine{29   \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{30   \textcolor{keywordtype}{bool} \mbox{\hyperlink{namespacetesseract__planning_adb49e378f75be689ac48631c54e6f8ad}{ProfileDictionary\_hasProfileEntry}}(std::shared\_ptr<tesseract\_planning::ProfileDictionary> profile\_dictionary, \textcolor{keyword}{const} std::string\& ns)}
+\DoxyCodeLine{31   \{}
+\DoxyCodeLine{32     \textcolor{keywordflow}{return} profile\_dictionary-\/>hasProfileEntry<T>(ns);}
+\DoxyCodeLine{33   \}}
+\DoxyCodeLine{34 }
+\DoxyCodeLine{35   \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{36   \textcolor{keywordtype}{void} \mbox{\hyperlink{namespacetesseract__planning_a0d4769b918edd559ec2db0482e2ab525}{ProfileDictionary\_removeProfileEntry}}(std::shared\_ptr<tesseract\_planning::ProfileDictionary> profile\_dictionary, \textcolor{keyword}{const} std::string\& ns)}
+\DoxyCodeLine{37   \{}
+\DoxyCodeLine{38     profile\_dictionary-\/>removeProfileEntry<T>(ns);}
+\DoxyCodeLine{39   \}}
+\DoxyCodeLine{40 }
+\DoxyCodeLine{41   \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{42   std::unordered\_map<std::string, std::shared\_ptr<const T>> \mbox{\hyperlink{namespacetesseract__planning_aa0342af1f70ce5d368aaac54de42db15}{ProfileDictionary\_getProfileEntry}}(std::shared\_ptr<tesseract\_planning::ProfileDictionary> profile\_dictionary, \textcolor{keyword}{const} std::string\& ns)}
+\DoxyCodeLine{43   \{}
+\DoxyCodeLine{44     \textcolor{keywordflow}{return} profile\_dictionary-\/>getProfileEntry<T>(ns);}
+\DoxyCodeLine{45   \}}
+\DoxyCodeLine{46 }
+\DoxyCodeLine{47   \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{48   \textcolor{keywordtype}{void} \mbox{\hyperlink{namespacetesseract__planning_ad4b7b9ad0996a047297a60c53405ceeb}{ProfileDictionary\_addProfile}}(std::shared\_ptr<tesseract\_planning::ProfileDictionary> profile\_dictionary, \textcolor{keyword}{const} std::string\& ns, \textcolor{keyword}{const} std::string\& profile\_name, std::shared\_ptr<const T> profile)}
+\DoxyCodeLine{49   \{}
+\DoxyCodeLine{50     profile\_dictionary-\/>addProfile(ns, profile\_name, profile);}
+\DoxyCodeLine{51   \}}
+\DoxyCodeLine{52 }
+\DoxyCodeLine{53   \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{54   \textcolor{keywordtype}{bool} \mbox{\hyperlink{namespacetesseract__planning_a9a41241aa4a59b0278ad680cebc9ce91}{ProfileDictionary\_hasProfile}}(std::shared\_ptr<tesseract\_planning::ProfileDictionary> profile\_dictionary, \textcolor{keyword}{const} std::string\& ns, \textcolor{keyword}{const} std::string\& profile\_name)}
+\DoxyCodeLine{55   \{}
+\DoxyCodeLine{56     \textcolor{keywordflow}{return} profile\_dictionary-\/>hasProfile<T>(ns, profile\_name);}
+\DoxyCodeLine{57   \}}
+\DoxyCodeLine{58 }
+\DoxyCodeLine{59   \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{60   std::shared\_ptr<const T> \mbox{\hyperlink{namespacetesseract__planning_ab39bdd7b331aa5f9bdef99ea24e8f4dd}{ProfileDictionary\_getProfile}}(std::shared\_ptr<tesseract\_planning::ProfileDictionary> profile\_dictionary, \textcolor{keyword}{const} std::string\& ns, \textcolor{keyword}{const} std::string\& profile\_name)}
+\DoxyCodeLine{61   \{}
+\DoxyCodeLine{62     \textcolor{keywordflow}{return} profile\_dictionary-\/>getProfile<T>(ns, profile\_name);}
+\DoxyCodeLine{63   \}}
+\DoxyCodeLine{64 }
+\DoxyCodeLine{65   \textcolor{keyword}{template}<\textcolor{keyword}{typename} T>}
+\DoxyCodeLine{66   \textcolor{keywordtype}{void} \mbox{\hyperlink{namespacetesseract__planning_acce266454069e1871881af3c73ba4039}{ProfileDictionary\_removeProfile}}(std::shared\_ptr<tesseract\_planning::ProfileDictionary> profile\_dictionary, \textcolor{keyword}{const} std::string\& ns, \textcolor{keyword}{const} std::string\& profile\_name)}
+\DoxyCodeLine{67   \{}
+\DoxyCodeLine{68     profile\_dictionary-\/>removeProfile<T>(ns, profile\_name);}
+\DoxyCodeLine{69   \}}
+\DoxyCodeLine{70 }
+\DoxyCodeLine{71 \}}
+
+\end{DoxyCode}

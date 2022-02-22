@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['continuouscontactmanagerfactorycreatemethodbase_191',['ContinuousContactManagerFactoryCreateMethodBase',['../d5/d62/classContinuousContactManagerFactoryCreateMethodBase.html',1,'']]]
+  ['findtcpoffsetcallbackfnbase_0',['FindTCPOffsetCallbackFnBase',['../db/d00/classFindTCPOffsetCallbackFnBase.html',1,'']]],
+  ['flattenfilterfnbase_1',['flattenFilterFnBase',['../d1/d32/classflattenFilterFnBase.html',1,'']]]
 ];
