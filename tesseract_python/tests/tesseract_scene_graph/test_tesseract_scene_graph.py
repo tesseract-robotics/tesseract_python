@@ -1,3 +1,4 @@
+import traceback
 import tesseract_robotics.tesseract_scene_graph as sg
 from tesseract_robotics import tesseract_common
 from tesseract_robotics import tesseract_srdf
@@ -12,44 +13,47 @@ def _translation(p):
 
 def test_tesseract_scene_graph():
     g = sg.SceneGraph()
-    g.addLink(sg.Link("link_1"))
-    g.addLink(sg.Link("link_2"))
-    g.addLink(sg.Link("link_3"))
-    g.addLink(sg.Link("link_4"))
-    g.addLink(sg.Link("link_5"))
+    assert g.addLink(sg.Link("base_link"))
+    assert g.addLink(sg.Link("link_1"))
+    assert g.addLink(sg.Link("link_2"))
+    assert g.addLink(sg.Link("link_3"))
+    assert g.addLink(sg.Link("link_4"))
+    assert g.addLink(sg.Link("link_5"))
 
     base_joint = sg.Joint("base_joint")
     base_joint.parent_link_name = "base_link"
-    base_joint.child_link_name = "link1"
+    base_joint.child_link_name = "link_1"
     base_joint.type = sg.JointType_FIXED
-    g.addJoint(base_joint)
+    assert g.addJoint(base_joint)
 
     joint_1 = sg.Joint("joint_1")
     joint_1.parent_link_name = "link_1"
     joint_1.child_link_name = "link_2"
     joint_1.type = sg.JointType_FIXED
-    g.addJoint(joint_1)
+    assert g.addJoint(joint_1)
 
     joint_2 = sg.Joint("joint_2")
     joint_2.parent_to_joint_origin_transform = _translation([1.25,0,0])
     joint_2.parent_link_name = "link_2"
     joint_2.child_link_name = "link_3"
     joint_2.type = sg.JointType_PLANAR
-    g.addJoint(joint_2)
+    joint_2.limits = sg.JointLimits(-1,1,1,1,1)
+    assert g.addJoint(joint_2)
 
     joint_3 = sg.Joint("joint_3")
     joint_3.parent_to_joint_origin_transform = _translation([1.25,0,0])
     joint_3.parent_link_name = "link_3"
     joint_3.child_link_name = "link_4"
     joint_3.type = sg.JointType_FLOATING
-    g.addJoint(joint_3)
+    assert g.addJoint(joint_3)
 
     joint_4 = sg.Joint("joint_4")
     joint_4.parent_to_joint_origin_transform = _translation([0,1.25,0])
     joint_4.parent_link_name = "link_2"
     joint_4.child_link_name = "link_5"
     joint_4.type = sg.JointType_REVOLUTE
-    g.addJoint(joint_4)
+    joint_4.limits = sg.JointLimits(-1,1,1,1,1)
+    assert g.addJoint(joint_4)
 
     adjacent_links = g.getAdjacentLinkNames("link_3")
     assert len(adjacent_links) == 1
@@ -118,102 +122,118 @@ def test_tesseract_scene_graph():
 
     path = g.getShortestPath("link_1", "link_4")
     
-    assert len(path[0]) == 4
-    assert "link_1" in path[0]
-    assert "link_2" in path[0]
-    assert "link_3" in path[0]
-    assert "link_4" in path[0]
-    assert len(path[1]) == 3
-    assert "joint_1" in path[1]
-    assert "joint_2" in path[1]
-    assert "joint_3" in path[1]
+    assert len(path.links) == 4
+    assert "link_1" in path.links
+    assert "link_2" in path.links
+    assert "link_3" in path.links
+    assert "link_4" in path.links
+    assert len(path.joints) == 3
+    assert "joint_1" in path.joints
+    assert "joint_2" in path.joints
+    assert "joint_3" in path.joints
 
     print(g.getName())
 
 def _locate_resource(url):
-    url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-    if (url_match is None):
-        return ""    
-    if not "TESSERACT_SUPPORT_DIR" in os.environ:
-        return ""
-    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-    return os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
+    try:
+        try:
+            if os.path.exists(url):
+                return url
+        except:
+            pass
+        url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
+        if (url_match is None):
+            return ""    
+        if not "TESSERACT_SUPPORT_DIR" in os.environ:
+            return ""
+        tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
+        return os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
+    except:
+        traceback.print_exc()
+        raise
 
 def test_load_srdf_unit():
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     srdf_file =  os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf")
 
-    locator = sg.SimpleResourceLocator(sg.SimpleResourceLocatorFn(_locate_resource))
+    locator_fn = tesseract_common.SimpleResourceLocatorFn(_locate_resource)
+    locator = tesseract_common.SimpleResourceLocator(locator_fn)
 
     g = sg.SceneGraph()
 
     g.setName("kuka_lbr_iiwa_14_r820")
 
-    g.addLink(sg.Link("base_link"))
-    g.addLink(sg.Link("link_1"))
-    g.addLink(sg.Link("link_2"))
-    g.addLink(sg.Link("link_3"))
-    g.addLink(sg.Link("link_4"))
-    g.addLink(sg.Link("link_5"))
-    g.addLink(sg.Link("link_6"))
-    g.addLink(sg.Link("link_7"))
-    g.addLink(sg.Link("tool0"))
+    assert g.addLink(sg.Link("base_link"))
+    assert g.addLink(sg.Link("link_1"))
+    assert g.addLink(sg.Link("link_2"))
+    assert g.addLink(sg.Link("link_3"))
+    assert g.addLink(sg.Link("link_4"))
+    assert g.addLink(sg.Link("link_5"))
+    assert g.addLink(sg.Link("link_6"))
+    assert g.addLink(sg.Link("link_7"))
+    assert g.addLink(sg.Link("tool0"))
     
     joint_1 = sg.Joint("joint_a1")
     joint_1.parent_link_name = "base_link"
     joint_1.child_link_name = "link_1"
     joint_1.type = sg.JointType_FIXED
-    g.addJoint(joint_1)
+    assert g.addJoint(joint_1)
 
     joint_2 = sg.Joint("joint_a2")
     joint_2.parent_link_name = "link_1"
     joint_2.child_link_name = "link_2"
     joint_2.type = sg.JointType_REVOLUTE
-    g.addJoint(joint_2)
+    joint_2.limits = sg.JointLimits(-1,1,1,1,1)
+    assert g.addJoint(joint_2)
 
     joint_3 = sg.Joint("joint_a3")
     joint_3.parent_to_joint_origin_transform = _translation([1.25,0,0])
     joint_3.parent_link_name = "link_2"
     joint_3.child_link_name = "link_3"
     joint_3.type = sg.JointType_REVOLUTE
-    g.addJoint(joint_3)
+    joint_3.limits = sg.JointLimits(-1,1,1,1,1)
+    assert g.addJoint(joint_3)
 
     joint_4 = sg.Joint("joint_a4")
     joint_4.parent_to_joint_origin_transform = _translation([1.25,0,0])
     joint_4.parent_link_name = "link_3"
     joint_4.child_link_name = "link_4"
     joint_4.type = sg.JointType_REVOLUTE
-    g.addJoint(joint_4)
+    joint_4.limits = sg.JointLimits(-1,1,1,1,1)
+    assert g.addJoint(joint_4)
 
     joint_5 = sg.Joint("joint_a5")
     joint_5.parent_to_joint_origin_transform = _translation([0,1.25,0])
     joint_5.parent_link_name = "link_4"
     joint_5.child_link_name = "link_5"
     joint_5.type = sg.JointType_REVOLUTE
-    g.addJoint(joint_5)
+    joint_5.limits = sg.JointLimits(-1,1,1,1,1)
+    assert g.addJoint(joint_5)
 
     joint_6 = sg.Joint("joint_a6")
     joint_6.parent_to_joint_origin_transform = _translation([0,1.25,0])
     joint_6.parent_link_name = "link_5"
     joint_6.child_link_name = "link_6"
     joint_6.type = sg.JointType_REVOLUTE
-    g.addJoint(joint_6)
+    joint_6.limits = sg.JointLimits(-1,1,1,1,1)
+    assert g.addJoint(joint_6)
 
     joint_7 = sg.Joint("joint_a7")
     joint_7.parent_to_joint_origin_transform = _translation([0,1.25,0])
     joint_7.parent_link_name = "link_6"
     joint_7.child_link_name = "link_7"
     joint_7.type = sg.JointType_REVOLUTE
-    g.addJoint(joint_7)
+    joint_7.limits = sg.JointLimits(-1,1,1,1,1)
+    assert g.addJoint(joint_7)
 
     joint_tool0 = sg.Joint("base_joint")
     joint_tool0.parent_link_name = "link_7"
     joint_tool0.child_link_name = "tool0"
     joint_tool0.type = sg.JointType_FIXED
-    g.addJoint(joint_tool0)
+    assert g.addJoint(joint_tool0)
 
     srdf = tesseract_srdf.SRDFModel()
-    srdf.initFile(g,srdf_file)
+    srdf.initFile(g,srdf_file,locator)
 
     tesseract_srdf.processSRDFAllowedCollisions(g, srdf)
 

@@ -35,15 +35,18 @@
 %{
 
 #include <tesseract_common/status_code.h>
-#include <tesseract_common/resource.h>
+#include <tesseract_common/resource_locator.h>
 
 // tesseract_time_parameterization
 #include <tesseract_time_parameterization/iterative_spline_parameterization.h>
 #include <tesseract_time_parameterization/time_optimal_trajectory_generation.h>
+#include <tesseract_time_parameterization/instructions_trajectory.h>
 %}
 
 // tesseract_time_parameterization
 #define TESSERACT_TIME_PARAMETERIZATION_PUBLIC
+%include "tesseract_time_parameterization/trajectory_container.h"
+%include "tesseract_time_parameterization/instructions_trajectory.h"
 %include "tesseract_time_parameterization/iterative_spline_parameterization.h"
 %include "tesseract_time_parameterization/time_optimal_trajectory_generation.h"
 

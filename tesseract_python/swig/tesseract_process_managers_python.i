@@ -42,6 +42,7 @@
 #include <tesseract_motion_planners/simple/profile/simple_planner_utils.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_profile.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_lvs_plan_profile.h>
+#include <tesseract_motion_planners/simple/profile/simple_planner_lvs_no_ik_plan_profile.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_fixed_size_plan_profile.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_fixed_size_assign_plan_profile.h>
 #include <tesseract_motion_planners/simple/simple_motion_planner.h>
@@ -54,7 +55,6 @@
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_composite_profile.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_plan_profile.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h>
-#include <tesseract_motion_planners/trajopt/problem_generators/default_problem_generator.h>
 #include <tesseract_motion_planners/trajopt/serialize.h>
 #include <tesseract_motion_planners/trajopt/deserialize.h>
 
@@ -65,7 +65,6 @@
 #include <tesseract_motion_planners/ompl/profile/ompl_profile.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_default_plan_profile.h>
 #include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
-#include <tesseract_motion_planners/ompl/problem_generators/default_problem_generator.h>
 #include <tesseract_motion_planners/ompl/serialize.h>
 #include <tesseract_motion_planners/ompl/deserialize.h>
 
@@ -75,7 +74,6 @@
 #include <tesseract_motion_planners/descartes/profile/descartes_profile.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_default_plan_profile.h>
 #include <tesseract_motion_planners/descartes/descartes_motion_planner.h>
-#include <tesseract_motion_planners/descartes/problem_generators/default_problem_generator.h>
 #include <tesseract_motion_planners/descartes/serialize.h>
 #include <tesseract_motion_planners/descartes/deserialize.h>
 
@@ -89,31 +87,49 @@
 
 #include <tesseract_process_managers/task_generators/profile_switch_task_generator.h>
 #include <tesseract_process_managers/task_generators/iterative_spline_parameterization_task_generator.h>
-#include "tesseract_process_managers/task_generators/time_optimal_trajectory_generation_task_generator.h"
+#include "tesseract_process_managers/task_generators/time_optimal_parameterization_task_generator.h"
 
 #include <tesseract_common/status_code.h>
-#include <tesseract_common/resource.h>
+#include <tesseract_common/resource_locator.h>
+
+// tesseract_state_solver
+#include <tesseract_state_solver/mutable_state_solver.h>
+#include <tesseract_state_solver/state_solver.h>
+#include <tesseract_state_solver/kdl/kdl_state_solver.h>
+#include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
+
+#include <tesseract_time_parameterization/instructions_trajectory.h>
 
 #include "tesseract_command_language_python_std_functions.h"
 #include "tesseract_command_language_python_profile_dictionary_functions.h"
 
 #include "tesseract_environment_python_std_functions.h"
-#include <tesseract_kinematics/core/rep_inverse_kinematics.h>
-#include <tesseract_kinematics/core/rop_inverse_kinematics.h>
 
 %}
 
 %shared_ptr(tesseract_planning::IterativeSplineParameterizationProfile)
 %shared_ptr(tesseract_planning::ProfileSwitchProfile);
 
+
+// TODO: Fix unique_ptr conversion problems
+%ignore tesseract_planning::TaskInput::TaskInput;
+%ignore tesseract_planning::TaskInfoContainer::addTaskInfo;
+%ignore tesseract_planning::TaskInfoContainer::getTaskInfoMap;
+%ignore tesseract_planning::TaskflowInterface::getTaskInfoMap;
+%ignore tesseract_planning::TaskInput::getTaskInfoMap;
+%ignore tesseract_planning::TaskInput::addTaskInfo;
+
+
+
 %include "tesseract_process_managers/core/task_info.h"
 %include "tesseract_process_managers/core/taskflow_interface.h"
+%include "tesseract_process_managers/core/task_input.h"
 %include "tesseract_process_managers/core/process_planning_request.h"
 %include "tesseract_process_managers/core/process_planning_future.h"
 %include "tesseract_process_managers/core/process_planning_server.h"
 
-%include "tesseract_process_managers/task_generators/profile_switch_task_generator.h"
-%include "tesseract_process_managers/task_generators/iterative_spline_parameterization_task_generator.h"
-%include "tesseract_process_managers/task_generators/time_optimal_trajectory_generation_task_generator.h"
+// %include "tesseract_process_managers/task_generators/profile_switch_task_generator.h"
+// %include "tesseract_process_managers/task_generators/iterative_spline_parameterization_task_generator.h"
+// %include "tesseract_process_managers/task_generators/time_optimal_parameterization_task_generator.h"
 
 

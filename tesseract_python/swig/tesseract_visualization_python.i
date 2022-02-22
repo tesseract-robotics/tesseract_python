@@ -31,7 +31,6 @@
 %include "tesseract_swig_include.i"
 
 %import "tesseract_environment_python.i"
-%import "tesseract_command_language_python.i"
 
 %{
 // tesseract_visualization
@@ -43,13 +42,20 @@
 #include <tesseract_visualization/markers/toolpath_marker.h>
 #include <tesseract_visualization/visualization.h>
 #include <tesseract_visualization/visualization_loader.h>
+#include <tesseract_visualization/trajectory_interpolator.h>
+#include <tesseract_visualization/trajectory_player.h>
 
 #include <tesseract_common/status_code.h>
-#include <tesseract_common/resource.h>
+#include <tesseract_common/resource_locator.h>
+
+// tesseract_state_solver
+#include <tesseract_state_solver/mutable_state_solver.h>
+#include <tesseract_state_solver/state_solver.h>
+#include <tesseract_state_solver/kdl/kdl_state_solver.h>
+#include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
 #include "tesseract_environment_python_std_functions.h"
-#include <tesseract_kinematics/core/rep_inverse_kinematics.h>
-#include <tesseract_kinematics/core/rop_inverse_kinematics.h>
+
 %}
 
 // tesseract_visualization
@@ -61,6 +67,8 @@
 %include "tesseract_visualization/markers/contact_results_marker.h"
 %include "tesseract_visualization/markers/geometry_marker.h"
 %include "tesseract_visualization/markers/toolpath_marker.h"
+%include "tesseract_visualization/trajectory_interpolator.h"
+%include "tesseract_visualization/trajectory_player.h"
 %include "tesseract_visualization/visualization.h"
 %include "tesseract_visualization/visualization_loader.h"
 

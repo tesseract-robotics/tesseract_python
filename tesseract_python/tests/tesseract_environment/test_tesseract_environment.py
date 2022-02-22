@@ -4,7 +4,6 @@ from tesseract_robotics import tesseract_environment
 from tesseract_robotics.tesseract_common import Isometry3d, Translation3d, AngleAxisd
 from tesseract_robotics import tesseract_common
 from tesseract_robotics import tesseract_collision
-from tesseract_robotics import tesseract_collision_bullet
 from tesseract_robotics import tesseract_urdf
 from tesseract_robotics import tesseract_srdf
 import traceback
@@ -13,6 +12,11 @@ import re
 
 def _locate_resource(url):
     try:
+        try:
+            if os.path.exists(url):
+                return url
+        except:
+            pass
         url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
         if (url_match is None):
             return ""    
@@ -26,15 +30,17 @@ def _locate_resource(url):
 def get_scene_graph():
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     path =  os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf")
-    locator_fn = tesseract_scene_graph.SimpleResourceLocatorFn(_locate_resource)
-    locator = tesseract_scene_graph.SimpleResourceLocator(locator_fn)    
-    return tesseract_urdf.parseURDFFile(path, locator)
+    locator_fn = tesseract_common.SimpleResourceLocatorFn(_locate_resource)
+    locator = tesseract_common.SimpleResourceLocator(locator_fn)    
+    return tesseract_urdf.parseURDFFile(path, locator).release()
 
 def get_srdf_model(scene_graph):
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     path =  os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf")
-    srdf = tesseract_srdf.SRDFModel()    
-    srdf.initFile(scene_graph, path)
+    srdf = tesseract_srdf.SRDFModel()
+    locator_fn = tesseract_common.SimpleResourceLocatorFn(_locate_resource)
+    locator = tesseract_common.SimpleResourceLocator(locator_fn)
+    srdf.initFile(scene_graph, path, locator)
     return srdf
 
 def get_environment():
@@ -51,7 +57,7 @@ def get_environment():
 
     success = env.init(scene_graph,srdf)
     assert success
-    assert env.getRevision() == 2
+    assert env.getRevision() == 3
 
     # env.init() now populates contact managers?
 

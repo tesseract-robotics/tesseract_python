@@ -88,40 +88,40 @@ def test_geometry_load_mesh():
     mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/sphere_p25m.stl")
     meshes = tesseract_geometry.createMeshFromPath(mesh_file)
     assert(len(meshes)==1)
-    assert(meshes[0].getTriangleCount() == 80)
-    assert(meshes[0].getVerticeCount() == 42)
+    assert(meshes[0].getFaceCount() == 80)
+    assert(meshes[0].getVertexCount() == 42)
 
     mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/sphere_p25m.ply")
     meshes = tesseract_geometry.createMeshFromPath(mesh_file)
     assert(len(meshes)==1)
-    assert(meshes[0].getTriangleCount() == 80)
-    assert(meshes[0].getVerticeCount() == 42)
+    assert(meshes[0].getFaceCount() == 80)
+    assert(meshes[0].getVertexCount() == 42)
 
     mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/sphere_p25m.dae")
     meshes = tesseract_geometry.createMeshFromPath(mesh_file)
     assert(len(meshes)==2)
-    assert(meshes[0].getTriangleCount() == 80)
-    assert(meshes[0].getVerticeCount() == 42)
-    assert(meshes[1].getTriangleCount() == 80)
-    assert(meshes[1].getVerticeCount() == 42)
+    assert(meshes[0].getFaceCount() == 80)
+    assert(meshes[0].getVertexCount() == 42)
+    assert(meshes[1].getFaceCount() == 80)
+    assert(meshes[1].getVertexCount() == 42)
 
     mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/sphere_p25m.dae")
     meshes = tesseract_geometry.createMeshFromPath(mesh_file, np.array((1,1,1),dtype=np.float64), False, True)
     assert(len(meshes)==1)
-    assert(meshes[0].getTriangleCount() == 2*80)
-    assert(meshes[0].getVerticeCount() == 2*42)
+    assert(meshes[0].getFaceCount() == 2*80)
+    assert(meshes[0].getVertexCount() == 2*42)
 
     mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/box_2m.ply")
     meshes = tesseract_geometry.createMeshFromPath(mesh_file, np.array((1,1,1),dtype=np.float64), True, True)
     assert(len(meshes)==1)
-    assert(meshes[0].getTriangleCount() == 12)
-    assert(meshes[0].getVerticeCount() == 8)
+    assert(meshes[0].getFaceCount() == 12)
+    assert(meshes[0].getVertexCount() == 8)
     
     mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/box_2m.ply")
     meshes = tesseract_geometry.createConvexMeshFromPath(mesh_file, np.array((1,1,1),dtype=np.float64), False, False)
     assert(len(meshes)==1)
     assert(meshes[0].getFaceCount() == 6)
-    assert(meshes[0].getVerticeCount() == 8)
+    assert(meshes[0].getVertexCount() == 8)
 
 def test_mesh():
     vertices = tesseract_common.VectorVector3d()
@@ -134,15 +134,15 @@ def test_mesh():
 
     geom = tesseract_geometry.Mesh(vertices,faces)
     assert len(geom.getVertices()) > 0
-    assert len(geom.getTriangles()) > 0
-    assert geom.getVerticeCount() == 4
-    assert geom.getTriangleCount() == 2
+    assert len(geom.getFaces()) > 0
+    assert geom.getVertexCount() == 4
+    assert geom.getFaceCount() == 2
 
     geom_clone = geom.clone()
     assert len(geom_clone.getVertices()) > 0
-    assert len(geom_clone.getTriangles()) > 0
-    assert geom_clone.getVerticeCount() == 4
-    assert geom_clone.getTriangleCount() == 2
+    assert len(geom_clone.getFaces()) > 0
+    assert geom_clone.getVertexCount() == 4
+    assert geom_clone.getFaceCount() == 2
 
 def test_convex_mesh():
     vertices = tesseract_common.VectorVector3d()
@@ -156,13 +156,13 @@ def test_convex_mesh():
     geom = tesseract_geometry.ConvexMesh(vertices,faces)
     assert len(geom.getVertices()) > 0
     assert len(geom.getFaces()) > 0
-    assert geom.getVerticeCount() == 4
+    assert geom.getVertexCount() == 4
     assert geom.getFaceCount() == 1
 
     geom_clone = geom.clone()
     assert len(geom_clone.getVertices()) > 0
     assert len(geom_clone.getFaces()) > 0
-    assert geom_clone.getVerticeCount() == 4
+    assert geom_clone.getVertexCount() == 4
     assert geom_clone.getFaceCount() == 1
 
 def test_sdf_mesh():
@@ -176,13 +176,13 @@ def test_sdf_mesh():
 
     geom = tesseract_geometry.SDFMesh(vertices,faces)
     assert len(geom.getVertices()) > 0
-    assert len(geom.getTriangles()) > 0
-    assert geom.getVerticeCount() == 4
-    assert geom.getTriangleCount() == 2
+    assert len(geom.getFaces()) > 0
+    assert geom.getVertexCount() == 4
+    assert geom.getFaceCount() == 2
 
     geom_clone = geom.clone()
     assert len(geom_clone.getVertices()) > 0
-    assert len(geom_clone.getTriangles()) > 0
-    assert geom_clone.getVerticeCount() == 4
-    assert geom_clone.getTriangleCount() == 2
+    assert len(geom_clone.getFaces()) > 0
+    assert geom_clone.getVertexCount() == 4
+    assert geom_clone.getFaceCount() == 2
     

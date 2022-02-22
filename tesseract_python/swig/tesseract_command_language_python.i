@@ -49,7 +49,7 @@
 #include <tesseract_command_language/utils/flatten_utils.h>
 
 #include <tesseract_common/status_code.h>
-#include <tesseract_common/resource.h>
+#include <tesseract_common/resource_locator.h>
 
 #include "tesseract_command_language_python_std_functions.h"
 #include "tesseract_command_language_python_profile_dictionary_functions.h"

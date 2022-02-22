@@ -1,7 +1,7 @@
 from tesseract_robotics.tesseract_command_language import CompositeInstruction, StateWaypoint, Waypoint, \
     Instruction, MoveInstruction, Instructions, MoveInstructionType_START, MoveInstructionType_FREESPACE, \
     flatten
-from tesseract_robotics.tesseract_time_parameterization import IterativeSplineParameterization, \
+from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
     InstructionsTrajectory
 import numpy as np
 
@@ -31,24 +31,14 @@ def create_straight_trajectory():
 
 def test_time_parameterization():
 
-    time_parameterization = IterativeSplineParameterization(False)
+    time_parameterization = TimeOptimalTrajectoryGeneration()
 
     program = create_straight_trajectory()
     traj = InstructionsTrajectory(program)
     max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
     max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
-    assert time_parameterization.compute(traj, max_velocity, max_acceleration)
+    assert time_parameterization.computeTimeStamps(traj, max_velocity, max_acceleration)
     assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time > 1.0
     assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time < 5.0
 
-def test_time_parameterization_vec():
 
-    time_parameterization = IterativeSplineParameterization(False)
-
-    program = create_straight_trajectory()
-    traj = InstructionsTrajectory(program)
-    max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
-    max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
-    assert time_parameterization.compute(traj, max_velocity, max_acceleration)
-    assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time > 1.0
-    assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time < 5.0

@@ -1,11 +1,11 @@
 import numpy as np
 import numpy.testing as nptest
 from tesseract_robotics import tesseract_geometry
-from tesseract_robotics import tesseract_collision_bullet
-from tesseract_robotics import tesseract_collision_fcl
-from tesseract_robotics import tesseract_geometry
 from tesseract_robotics import tesseract_common
 from tesseract_robotics import tesseract_collision
+import os
+
+TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
 
 def addCollisionObjects(checker):
 
@@ -121,14 +121,18 @@ def run_test(checker):
 
     # Further C++ code not relevant to testing Python wrappers
 
-def test_bullet_discrete_simple():
-    checker = tesseract_collision_bullet.BulletDiscreteSimpleManager()
+def get_plugin_factory():
+    collision_config = tesseract_common.FilesystemPath(TESSERACT_SUPPORT_DIR + "/urdf/" + "contact_manager_plugins.yaml")
+    return tesseract_collision.ContactManagersPluginFactory(collision_config)
+
+def test_bullet_discrete_simple():    
+    checker = get_plugin_factory().createDiscreteContactManager("BulletDiscreteSimpleManager")
     run_test(checker)
 
 def test_bullet_discrete_bvh():
-    checker = tesseract_collision_bullet.BulletDiscreteBVHManager()
-    run_test(checker)
+     checker = get_plugin_factory().createDiscreteContactManager("BulletDiscreteBVHManager")
+     run_test(checker)
 
 def test_fcl_discrete_bvh():
-    checker = tesseract_collision_fcl.FCLDiscreteBVHManager()
+    checker = get_plugin_factory().createDiscreteContactManager("FCLDiscreteBVHManager")
     run_test(checker)

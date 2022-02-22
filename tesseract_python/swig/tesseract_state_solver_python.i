@@ -1,13 +1,13 @@
 /**
- * @file tesseract_environment_python.i
- * @brief The tesseract_environment_python SWIG master file.
+ * @file tesseract_state_solver_python.i
+ * @brief The tesseract_state_solver_python SWIG master file.
  *
  * @author John Wason
- * @date December 8, 2020
+ * @date February 9, 2022
  * @version TODO
  * @bug No known bugs
  *
- * @copyright Copyright (c) 2020, Wason Technology, LLC
+ * @copyright Copyright (c) 2022, Wason Technology, LLC
  *
  * @par License
  * Software License Agreement (Apache License)
@@ -24,16 +24,16 @@
  * limitations under the License.
  */
 
-%module(directors="1", package="tesseract_robotics.tesseract_environment") tesseract_environment_python
+%module(directors="1", package="tesseract_robotics.tesseract_state_solver") tesseract_state_solver_python
 
 #pragma SWIG nowarn=473
 
 %include "tesseract_swig_include.i"
 
-%import "tesseract_kinematics_python.i"
-%import "tesseract_collision_python.i"
+//%import "tesseract_common_python.i"
+//%import "tesseract_geometry_python.i"
+%import "tesseract_scene_graph_python.i"
 %import "tesseract_srdf_python.i"
-%import "tesseract_state_solver_python.i"
 
 %{
 
@@ -45,8 +45,8 @@
 
 #include <tesseract_common/status_code.h>
 #include <tesseract_geometry/geometries.h>
-
 #include <tesseract_common/resource_locator.h>
+#include <tesseract_srdf/kinematics_information.h>
 
 // tesseract_state_solver
 #include <tesseract_state_solver/mutable_state_solver.h>
@@ -54,20 +54,21 @@
 #include <tesseract_state_solver/kdl/kdl_state_solver.h>
 #include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
-// tesseract_environment
-#include <tesseract_environment/commands.h>
-#include <tesseract_environment/environment.h>
-
-#include "tesseract_common_python_std_functions.h"
-#include "tesseract_collisions_python_std_functions.h"
-
-#include "tesseract_environment_python_std_functions.h"
 %}
 
-%tesseract_std_function(FindTCPOffsetCallbackFn,tesseract,Eigen::Isometry3d,const tesseract_common::ManipulatorInfo&,a);
+// tesseract_state_solver
+#define TESSERACT_STATE_SOLVER_CORE_PUBLIC
 
-// tesseract_environment
-#define TESSERACT_ENVIRONMENT_CORE_PUBLIC
-%include "tesseract_environment/commands.h"
+namespace tesseract_scene_graph
+{
+    class KDLTreeData;
+}
 
-%include "tesseract_environment/environment.h"
+%ignore KDLStateSolver(const tesseract_scene_graph::SceneGraph& scene_graph, tesseract_scene_graph::KDLTreeData data);
+
+%include "tesseract_state_solver/state_solver.h"
+%include "tesseract_state_solver/mutable_state_solver.h"
+%include "tesseract_state_solver/kdl/kdl_state_solver.h"
+%include "tesseract_state_solver/ofkt/ofkt_state_solver.h"
+
+

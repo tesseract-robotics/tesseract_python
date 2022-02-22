@@ -37,6 +37,7 @@
 
 // tesseract_geometry
 #include <tesseract_geometry/geometry.h>
+#include "tesseract_geometry/impl/mesh_material.h"
 #include <tesseract_geometry/geometries.h>
 #include <tesseract_geometry/utils.h>
 #include <tesseract_geometry/mesh_parser.h>
@@ -115,10 +116,9 @@ $1 = is_array($input);
 
 %tesseract_eigen_shared_ptr_adaptor( Eigen::VectorXi )
 
-
-
 // tesseract_geometry
 #define TESSERACT_GEOMETRY_PUBLIC
+%include "tesseract_geometry/impl/mesh_material.h"
 %include "tesseract_geometry/geometry.h"
 %include "tesseract_geometry/geometries.h"
 %include "tesseract_geometry/utils.h"

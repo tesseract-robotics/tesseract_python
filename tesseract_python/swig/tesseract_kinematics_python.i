@@ -30,10 +30,11 @@
 
 %include "tesseract_swig_include.i"
 
-//%import "tesseract_common_python.i"
+%import "tesseract_common_python.i"
 //%import "tesseract_geometry_python.i"
 %import "tesseract_scene_graph_python.i"
 %import "tesseract_srdf_python.i"
+%import "tesseract_state_solver_python.i"
 
 %{
 
@@ -45,31 +46,38 @@
 
 #include <tesseract_common/status_code.h>
 #include <tesseract_geometry/geometries.h>
-#include <tesseract_scene_graph/resource_locator.h>
+#include <tesseract_common/resource_locator.h>
 #include <tesseract_srdf/kinematics_information.h>
+
+// tesseract_state_solver
+#include <tesseract_state_solver/mutable_state_solver.h>
+#include <tesseract_state_solver/state_solver.h>
+#include <tesseract_state_solver/kdl/kdl_state_solver.h>
+#include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
 // tesseract_kinematics
 #include <tesseract_kinematics/core/forward_kinematics.h>
-#include <tesseract_kinematics/core/forward_kinematics_factory.h>
 #include <tesseract_kinematics/core/inverse_kinematics.h>
-#include <tesseract_kinematics/core/inverse_kinematics_factory.h>
-#include <tesseract_kinematics/core/rep_inverse_kinematics.h>
-#include <tesseract_kinematics/core/rop_inverse_kinematics.h>
+#include <tesseract_kinematics/core/joint_group.h>
+#include <tesseract_kinematics/core/kinematic_group.h>
+#include <tesseract_kinematics/core/kinematics_plugin_factory.h>
+
 
 %}
 
 %template(pair_bool_matrix) std::pair<bool,Eigen::MatrixXd>;
+
+//TODO: passing unique_ptr as parameter with move command
+%ignore tesseract_kinematics::KinematicGroup::KinematicGroup;
 
 // tesseract_kinematics
 #define TESSERACT_KINEMATICS_CORE_PUBLIC
 #define TESSERACT_KINEMATICS_IKFAST_PUBLIC
 #define TESSERACT_KINEMATICS_KDL_PUBLIC
 #define TESSERACT_KINEMATICS_OPW_PUBLIC
+%include "tesseract_kinematics/core/types.h"
 %include "tesseract_kinematics/core/forward_kinematics.h"
-%include "tesseract_kinematics/core/forward_kinematics_factory.h"
 %include "tesseract_kinematics/core/inverse_kinematics.h"
-%include "tesseract_kinematics/core/inverse_kinematics_factory.h"
-%include "tesseract_kinematics/core/rop_inverse_kinematics.h"
-%include "tesseract_kinematics/core/rep_inverse_kinematics.h"
-
-
+%include "tesseract_kinematics/core/joint_group.h"
+%include "tesseract_kinematics/core/kinematic_group.h"
+%include "tesseract_kinematics/core/kinematics_plugin_factory.h"

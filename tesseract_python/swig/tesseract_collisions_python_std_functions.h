@@ -25,8 +25,6 @@
  */
 
 #include <tesseract_collision/core/types.h>
-#include <tesseract_collision/core/continuous_contact_manager_factory.h>
-#include <tesseract_collision/core/discrete_contact_manager_factory.h>
 
 #pragma once
 
@@ -42,18 +40,4 @@ class IsContactValidFnBase
 public:
   virtual bool call(const tesseract_collision::ContactResult& a) = 0;
   virtual ~IsContactValidFnBase() {}
-};
-
-class ContinuousContactManagerFactoryCreateMethodBase
-{
-public:
-  virtual tesseract_collision::ContinuousContactManager::Ptr call() = 0;
-  virtual ~ContinuousContactManagerFactoryCreateMethodBase() {}
-};
-
-class DiscreteContactManagerFactoryCreateMethodBase
-{
-public:
-  virtual tesseract_collision::DiscreteContactManager::Ptr call() = 0;
-  virtual ~DiscreteContactManagerFactoryCreateMethodBase() {}
 };

@@ -32,6 +32,7 @@
 %include <std_shared_ptr.i>
 %include <std_string.i>
 %include <std_vector.i>
+%include <std_set.i>
 %include <std_pair.i>
 %include <std_map.i>
 %include <std_unordered_map.i>
@@ -40,6 +41,8 @@
 %include <attribute.i>
 %include <exception.i>
 %include <pybuffer.i>
+
+%include "std_unique_ptr.i"
 
 namespace std {
     typedef ::size_t size_t;

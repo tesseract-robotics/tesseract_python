@@ -27,45 +27,45 @@
 namespace tesseract_planning
 {
   template<typename T>
-  bool ProfileDictionary_hasProfileEntry(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary)
+  bool ProfileDictionary_hasProfileEntry(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& ns)
   {
-    return profile_dictionary->hasProfileEntry<T>();
+    return profile_dictionary->hasProfileEntry<T>(ns);
   }
 
   template<typename T>
-  void ProfileDictionary_removeProfileEntry(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary)
+  void ProfileDictionary_removeProfileEntry(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& ns)
   {
-    profile_dictionary->removeProfileEntry<T>();
+    profile_dictionary->removeProfileEntry<T>(ns);
   }
 
   template<typename T>
-  std::unordered_map<std::string, std::shared_ptr<const T>> ProfileDictionary_getProfileEntry(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary)
+  std::unordered_map<std::string, std::shared_ptr<const T>> ProfileDictionary_getProfileEntry(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& ns)
   {
-    return profile_dictionary->getProfileEntry<T>();
+    return profile_dictionary->getProfileEntry<T>(ns);
   }
 
   template<typename T>
-  void ProfileDictionary_addProfile(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& profile_name, std::shared_ptr<const T> profile)
+  void ProfileDictionary_addProfile(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& ns, const std::string& profile_name, std::shared_ptr<const T> profile)
   {
-    profile_dictionary->addProfile(profile_name, profile);
+    profile_dictionary->addProfile(ns, profile_name, profile);
   }
 
   template<typename T>
-  bool ProfileDictionary_hasProfile(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& profile_name)
+  bool ProfileDictionary_hasProfile(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& ns, const std::string& profile_name)
   {
-    return profile_dictionary->hasProfile<T>(profile_name);
+    return profile_dictionary->hasProfile<T>(ns, profile_name);
   }
 
   template<typename T>
-  std::shared_ptr<const T> ProfileDictionary_getProfile(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& profile_name)
+  std::shared_ptr<const T> ProfileDictionary_getProfile(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& ns, const std::string& profile_name)
   {
-    return profile_dictionary->getProfile<T>(profile_name);
+    return profile_dictionary->getProfile<T>(ns, profile_name);
   }
 
   template<typename T>
-  void ProfileDictionary_removeProfile(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& profile_name)
+  void ProfileDictionary_removeProfile(std::shared_ptr<tesseract_planning::ProfileDictionary> profile_dictionary, const std::string& ns, const std::string& profile_name)
   {
-    profile_dictionary->removeProfile<T>(profile_name);
+    profile_dictionary->removeProfile<T>(ns, profile_name);
   }
 
 }
