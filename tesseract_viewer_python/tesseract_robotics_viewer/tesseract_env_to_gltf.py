@@ -25,7 +25,6 @@ import pkgutil
 import re
 import base64
 import io
-import cv2
 from tesseract_robotics.tesseract_command_language import isStateWaypoint, isMoveInstruction
 
 def tesseract_env_to_gltf(t_env, origin_offset=[0,0,0], name = None, trajectory = None):
