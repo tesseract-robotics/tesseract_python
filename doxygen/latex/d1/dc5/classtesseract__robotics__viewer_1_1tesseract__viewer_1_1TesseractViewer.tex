@@ -5,7 +5,7 @@
 \item 
 def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a637daa5e9277b2a5dadbe16e1d91d043}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, server\+\_\+address=(\textquotesingle{}\textquotesingle{}, 8000))
 \item 
-def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a689b6b51236d8054429a409941b401ed}{update\+\_\+environment}} (self, tesseract\+\_\+env, origin\+\_\+offset=\mbox{[}0, 0, 0\mbox{]})
+def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a30d2eff7b8a3ff0e633f56c740b1681a}{update\+\_\+environment}} (self, tesseract\+\_\+env, origin\+\_\+offset=\mbox{[}0, 0, 0\mbox{]}, trajectory=None)
 \item 
 def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a24b6883f6b8b0898a3ddf1a70d9bf61a}{update\+\_\+joint\+\_\+positions}} (self, joint\+\_\+names, joint\+\_\+positions)
 \item 
@@ -18,11 +18,17 @@ def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1Te
 def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_ab0c605bf71b1cc1ffb66c4fbaa515cfd}{shutdown\+\_\+serve\+\_\+background}} (self)
 \item 
 def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a69e31d5e34a993fc5b7f269a315f24a1}{save}} (self, directory, overwrite=False)
+\item 
+def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a8cdc5e01fbbdc80fd85b90c62accf462}{save\+\_\+scene\+\_\+gltf}} (self, fname, overwrite=False)
+\item 
+def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_adca67365654c4c88da021448b00e33e8}{save\+\_\+scene\+\_\+glb}} (self, fname, overwrite=False)
 \end{DoxyCompactItemize}
 \doxysubsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_adb481f31104d765069e23b3b3263c2b6}{scene\+\_\+json}}
+\item 
+\mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_ad7171d9e8f1fe55a93f8b44065f7009d}{scene\+\_\+glb}}
 \item 
 \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_abac4241aa6d86e362e82f3e7fb0ed8b5}{trajectory\+\_\+json}}
 \end{DoxyCompactItemize}
@@ -53,6 +59,18 @@ def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1Te
 \doxysubsubsection{\texorpdfstring{save()}{save()}}
 {\footnotesize\ttfamily def tesseract\+\_\+robotics\+\_\+viewer.\+tesseract\+\_\+viewer.\+Tesseract\+Viewer.\+save (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{directory,  }\item[{}]{overwrite = {\ttfamily False} }\end{DoxyParamCaption})}
 
+\mbox{\Hypertarget{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_adca67365654c4c88da021448b00e33e8}\label{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_adca67365654c4c88da021448b00e33e8}} 
+\index{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}!save\_scene\_glb@{save\_scene\_glb}}
+\index{save\_scene\_glb@{save\_scene\_glb}!tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}}
+\doxysubsubsection{\texorpdfstring{save\_scene\_glb()}{save\_scene\_glb()}}
+{\footnotesize\ttfamily def tesseract\+\_\+robotics\+\_\+viewer.\+tesseract\+\_\+viewer.\+Tesseract\+Viewer.\+save\+\_\+scene\+\_\+glb (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{fname,  }\item[{}]{overwrite = {\ttfamily False} }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a8cdc5e01fbbdc80fd85b90c62accf462}\label{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a8cdc5e01fbbdc80fd85b90c62accf462}} 
+\index{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}!save\_scene\_gltf@{save\_scene\_gltf}}
+\index{save\_scene\_gltf@{save\_scene\_gltf}!tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}}
+\doxysubsubsection{\texorpdfstring{save\_scene\_gltf()}{save\_scene\_gltf()}}
+{\footnotesize\ttfamily def tesseract\+\_\+robotics\+\_\+viewer.\+tesseract\+\_\+viewer.\+Tesseract\+Viewer.\+save\+\_\+scene\+\_\+gltf (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{fname,  }\item[{}]{overwrite = {\ttfamily False} }\end{DoxyParamCaption})}
+
 \mbox{\Hypertarget{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_abfc780152d94977b82e2878b0533d7fc}\label{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_abfc780152d94977b82e2878b0533d7fc}} 
 \index{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}!serve\_forever@{serve\_forever}}
 \index{serve\_forever@{serve\_forever}!tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}}
@@ -71,11 +89,11 @@ def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1Te
 \doxysubsubsection{\texorpdfstring{start\_serve\_background()}{start\_serve\_background()}}
 {\footnotesize\ttfamily def tesseract\+\_\+robotics\+\_\+viewer.\+tesseract\+\_\+viewer.\+Tesseract\+Viewer.\+start\+\_\+serve\+\_\+background (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
 
-\mbox{\Hypertarget{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a689b6b51236d8054429a409941b401ed}\label{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a689b6b51236d8054429a409941b401ed}} 
+\mbox{\Hypertarget{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a30d2eff7b8a3ff0e633f56c740b1681a}\label{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a30d2eff7b8a3ff0e633f56c740b1681a}} 
 \index{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}!update\_environment@{update\_environment}}
 \index{update\_environment@{update\_environment}!tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}}
 \doxysubsubsection{\texorpdfstring{update\_environment()}{update\_environment()}}
-{\footnotesize\ttfamily def tesseract\+\_\+robotics\+\_\+viewer.\+tesseract\+\_\+viewer.\+Tesseract\+Viewer.\+update\+\_\+environment (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{tesseract\+\_\+env,  }\item[{}]{origin\+\_\+offset = {\ttfamily \mbox{[}0,0,0\mbox{]}} }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily def tesseract\+\_\+robotics\+\_\+viewer.\+tesseract\+\_\+viewer.\+Tesseract\+Viewer.\+update\+\_\+environment (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{tesseract\+\_\+env,  }\item[{}]{origin\+\_\+offset = {\ttfamily \mbox{[}0,0,0\mbox{]}},  }\item[{}]{trajectory = {\ttfamily None} }\end{DoxyParamCaption})}
 
 \mbox{\Hypertarget{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a24b6883f6b8b0898a3ddf1a70d9bf61a}\label{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_a24b6883f6b8b0898a3ddf1a70d9bf61a}} 
 \index{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}!update\_joint\_positions@{update\_joint\_positions}}
@@ -109,6 +127,12 @@ def \mbox{\hyperlink{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1Te
 \index{\_serve\_thread@{\_serve\_thread}!tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}}
 \doxysubsubsection{\texorpdfstring{\_serve\_thread}{\_serve\_thread}}
 {\footnotesize\ttfamily tesseract\+\_\+robotics\+\_\+viewer.\+tesseract\+\_\+viewer.\+Tesseract\+Viewer.\+\_\+serve\+\_\+thread\hspace{0.3cm}{\ttfamily [private]}}
+
+\mbox{\Hypertarget{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_ad7171d9e8f1fe55a93f8b44065f7009d}\label{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_ad7171d9e8f1fe55a93f8b44065f7009d}} 
+\index{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}!scene\_glb@{scene\_glb}}
+\index{scene\_glb@{scene\_glb}!tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}}
+\doxysubsubsection{\texorpdfstring{scene\_glb}{scene\_glb}}
+{\footnotesize\ttfamily tesseract\+\_\+robotics\+\_\+viewer.\+tesseract\+\_\+viewer.\+Tesseract\+Viewer.\+scene\+\_\+glb}
 
 \mbox{\Hypertarget{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_adb481f31104d765069e23b3b3263c2b6}\label{classtesseract__robotics__viewer_1_1tesseract__viewer_1_1TesseractViewer_adb481f31104d765069e23b3b3263c2b6}} 
 \index{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer@{tesseract\_robotics\_viewer.tesseract\_viewer.TesseractViewer}!scene\_json@{scene\_json}}
