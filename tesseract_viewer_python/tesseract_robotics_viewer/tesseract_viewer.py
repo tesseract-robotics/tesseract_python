@@ -18,7 +18,7 @@
 from __future__ import absolute_import
 
 import threading
-from tesseract_robotics_viewer.tesseract_env_to_babylon_json import tesseract_env_to_babylon_json
+from tesseract_robotics_viewer.tesseract_env_to_gltf import tesseract_env_to_gltf, tesseract_env_to_glb
 import pkg_resources
 import mimetypes
 import posixpath
@@ -46,6 +46,7 @@ if not mimetypes.inited:
 class _TesseractViewerRequestHandler(BaseHTTPRequestHandler):
     def __init__(self, request, client_address, server ):        
         self.scene_json = server.viewer.scene_json
+        self.scene_glb = server.viewer.scene_glb
         self.trajectory_json = server.viewer.trajectory_json
         if sys.version_info[0] < 3:
             BaseHTTPRequestHandler.__init__(self,request,client_address,server)
@@ -58,11 +59,16 @@ class _TesseractViewerRequestHandler(BaseHTTPRequestHandler):
             path = "/index.html"
         path=path[1:]
 
-        if path == 'tesseract_scene.babylon':
+        if path == 'tesseract_scene.gltf':
             if self.scene_json is None:
                 file_data = "{}".encode()
             else:
                 file_data = self.scene_json.encode()
+        elif path == 'tesseract_scene.glb':
+            if self.scene_glb is None:
+                file_data = b""
+            else:
+                file_data = self.scene_glb
         elif path == 'tesseract_trajectory.json':
             if self.trajectory_json is None:
                 self.send_response(404)
@@ -83,7 +89,9 @@ class _TesseractViewerRequestHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         
         _, ext = posixpath.splitext(path)
-        if ext in mimetypes.types_map:
+        if ext == '.js':
+            ctype = 'text/javascript'
+        elif ext in mimetypes.types_map:
             ctype = mimetypes.types_map[ext]
         else:
             ctype = 'application/octet-stream'
@@ -115,17 +123,19 @@ class _TesseractViewerRequestHandler(BaseHTTPRequestHandler):
 class TesseractViewer():
     def __init__(self, server_address = ('',8000)):
         self.scene_json = None
+        self.scene_glb = None
         self.trajectory_json = None
         self._lock = threading.Lock()
         self._serve_thread = None
         self._httpd = HTTPServer(server_address,_TesseractViewerRequestHandler)
         setattr(self._httpd,"viewer",self)   
 
-    def update_environment(self, tesseract_env, origin_offset = [0,0,0]):
+    def update_environment(self, tesseract_env, origin_offset = [0,0,0], trajectory = None):
 
         assert isinstance(tesseract_env, tesseract_environment.Environment)
         with self._lock:
-            self.scene_json = tesseract_env_to_babylon_json(tesseract_env, origin_offset)
+            self.scene_json = tesseract_env_to_gltf(tesseract_env, origin_offset, trajectory=trajectory)
+            self.scene_glb = tesseract_env_to_glb(tesseract_env, origin_offset)
 
     def update_joint_positions(self, joint_names, joint_positions):
         # Create "infinite" animation with constant joint angles
@@ -203,3 +213,20 @@ class TesseractViewer():
             with open(os.path.join(directory,k), "wb") as f:
                 f.write(v)
 
+    def save_scene_gltf(self, fname, overwrite=False):
+        assert self.scene_json is not None, "Tesseract environment not set"
+        s = self.scene_json
+        if isinstance(s,str):
+            s = s.encode()
+        
+        fmode = 'wb' if overwrite else 'xb'
+        with open(fname,fmode) as f:
+            f.write(s)
+
+    def save_scene_glb(self, fname, overwrite=False):
+        assert self.scene_json is not None, "Tesseract environment not set"
+        s = self.scene_glb
+                
+        fmode = 'wb' if overwrite else 'xb'
+        with open(fname,fmode) as f:
+            f.write(s)
