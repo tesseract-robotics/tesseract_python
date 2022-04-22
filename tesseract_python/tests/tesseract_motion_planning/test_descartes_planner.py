@@ -4,7 +4,7 @@ import os
 import numpy as np
 import numpy.testing as nptest
 
-from tesseract_robotics.tesseract_common import SimpleResourceLocator, SimpleResourceLocatorFn
+from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
@@ -17,27 +17,10 @@ from tesseract_robotics.tesseract_motion_planners import PlannerRequest, Planner
 from tesseract_robotics.tesseract_motion_planners_descartes import DescartesDefaultPlanProfileD, \
     DescartesMotionPlannerD, DescartesMotionPlannerStatusCategory, DescartesPlanProfileD, \
     ProfileDictionary_addProfile_DescartesPlanProfileD, cast_DescartesPlanProfileD
-
-def _locate_resource(url):
-    try:
-        try:
-            if os.path.exists(url):
-                return url
-        except:
-            pass
-        url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-        if (url_match is None):
-            return ""    
-        if not "TESSERACT_SUPPORT_DIR" in os.environ:
-            return ""
-        tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-        return os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
-    except:
-        traceback.print_exc()
+from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 def get_environment():
-    locate_resource_fn = SimpleResourceLocatorFn(_locate_resource)
-    locator = SimpleResourceLocator(locate_resource_fn)
+    locator = TesseractSupportResourceLocator()
     env = Environment()
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/abb_irb2400.urdf"))

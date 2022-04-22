@@ -1,7 +1,7 @@
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
 from tesseract_robotics.tesseract_environment import Environment
-from tesseract_robotics.tesseract_common import SimpleResourceLocator, SimpleResourceLocatorFn
+from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
 from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Waypoint, \
     PlanInstructionType_FREESPACE, PlanInstructionType_START, PlanInstruction, Instruction, \
     CompositeInstruction, flatten
@@ -17,22 +17,29 @@ import sys
 
 TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
 
-def _locate_resource(url):
-    try:
+class TesseractSupportResourceLocator(ResourceLocator):
+    def __init__(self):
+        super().__init__()
+    
+    def locateResource(self, url):
         try:
-            if os.path.exists(url):
-                return url
+            try:
+                if os.path.exists(url):
+                    return SimpleLocatedResource(url, url, self)
+            except:
+                pass
+            url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
+            if (url_match is None):
+                print("url_match failed")
+                return None
+            if not "TESSERACT_SUPPORT_DIR" in os.environ:
+                return None
+            tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
+            filename = os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
+            ret = SimpleLocatedResource(url, filename, self)
+            return ret
         except:
-            pass
-        url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-        if (url_match is None):
-            return ""    
-        if not "TESSERACT_SUPPORT_DIR" in os.environ:
-            return ""
-        tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-        return os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
-    except:
-        traceback.print_exc()
+            traceback.print_exc()
 
 abb_irb2400_urdf_fname = FilesystemPath(os.path.join(TESSERACT_SUPPORT_DIR,"urdf","abb_irb2400.urdf"))
 abb_irb2400_srdf_fname = FilesystemPath(os.path.join(TESSERACT_SUPPORT_DIR,"urdf","abb_irb2400.srdf"))
@@ -40,8 +47,8 @@ abb_irb2400_srdf_fname = FilesystemPath(os.path.join(TESSERACT_SUPPORT_DIR,"urdf
 t_env = Environment()
 
 # locator_fn must be kept alive by maintaining a reference
-locator_fn = SimpleResourceLocatorFn(_locate_resource)
-t_env.init(abb_irb2400_urdf_fname, abb_irb2400_srdf_fname, SimpleResourceLocator(locator_fn))
+locator = TesseractSupportResourceLocator()
+t_env.init(abb_irb2400_urdf_fname, abb_irb2400_srdf_fname, locator)
 
 manip_info = ManipulatorInfo()
 manip_info.tcp_frame = "tool0"

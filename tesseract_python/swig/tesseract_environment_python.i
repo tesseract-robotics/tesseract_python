@@ -66,6 +66,10 @@
 
 %tesseract_std_function(FindTCPOffsetCallbackFn,tesseract,Eigen::Isometry3d,const tesseract_common::ManipulatorInfo&,a);
 
+%ignore addEventCallback;
+%ignore getEventCallbacks;
+%ignore lockRead;
+
 // tesseract_environment
 #define TESSERACT_ENVIRONMENT_CORE_PUBLIC
 %include "tesseract_environment/commands.h"

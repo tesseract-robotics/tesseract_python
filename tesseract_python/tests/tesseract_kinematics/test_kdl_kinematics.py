@@ -10,23 +10,12 @@ import traceback
 import numpy as np
 import numpy.testing as nptest
 
-def _locate_resource(url):
-    try:
-        url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-        if (url_match is None):
-            return ""    
-        if not "TESSERACT_SUPPORT_DIR" in os.environ:
-            return ""
-        tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-        return os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
-    except:
-        traceback.print_exc()
+from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 def get_scene_graph():
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     path =  os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf")
-    locator_fn = tesseract_common.SimpleResourceLocatorFn(_locate_resource)
-    locator = tesseract_common.SimpleResourceLocator(locator_fn)    
+    locator = TesseractSupportResourceLocator()
     return tesseract_urdf.parseURDFFile(path, locator).release()
 
 

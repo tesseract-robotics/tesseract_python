@@ -6,40 +6,22 @@ from tesseract_robotics import tesseract_common
 from tesseract_robotics import tesseract_collision
 from tesseract_robotics import tesseract_urdf
 from tesseract_robotics import tesseract_srdf
+from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 import traceback
 import os
 import re
 
-def _locate_resource(url):
-    try:
-        try:
-            if os.path.exists(url):
-                return url
-        except:
-            pass
-        url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-        if (url_match is None):
-            return ""    
-        if not "TESSERACT_SUPPORT_DIR" in os.environ:
-            return ""
-        tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-        return os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
-    except:
-        traceback.print_exc()
-
 def get_scene_graph():
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     path =  os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf")
-    locator_fn = tesseract_common.SimpleResourceLocatorFn(_locate_resource)
-    locator = tesseract_common.SimpleResourceLocator(locator_fn)    
+    locator = TesseractSupportResourceLocator()
     return tesseract_urdf.parseURDFFile(path, locator).release()
 
 def get_srdf_model(scene_graph):
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     path =  os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf")
     srdf = tesseract_srdf.SRDFModel()
-    locator_fn = tesseract_common.SimpleResourceLocatorFn(_locate_resource)
-    locator = tesseract_common.SimpleResourceLocator(locator_fn)
+    locator = TesseractSupportResourceLocator()
     srdf.initFile(scene_graph, path, locator)
     return srdf
 

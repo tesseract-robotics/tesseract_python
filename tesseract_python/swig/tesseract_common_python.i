@@ -134,6 +134,10 @@ namespace tesseract_common
   $result = SWIG_From_std_string(*$1);
 }
 
+#define BOOST_CLASS_EXPORT_KEY2(a,b)
+#define BOOST_CLASS_TRACKING(a,b)
+#define BOOST_CLASS_EXPORT_IMPLEMENT(a)
+
 #define EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 #define TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 #define TESSERACT_COMMON_IGNORE_WARNINGS_POP

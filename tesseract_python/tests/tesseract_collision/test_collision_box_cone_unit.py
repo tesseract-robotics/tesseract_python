@@ -133,6 +133,6 @@ def test_bullet_discrete_bvh():
      checker = get_plugin_factory().createDiscreteContactManager("BulletDiscreteBVHManager")
      run_test(checker)
 
-def test_fcl_discrete_bvh():
+def __test_fcl_discrete_bvh():
     checker = get_plugin_factory().createDiscreteContactManager("FCLDiscreteBVHManager")
     run_test(checker)

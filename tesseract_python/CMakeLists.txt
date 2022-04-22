@@ -125,11 +125,14 @@ tesseract_python_module(tesseract_motion_planners_descartes_python SWIG_SRCS swi
 tesseract_python_module(tesseract_time_parameterization_python SWIG_SRCS swig/tesseract_time_parameterization_python.i PACKAGE tesseract_time_parameterization LIBS tesseract::tesseract_time_parameterization )
 tesseract_python_module(tesseract_process_managers_python SWIG_SRCS swig/tesseract_process_managers_python.i PACKAGE tesseract_process_managers LIBS tesseract::tesseract_process_managers )
 
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
+
+option(TESSERACT_PYTHON_BUILD_WHEEL "Build self contained Python wheel")
+if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/__package_init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_robotics/__init__.py @ONLY)
 
 #install(CODE "MESSAGE(\"INSTALL TODO!\")")
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
 
 set(enable_setuptools_deb_layout OFF)
 if(EXISTS "/etc/debian_version")
@@ -195,4 +198,13 @@ if(TESSERACT_ENABLE_TESTING)
   endif()
   
 
+endif()
+
+else()
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/__package_wheel_init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_robotics/__init__.py @ONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_build_wheel.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/install_build_wheel.cmake @ONLY)
+
+install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/install_build_wheel.cmake)
 endif()

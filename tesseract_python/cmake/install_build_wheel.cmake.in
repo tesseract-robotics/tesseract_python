@@ -1,0 +1,18 @@
+
+message(STATUS "Running install_build_wheel.cmake")
+
+foreach(_D @TESSERACT_PYTHON_WHEEL_DEP_LIB_DIRS@)
+    if(WIN32)
+        set(_glob_exp "*.dll")
+    else()
+        set(_glob_exp "*.so")
+    endif()
+
+    file(GLOB _libs ${_D}/${_glob_exp})
+    message(STATUS ${_libs})
+    foreach(_L ${_libs})
+        file(INSTALL ${_L} DESTINATION python/tesseract_robotics)
+    endforeach()
+endforeach()
+
+execute_process(COMMAND @PYTHON_EXECUTABLE@ setup.py bdist_wheel WORKING_DIRECTORY python)

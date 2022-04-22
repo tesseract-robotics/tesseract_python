@@ -2,7 +2,7 @@
 
 from setuptools import setup, Distribution
 
-setup(name='tesseract_robotics_viewer',
+setup(name='tesseract-robotics-viewer',
       version='@tesseract_viewer_python_version@',
       description='Tesseract Viewer Python Library',
       author='John Wason',
@@ -12,5 +12,5 @@ setup(name='tesseract_robotics_viewer',
       package_data={'tesseract_robotics_viewer.resources':['static/index.html','static/app.js','geometries.json']},
 	  license='Apache-2.0',
 	  install_requires=['numpy','tesseract_robotics'],
-	  long_description='Tesseract viewer package for Python'
+	  long_description='Tesseract Robotics viewer package for Python'
      )
