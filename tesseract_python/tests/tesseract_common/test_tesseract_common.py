@@ -44,6 +44,8 @@ def test_console_bridge():
 
     assert output_handler.last_text == "This is a test message 2"
 
+    tesseract_common.setLogLevel(tesseract_common.CONSOLE_BRIDGE_LOG_ERROR)
+
 def test_manipulator_info():
 
     info = tesseract_common.ManipulatorInfo()
