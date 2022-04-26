@@ -43,6 +43,13 @@
 #include <tesseract_collision/core/discrete_contact_manager.h>
 #include <tesseract_collision/core/continuous_contact_manager.h>
 #include <tesseract_collision/core/contact_managers_plugin_factory.h>
+#include <tesseract_collision/bullet/bullet_factories.h>
+#include <tesseract_collision/fcl/fcl_factories.h>
+#include <tesseract_collision/bullet/bullet_cast_bvh_manager.h>
+#include <tesseract_collision/bullet/bullet_cast_simple_manager.h>
+#include <tesseract_collision/bullet/bullet_discrete_bvh_manager.h>
+#include <tesseract_collision/bullet/bullet_discrete_simple_manager.h>
+#include <tesseract_collision/fcl/fcl_discrete_managers.h>
 
 #include "tesseract_collisions_python_std_functions.h"
 %}
@@ -58,3 +65,46 @@
 %include "tesseract_collision/core/discrete_contact_manager.h"
 %include "tesseract_collision/core/continuous_contact_manager.h"
 %include "tesseract_collision/core/contact_managers_plugin_factory.h"
+
+%init %{
+
+tesseract_collision::ContactManagersPluginFactory::setGlobalCreateDiscreteContactManagerCallback(
+    [](const std::string& name, const YAML::Node& config) -> tesseract_collision::DiscreteContactManager::UPtr
+    {
+        if (name == "BulletDiscreteBVHManager")
+        {
+            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletDiscreteBVHManager>(name);
+        }
+
+        if (name == "BulletDiscreteSimpleManager")
+        {
+            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletDiscreteSimpleManager>(name);
+        }
+
+        if (name == "FCLDiscreteBVHManager")
+        {
+            return std::make_unique<tesseract_collision::tesseract_collision_fcl::FCLDiscreteBVHManager>(name);
+        }
+
+        return nullptr;
+    }
+);
+
+tesseract_collision::ContactManagersPluginFactory::setGlobalCreateContinuousContactManagerCallback(
+    [](const std::string& name, const YAML::Node& config) -> tesseract_collision::ContinuousContactManager::UPtr
+    {
+        if (name == "BulletCastBVHManager")
+        {
+            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletCastBVHManager>(name);
+        }
+
+        if (name == "BulletCastSimpleManager")
+        {
+            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletCastSimpleManager>(name);
+        }
+
+        return nullptr;
+    }
+);
+
+%}
