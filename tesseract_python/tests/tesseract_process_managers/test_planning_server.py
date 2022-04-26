@@ -58,7 +58,7 @@ def test_planning_server_freespace():
 
     assert response.interface.isSuccessful()
 
-    results = flatten(response.getResults().as_CompositeInstruction())
+    results = flatten(response.problem.getResults().as_CompositeInstruction())
 
     # assert len(results) == 37
     for instr in results:
