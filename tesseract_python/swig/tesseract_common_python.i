@@ -46,6 +46,7 @@
 #include <tesseract_common/allowed_collision_matrix.h>
 #include <tesseract_common/kinematic_limits.h>
 #include <tesseract_common/timer.h>
+#include <console_bridge/console.h>
 
 #include "tesseract_common_python_std_functions.h"
 
@@ -54,6 +55,7 @@
 %include "tinyxml2.i"
 %include "boost_filesystem_path.i"
 %include "eigen_geometry.i"
+%include "console_bridge.i"
 
 %pythondynamic sco::ModelType;
 
