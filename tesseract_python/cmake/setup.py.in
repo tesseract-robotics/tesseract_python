@@ -1,9 +1,11 @@
 # Based on https://github.com/robotraconteur/robotraconteur/blob/master/RobotRaconteurPython/setup.py.in
 
-from setuptools import setup, Distribution, find_packages
+from setuptools import setup, Distribution, find_packages, Extension
 
 # Suggested at https://stackoverflow.com/questions/24071491/how-can-i-make-a-python-wheel-from-an-existing-native-library
 class BinaryDistribution(Distribution):
+    def is_pure(foo):
+        return False
     def has_ext_modules(foo):
         return True
 
@@ -18,5 +20,76 @@ setup(name='tesseract-robotics',
 	  distclass=BinaryDistribution,
 	  license='Apache-2.0',
 	  install_requires=['numpy'],
-	  long_description='Tesseract Robotics package for Python'
+	  long_description='Tesseract Robotics package for Python',
+      ext_modules=[
+        Extension(
+          name='tesseract_robotics.tesseract_common._tesseract_common',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_collision._tesseract_collision',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_command_language._tesseract_command_language',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_environment._tesseract_environment',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_geometry._tesseract_geometry',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_kinematics._tesseract_kinematics',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_motion_planners._tesseract_motion_planners',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_motion_planners_descartes._tesseract_motion_planners_descartes',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_motion_planners_ompl._tesseract_motion_planners_ompl',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_motion_planners_simple._tesseract_motion_planners_simple',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_process_managers._tesseract_process_managers',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_scene_graph._tesseract_scene_graph',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_srdf._tesseract_srdf',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_state_solver._tesseract_state_solver',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_time_parameterization._tesseract_time_parameterization',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_urdf._tesseract_urdf',
+          sources=[]
+        ),
+        Extension(
+          name='tesseract_robotics.tesseract_visualization._tesseract_visualization',
+          sources=[]
+        )
+
+      ]
      )
