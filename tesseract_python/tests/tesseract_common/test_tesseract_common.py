@@ -1,6 +1,8 @@
 from tesseract_robotics import tesseract_common
 from inspect import currentframe, getframeinfo
 
+import numpy.testing as nptest
+
 def test_status_code():
     # Test that status codes can be created
 
@@ -41,3 +43,14 @@ def test_console_bridge():
     tesseract_common.restorePreviousOutputHandler()
 
     assert output_handler.last_text == "This is a test message 2"
+
+def test_manipulator_info():
+
+    info = tesseract_common.ManipulatorInfo()
+    info.tcp_offset="tool0"
+    assert info.tcp_offset=="tool0"
+    
+    transform = tesseract_common.Isometry3d() * tesseract_common.Translation3d(1,2,3)
+    info.tcp_offset = transform
+    transform2=info.tcp_offset
+    nptest.assert_allclose(transform2.matrix(), transform.matrix())
