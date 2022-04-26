@@ -68,39 +68,39 @@
 
 %init %{
 
-tesseract_collision::ContactManagersPluginFactory::setGlobalCreateDiscreteContactManagerCallback(
-    [](const std::string& name, const YAML::Node& config) -> tesseract_collision::DiscreteContactManager::UPtr
+tesseract_collision::ContactManagersPluginFactory::setGlobalCreateDiscreteContactManagerFactoryCallback(
+    [](const std::string& class_name) -> tesseract_collision::DiscreteContactManagerFactory::Ptr
     {
-        if (name == "BulletDiscreteBVHManager")
+        if (class_name == "BulletDiscreteBVHManagerFactory")
         {
-            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletDiscreteBVHManager>(name);
+            return std::make_shared<tesseract_collision::tesseract_collision_bullet::BulletDiscreteBVHManagerFactory>();
         }
 
-        if (name == "BulletDiscreteSimpleManager")
+        if (class_name == "BulletDiscreteSimpleManagerFactory")
         {
-            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletDiscreteSimpleManager>(name);
+            return std::make_shared<tesseract_collision::tesseract_collision_bullet::BulletDiscreteSimpleManagerFactory>();
         }
 
-        if (name == "FCLDiscreteBVHManager")
+        if (class_name == "FCLDiscreteBVHManagerFactory")
         {
-            return std::make_unique<tesseract_collision::tesseract_collision_fcl::FCLDiscreteBVHManager>(name);
+            return std::make_shared<tesseract_collision::tesseract_collision_fcl::FCLDiscreteBVHManagerFactory>();
         }
 
         return nullptr;
     }
 );
 
-tesseract_collision::ContactManagersPluginFactory::setGlobalCreateContinuousContactManagerCallback(
-    [](const std::string& name, const YAML::Node& config) -> tesseract_collision::ContinuousContactManager::UPtr
+tesseract_collision::ContactManagersPluginFactory::setGlobalCreateContinuousContactManagerFactoryCallback(
+    [](const std::string& class_name) -> tesseract_collision::ContinuousContactManagerFactory::Ptr
     {
-        if (name == "BulletCastBVHManager")
+        if (class_name == "BulletCastBVHManagerFactory")
         {
-            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletCastBVHManager>(name);
+            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletCastBVHManagerFactory>();
         }
 
-        if (name == "BulletCastSimpleManager")
+        if (class_name == "BulletCastSimpleManagerFactory")
         {
-            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletCastSimpleManager>(name);
+            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletCastSimpleManagerFactory>();
         }
 
         return nullptr;
