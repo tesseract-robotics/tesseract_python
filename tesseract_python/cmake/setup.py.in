@@ -9,6 +9,13 @@ class BinaryDistribution(Distribution):
     def has_ext_modules(foo):
         return True
 
+# Suggested at https://stackoverflow.com/questions/51522248/overriding-python-setuptools-default-include-dirs-and-library-dirs
+
+from setuptools.command.build_ext import build_ext as build_ext_orig
+class build_ext(build_ext_orig):
+    def run(self):
+      pass
+
 setup(name='tesseract-robotics',
       version='@tesseract_python_version@',
       description='Tesseract Python Library',
@@ -91,5 +98,6 @@ setup(name='tesseract-robotics',
           sources=[]
         )
 
-      ]
+      ],
+      cmdclass={'build_ext': build_ext}
      )
