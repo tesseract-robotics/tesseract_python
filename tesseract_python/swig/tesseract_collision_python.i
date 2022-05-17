@@ -67,7 +67,7 @@
 %include "tesseract_collision/core/contact_managers_plugin_factory.h"
 
 %init %{
-
+#ifdef TESSERACT_PLUGIN_FACTORY_CALLBACKS
 tesseract_collision::ContactManagersPluginFactory::setGlobalCreateDiscreteContactManagerFactoryCallback(
     [](const std::string& class_name) -> tesseract_collision::DiscreteContactManagerFactory::Ptr
     {
@@ -106,5 +106,5 @@ tesseract_collision::ContactManagersPluginFactory::setGlobalCreateContinuousCont
         return nullptr;
     }
 );
-
+#endif
 %}

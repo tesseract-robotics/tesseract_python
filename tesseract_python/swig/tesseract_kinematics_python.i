@@ -86,7 +86,7 @@
 %include "tesseract_kinematics/core/kinematics_plugin_factory.h"
 
 %init %{
-
+#ifdef TESSERACT_PLUGIN_FACTORY_CALLBACKS
 tesseract_kinematics::KinematicsPluginFactory::setGlobalCreateFwdKinFactoryCallback(
     [](const std::string& class_name) -> tesseract_kinematics::FwdKinFactory::Ptr
     {
@@ -126,5 +126,5 @@ tesseract_kinematics::KinematicsPluginFactory::setGlobalCreateInvKinFactoryCallb
         return nullptr;
     }
 );
-
+#endif
 %}
