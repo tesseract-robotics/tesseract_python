@@ -38,7 +38,6 @@
 // tesseract_command_language
 #include <tesseract_command_language/core/waypoint.h>
 #include <tesseract_command_language/core/instruction.h>
-#include <tesseract_command_language/core/serialization.h>
 #include <tesseract_command_language/command_language.h>
 
 #include <tesseract_command_language/profile_dictionary.h>
@@ -95,7 +94,6 @@
 %include "tesseract_command_language_python_profile_dictionary_functions.h"
 %include "tesseract_command_language/core/waypoint.h"
 %include "tesseract_command_language/core/instruction.h"
-%include "tesseract_command_language/core/serialization.h"
 %include "tesseract_command_language/command_language.h"
 %include "tesseract_command_language/utils/filter_functions.h"
 %include "tesseract_command_language/utils/utils.h"
