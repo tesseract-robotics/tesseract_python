@@ -9,7 +9,7 @@ execute_process(COMMAND @PYTHON_EXECUTABLE@ -m delvewheel repair --no-dll msvcp1
 endforeach()
 
 else()
-execute_process(COMMAND @PYTHON_EXECUTABLE@ setup.py bdist_wheel --platform=@TESSERACT_PYTHON_WHEEL_PLATFORM@ WORKING_DIRECTORY python)
+execute_process(COMMAND @PYTHON_EXECUTABLE@ setup.py bdist_wheel --plat-name=@TESSERACT_PYTHON_WHEEL_PLATFORM@ WORKING_DIRECTORY python)
 file(GLOB wheel_files "${CMAKE_CURRENT_LIST_DIR}/python/dist/*.whl")
 foreach(wheel_file ${wheel_files})
 execute_process(COMMAND @PYTHON_EXECUTABLE@ -m auditwheel repair --plat @TESSERACT_PYTHON_WHEEL_PLATFORM@ ${wheel_file} WORKING_DIRECTORY python)
