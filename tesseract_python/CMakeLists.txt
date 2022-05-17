@@ -100,6 +100,14 @@ message(STATUS "NumPy Include Directory: ${NUMPY_INCLUDE_DIR}")
 
 # End Find NumPy
 
+if(${CMAKE_VERSION} VERSION_GREATER "3.13.0" OR ${CMAKE_VERSION} VERSION_EQUAL "3.13.0")
+cmake_policy(SET CMP0078 OLD)
+endif()
+
+if(${CMAKE_VERSION} VERSION_GREATER "3.14.0" OR ${CMAKE_VERSION} VERSION_EQUAL "3.14.0")
+cmake_policy(SET CMP0086 OLD)
+endif()
+
 include(FindSWIG)
 find_package(SWIG 4.0 REQUIRED)
 include(UseSWIG)
