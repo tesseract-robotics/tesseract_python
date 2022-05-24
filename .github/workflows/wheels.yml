@@ -1,0 +1,82 @@
+name: Python Wheels
+
+on:
+  push:
+  pull_request:
+  release:
+    types:
+      - created
+
+jobs:
+  build-ubuntu:
+    runs-on: ${{ matrix.config.runs_on }}
+    container: ${{ matrix.config.container }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - os: ubuntu-20.04
+          runs_on: ubuntu-latest
+          container: ubuntu:20.04
+          py_platform: manylinux_2_31_x86_64
+        - os: ubuntu-22.04
+          runs_on: ubuntu-latest
+          container: ubuntu:22.04
+          py_platform: manylinux_2_35_x86_64
+    env:
+      DEBIAN_FRONTEND: noninteractive
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: ws/src/tesseract_python
+    - name: install sudo and tzdata
+      run: |
+        apt update 
+        apt install sudo tzdata python3 -y
+        ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+        dpkg-reconfigure --frontend noninteractive tzdata
+    - name: apt
+      run: >
+        sudo apt install python3-pip libboost-all-dev
+        libeigen3-dev libtinyxml2-dev libconsole-bridge-dev libassimp-dev
+        liburdfdom-dev liboctomap-dev liborocos-kdl-dev libpcl-dev
+        libflann-dev libjsoncpp-dev libyaml-cpp-dev git cmake ninja-build
+        build-essential autoconf automake libtool bison libpcre2-dev libpcre3-dev
+        lcov libbullet-dev libbullet-extras-dev patchelf python3-venv -y
+    - name: pip
+      run: |
+        sudo python3 -m pip install --upgrade pip
+        sudo python3 -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool
+    - name: vcs import
+      working-directory: ws/src
+      run: vcs import --input tesseract_python/dependencies_with_ext.rosinstall
+    - name: colcon build
+      working-directory: ws
+      run: >
+        colcon build --packages-up-to tesseract_python --merge-install
+        --cmake-force-configure
+        --packages-ignore bullet
+        --event-handlers console_cohesion+
+        --cmake-args -DCMAKE_BUILD_TYPE=Release
+        -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF
+        -DPYTHON_EXECUTABLE=/usr/bin/python3 -DTESSERACT_PYTHON_BUILD_WHEEL=ON
+        -DTESSERACT_PYTHON_WHEEL_PLATFORM=${{ matrix.config.py_platform }}
+        -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON
+    - name: test
+      shell: bash
+      run: |
+        python3 -m venv venv
+        source venv/bin/activate
+        python -m pip install --upgrade pip
+        python -m pip install ws/build/tesseract_python/python/wheelhouse/*
+        python -m pip install pytest
+        export TESSERACT_SUPPORT_DIR=${{ env.GITHUB_WORKSPACE }}/ws/src/tesseract/tesseract_support
+        cd ws/src/tesseract_python/tesseract_python
+        pytest -s
+    - name: archive wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'python-wheels-${{ matrix.config.os }}'
+        path: ws/build/tesseract_python/python/*
+    
+    
