@@ -72,7 +72,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install ws/build/tesseract_python/python/wheelhouse/*
         python -m pip install pytest
-        export TESSERACT_SUPPORT_DIR=${{ env.GITHUB_WORKSPACE }}/ws/src/tesseract/tesseract_support
+        export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
         cd ws/src/tesseract_python/tesseract_python
         pytest -s
     - name: archive wheels
