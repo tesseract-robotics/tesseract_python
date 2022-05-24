@@ -29,20 +29,22 @@ jobs:
     - uses: actions/checkout@v2
       with:
         path: ws/src/tesseract_python
-    - name: install sudo and tzdata
+    - name: install sudo, tzdata, keyboard-configuration
+      shell: bash
       run: |
+        echo -en "XKBMODEL=\"pc105\"\nXKBLAYOUT=\"us\"\nXKBVARIANT=\"\"\nXKBOPTIONS=\"\"\nBACKSPACE=\"guess\"\n" > /etc/default/keyboard
         apt update 
-        apt install sudo tzdata python3 -y
+        apt install sudo tzdata python3 keyboard-configuration -y -qq
         ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
         dpkg-reconfigure --frontend noninteractive tzdata
     - name: apt
       run: >
-        sudo apt install python3-pip libboost-all-dev
+        sudo apt-get install python3-pip libboost-all-dev
         libeigen3-dev libtinyxml2-dev libconsole-bridge-dev libassimp-dev
         liburdfdom-dev liboctomap-dev liborocos-kdl-dev libpcl-dev
         libflann-dev libjsoncpp-dev libyaml-cpp-dev git cmake ninja-build
         build-essential autoconf automake libtool bison libpcre2-dev libpcre3-dev
-        lcov libbullet-dev libbullet-extras-dev patchelf python3-venv -y
+        lcov libbullet-dev libbullet-extras-dev patchelf python3-venv -y -qq
     - name: pip
       run: |
         sudo python3 -m pip install --upgrade pip
