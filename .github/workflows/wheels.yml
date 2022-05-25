@@ -172,6 +172,13 @@ jobs:
       with:
         name: 'python-wheels-${{ matrix.config.os }}'
         path: ws/build/tesseract_python/python/*
+    - name: archive logs
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'build-logs-win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}'
+        path: "**/*.log"
+        retention-days: 2 
     
     
     
