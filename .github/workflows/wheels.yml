@@ -80,5 +80,98 @@ jobs:
       with:
         name: 'python-wheels-${{ matrix.config.os }}'
         path: ws/build/tesseract_python/python/*
+  build-win:
+    runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - arch: x64
+            vcpkg_triplet: x64-windows
+            cmake_arch: x64
+            python_version: "3.7"
+          - arch: x64
+            vcpkg_triplet: x64-windows
+            cmake_arch: x64
+            python_version: "3.8"
+          - arch: x64
+            vcpkg_triplet: x64-windows
+            cmake_arch: x64
+            python_version: "3.9"
+          - arch: x64
+            vcpkg_triplet: x64-windows
+            cmake_arch: x64
+            python_version: "3.10"
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: ws/src/tesseract_python
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '${{ matrix.config.python_version }}'
+        architecture: ${{ matrix.config.arch }}
+    - name: checkout vcpkg
+      uses: actions/checkout@v2
+      with:
+        path: vcpkg
+        repository: microsoft/vcpkg
+    - name: bootstrap vcpkg
+      working-directory: vcpkg
+      run: bootstrap-vcpkg.bat
+    - name: vcpkg
+      working-directory: vcpkg
+      run: >
+        vcpkg install --triplet ${{ matrix.config.vcpkg_triplet }} 
+        tinyxml2 console-bridge assimp urdfdom octomap orocos-kdl pcl gtest flann jsoncpp
+        yaml-cpp boost-dll boost-program-options boost-serialization boost-filesystem
+    - name: pip3
+      run: |
+        python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
+    - name: env python3
+      run: echo  ("PYTHON3_EXE=" + (Get-Command Python.exe).Path) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+    - name: choco
+      run: |
+        choco install swig -r
+    - name: colcon build
+      working-directory: ws
+      shell: cmd
+      run: |
+        set CXXFLAGS=%CXXFLAGS% -DEIGEN_DONT_ALIGN=1 -DEIGEN_DONT_VECTORIZE=1
+        set CMAKE_TOOLCHAIN_FILE=%GITHUB_WORKSPACE%\vcpkg\scripts\buildsystems\vcpkg.cmake
+        set PATH=%PATH%;%GITHUB_WORKSPACE%\vcpkg\installed\x64-windows\bin
+        colcon build --packages-up-to tesseract_python --merge-install ^
+        --cmake-force-configure ^
+        --packages-ignore bullet ^
+        --event-handlers console_cohesion+ ^
+        --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release ^
+        -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF  -DINSTALL_FCL=ON -DINSTALL_BULLET=ON ^
+        -DPYTHON_EXECUTABLE="${{ env.PYTHON3_EXE }}" ^
+        -DTESSERACT_PYTHON_BUILD_WHEEL=ON ^
+        -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON ^
+        -DVCPKG_TARGET_TRIPLET=x64-windows -DVCPKG_APPLOCAL_DEPS=OFF
+    - name: test
+      shell: cmd
+      run: |
+        python -m venv venv
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        call venv\Scripts\activate
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        python -m pip install --upgrade pip
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        python -m pip install ws/build/tesseract_python/python/wheelhouse/*
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        python -m pip install pytest
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        set TESSERACT_SUPPORT_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract\tesseract_support
+        cd ws\src\tesseract_python\tesseract_python
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        python -m pytest -s
+        if %errorlevel% neq 0 exit /b %errorlevel%
+    - name: archive wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'python-wheels-${{ matrix.config.os }}'
+        path: ws/build/tesseract_python/python/*
+    
     
     
