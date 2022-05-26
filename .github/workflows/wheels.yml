@@ -126,6 +126,7 @@ jobs:
         yaml-cpp boost-dll boost-program-options boost-serialization boost-filesystem
     - name: clean vcpkg
       working-directory: vcpkg
+      shell: cmd
       run: |
         rmdir /s /q buildtrees
         rmdir /s /q downloads
