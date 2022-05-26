@@ -138,7 +138,7 @@ jobs:
       run: echo  ("PYTHON3_EXE=" + (Get-Command Python.exe).Path) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
     - name: choco
       run: |
-        choco install swig -r
+        choco install swig ninja -r
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_python\dependencies_with_ext.rosinstall
