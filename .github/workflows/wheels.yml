@@ -125,6 +125,7 @@ jobs:
       run: bootstrap-vcpkg.bat
     - name: vcpkg dry run
       working-directory: vcpkg
+      shell: cmd
       run: >
         vcpkg install --triplet ${{ matrix.config.vcpkg_triplet }} 
         ${{ env.VCPKG_PKGS }} --dry-run > vcpkg_dry_run.txt
