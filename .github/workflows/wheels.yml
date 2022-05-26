@@ -124,6 +124,12 @@ jobs:
         vcpkg install --triplet ${{ matrix.config.vcpkg_triplet }} 
         tinyxml2 console-bridge assimp urdfdom octomap orocos-kdl pcl gtest flann jsoncpp
         yaml-cpp boost-dll boost-program-options boost-serialization boost-filesystem
+    - name: clean vcpkg
+      working-directory: vcpkg
+      run: |
+        rmdir /s /q buildtrees
+        rmdir /s /q downloads
+        rmdir /s /q .git
     - name: pip3
       run: |
         python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
@@ -132,6 +138,9 @@ jobs:
     - name: choco
       run: |
         choco install swig -r
+    - name: vcs import
+      working-directory: ws/src
+      run: vcs import --input tesseract_python\dependencies_with_ext.rosinstall
     - name: colcon build
       working-directory: ws
       shell: cmd
