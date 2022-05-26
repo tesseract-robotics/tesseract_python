@@ -19,10 +19,10 @@ jobs:
           runs_on: ubuntu-latest
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
-        - os: ubuntu-22.04
-          runs_on: ubuntu-latest
-          container: ubuntu:22.04
-          py_platform: manylinux_2_35_x86_64
+        # - os: ubuntu-22.04
+        #   runs_on: ubuntu-latest
+        #   container: ubuntu:22.04
+        #   py_platform: manylinux_2_35_x86_64
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
