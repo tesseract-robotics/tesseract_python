@@ -166,7 +166,9 @@ jobs:
         set CXXFLAGS=%CXXFLAGS% -DEIGEN_DONT_ALIGN=1 -DEIGEN_DONT_VECTORIZE=1 /openmp
         set CMAKE_TOOLCHAIN_FILE=%GITHUB_WORKSPACE%\vcpkg\scripts\buildsystems\vcpkg.cmake
         set PATH=%PATH%;%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}\bin
+        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
         set CC=cl
+        set CCX=cl
         colcon build --packages-up-to tesseract_python --merge-install ^
         --cmake-force-configure ^
         --packages-ignore bullet ^
