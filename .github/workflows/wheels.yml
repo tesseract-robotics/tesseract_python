@@ -8,7 +8,7 @@ on:
       - created
 
 env:
-  VCPKG_PKGS: > 
+  VCPKG_PKGS: -> 
     tinyxml2 console-bridge assimp urdfdom octomap orocos-kdl pcl gtest flann jsoncpp
     yaml-cpp boost-dll boost-program-options boost-serialization boost-filesystem
 
