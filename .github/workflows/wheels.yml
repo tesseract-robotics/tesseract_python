@@ -7,6 +7,11 @@ on:
     types:
       - created
 
+env:
+  VCPKG_PKGS: > 
+    tinyxml2 console-bridge assimp urdfdom octomap orocos-kdl pcl gtest flann jsoncpp
+    yaml-cpp boost-dll boost-program-options boost-serialization boost-filesystem
+
 jobs:
   build-ubuntu:
     runs-on: ${{ matrix.config.runs_on }}
@@ -118,12 +123,24 @@ jobs:
     - name: bootstrap vcpkg
       working-directory: vcpkg
       run: bootstrap-vcpkg.bat
+    - name: vcpkg dry run
+      working-directory: vcpkg
+      run: >
+        vcpkg install --triplet ${{ matrix.config.vcpkg_triplet }} 
+        ${{ env.VCPKG_PKGS }} --dry-run > vcpkg_dry_run.txt
+    - name: cache-vcpkg-archives
+      if: startsWith(github.ref, 'refs/tags/v') != true
+      id: cache-vcpkg-archives
+      uses: actions/cache@v2
+      with:
+        path: C:\Users\runneradmin\AppData\Local\vcpkg\
+        key: ${{ runner.os }}-${{matrix.config.arch}}-vcpkg-${{ hashFiles('vcpkg/vcpkg_dry_run.txt') }}
+    
     - name: vcpkg
       working-directory: vcpkg
       run: >
         vcpkg install --triplet ${{ matrix.config.vcpkg_triplet }} 
-        tinyxml2 console-bridge assimp urdfdom octomap orocos-kdl pcl gtest flann jsoncpp
-        yaml-cpp boost-dll boost-program-options boost-serialization boost-filesystem
+        ${{ env.VCPKG_PKGS }}
     - name: clean vcpkg
       working-directory: vcpkg
       shell: cmd
