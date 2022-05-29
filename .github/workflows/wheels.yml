@@ -133,7 +133,7 @@ jobs:
       id: cache-vcpkg-archives
       uses: actions/cache@v2
       with:
-        path: C:\Users\runneradmin\AppData\Local\vcpkg\
+        path: C:\Users\runneradmin\AppData\Local\vcpkg\archives
         key: ${{ runner.os }}-${{matrix.config.arch}}-vcpkg-${{ hashFiles('vcpkg/vcpkg_dry_run.txt') }}
     
     - name: vcpkg
