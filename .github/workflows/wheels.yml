@@ -171,7 +171,6 @@ jobs:
         set CCX=cl
         colcon build --packages-up-to tesseract_python --merge-install ^
         --cmake-force-configure ^
-        --packages-ignore bullet ^
         --event-handlers console_cohesion+ ^
         --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release ^
         -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF  -DINSTALL_FCL=ON -DINSTALL_BULLET=ON ^
