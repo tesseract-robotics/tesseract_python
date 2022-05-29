@@ -159,13 +159,17 @@ jobs:
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_python\dependencies_with_ext.rosinstall
+    - name: delete traject_ext eigen 
+      working-directory: ws/src/tesseract_ext/
+      shell: cmd
+      run: rmdir /s /q eigen
     - name: colcon build
       working-directory: ws
       shell: cmd
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
         set CXXFLAGS=%CXXFLAGS% -DEIGEN_DONT_ALIGN=1 -DEIGEN_DONT_VECTORIZE=1 /openmp
-        set CMAKE_TOOLCHAIN_FILE=%GITHUB_WORKSPACE%\vcpkg\scripts\buildsystems\vcpkg.cmake
+        set CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}
         set PATH=%PATH%;%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}\bin
         set CC=cl
         set CCX=cl
@@ -177,7 +181,7 @@ jobs:
         -DPYTHON_EXECUTABLE="${{ env.PYTHON3_EXE }}" ^
         -DTESSERACT_PYTHON_BUILD_WHEEL=ON ^
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON ^
-        -DVCPKG_TARGET_TRIPLET=${{ matrix.config.vcpkg_triplet }} -DVCPKG_APPLOCAL_DEPS=OFF
+        -DVCPKG_APPLOCAL_DEPS=OFF
     - name: test
       shell: cmd
       run: |
