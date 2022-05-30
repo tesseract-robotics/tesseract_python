@@ -189,14 +189,18 @@ jobs:
         if %errorlevel% neq 0 exit /b %errorlevel%
         call venv\Scripts\activate
         if %errorlevel% neq 0 exit /b %errorlevel%
+        python --version 
         python -m pip install --upgrade pip
         if %errorlevel% neq 0 exit /b %errorlevel%
-        python -m pip install ws/build/tesseract_python/python/wheelhouse/*
+        cd %GITHUB_WORKSPACE%\ws\build\tesseract_python\python\wheelhouse
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        python -m pip install *.whl
         if %errorlevel% neq 0 exit /b %errorlevel%
         python -m pip install pytest
         if %errorlevel% neq 0 exit /b %errorlevel%
         set TESSERACT_SUPPORT_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract\tesseract_support
-        cd ws\src\tesseract_python\tesseract_python
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python
         if %errorlevel% neq 0 exit /b %errorlevel%
         python -m pytest -s
         if %errorlevel% neq 0 exit /b %errorlevel%
