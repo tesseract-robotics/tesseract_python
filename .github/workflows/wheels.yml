@@ -182,38 +182,35 @@ jobs:
         -DTESSERACT_PYTHON_BUILD_WHEEL=ON ^
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON ^
         -DVCPKG_APPLOCAL_DEPS=OFF
-    # - name: test
-    #   shell: cmd
-    #   run: |
-    #     python -m venv venv
-    #     if %errorlevel% neq 0 exit /b %errorlevel%
-    #     call venv\Scripts\activate
-    #     if %errorlevel% neq 0 exit /b %errorlevel%
-    #     python --version 
-    #     python -m pip install --upgrade pip
-    #     if %errorlevel% neq 0 exit /b %errorlevel%
-    #     cd %GITHUB_WORKSPACE%\ws\build\tesseract_python\python\wheelhouse
-    #     if %errorlevel% neq 0 exit /b %errorlevel%
-    #     python -m pip install *.whl
-    #     if %errorlevel% neq 0 exit /b %errorlevel%
-    #     python -m pip install pytest
-    #     if %errorlevel% neq 0 exit /b %errorlevel%
-    #     set TESSERACT_SUPPORT_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract\tesseract_support
-    #     if %errorlevel% neq 0 exit /b %errorlevel%
-    #     cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python
-    #     if %errorlevel% neq 0 exit /b %errorlevel%
-    #     python -m pytest -s
-    #     if %errorlevel% neq 0 exit /b %errorlevel%
-    # - name: archive wheels
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: 'python-wheels-${{ matrix.config.os }}'
-    #     path: ws/build/tesseract_python/python/*
-    - name: archive build
+    - name: test
+      shell: cmd
+      run: |
+        python -m venv venv
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        call venv\Scripts\activate
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        python --version 
+        python -m pip install --upgrade pip
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        cd %GITHUB_WORKSPACE%\ws\build\tesseract_python\python\wheelhouse
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        dir
+        python -m pip install *.whl
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        python -m pip install pytest
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        set TESSERACT_SUPPORT_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract\tesseract_support
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        python -m pytest -s
+        if %errorlevel% neq 0 exit /b %errorlevel%
+    - name: archive wheels
+      if: always()
       uses: actions/upload-artifact@v2
       with:
         name: 'python-wheels-${{ matrix.config.os }}'
-        path: ws/build/tesseract_python
+        path: ws/build/tesseract_python/python
     - name: archive logs
       if: failure()
       uses: actions/upload-artifact@v2
