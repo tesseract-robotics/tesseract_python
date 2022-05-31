@@ -134,7 +134,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\AppData\Local\vcpkg\archives
-        key: ${{ runner.os }}-${{matrix.config.arch}}-vcpkg-${{ hashFiles('vcpkg/vcpkg_dry_run.txt') }}
+        key: ${{ runner.os }}-${{matrix.config.arch}}-${{matrix.config.python_version}}-vcpkg-${{ hashFiles('vcpkg/vcpkg_dry_run.txt') }}
     
     - name: vcpkg
       working-directory: vcpkg
@@ -209,7 +209,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v2
       with:
-        name: 'python-wheels-${{ matrix.config.os }}'
+        name: 'python-wheels-win-${{matrix.config.python_version}}'
         path: ws/build/tesseract_python/python
     - name: archive logs
       if: failure()
