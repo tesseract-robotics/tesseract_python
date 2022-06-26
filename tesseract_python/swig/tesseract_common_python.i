@@ -46,6 +46,7 @@
 #include <tesseract_common/allowed_collision_matrix.h>
 #include <tesseract_common/kinematic_limits.h>
 #include <tesseract_common/timer.h>
+#include <tesseract_common/type_erasure.h>
 #include <console_bridge/console.h>
 
 #include "tesseract_common_python_std_functions.h"
@@ -136,9 +137,22 @@ namespace tesseract_common
   $result = SWIG_From_std_string(*$1);
 }
 
+%feature("valuewrapper") std::type_index;
+%nodefaultctor std::type_index;
+namespace std
+{
+  class type_index
+  {
+  public:
+    size_t hash_code();
+    const char* name();
+  };
+}
+
 #define BOOST_CLASS_EXPORT_KEY2(a,b)
 #define BOOST_CLASS_TRACKING(a,b)
 #define BOOST_CLASS_EXPORT_IMPLEMENT(a)
+#define BOOST_SERIALIZATION_ASSUME_ABSTRACT(a)
 
 #define EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 #define TESSERACT_COMMON_IGNORE_WARNINGS_PUSH

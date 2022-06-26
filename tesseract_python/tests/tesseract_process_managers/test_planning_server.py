@@ -63,7 +63,8 @@ def test_planning_server_freespace():
     # assert len(results) == 37
     for instr in results:
         assert isMoveInstruction(instr)
-        wp1 = instr.as_MoveInstruction().getWaypoint()
+        move_instr1 = instr.as_MoveInstruction()
+        wp1 = move_instr1.getWaypoint()
         assert isStateWaypoint(wp1)
         wp = wp1.as_StateWaypoint()
         assert len(wp.joint_names) == 7

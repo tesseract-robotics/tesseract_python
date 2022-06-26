@@ -83,7 +83,8 @@ def test_descartes_freespace_fixed_poses():
     assert len(results) == 11
     for instr in results:
         assert isMoveInstruction(instr)
-        wp1 = instr.as_MoveInstruction().getWaypoint()
+        move_instr=instr.as_MoveInstruction()
+        wp1 = move_instr.getWaypoint()
         assert isStateWaypoint(wp1)
         wp = wp1.as_StateWaypoint()
         assert len(wp.joint_names) == 6
