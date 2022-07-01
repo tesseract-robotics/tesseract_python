@@ -41,6 +41,11 @@ find_package(trajopt REQUIRED)
 find_package(TinyXML2 REQUIRED)
 find_package(opw_kinematics REQUIRED)
 
+if(NOT TinyXML2_INCLUDE_DIRS AND TARGET tinyxml2::tinyxml2)
+get_target_property(TinyXML2_INCLUDE_DIRS tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
+message(STATUS "Found from target interface: TinyXML2_INCLUDE_DIRS=${TinyXML2_INCLUDE_DIRS}")
+endif()
+
 tesseract_variables()
 
 include_directories(
