@@ -16,15 +16,6 @@ from tesseract_robotics.tesseract_process_managers import ProcessPlanningServer,
 
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
-import ctypes
-
-libc = ctypes.CDLL(None)
-environ = ctypes.POINTER(ctypes.c_char_p).in_dll(libc, 'environ')
-
-env = dict(envvar.decode("ascii").split('=', 1) for envvar in iter(iter(environ).__next__, None))
-
-print(f"TESSERACT_CONTACT_MANAGERS_PLUGINS: {env['TESSERACT_CONTACT_MANAGERS_PLUGINS']}")
-
 def get_environment():
     locator = TesseractSupportResourceLocator()
     env = Environment()
