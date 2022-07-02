@@ -192,10 +192,10 @@ jobs:
         python --version 
         python -m pip install --upgrade pip
         if %errorlevel% neq 0 exit /b %errorlevel%
-        cd %GITHUB_WORKSPACE%\ws\build\tesseract_python\python\wheelhouse
+        for %%I in ("%GITHUB_WORKSPACE%\ws\build\tesseract_python\python\wheelhouse\*") do set WHEEL_FILE=%%~I
         if %errorlevel% neq 0 exit /b %errorlevel%
-        dir
-        python -m pip install *.whl
+        echo WHEEL_FILE=%WHEEL_FILE%
+        python -m pip install %WHEEL_FILE%
         if %errorlevel% neq 0 exit /b %errorlevel%
         python -m pip install pytest
         if %errorlevel% neq 0 exit /b %errorlevel%
