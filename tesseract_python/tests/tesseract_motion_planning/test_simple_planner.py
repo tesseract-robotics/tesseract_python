@@ -7,7 +7,7 @@ from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedRe
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo
 from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, Waypoint, \
-    PlanInstructionType_FREESPACE, PlanInstructionType_START, PlanInstruction, Instruction, \
+    MoveInstructionType_FREESPACE, MoveInstructionType_START, MoveInstruction, Instruction, \
     NullInstruction, MoveInstruction, isMoveInstruction, isStateWaypoint
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest
 from tesseract_robotics.tesseract_motion_planners_simple import SimplePlannerLVSPlanProfile
@@ -42,9 +42,10 @@ def test_interpolatestatewaypoint_jointcart_freespace():
     wp1 = JointWaypoint(joint_names, np.zeros((7,),dtype=np.float64))
     wp1_seed = JointWaypoint(joint_names, request.env_state.getJointValues(joint_names))
     wp2 = CartesianWaypoint(joint_group.calcFwdKin(np.ones((7,),dtype=np.float64))[manip_info.tcp_frame])
-    instr1 = PlanInstruction(Waypoint(wp1), PlanInstructionType_START, "TEST_PROFILE", manip_info)
-    instr1_seed = MoveInstruction(Waypoint(wp1_seed), instr1)
-    instr2 = PlanInstruction(Waypoint(wp2), PlanInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
+    instr1 = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "TEST_PROFILE", manip_info)
+    instr1_seed = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "TEST_PROFILE", manip_info)
+    instr1_seed.setWaypoint(Waypoint(wp1_seed))
+    instr2 = MoveInstruction(Waypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
     instr3 = Instruction(NullInstruction())
 
     profile = SimplePlannerLVSPlanProfile(3.14,0.5,1.57,5)
