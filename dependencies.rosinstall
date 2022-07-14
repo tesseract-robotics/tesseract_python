@@ -5,12 +5,12 @@
 
 - git:
     local-name: tesseract
-    uri: https://github.com/tesseract-robotics/tesseract.git
-    version: 0.13.0
+    uri: https://github.com/johnwason/tesseract.git
+    version: pr/BulletLibsAbsPath
 - git:
     local-name: tesseract_planning
-    uri: https://github.com/johnwason/tesseract_planning.git
-    version: pr/TrajoptIfoptOptional
+    uri: https://github.com/tesseract-robotics/tesseract_planning.git
+    version: 0c0983699f4afab3251daae6665bc0c9336f97f0
 - git:
     local-name: trajopt
     uri: https://github.com/tesseract-robotics/trajopt.git
