@@ -39,11 +39,9 @@ jobs:
         rosdep update
 
         vcs import --input "${{ github.workspace }}/src/tesseract_python/dependencies_with_ext.rosinstall" src/
-        if %errorlevel% neq 0 exit /b %errorlevel%
-
+        
         rosdep install -q --from-paths . --ignore-src -y
-        if %errorlevel% neq 0 exit /b %errorlevel%
-
+        
         catkin_make_isolated --install --use-ninja --force-cmake --only-pkg-with-deps tesseract_python --cmake-args -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=C:/opt/ros/noetic/x64/python.exe -DPYTHON_LIBRARY=C:/opt/ros/noetic/x64/Lib/python38.lib -DINSTALL_OMPL=ON -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF -DINSTALL_FCL=ON -DINSTALL_BULLET=ON -DNO_OPENCL=ON
         if %errorlevel% neq 0 exit /b %errorlevel%
         call "%CD%\install_isolated\setup.bat"
