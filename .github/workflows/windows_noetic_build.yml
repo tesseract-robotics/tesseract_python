@@ -28,7 +28,7 @@ jobs:
         choco install ros-%ROS_DISTRO%-desktop_full -y --no-progress
         if %errorlevel% neq 0 exit /b %errorlevel%
         choco install swig
-        C:/opt/ros/noetic/x64/python.exe -m pip uninstall pytest-rerunfailures
+        C:/opt/ros/noetic/x64/python.exe -m pip uninstall pytest-rerunfailures -y
         if %errorlevel% neq 0 exit /b %errorlevel%
 
         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
