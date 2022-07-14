@@ -23,6 +23,7 @@ jobs:
     - name: Build
       shell: cmd
       run: |
+        C:/opt/ros/noetic/x64/python.exe -m pip uninstall pytest-rerunfailures
         choco sources add -n=roswin -s https://aka.ms/ros/public --priority 1
         choco install ros-%ROS_DISTRO%-desktop_full -y --no-progress
         choco install swig
@@ -38,7 +39,7 @@ jobs:
 
         rosdep install -q --from-paths . --ignore-src -y
 
-        catkin_make_isolated --install --use-nmake --force-cmake --only-pkg-with-deps tesseract_python --cmake-args -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=C:/opt/ros/noetic/x64/python.exe -DPYTHON_LIBRARY=C:/opt/ros/noetic/x64/Lib/python38.lib -DINSTALL_OMPL=ON -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF -DINSTALL_FCL=ON -DINSTALL_BULLET=ON -DNO_OPENCL=ON
+        catkin_make_isolated --install --use-ninja --force-cmake --only-pkg-with-deps tesseract_python --cmake-args -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=C:/opt/ros/noetic/x64/python.exe -DPYTHON_LIBRARY=C:/opt/ros/noetic/x64/Lib/python38.lib -DINSTALL_OMPL=ON -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF -DINSTALL_FCL=ON -DINSTALL_BULLET=ON -DNO_OPENCL=ON
         call "%CD%\install_isolated\setup.bat"
         set TESSERACT_SUPPORT_DIR=%CD%\src\tesseract\tesseract_support
         C:/opt/ros/noetic/x64/python.exe -m pytest src\tesseract_python\tesseract_python
