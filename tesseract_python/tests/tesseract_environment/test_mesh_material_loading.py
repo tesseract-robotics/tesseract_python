@@ -5,6 +5,7 @@ from tesseract_robotics.tesseract_common import Isometry3d, Translation3d, Angle
 from tesseract_robotics import tesseract_common
 from tesseract_robotics import tesseract_collision
 from tesseract_robotics import tesseract_urdf
+from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 import os
 import re
 import traceback
@@ -33,26 +34,13 @@ mesh_urdf="""
 </robot>
 """
 
-def _locate_resource(url):
-    try:
-        url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-        if (url_match is None):
-            return ""    
-        if not "TESSERACT_SUPPORT_DIR" in os.environ:
-            return ""
-        tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-        return os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
-    except:
-        traceback.print_exc()
-
 def get_scene_graph():
-    locator_fn = tesseract_common.SimpleResourceLocatorFn(_locate_resource)
-    locator = tesseract_common.SimpleResourceLocator(locator_fn)    
+    locator = TesseractSupportResourceLocator()
     return tesseract_urdf.parseURDFString(mesh_urdf, locator).release()
     
 def test_mesh_material_loading():
     scene = get_scene_graph()
-    visual = scene.getLinks()[0].visual
+    visual = scene.getLink("mesh_dae_link").visual
     assert len(visual) == 4
 
     mesh0 = visual[1].geometry

@@ -56,6 +56,7 @@
 
 // tesseract_environment
 #include <tesseract_environment/commands.h>
+#include <tesseract_environment/events.h>
 #include <tesseract_environment/environment.h>
 
 #include "tesseract_common_python_std_functions.h"
@@ -65,9 +66,31 @@
 %}
 
 %tesseract_std_function(FindTCPOffsetCallbackFn,tesseract,Eigen::Isometry3d,const tesseract_common::ManipulatorInfo&,a);
+%tesseract_std_function(EventCallbackFn,tesseract_environment,void,const tesseract_environment::Event&,a);
+
+%ignore getEventCallbacks;
+%ignore lockRead;
 
 // tesseract_environment
 #define TESSERACT_ENVIRONMENT_CORE_PUBLIC
 %include "tesseract_environment/commands.h"
-
+%include "tesseract_environment/events.h"
 %include "tesseract_environment/environment.h"
+
+%inline {
+    const tesseract_environment::SceneStateChangedEvent& cast_SceneStateChangedEvent(
+        const tesseract_environment::Event& a
+        )
+    {
+        return dynamic_cast<const tesseract_environment::SceneStateChangedEvent&>(a);
+    }
+}
+
+%inline {
+    const tesseract_environment::CommandAppliedEvent& cast_CommandAppliedEvent(
+        const tesseract_environment::Event& a
+        )
+    {
+        return dynamic_cast<const tesseract_environment::CommandAppliedEvent&>(a);
+    }
+}

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>tesseract_viewer_python</name>
-  <version>0.2.0</version>
+  <version>0.2.1</version>
   <description>The tesseract_viewer_python package</description>
   <maintainer email="wason@wasontech.com">John Wason</maintainer>
   <license>Apache 2.0</license>

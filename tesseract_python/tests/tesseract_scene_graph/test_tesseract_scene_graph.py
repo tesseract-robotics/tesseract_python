@@ -5,6 +5,7 @@ from tesseract_robotics import tesseract_srdf
 import numpy as np
 import re
 import os
+from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 def _translation(p):
     H = np.eye(4)
@@ -134,30 +135,11 @@ def test_tesseract_scene_graph():
 
     print(g.getName())
 
-def _locate_resource(url):
-    try:
-        try:
-            if os.path.exists(url):
-                return url
-        except:
-            pass
-        url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-        if (url_match is None):
-            return ""    
-        if not "TESSERACT_SUPPORT_DIR" in os.environ:
-            return ""
-        tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-        return os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
-    except:
-        traceback.print_exc()
-        raise
-
 def test_load_srdf_unit():
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     srdf_file =  os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf")
 
-    locator_fn = tesseract_common.SimpleResourceLocatorFn(_locate_resource)
-    locator = tesseract_common.SimpleResourceLocator(locator_fn)
+    locator = TesseractSupportResourceLocator()
 
     g = sg.SceneGraph()
 

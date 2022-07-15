@@ -38,7 +38,6 @@
 // tesseract_command_language
 #include <tesseract_command_language/core/waypoint.h>
 #include <tesseract_command_language/core/instruction.h>
-#include <tesseract_command_language/core/serialization.h>
 #include <tesseract_command_language/command_language.h>
 
 #include <tesseract_command_language/profile_dictionary.h>
@@ -53,6 +52,8 @@
 
 #include "tesseract_command_language_python_std_functions.h"
 #include "tesseract_command_language_python_profile_dictionary_functions.h"
+
+#include <tesseract_common/type_erasure.h>
 %}
 
 %include "tesseract_vector_reference_wrapper_instruction_typemaps.i"
@@ -70,32 +71,31 @@
 %enddef
 
 %define %tesseract_command_language_add_waypoint_type(TYPE)
-%rename(as_ ## TYPE) as;
-%template(as_ ## TYPE) tesseract_planning::Waypoint::as<tesseract_planning::TYPE>;
-%rename(as_const_ ## TYPE) as;
-%template(as_const_ ## TYPE) tesseract_planning::Waypoint::as<const tesseract_planning::TYPE>;
-%rename("%s") as;
+%extend tesseract_planning::Waypoint {
+tesseract_planning::TYPE as_ ## TYPE() {return $self->as<tesseract_planning::TYPE>();}
+const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesseract_planning::TYPE>();}
+}
 %tesseract_erasure_ctor(Waypoint,TYPE);
 %enddef
 
 %define %tesseract_command_language_add_instruction_type(TYPE)
-%rename(as_ ## TYPE) as;
-%template(as_ ## TYPE) tesseract_planning::Instruction::as<tesseract_planning::TYPE>;
-%rename(as_const_ ## TYPE) as;
-%template(as_const_ ## TYPE) tesseract_planning::Instruction::as<const tesseract_planning::TYPE>;
-%rename("%s") as;
+%extend tesseract_planning::Instruction {
+tesseract_planning::TYPE  as_ ## TYPE() {return $self->as<tesseract_planning::TYPE>();}
+const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesseract_planning::TYPE>();}
+}
 %tesseract_erasure_ctor(Instruction,TYPE);
 %enddef
 
 %tesseract_std_function(flattenFilterFn,tesseract_planning,bool,const tesseract_planning::Instruction&,a,const tesseract_planning::CompositeInstruction&,b,bool,c);
 %tesseract_std_function(locateFilterFn,tesseract_planning,bool,const tesseract_planning::Instruction&,a,const tesseract_planning::CompositeInstruction&,b,bool,c);
 
+%ignore tesseract_common::TypeErasureInterface::clone;
+%include "tesseract_common/type_erasure.h"
 %include "tesseract_command_language/types.h"
 %include "tesseract_command_language/profile_dictionary.h"
 %include "tesseract_command_language_python_profile_dictionary_functions.h"
 %include "tesseract_command_language/core/waypoint.h"
 %include "tesseract_command_language/core/instruction.h"
-%include "tesseract_command_language/core/serialization.h"
 %include "tesseract_command_language/command_language.h"
 %include "tesseract_command_language/utils/filter_functions.h"
 %include "tesseract_command_language/utils/utils.h"

@@ -4,12 +4,12 @@ import os
 import numpy as np
 import numpy.testing as nptest
 
-from tesseract_robotics.tesseract_common import SimpleResourceLocator, SimpleResourceLocatorFn
+from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
 from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, Waypoint, \
-    PlanInstructionType_FREESPACE, PlanInstructionType_START, PlanInstruction, Instruction, \
+    MoveInstructionType_FREESPACE, MoveInstructionType_START, MoveInstruction, Instruction, \
     isMoveInstruction, isStateWaypoint, CompositeInstruction, flatten, isMoveInstruction, isStateWaypoint, \
     ProfileDictionary
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateSeed, \
@@ -18,26 +18,10 @@ from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanPro
     OMPLProblemGeneratorFn, OMPLMotionPlanner, OMPLMotionPlannerStatusCategory, \
     ProfileDictionary_addProfile_OMPLPlanProfile
 
-def _locate_resource(url):
-    try:
-        try:
-            if os.path.exists(url):
-                return url
-        except:
-            pass
-        url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-        if (url_match is None):
-            return ""    
-        if not "TESSERACT_SUPPORT_DIR" in os.environ:
-            return ""
-        tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-        return os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
-    except:
-        traceback.print_exc()
+from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 def get_environment():
-    locate_resource_fn = SimpleResourceLocatorFn(_locate_resource)
-    locator = SimpleResourceLocator(locate_resource_fn)
+    locator = TesseractSupportResourceLocator()
     env = Environment()
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf"))
@@ -66,8 +50,8 @@ def test_ompl_freespace_joint_cart():
     goal = kin_group.calcFwdKin(end_state)[manip.tcp_frame]
     wp2 = CartesianWaypoint(goal)
 
-    start_instruction = PlanInstruction(Waypoint(wp1), PlanInstructionType_START, "TEST_PROFILE")
-    plan_f1 = PlanInstruction(Waypoint(wp2), PlanInstructionType_FREESPACE, "TEST_PROFILE")
+    start_instruction = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "TEST_PROFILE")
+    plan_f1 = MoveInstruction(Waypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE")
 
     program = CompositeInstruction("TEST_PROFILE")
     program.setStartInstruction(Instruction(start_instruction))
@@ -102,7 +86,8 @@ def test_ompl_freespace_joint_cart():
     assert len(results) == 11
     for instr in results:
         assert isMoveInstruction(instr)
-        wp1 = instr.as_MoveInstruction().getWaypoint()
+        move_instr1 = instr.as_MoveInstruction()
+        wp1 = move_instr1.getWaypoint()
         assert isStateWaypoint(wp1)
         wp = wp1.as_StateWaypoint()
         assert len(wp.joint_names) == 7

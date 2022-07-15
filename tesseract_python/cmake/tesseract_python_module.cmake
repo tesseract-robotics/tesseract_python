@@ -15,8 +15,11 @@ function(tesseract_python_module PY_MOD_NAME )
 
   set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_robotics/${PY_MOD_PACKAGE})
   set(SWIG_OUTFILE_DIR ${CMAKE_CURRENT_BINARY_DIR})
-
-  swig_add_module(${PY_MOD_NAME} python ${PY_MOD_SWIG_SRCS})
+  if(${CMAKE_VERSION} VERSION_GREATER "3.8.0" OR ${CMAKE_VERSION} VERSION_EQUAL "3.8.0")
+    swig_add_library(${PY_MOD_NAME} TYPE MODULE LANGUAGE python SOURCES ${PY_MOD_SWIG_SRCS})
+  else()
+    swig_add_module(${PY_MOD_NAME} python ${PY_MOD_SWIG_SRCS})
+  endif()
   swig_link_libraries(${PY_MOD_NAME} ${PY_MOD_LIBS} jsoncpp_lib ${TinyXML2_LIBRARIES} ${EIGEN3_LIBRARIES} ${PYTHON_LIBRARIES})
 
   set(PY_MOD_REAL_NAME1 SWIG_MODULE_${PY_MOD_NAME}_REAL_NAME)

@@ -46,6 +46,8 @@
 #include <tesseract_common/allowed_collision_matrix.h>
 #include <tesseract_common/kinematic_limits.h>
 #include <tesseract_common/timer.h>
+#include <tesseract_common/type_erasure.h>
+#include <console_bridge/console.h>
 
 #include "tesseract_common_python_std_functions.h"
 
@@ -54,6 +56,7 @@
 %include "tinyxml2.i"
 %include "boost_filesystem_path.i"
 %include "eigen_geometry.i"
+%include "console_bridge.i"
 
 %pythondynamic sco::ModelType;
 
@@ -134,6 +137,24 @@ namespace tesseract_common
   $result = SWIG_From_std_string(*$1);
 }
 
+%feature("valuewrapper") std::type_index;
+%nodefaultctor std::type_index;
+namespace std
+{
+  class type_index
+  {
+  public:
+    size_t hash_code();
+    const char* name();
+  };
+}
+
+#define BOOST_CLASS_EXPORT_KEY2(a,b)
+#define BOOST_CLASS_VERSION(a,b)
+#define BOOST_CLASS_TRACKING(a,b)
+#define BOOST_CLASS_EXPORT_IMPLEMENT(a)
+#define BOOST_SERIALIZATION_ASSUME_ABSTRACT(a)
+
 #define EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 #define TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 #define TESSERACT_COMMON_IGNORE_WARNINGS_POP
@@ -150,13 +171,53 @@ namespace tesseract_common
 %include "tesseract_common/types.h"
 %include "tesseract_common/status_code.h"
 %include "tesseract_common/resource_locator.h"
+%ignore tcp_offset;
 %include "tesseract_common/manipulator_info.h"
+%rename("%s") tcp_offset;
 %include "tesseract_common/joint_state.h"
 %include "tesseract_common/collision_margin_data.h"
 %include "tesseract_common/allowed_collision_matrix.h"
 %include "tesseract_common/kinematic_limits.h"
 %include "tesseract_common/timer.h"
 
+%extend tesseract_common::ManipulatorInfo {
+  void _setTcpOffset(const Eigen::Isometry3d& offset)
+  {
+    self->tcp_offset = offset;
+  }
 
+  void _setTcpOffset(const std::string& offset)
+  {
+    self->tcp_offset = offset;
+  }
+
+  std::size_t _getTcpOffsetIndex()
+  {
+    return self->tcp_offset.index();
+  }
+
+  Eigen::Isometry3d _getTcpOffsetIsometry3d()
+  {
+    if (self->tcp_offset.index() != 0)
+      return std::get<1>(self->tcp_offset);
+    throw std::runtime_error("tcp_offset is not an Isometry3d");
+  }
+
+  std::string _getTcpOffsetString()
+  {
+    if (self->tcp_offset.index() == 0)
+      return std::get<0>(self->tcp_offset);
+    throw std::runtime_error("tcp_offset is not a string");
+  }
+
+  %pythoncode %{
+      def _getTcpOffset(self):
+        if self._getTcpOffsetIndex() == 0:
+          return self._getTcpOffsetString()
+        else:
+          return self._getTcpOffsetIsometry3d()
+      tcp_offset = property(_getTcpOffset, _setTcpOffset)
+  %}
+}
 
 

@@ -61,7 +61,12 @@
 #include <tesseract_kinematics/core/joint_group.h>
 #include <tesseract_kinematics/core/kinematic_group.h>
 #include <tesseract_kinematics/core/kinematics_plugin_factory.h>
+#include <tesseract_kinematics/core/rep_factory.h>
+#include <tesseract_kinematics/core/rop_factory.h>
 
+#include <tesseract_kinematics/kdl/kdl_factories.h>
+#include <tesseract_kinematics/opw/opw_factory.h>
+#include <tesseract_kinematics/ur/ur_factory.h>
 
 %}
 
@@ -81,3 +86,14 @@
 %include "tesseract_kinematics/core/joint_group.h"
 %include "tesseract_kinematics/core/kinematic_group.h"
 %include "tesseract_kinematics/core/kinematics_plugin_factory.h"
+
+%init %{
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::REPInvKinFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::ROPInvKinFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::KDLFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::OPWFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::URFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+
+
+
+%}

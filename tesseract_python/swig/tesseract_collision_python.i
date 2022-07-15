@@ -43,6 +43,13 @@
 #include <tesseract_collision/core/discrete_contact_manager.h>
 #include <tesseract_collision/core/continuous_contact_manager.h>
 #include <tesseract_collision/core/contact_managers_plugin_factory.h>
+#include <tesseract_collision/bullet/bullet_factories.h>
+#include <tesseract_collision/fcl/fcl_factories.h>
+#include <tesseract_collision/bullet/bullet_cast_bvh_manager.h>
+#include <tesseract_collision/bullet/bullet_cast_simple_manager.h>
+#include <tesseract_collision/bullet/bullet_discrete_bvh_manager.h>
+#include <tesseract_collision/bullet/bullet_discrete_simple_manager.h>
+#include <tesseract_collision/fcl/fcl_discrete_managers.h>
 
 #include "tesseract_collisions_python_std_functions.h"
 %}
@@ -58,3 +65,8 @@
 %include "tesseract_collision/core/discrete_contact_manager.h"
 %include "tesseract_collision/core/continuous_contact_manager.h"
 %include "tesseract_collision/core/contact_managers_plugin_factory.h"
+
+%init %{
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_collision::tesseract_collision_bullet::BulletFactoriesAnchor(), "TESSERACT_CONTACT_MANAGERS_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_collision::tesseract_collision_fcl::FCLFactoriesAnchor(), "TESSERACT_CONTACT_MANAGERS_PLUGINS");
+%}

@@ -34,3 +34,10 @@ public:
   virtual Eigen::Isometry3d call(const tesseract_common::ManipulatorInfo& a) = 0;
   virtual ~FindTCPOffsetCallbackFnBase() {}
 };
+
+class EventCallbackFnBase
+{
+public:
+  virtual void call(const tesseract_environment::Event& a) = 0;
+  virtual ~EventCallbackFnBase() {}
+};

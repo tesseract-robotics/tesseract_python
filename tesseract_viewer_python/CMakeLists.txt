@@ -33,6 +33,8 @@ MESSAGE(STATUS "tesseract_viewer_python version: ${tesseract_viewer_python_versi
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
 
+if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
+
 set(enable_setuptools_deb_layout OFF)
 if(EXISTS "/etc/debian_version")
   set(enable_setuptools_deb_layout ON)
@@ -59,4 +61,10 @@ if (${PYTHON_VERSION_MAJOR} LESS 3)
 else()
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/python3/dist-packages")
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
+endif()
+
+else()
+install(CODE "message(STATUS \"Running setup.py in ${CMAKE_CURRENT_SOURCE_DIR}\")
+execute_process(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/python/setup.py bdist_wheel WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})")
+
 endif()

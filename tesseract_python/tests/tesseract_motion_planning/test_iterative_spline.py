@@ -20,12 +20,12 @@ def create_straight_trajectory():
         if i == 0:
             program.setStartInstruction(Instruction(MoveInstruction(Waypoint(swp), MoveInstructionType_START)))
         else:
-            program.append(Instruction(Instruction(MoveInstruction(Waypoint(swp), MoveInstructionType_FREESPACE))))
+            program.append(Instruction(MoveInstruction(Waypoint(swp), MoveInstructionType_FREESPACE)))
 
     p = np.zeros((6,),dtype=np.float64)
     p[0] = max_
     swp = StateWaypoint(joint_names, p)
-    program.append(Instruction(Instruction(MoveInstruction(Waypoint(swp), MoveInstructionType_FREESPACE))))
+    program.append(Instruction(MoveInstruction(Waypoint(swp), MoveInstructionType_FREESPACE)))
 
     return program
 

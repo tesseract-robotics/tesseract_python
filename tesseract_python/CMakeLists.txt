@@ -41,6 +41,11 @@ find_package(trajopt REQUIRED)
 find_package(TinyXML2 REQUIRED)
 find_package(opw_kinematics REQUIRED)
 
+if(NOT TinyXML2_INCLUDE_DIRS AND TARGET tinyxml2::tinyxml2)
+get_target_property(TinyXML2_INCLUDE_DIRS tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
+message(STATUS "Found from target interface: TinyXML2_INCLUDE_DIRS=${TinyXML2_INCLUDE_DIRS}")
+endif()
+
 tesseract_variables()
 
 include_directories(
@@ -100,6 +105,14 @@ message(STATUS "NumPy Include Directory: ${NUMPY_INCLUDE_DIR}")
 
 # End Find NumPy
 
+if(${CMAKE_VERSION} VERSION_GREATER "3.13.0" OR ${CMAKE_VERSION} VERSION_EQUAL "3.13.0")
+cmake_policy(SET CMP0078 OLD)
+endif()
+
+if(${CMAKE_VERSION} VERSION_GREATER "3.14.0" OR ${CMAKE_VERSION} VERSION_EQUAL "3.14.0")
+cmake_policy(SET CMP0086 OLD)
+endif()
+
 include(FindSWIG)
 find_package(SWIG 4.0 REQUIRED)
 include(UseSWIG)
@@ -108,12 +121,12 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tesseract_python_module.cmake)
 
 tesseract_python_module(tesseract_common_python SWIG_SRCS swig/tesseract_common_python.i PACKAGE tesseract_common LIBS tesseract::tesseract_common )
 tesseract_python_module(tesseract_geometry_python SWIG_SRCS swig/tesseract_geometry_python.i PACKAGE tesseract_geometry LIBS tesseract::tesseract_geometry )
-tesseract_python_module(tesseract_collision_python SWIG_SRCS swig/tesseract_collision_python.i PACKAGE tesseract_collision LIBS tesseract::tesseract_collision_core )
+tesseract_python_module(tesseract_collision_python SWIG_SRCS swig/tesseract_collision_python.i PACKAGE tesseract_collision LIBS tesseract::tesseract_collision_core tesseract::tesseract_collision_bullet_factories tesseract::tesseract_collision_fcl_factories )
 tesseract_python_module(tesseract_scene_graph_python SWIG_SRCS swig/tesseract_scene_graph_python.i PACKAGE tesseract_scene_graph LIBS tesseract::tesseract_scene_graph )
 tesseract_python_module(tesseract_srdf_python SWIG_SRCS swig/tesseract_srdf_python.i PACKAGE tesseract_srdf LIBS tesseract::tesseract_srdf )
 tesseract_python_module(tesseract_urdf_python SWIG_SRCS swig/tesseract_urdf_python.i PACKAGE tesseract_urdf LIBS tesseract::tesseract_urdf )
 tesseract_python_module(tesseract_state_solver_python SWIG_SRCS swig/tesseract_state_solver_python.i PACKAGE tesseract_state_solver LIBS tesseract::tesseract_state_solver_core tesseract::tesseract_state_solver_ofkt tesseract::tesseract_state_solver_kdl)
-tesseract_python_module(tesseract_kinematics_python SWIG_SRCS swig/tesseract_kinematics_python.i PACKAGE tesseract_kinematics LIBS tesseract::tesseract_kinematics_core )
+tesseract_python_module(tesseract_kinematics_python SWIG_SRCS swig/tesseract_kinematics_python.i PACKAGE tesseract_kinematics LIBS tesseract::tesseract_kinematics_kdl_factories tesseract::tesseract_kinematics_ur_factory tesseract::tesseract_kinematics_opw_factory tesseract::tesseract_kinematics_core_factories tesseract::tesseract_kinematics_core )
 tesseract_python_module(tesseract_environment_python SWIG_SRCS swig/tesseract_environment_python.i PACKAGE tesseract_environment LIBS tesseract::tesseract_environment )
 tesseract_python_module(tesseract_visualization_python SWIG_SRCS swig/tesseract_visualization_python.i PACKAGE tesseract_visualization LIBS tesseract::tesseract_visualization)
 tesseract_python_module(tesseract_command_language_python SWIG_SRCS swig/tesseract_command_language_python.i PACKAGE tesseract_command_language LIBS tesseract::tesseract_command_language)
@@ -125,11 +138,14 @@ tesseract_python_module(tesseract_motion_planners_descartes_python SWIG_SRCS swi
 tesseract_python_module(tesseract_time_parameterization_python SWIG_SRCS swig/tesseract_time_parameterization_python.i PACKAGE tesseract_time_parameterization LIBS tesseract::tesseract_time_parameterization )
 tesseract_python_module(tesseract_process_managers_python SWIG_SRCS swig/tesseract_process_managers_python.i PACKAGE tesseract_process_managers LIBS tesseract::tesseract_process_managers )
 
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/__package_init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_robotics/__init__.py @ONLY)
+
+option(TESSERACT_PYTHON_BUILD_WHEEL "Build self contained Python wheel")
+if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 
 #install(CODE "MESSAGE(\"INSTALL TODO!\")")
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
 
 set(enable_setuptools_deb_layout OFF)
 if(EXISTS "/etc/debian_version")
@@ -195,4 +211,11 @@ if(TESSERACT_ENABLE_TESTING)
   endif()
   
 
+endif()
+
+else()
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_build_wheel.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/install_build_wheel.cmake @ONLY)
+
+install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/install_build_wheel.cmake)
 endif()

@@ -1,4 +1,7 @@
 from tesseract_robotics import tesseract_common
+from inspect import currentframe, getframeinfo
+
+import numpy.testing as nptest
 
 def test_status_code():
     # Test that status codes can be created
@@ -16,3 +19,40 @@ def test_bytes_resource():
     assert(len(my_bytes_ret) == len(my_bytes))
     assert(my_bytes == bytearray(my_bytes_ret))
     assert(my_bytes_url == bytes_resource.getUrl())
+
+class _TestOutputHandler(tesseract_common.OutputHandler):
+    def __init__(self):
+        super().__init__()
+        self.last_text=None
+
+    def log(self, text, level, filename, line):
+        self.last_text = text
+
+def test_console_bridge():
+    tesseract_common.setLogLevel(tesseract_common.CONSOLE_BRIDGE_LOG_DEBUG)
+
+    frameinfo = getframeinfo(currentframe())
+    tesseract_common.log(frameinfo.filename,frameinfo.lineno,
+        tesseract_common.CONSOLE_BRIDGE_LOG_DEBUG, "This is a test message")
+
+    output_handler = _TestOutputHandler()
+    tesseract_common.useOutputHandler(output_handler)
+
+    tesseract_common.log(frameinfo.filename,frameinfo.lineno,
+        tesseract_common.CONSOLE_BRIDGE_LOG_DEBUG, "This is a test message 2")
+    tesseract_common.restorePreviousOutputHandler()
+
+    assert output_handler.last_text == "This is a test message 2"
+
+    tesseract_common.setLogLevel(tesseract_common.CONSOLE_BRIDGE_LOG_ERROR)
+
+def test_manipulator_info():
+
+    info = tesseract_common.ManipulatorInfo()
+    info.tcp_offset="tool0"
+    assert info.tcp_offset=="tool0"
+    
+    transform = tesseract_common.Isometry3d() * tesseract_common.Translation3d(1,2,3)
+    info.tcp_offset = transform
+    transform2=info.tcp_offset
+    nptest.assert_allclose(transform2.matrix(), transform.matrix())
