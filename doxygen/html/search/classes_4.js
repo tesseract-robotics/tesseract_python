@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['simpleresourcelocatorfnbase_0',['SimpleResourceLocatorFnBase',['../d2/d30/classSimpleResourceLocatorFnBase.html',1,'']]]
+  ['locatefilterfnbase_0',['locateFilterFnBase',['../db/df5/classlocateFilterFnBase.html',1,'']]]
 ];

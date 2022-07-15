@@ -1,9 +1,9 @@
 \hypertarget{namespaceabb__irb2400__viewer}{}\doxysection{abb\+\_\+irb2400\+\_\+viewer Namespace Reference}
 \label{namespaceabb__irb2400__viewer}\index{abb\_irb2400\_viewer@{abb\_irb2400\_viewer}}
-\doxysubsection*{Functions}
+\doxysubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
-def \mbox{\hyperlink{namespaceabb__irb2400__viewer_a392d7addaa7c3cab4fde2884faaff9f0}{\+\_\+locate\+\_\+resource}} (url)
+class \mbox{\hyperlink{classabb__irb2400__viewer_1_1TesseractSupportResourceLocator}{Tesseract\+Support\+Resource\+Locator}}
 \end{DoxyCompactItemize}
 \doxysubsection*{Variables}
 \begin{DoxyCompactItemize}
@@ -16,7 +16,7 @@ def \mbox{\hyperlink{namespaceabb__irb2400__viewer_a392d7addaa7c3cab4fde2884faaf
 \item 
 \mbox{\hyperlink{namespaceabb__irb2400__viewer_a82c4fd1a6745cabdcf7c25aa954ab3ee}{t\+\_\+env}} = Environment()
 \item 
-\mbox{\hyperlink{namespaceabb__irb2400__viewer_a65aac774c51c59dd9d968f92ce6dcdc1}{locator\+\_\+fn}} = Simple\+Resource\+Locator\+Fn(\mbox{\hyperlink{namespaceabb__irb2400__viewer_a392d7addaa7c3cab4fde2884faaff9f0}{\+\_\+locate\+\_\+resource}})
+\mbox{\hyperlink{namespaceabb__irb2400__viewer_a50f63a53e1465470d416d1e0d328cda2}{locator}} = \mbox{\hyperlink{classabb__irb2400__viewer_1_1TesseractSupportResourceLocator}{Tesseract\+Support\+Resource\+Locator}}()
 \item 
 \mbox{\hyperlink{namespaceabb__irb2400__viewer_ad5af77db9632660ee16a27ec736fef14}{manip\+\_\+info}} = Manipulator\+Info()
 \item 
@@ -36,9 +36,9 @@ list \mbox{\hyperlink{namespaceabb__irb2400__viewer_a8f90d601d9bc31ab73e14568195
 \item 
 \mbox{\hyperlink{namespaceabb__irb2400__viewer_a1f89d63dfadc92aca532739335ccd66a}{wp3}} = Cartesian\+Waypoint(Isometry3d.\+Identity() $\ast$ Translation3d(0.\+8,0.\+3,1) $\ast$ Quaterniond(0.\+70710678,0,0.\+70710678,0))
 \item 
-\mbox{\hyperlink{namespaceabb__irb2400__viewer_a8484eddf0d638cd02d4014e7fa35704a}{start\+\_\+instruction}} = Plan\+Instruction(Waypoint(\mbox{\hyperlink{namespaceabb__irb2400__viewer_a3710da69bed64ace294f6b87f83f900d}{wp1}}), Plan\+Instruction\+Type\+\_\+\+START, \char`\"{}DEFAULT\char`\"{})
+\mbox{\hyperlink{namespaceabb__irb2400__viewer_a8484eddf0d638cd02d4014e7fa35704a}{start\+\_\+instruction}} = Move\+Instruction(Waypoint(\mbox{\hyperlink{namespaceabb__irb2400__viewer_a3710da69bed64ace294f6b87f83f900d}{wp1}}), Move\+Instruction\+Type\+\_\+\+START, \char`\"{}DEFAULT\char`\"{})
 \item 
-\mbox{\hyperlink{namespaceabb__irb2400__viewer_aa3b4ddf6f0ae5ef6d0c81ceeb72dd27a}{plan\+\_\+f1}} = Plan\+Instruction(Waypoint(\mbox{\hyperlink{namespaceabb__irb2400__viewer_af56a4bcd1dfcf5b43ab652aca4bfd6a6}{wp2}}), Plan\+Instruction\+Type\+\_\+\+FREESPACE, \char`\"{}DEFAULT\char`\"{})
+\mbox{\hyperlink{namespaceabb__irb2400__viewer_aa3b4ddf6f0ae5ef6d0c81ceeb72dd27a}{plan\+\_\+f1}} = Move\+Instruction(Waypoint(\mbox{\hyperlink{namespaceabb__irb2400__viewer_af56a4bcd1dfcf5b43ab652aca4bfd6a6}{wp2}}), Move\+Instruction\+Type\+\_\+\+FREESPACE, \char`\"{}DEFAULT\char`\"{})
 \item 
 \mbox{\hyperlink{namespaceabb__irb2400__viewer_a905477a1546c92fa52d0c4b6c11e1015}{program}} = Composite\+Instruction(\char`\"{}DEFAULT\char`\"{})
 \item 
@@ -54,15 +54,6 @@ list \mbox{\hyperlink{namespaceabb__irb2400__viewer_a8f90d601d9bc31ab73e14568195
 \item 
 \mbox{\hyperlink{namespaceabb__irb2400__viewer_a12e1e449f7d8f460458e4e9689d7b909}{results}} = flatten(response.\+get\+Results().as\+\_\+\+Composite\+Instruction())
 \end{DoxyCompactItemize}
-
-
-\doxysubsection{Function Documentation}
-\mbox{\Hypertarget{namespaceabb__irb2400__viewer_a392d7addaa7c3cab4fde2884faaff9f0}\label{namespaceabb__irb2400__viewer_a392d7addaa7c3cab4fde2884faaff9f0}} 
-\index{abb\_irb2400\_viewer@{abb\_irb2400\_viewer}!\_locate\_resource@{\_locate\_resource}}
-\index{\_locate\_resource@{\_locate\_resource}!abb\_irb2400\_viewer@{abb\_irb2400\_viewer}}
-\doxysubsubsection{\texorpdfstring{\_locate\_resource()}{\_locate\_resource()}}
-{\footnotesize\ttfamily def abb\+\_\+irb2400\+\_\+viewer.\+\_\+locate\+\_\+resource (\begin{DoxyParamCaption}\item[{}]{url }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [private]}}
-
 
 
 \doxysubsection{Variable Documentation}
@@ -90,11 +81,11 @@ list \mbox{\hyperlink{namespaceabb__irb2400__viewer_a8f90d601d9bc31ab73e14568195
 \doxysubsubsection{\texorpdfstring{joint\_names}{joint\_names}}
 {\footnotesize\ttfamily list abb\+\_\+irb2400\+\_\+viewer.\+joint\+\_\+names = \mbox{[}\char`\"{}joint\+\_\+\%d\char`\"{} \% (i+1) for i in range(6)\mbox{]}}
 
-\mbox{\Hypertarget{namespaceabb__irb2400__viewer_a65aac774c51c59dd9d968f92ce6dcdc1}\label{namespaceabb__irb2400__viewer_a65aac774c51c59dd9d968f92ce6dcdc1}} 
-\index{abb\_irb2400\_viewer@{abb\_irb2400\_viewer}!locator\_fn@{locator\_fn}}
-\index{locator\_fn@{locator\_fn}!abb\_irb2400\_viewer@{abb\_irb2400\_viewer}}
-\doxysubsubsection{\texorpdfstring{locator\_fn}{locator\_fn}}
-{\footnotesize\ttfamily abb\+\_\+irb2400\+\_\+viewer.\+locator\+\_\+fn = Simple\+Resource\+Locator\+Fn(\mbox{\hyperlink{namespaceabb__irb2400__viewer_a392d7addaa7c3cab4fde2884faaff9f0}{\+\_\+locate\+\_\+resource}})}
+\mbox{\Hypertarget{namespaceabb__irb2400__viewer_a50f63a53e1465470d416d1e0d328cda2}\label{namespaceabb__irb2400__viewer_a50f63a53e1465470d416d1e0d328cda2}} 
+\index{abb\_irb2400\_viewer@{abb\_irb2400\_viewer}!locator@{locator}}
+\index{locator@{locator}!abb\_irb2400\_viewer@{abb\_irb2400\_viewer}}
+\doxysubsubsection{\texorpdfstring{locator}{locator}}
+{\footnotesize\ttfamily abb\+\_\+irb2400\+\_\+viewer.\+locator = \mbox{\hyperlink{classabb__irb2400__viewer_1_1TesseractSupportResourceLocator}{Tesseract\+Support\+Resource\+Locator}}()}
 
 \mbox{\Hypertarget{namespaceabb__irb2400__viewer_ad5af77db9632660ee16a27ec736fef14}\label{namespaceabb__irb2400__viewer_ad5af77db9632660ee16a27ec736fef14}} 
 \index{abb\_irb2400\_viewer@{abb\_irb2400\_viewer}!manip\_info@{manip\_info}}
@@ -118,7 +109,7 @@ list \mbox{\hyperlink{namespaceabb__irb2400__viewer_a8f90d601d9bc31ab73e14568195
 \index{abb\_irb2400\_viewer@{abb\_irb2400\_viewer}!plan\_f1@{plan\_f1}}
 \index{plan\_f1@{plan\_f1}!abb\_irb2400\_viewer@{abb\_irb2400\_viewer}}
 \doxysubsubsection{\texorpdfstring{plan\_f1}{plan\_f1}}
-{\footnotesize\ttfamily abb\+\_\+irb2400\+\_\+viewer.\+plan\+\_\+f1 = Plan\+Instruction(Waypoint(\mbox{\hyperlink{namespaceabb__irb2400__viewer_af56a4bcd1dfcf5b43ab652aca4bfd6a6}{wp2}}), Plan\+Instruction\+Type\+\_\+\+FREESPACE, \char`\"{}DEFAULT\char`\"{})}
+{\footnotesize\ttfamily abb\+\_\+irb2400\+\_\+viewer.\+plan\+\_\+f1 = Move\+Instruction(Waypoint(\mbox{\hyperlink{namespaceabb__irb2400__viewer_af56a4bcd1dfcf5b43ab652aca4bfd6a6}{wp2}}), Move\+Instruction\+Type\+\_\+\+FREESPACE, \char`\"{}DEFAULT\char`\"{})}
 
 \mbox{\Hypertarget{namespaceabb__irb2400__viewer_a64a82a4dfafd6957df51d74374b5431a}\label{namespaceabb__irb2400__viewer_a64a82a4dfafd6957df51d74374b5431a}} 
 \index{abb\_irb2400\_viewer@{abb\_irb2400\_viewer}!planning\_server@{planning\_server}}
@@ -154,7 +145,7 @@ list \mbox{\hyperlink{namespaceabb__irb2400__viewer_a8f90d601d9bc31ab73e14568195
 \index{abb\_irb2400\_viewer@{abb\_irb2400\_viewer}!start\_instruction@{start\_instruction}}
 \index{start\_instruction@{start\_instruction}!abb\_irb2400\_viewer@{abb\_irb2400\_viewer}}
 \doxysubsubsection{\texorpdfstring{start\_instruction}{start\_instruction}}
-{\footnotesize\ttfamily abb\+\_\+irb2400\+\_\+viewer.\+start\+\_\+instruction = Plan\+Instruction(Waypoint(\mbox{\hyperlink{namespaceabb__irb2400__viewer_a3710da69bed64ace294f6b87f83f900d}{wp1}}), Plan\+Instruction\+Type\+\_\+\+START, \char`\"{}DEFAULT\char`\"{})}
+{\footnotesize\ttfamily abb\+\_\+irb2400\+\_\+viewer.\+start\+\_\+instruction = Move\+Instruction(Waypoint(\mbox{\hyperlink{namespaceabb__irb2400__viewer_a3710da69bed64ace294f6b87f83f900d}{wp1}}), Move\+Instruction\+Type\+\_\+\+START, \char`\"{}DEFAULT\char`\"{})}
 
 \mbox{\Hypertarget{namespaceabb__irb2400__viewer_a82c4fd1a6745cabdcf7c25aa954ab3ee}\label{namespaceabb__irb2400__viewer_a82c4fd1a6745cabdcf7c25aa954ab3ee}} 
 \index{abb\_irb2400\_viewer@{abb\_irb2400\_viewer}!t\_env@{t\_env}}
