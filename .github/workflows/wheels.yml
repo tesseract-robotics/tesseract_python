@@ -9,9 +9,16 @@ on:
 
 env:
   VCPKG_PKGS: >- 
-    tinyxml2 console-bridge assimp urdfdom octomap orocos-kdl pcl gtest flann jsoncpp
-    yaml-cpp boost-dll boost-program-options boost-serialization boost-filesystem
-
+    boost-dll boost-program-options
+    boost-serialization boost-filesystem
+    tinyxml2 console-bridge assimp
+    urdfdom octomap orocos-kdl pcl
+    gtest benchmark flann jsoncpp
+    yaml-cpp
+    blas lapack
+    fcl ompl taskflow
+    bullet3[multithreading,double-precision,rtti]
+    ccd[double-precision]
 jobs:
   build-ubuntu:
     runs-on: ${{ matrix.config.runs_on }}
@@ -56,7 +63,7 @@ jobs:
         sudo python3 -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool
     - name: vcs import
       working-directory: ws/src
-      run: vcs import --input tesseract_python/dependencies_with_ext.rosinstall
+      run: vcs import --input tesseract_python/dependencies.rosinstall
     - name: colcon build
       working-directory: ws
       run: >
@@ -115,39 +122,13 @@ jobs:
       with:
         python-version: '${{ matrix.config.python_version }}'
         architecture: ${{ matrix.config.arch }}
-    - name: checkout vcpkg
-      uses: actions/checkout@v2
+    - name: vcpkg build
+      uses: johnwason/vcpkg-action@v2
       with:
-        path: vcpkg
-        repository: microsoft/vcpkg
-    - name: bootstrap vcpkg
-      working-directory: vcpkg
-      run: bootstrap-vcpkg.bat
-    - name: vcpkg dry run
-      working-directory: vcpkg
-      shell: cmd
-      run: |
-        vcpkg install --dry-run --triplet ${{ matrix.config.vcpkg_triplet }} ${{ env.VCPKG_PKGS }} > vcpkg_dry_run.txt
-    - name: cache-vcpkg-archives
-      if: startsWith(github.ref, 'refs/tags/v') != true
-      id: cache-vcpkg-archives
-      uses: actions/cache@v2
-      with:
-        path: C:\Users\runneradmin\AppData\Local\vcpkg\archives
-        key: ${{ runner.os }}-${{matrix.config.arch}}-${{matrix.config.python_version}}-vcpkg-${{ hashFiles('vcpkg/vcpkg_dry_run.txt') }}
-    
-    - name: vcpkg
-      working-directory: vcpkg
-      run: >
-        vcpkg install --triplet ${{ matrix.config.vcpkg_triplet }} 
-        ${{ env.VCPKG_PKGS }}
-    - name: clean vcpkg
-      working-directory: vcpkg
-      shell: cmd
-      run: |
-        rmdir /s /q buildtrees
-        rmdir /s /q downloads
-        rmdir /s /q .git
+        pkgs: >-
+          ${{ env.VCPKG_PKGS }}
+        triplet: ${{ matrix.config.vcpkg_triplet }}
+        extra-args: --clean-after-build
     - name: pip3
       run: |
         python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
@@ -158,11 +139,7 @@ jobs:
         choco install swig ninja -r
     - name: vcs import
       working-directory: ws/src
-      run: vcs import --input tesseract_python\dependencies_with_ext.rosinstall
-    - name: delete traject_ext eigen 
-      working-directory: ws/src/tesseract_ext/
-      shell: cmd
-      run: rmdir /s /q eigen
+      run: vcs import --input tesseract_python\dependencies.rosinstall
     - name: colcon build
       working-directory: ws
       shell: cmd
@@ -176,12 +153,14 @@ jobs:
         colcon build --packages-up-to tesseract_python --merge-install ^
         --cmake-force-configure ^
         --event-handlers console_cohesion+ ^
+        --packages-ignore tesseract_examples trajopt_ifopt trajopt_sqp gtest ^
         --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release ^
-        -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF  -DINSTALL_FCL=ON -DINSTALL_BULLET=ON ^
         -DPYTHON_EXECUTABLE="${{ env.PYTHON3_EXE }}" ^
         -DTESSERACT_PYTHON_BUILD_WHEEL=ON ^
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON ^
-        -DVCPKG_APPLOCAL_DEPS=OFF
+        -DVCPKG_APPLOCAL_DEPS=OFF ^
+        -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF
+        if %ERRORLEVEL% GEQ 1 exit 1
     - name: test
       shell: cmd
       run: |
