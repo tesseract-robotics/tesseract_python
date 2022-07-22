@@ -63,7 +63,7 @@ jobs:
         sudo python3 -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool
     - name: vcs import
       working-directory: ws/src
-      run: vcs import --input tesseract_python/dependencies.rosinstall
+      run: vcs import --input tesseract_python/dependencies_with_ext.rosinstall
     - name: colcon build
       working-directory: ws
       run: >
