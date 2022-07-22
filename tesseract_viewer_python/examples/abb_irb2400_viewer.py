@@ -3,7 +3,7 @@ from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Tran
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
 from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Waypoint, \
-    PlanInstructionType_FREESPACE, PlanInstructionType_START, PlanInstruction, Instruction, \
+    MoveInstructionType_FREESPACE, MoveInstructionType_START, MoveInstruction, Instruction, \
     CompositeInstruction, flatten
 from tesseract_robotics.tesseract_process_managers import ProcessPlanningServer, ProcessPlanningRequest, \
     FREESPACE_PLANNER_NAME
@@ -70,8 +70,8 @@ wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,-0.3,1.455) * 
 wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
 wp3 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1) * Quaterniond(0.70710678,0,0.70710678,0))
 
-start_instruction = PlanInstruction(Waypoint(wp1), PlanInstructionType_START, "DEFAULT")
-plan_f1 = PlanInstruction(Waypoint(wp2), PlanInstructionType_FREESPACE, "DEFAULT")
+start_instruction = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "DEFAULT")
+plan_f1 = MoveInstruction(Waypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
 
 program = CompositeInstruction("DEFAULT")
 program.setStartInstruction(Instruction(start_instruction))

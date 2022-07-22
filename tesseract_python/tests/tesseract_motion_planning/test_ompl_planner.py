@@ -9,7 +9,7 @@ from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
 from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, Waypoint, \
-    PlanInstructionType_FREESPACE, PlanInstructionType_START, PlanInstruction, Instruction, \
+    MoveInstructionType_FREESPACE, MoveInstructionType_START, MoveInstruction, Instruction, \
     isMoveInstruction, isStateWaypoint, CompositeInstruction, flatten, isMoveInstruction, isStateWaypoint, \
     ProfileDictionary
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateSeed, \
@@ -50,8 +50,8 @@ def test_ompl_freespace_joint_cart():
     goal = kin_group.calcFwdKin(end_state)[manip.tcp_frame]
     wp2 = CartesianWaypoint(goal)
 
-    start_instruction = PlanInstruction(Waypoint(wp1), PlanInstructionType_START, "TEST_PROFILE")
-    plan_f1 = PlanInstruction(Waypoint(wp2), PlanInstructionType_FREESPACE, "TEST_PROFILE")
+    start_instruction = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "TEST_PROFILE")
+    plan_f1 = MoveInstruction(Waypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE")
 
     program = CompositeInstruction("TEST_PROFILE")
     program.setStartInstruction(Instruction(start_instruction))
@@ -86,7 +86,8 @@ def test_ompl_freespace_joint_cart():
     assert len(results) == 11
     for instr in results:
         assert isMoveInstruction(instr)
-        wp1 = instr.as_MoveInstruction().getWaypoint()
+        move_instr1 = instr.as_MoveInstruction()
+        wp1 = move_instr1.getWaypoint()
         assert isStateWaypoint(wp1)
         wp = wp1.as_StateWaypoint()
         assert len(wp.joint_names) == 7

@@ -61,6 +61,8 @@
 #include <tesseract_kinematics/core/joint_group.h>
 #include <tesseract_kinematics/core/kinematic_group.h>
 #include <tesseract_kinematics/core/kinematics_plugin_factory.h>
+#include <tesseract_kinematics/core/rep_factory.h>
+#include <tesseract_kinematics/core/rop_factory.h>
 
 #include <tesseract_kinematics/kdl/kdl_factories.h>
 #include <tesseract_kinematics/opw/opw_factory.h>
@@ -86,45 +88,12 @@
 %include "tesseract_kinematics/core/kinematics_plugin_factory.h"
 
 %init %{
-#ifdef TESSERACT_PLUGIN_FACTORY_CALLBACKS
-tesseract_kinematics::KinematicsPluginFactory::setGlobalCreateFwdKinFactoryCallback(
-    [](const std::string& class_name) -> tesseract_kinematics::FwdKinFactory::Ptr
-    {
-        if (class_name == "KDLFwdKinChainFactory")
-        {
-            return std::make_shared<tesseract_kinematics::KDLFwdKinChainFactory>();
-        }
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::REPInvKinFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::ROPInvKinFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::KDLFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::OPWFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::URFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
 
-        return nullptr;
-    }
-);
 
-tesseract_kinematics::KinematicsPluginFactory::setGlobalCreateInvKinFactoryCallback(
-    [](const std::string& class_name) -> tesseract_kinematics::InvKinFactory::Ptr
-    {
 
-        if (class_name == "KDLInvKinChainLMAFactory")
-        {
-            return std::make_shared<tesseract_kinematics::KDLInvKinChainLMAFactory>();
-        }
-
-        if (class_name == "KDLInvKinChainNRFactory")
-        {
-            return std::make_shared<tesseract_kinematics::KDLInvKinChainNRFactory>();
-        }
-
-        if (class_name == "OPWInvKinFactory")
-        {
-            return std::make_shared<tesseract_kinematics::OPWInvKinFactory>();
-        }
-
-        if (class_name == "URInvKinFactory")
-        {
-            return std::make_shared<tesseract_kinematics::OPWInvKinFactory>();
-        }
-
-        return nullptr;
-    }
-);
-#endif
 %}

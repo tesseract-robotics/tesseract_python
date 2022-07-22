@@ -67,44 +67,6 @@
 %include "tesseract_collision/core/contact_managers_plugin_factory.h"
 
 %init %{
-#ifdef TESSERACT_PLUGIN_FACTORY_CALLBACKS
-tesseract_collision::ContactManagersPluginFactory::setGlobalCreateDiscreteContactManagerFactoryCallback(
-    [](const std::string& class_name) -> tesseract_collision::DiscreteContactManagerFactory::Ptr
-    {
-        if (class_name == "BulletDiscreteBVHManagerFactory")
-        {
-            return std::make_shared<tesseract_collision::tesseract_collision_bullet::BulletDiscreteBVHManagerFactory>();
-        }
-
-        if (class_name == "BulletDiscreteSimpleManagerFactory")
-        {
-            return std::make_shared<tesseract_collision::tesseract_collision_bullet::BulletDiscreteSimpleManagerFactory>();
-        }
-
-        if (class_name == "FCLDiscreteBVHManagerFactory")
-        {
-            return std::make_shared<tesseract_collision::tesseract_collision_fcl::FCLDiscreteBVHManagerFactory>();
-        }
-
-        return nullptr;
-    }
-);
-
-tesseract_collision::ContactManagersPluginFactory::setGlobalCreateContinuousContactManagerFactoryCallback(
-    [](const std::string& class_name) -> tesseract_collision::ContinuousContactManagerFactory::Ptr
-    {
-        if (class_name == "BulletCastBVHManagerFactory")
-        {
-            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletCastBVHManagerFactory>();
-        }
-
-        if (class_name == "BulletCastSimpleManagerFactory")
-        {
-            return std::make_unique<tesseract_collision::tesseract_collision_bullet::BulletCastSimpleManagerFactory>();
-        }
-
-        return nullptr;
-    }
-);
-#endif
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_collision::tesseract_collision_bullet::BulletFactoriesAnchor(), "TESSERACT_CONTACT_MANAGERS_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_collision::tesseract_collision_fcl::FCLFactoriesAnchor(), "TESSERACT_CONTACT_MANAGERS_PLUGINS");
 %}

@@ -9,7 +9,7 @@ from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
 from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, Waypoint, \
-    PlanInstructionType_LINEAR, PlanInstructionType_START, PlanInstruction, Instruction, \
+    MoveInstructionType_LINEAR, MoveInstructionType_START, MoveInstruction, Instruction, \
     isMoveInstruction, isStateWaypoint, CompositeInstruction, flatten, isMoveInstruction, isStateWaypoint, \
     ProfileDictionary
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateSeed, \
@@ -45,8 +45,8 @@ def test_descartes_freespace_fixed_poses():
     wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,-0.2,0.8) * Quaterniond(0,0,-1.0,0))
     wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.2,0.8) * Quaterniond(0,0,-1.0,0))
 
-    start_instruction = PlanInstruction(Waypoint(wp1), PlanInstructionType_START, "TEST_PROFILE", manip)
-    plan_f1 = PlanInstruction(Waypoint(wp2), PlanInstructionType_LINEAR, "TEST_PROFILE", manip)
+    start_instruction = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "TEST_PROFILE", manip)
+    plan_f1 = MoveInstruction(Waypoint(wp2), MoveInstructionType_LINEAR, "TEST_PROFILE", manip)
 
     program = CompositeInstruction()
     program.setStartInstruction(Instruction(start_instruction))
@@ -83,7 +83,8 @@ def test_descartes_freespace_fixed_poses():
     assert len(results) == 11
     for instr in results:
         assert isMoveInstruction(instr)
-        wp1 = instr.as_MoveInstruction().getWaypoint()
+        move_instr=instr.as_MoveInstruction()
+        wp1 = move_instr.getWaypoint()
         assert isStateWaypoint(wp1)
         wp = wp1.as_StateWaypoint()
         assert len(wp.joint_names) == 6
