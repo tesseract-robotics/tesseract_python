@@ -2,6 +2,8 @@ name: Python Wheels
 
 on:
   push:
+    branches:
+      - master
   pull_request:
   release:
     types:
