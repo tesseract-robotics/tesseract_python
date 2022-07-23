@@ -58,8 +58,14 @@
 #define TESSERACT_MOTION_PLANNERS_CORE_PUBLIC
 %include "tesseract_motion_planners/default_planner_namespaces.h"
 %include "tesseract_motion_planners/core/types.h"
+
+%shared_ptr(tesseract_planning::MotionPlanner)
 %include "tesseract_motion_planners/core/planner.h"
+
 %include "tesseract_motion_planners/robot_config.h"
+%template(getRobotConfig) tesseract_planning::getRobotConfig<double>;
+%template(getJointTurns) tesseract_planning::getJointTurns<double>;
+
 %include "tesseract_motion_planners/interface_utils.h"
 %include "tesseract_motion_planners/core/utils.h"
 

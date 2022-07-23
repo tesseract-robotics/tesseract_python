@@ -60,9 +60,27 @@
 // tesseract_motion_planners_simple
 #define TESSERACT_MOTION_PLANNERS_SIMPLE_PUBLIC
 %include "tesseract_motion_planners/simple/profile/simple_planner_utils.h"
+
+%shared_ptr(tesseract_planning::SimplePlannerPlanProfile)
+%shared_ptr(tesseract_planning::SimplePlannerPlanCompositeProfile)
 %include "tesseract_motion_planners/simple/profile/simple_planner_profile.h"
+%template(SimplePlannerPlanProfileMap) std::unordered_map<std::string, tesseract_planning::SimplePlannerPlanProfile::ConstPtr>;
+%template(SimplePlannerCompositeProfileMap) std::unordered_map<std::string, tesseract_planning::SimplePlannerCompositeProfile::ConstPtr>;
+%tesseract_command_language_add_profile_type(SimplePlannerPlanProfile);
+%tesseract_command_language_add_profile_type(SimplePlannerCompositeProfile);
+
+%shared_ptr(tesseract_planning::SimplePlannerLVSPlanProfile)
 %include "tesseract_motion_planners/simple/profile/simple_planner_lvs_plan_profile.h"
+
+%shared_ptr(tesseract_planning::SimplePlannerLVSNoIKPlanProfile)
 %include "tesseract_motion_planners/simple/profile/simple_planner_lvs_no_ik_plan_profile.h"
+
+%shared_ptr(tesseract_planning::SimplePlannerFixedSizePlanProfile)
 %include "tesseract_motion_planners/simple/profile/simple_planner_fixed_size_plan_profile.h"
+
+%shared_ptr(tesseract_planning::SimplePlannerFixedSizeAssignPlanProfile)
 %include "tesseract_motion_planners/simple/profile/simple_planner_fixed_size_assign_plan_profile.h"
+
+%shared_ptr(tesseract_planning::SimpleMotionPlanner)
+%shared_ptr(tesseract_planning::SimpleMotionPlannerStatusCategory)
 %include "tesseract_motion_planners/simple/simple_motion_planner.h"

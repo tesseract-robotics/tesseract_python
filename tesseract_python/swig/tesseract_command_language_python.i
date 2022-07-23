@@ -92,11 +92,66 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %ignore tesseract_common::TypeErasureInterface::clone;
 %include "tesseract_common/type_erasure.h"
 %include "tesseract_command_language/types.h"
+
+%shared_ptr(tesseract_planning::ProfileDictionary)
 %include "tesseract_command_language/profile_dictionary.h"
 %include "tesseract_command_language_python_profile_dictionary_functions.h"
+
+//%template(Waypoints) std::vector<tesseract_planning::Waypoint>;
+%ignore tesseract_planning::Waypoint::getType;
 %include "tesseract_command_language/core/waypoint.h"
+
+%ignore std::vector<tesseract_planning::Instruction>::vector(size_type);
+%ignore std::vector<tesseract_planning::Instruction>::resize(size_type);
+%ignore tesseract_planning::Instruction::getType;
+%pythondynamic tesseract_planning::Instruction;
 %include "tesseract_command_language/core/instruction.h"
+%template(Instructions) std::vector<tesseract_planning::Instruction>;
+
 %include "tesseract_command_language/command_language.h"
+
+%include "tesseract_command_language/instruction_type.h"
+%include "tesseract_command_language/null_instruction.h"
+%tesseract_command_language_add_instruction_type(NullInstruction)
+
+%include "tesseract_command_language/null_waypoint.h"
+%tesseract_command_language_add_waypoint_type(NullWaypoint)
+
+%include "tesseract_command_language/cartesian_waypoint.h"
+%tesseract_command_language_add_waypoint_type(CartesianWaypoint)
+
+%include "tesseract_command_language/composite_instruction.h"
+%tesseract_command_language_add_instruction_type(CompositeInstruction)
+
+%include "tesseract_command_language/joint_waypoint.h"
+%extend tesseract_planning::JointWaypoint {
+  JointWaypoint(std::vector<std::string> joint_names, const Eigen::VectorXd& other)
+  {
+    return new tesseract_planning::JointWaypoint(joint_names, other);
+  }
+}
+%tesseract_command_language_add_waypoint_type(JointWaypoint)
+
+
+%include "tesseract_command_language/move_instruction.h"
+%tesseract_command_language_add_instruction_type(MoveInstruction)
+
+%include "tesseract_command_language/state_waypoint.h"
+%tesseract_command_language_add_waypoint_type(StateWaypoint)
+
+%include "tesseract_command_language/waypoint_type.h"
+%include "tesseract_command_language/timer_instruction.h"
+%tesseract_command_language_add_instruction_type(TimerInstruction)
+
+%include "tesseract_command_language/wait_instruction.h"
+%tesseract_command_language_add_instruction_type(WaitInstruction)
+
+%include "tesseract_command_language/set_tool_instruction.h"
+%tesseract_command_language_add_instruction_type(SetToolInstruction)
+
+%include "tesseract_command_language/set_analog_instruction.h"
+%tesseract_command_language_add_instruction_type(SetAnalogInstruction)
+
 %include "tesseract_command_language/utils/filter_functions.h"
 %include "tesseract_command_language/utils/utils.h"
 %include "tesseract_command_language/utils/get_instruction_utils.h"

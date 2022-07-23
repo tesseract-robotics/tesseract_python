@@ -118,8 +118,89 @@ $1 = is_array($input);
 
 // tesseract_geometry
 #define TESSERACT_GEOMETRY_PUBLIC
+
+%shared_ptr(tesseract_geometry::MeshMaterial)
+%shared_ptr(tesseract_geometry::MeshTexture)
+%template(VectorMeshTexture) std::vector<std::shared_ptr<tesseract_geometry::MeshTexture>>;
 %include "tesseract_geometry/impl/mesh_material.h"
+
+
+%shared_ptr(tesseract_geometry::Geometry)
+%nodefaultctor tesseract_geometry::Geometry;
+
 %include "tesseract_geometry/geometry.h"
+
+%template(Geometries) std::vector<std::shared_ptr<tesseract_geometry::Geometry> >;
+%template(GeometriesConst) std::vector<std::shared_ptr<const tesseract_geometry::Geometry> >;
+
+
+
+%shared_factory(
+    tesseract_geometry::Geometry,
+    tesseract_geometry::Box,
+    tesseract_geometry::Capsule,
+    tesseract_geometry::Cone,
+    tesseract_geometry::ConvexMesh,
+    tesseract_geometry::Cylinder,
+    tesseract_geometry::Octree,
+    tesseract_geometry::Plane,
+    tesseract_geometry::PolygonMesh,
+    tesseract_geometry::Mesh,
+    tesseract_geometry::SDFMesh,
+    tesseract_geometry::Sphere
+)
+
+%shared_ptr(tesseract_geometry::Box)
+%include <tesseract_geometry/impl/box.h>
+
+%shared_ptr(tesseract_geometry::Capsule)
+%include <tesseract_geometry/impl/capsule.h>
+
+%shared_ptr(tesseract_geometry::PolygonMesh)
+%template(PolygonMeshVector) std::vector<std::shared_ptr<tesseract_geometry::PolygonMesh> >;
+%include <tesseract_geometry/impl/polygon_mesh.h>
+
+%shared_ptr(tesseract_geometry::Cone)
+%include <tesseract_geometry/impl/cone.h>
+
+%shared_ptr(tesseract_geometry::ConvexMesh)
+%template(ConvexMeshVector) std::vector<std::shared_ptr<tesseract_geometry::ConvexMesh> >;
+%include <tesseract_geometry/impl/convex_mesh.h>
+
+%shared_ptr(tesseract_geometry::Cylinder)
+%include <tesseract_geometry/impl/cylinder.h>
+
+%shared_ptr(tesseract_geometry::Mesh)
+%template(MeshVector) std::vector<std::shared_ptr<tesseract_geometry::Mesh> >;
+%include <tesseract_geometry/impl/mesh.h>
+%include <tesseract_geometry/impl/mesh_material.h>
+
+%shared_ptr(tesseract_geometry::Octree)
+%nodefaultctor tesseract_geometry::Octree;
+%include <tesseract_geometry/impl/octree.h>
+
+%shared_ptr(tesseract_geometry::Plane)
+%include <tesseract_geometry/impl/plane.h>
+
+%shared_ptr(tesseract_geometry::SDFMesh)
+%template(SDFMeshVector) std::vector<std::shared_ptr<tesseract_geometry::SDFMesh> >;
+%include <tesseract_geometry/impl/sdf_mesh.h>
+
+%shared_ptr(tesseract_geometry::Sphere)
+%include <tesseract_geometry/impl/sphere.h>
+
 %include "tesseract_geometry/geometries.h"
 %include "tesseract_geometry/utils.h"
+
+
 %include "tesseract_geometry/mesh_parser.h"
+%pybuffer_binary(const uint8_t* bytes, size_t bytes_len);
+%template(createMeshFromResource) tesseract_geometry::createMeshFromResource<tesseract_geometry::Mesh>;
+%template(createSDFMeshFromResource) tesseract_geometry::createMeshFromResource<tesseract_geometry::SDFMesh>;
+%template(createConvexMeshFromResource) tesseract_geometry::createMeshFromResource<tesseract_geometry::ConvexMesh>;
+%template(createMeshFromPath) tesseract_geometry::createMeshFromPath<tesseract_geometry::Mesh>;
+%template(createSDFMeshFromPath) tesseract_geometry::createMeshFromPath<tesseract_geometry::SDFMesh>;
+%template(createConvexMeshFromPath) tesseract_geometry::createMeshFromPath<tesseract_geometry::ConvexMesh>;
+%template(createMeshFromBytes) tesseract_geometry::createMeshFromBytes<tesseract_geometry::Mesh>;
+%template(createSDFMeshFromBytes) tesseract_geometry::createMeshFromBytes<tesseract_geometry::SDFMesh>;
+%template(createConvexMeshFromBytes) tesseract_geometry::createMeshFromBytes<tesseract_geometry::ConvexMesh>;

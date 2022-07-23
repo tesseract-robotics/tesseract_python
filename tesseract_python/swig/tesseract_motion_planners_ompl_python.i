@@ -61,15 +61,64 @@
 
 // tesseract_motion_planners_ompl
 #define TESSERACT_MOTION_PLANNERS_OMPL_PUBLIC
+
+%shared_ptr(tesseract_planning::OMPLPlannerConfigurator)
+%shared_ptr(tesseract_planning::SBLConfigurator)
+%shared_ptr(tesseract_planning::ESTConfigurator)
+%shared_ptr(tesseract_planning::LBKPIECE1Configurator)
+%shared_ptr(tesseract_planning::BKPIECE1Configurator)
+%shared_ptr(tesseract_planning::KPIECE1Configurator)
+%shared_ptr(tesseract_planning::BiTRRTConfigurator)
+%shared_ptr(tesseract_planning::RRTConfigurator)
+%shared_ptr(tesseract_planning::RRTConnectConfigurator)
+%shared_ptr(tesseract_planning::RRTstarConfigurator)
+%shared_ptr(tesseract_planning::TRRTConfigurator)
+%shared_ptr(tesseract_planning::PRMConfigurator)
+%shared_ptr(tesseract_planning::PRMstarConfigurator)
+%shared_ptr(tesseract_planning::LazyPRMstarConfigurator)
+%shared_ptr(tesseract_planning::SPARSConfigurator)
+%ignore create(ompl::base::SpaceInformationPtr si) const;
 %include "tesseract_motion_planners/ompl/ompl_planner_configurator.h"
+%template(OMPLPlanners) std::vector<tesseract_planning::OMPLPlannerConfigurator::ConstPtr>;
+%shared_factory(
+  tesseract_planning::OMPLPlannerConfigurator,
+  tesseract_planning::SBLConfigurator,
+  tesseract_planning::ESTConfigurator,
+  tesseract_planning::LBKPIECE1Configurator,
+  tesseract_planning::BKPIECE1Configurator,
+  tesseract_planning::KPIECE1Configurator,
+  tesseract_planning::BiTRRTConfigurator,
+  tesseract_planning::RRTConfigurator,
+  tesseract_planning::RRTConnectConfigurator,
+  tesseract_planning::RRTstarConfigurator,
+  tesseract_planning::TRRTConfigurator,
+  tesseract_planning::PRMConfigurator,
+  tesseract_planning::PRMstarConfigurator,
+  tesseract_planning::LazyPRMstarConfigurator,
+  tesseract_planning::SPARSConfigurator
+)
+
+%shared_ptr(tesseract_planning::OMPLProblem)
+%ignore tesseract_planning::OMPLProblem::extractor;
 %include "tesseract_motion_planners/ompl/ompl_problem.h"
+%template(OMPLProblems) std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>;
+
+%shared_ptr(tesseract_planning::OMPLMotionPlannerStatusCategory)
 %include "tesseract_motion_planners/ompl/ompl_motion_planner_status_category.h"
+
+%shared_ptr(tesseract_planning::OMPLPlanProfile)
 %include "tesseract_motion_planners/ompl/profile/ompl_profile.h"
+%template(OMPLPlanProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::OMPLPlanProfile>>;
+%tesseract_command_language_add_profile_type(OMPLPlanProfile);
+
+%shared_ptr(tesseract_planning::OMPLDefaultPlanProfile)
+%ignore tesseract_planning::OMPLDefaultPlanProfile::allocWeightedRealVectorStateSampler;
 %include "tesseract_motion_planners/ompl/profile/ompl_default_plan_profile.h"
 
 %tesseract_std_function_base(OMPLProblemGeneratorFn,tesseract_planning,std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::OMPLPlanProfileMap&,c);
 %tesseract_std_function(OMPLProblemGeneratorFn,tesseract_planning,std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::OMPLPlanProfileMap&,c);
 
+%shared_ptr(tesseract_planning::OMPLMotionPlanner)
 %include "tesseract_motion_planners/ompl/ompl_motion_planner.h"
 %include "tesseract_motion_planners/ompl/serialize.h"
 %include "tesseract_motion_planners/ompl/deserialize.h"

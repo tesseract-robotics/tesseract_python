@@ -50,6 +50,8 @@
 
 // tesseract_srdf
 #define TESSERACT_SRDF_PUBLIC
+
+%shared_ptr(tesseract_srdf::SRDFModel)
 %include "tesseract_srdf/kinematics_information.h"
 %include "tesseract_srdf/srdf_model.h"
 %include "tesseract_srdf/utils.h"

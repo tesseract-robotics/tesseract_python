@@ -66,9 +66,18 @@ namespace tesseract_scene_graph
 
 %ignore KDLStateSolver(const tesseract_scene_graph::SceneGraph& scene_graph, tesseract_scene_graph::KDLTreeData data);
 
+%shared_ptr(tesseract_scene_graph::StateSolver)
+%wrap_unique_ptr(StateSolverUPtr,tesseract_scene_graph::StateSolver)
 %include "tesseract_state_solver/state_solver.h"
+
+%shared_ptr(tesseract_scene_graph::MutableStateSolver)
+%wrap_unique_ptr(MutableStateSolverUPtr,tesseract_scene_graph::MutableStateSolver)
 %include "tesseract_state_solver/mutable_state_solver.h"
+
+%shared_ptr(tesseract_scene_graph::KDLStateSolver)
 %include "tesseract_state_solver/kdl/kdl_state_solver.h"
+
+%shared_ptr(tesseract_scene_graph::OFKTStateSolver)
 %include "tesseract_state_solver/ofkt/ofkt_state_solver.h"
 
 

@@ -121,17 +121,68 @@
 %ignore tesseract_planning::TaskInput::addTaskInfo;
 
 
-
+%wrap_unique_ptr(TaskInfoUPtr,tesseract_planning::TaskInfo)
+%shared_ptr(tesseract_planning::TaskInfoContainer)
 %include "tesseract_process_managers/core/task_info.h"
+
+%shared_ptr(tesseract_planning::TaskflowInterface)
 %include "tesseract_process_managers/core/taskflow_interface.h"
 %include "tesseract_process_managers/core/task_input.h"
-%include "tesseract_process_managers/core/process_planning_problem.h"
-%include "tesseract_process_managers/core/process_planning_request.h"
-%include "tesseract_process_managers/core/process_planning_future.h"
-%include "tesseract_process_managers/core/process_planning_server.h"
 
+%shared_ptr(tesseract_planning::ProcessPlanningProblem)
+%ignore taskflow_container;
+
+%include "tesseract_process_managers/core/process_planning_problem.h"  
+%extend tesseract_planning::ProcessPlanningProblem {
+    Instruction& getInput() { return *$self->input; }
+    Instruction& getResults() { return *$self->results; }
+    ManipulatorInfo getGlobalManipInfo() { return *$self->global_manip_info; }
+    PlannerProfileRemapping getPlanProfileRemapping() { return *$self->plan_profile_remapping; }
+    PlannerProfileRemapping getCompositeProfileRemapping() { return *$self->composite_profile_remapping; }
+}
+  
+
+%include "tesseract_process_managers/core/process_planning_request.h"
+
+%shared_ptr(tesseract_planning::ProcessPlanningFuture)
+%ignore process_future;
+%include "tesseract_process_managers/core/process_planning_future.h"
+
+%extend tesseract_planning::ProcessPlanningFuture {
+bool waitFor(double seconds)
+{
+    auto res = $self->waitFor(std::chrono::duration<double>(seconds));
+    return res == std::future_status::ready;
+}
+}
+
+%shared_ptr(tesseract_planning::ProcessPlanningServer)
+%nodefaultctor tesseract_planning::ProcessPlanningServer;
+%include "tesseract_process_managers/core/process_planning_server.h"
+%extend tesseract_planning::ProcessPlanningServer
+{
+std::shared_ptr<tesseract_planning::ProcessPlanningFuture> run(const ProcessPlanningRequest& request)
+{
+    return std::make_shared<tesseract_planning::ProcessPlanningFuture>(std::move($self->run(request)));
+}
+}
+
+
+// %wrap_unique_ptr(TaskGeneratorUPtr,tesseract_planning::TaskGenerator)
+
+// %shared_ptr(tesseract_planning::IterativeSplineParameterizationProfile)
+// %ignore IterativeSplineParameterizationTaskGenerator;
+// %ignore IterativeSplineParameterizationTaskInfo;
 // %include "tesseract_process_managers/task_generators/profile_switch_task_generator.h"
+
+// %shared_ptr(tesseract_planning::IterativeSplineParameterizationProfile)
+// %ignore IterativeSplineParameterizationTaskGenerator;
+// %ignore IterativeSplineParameterizationTaskInfo;
 // %include "tesseract_process_managers/task_generators/iterative_spline_parameterization_task_generator.h"
+
+// %shared_ptr(tesseract_planning::TimeOptimalParameterizationTaskGenerator)
+// %ignore TimeOptimalTrajectoryGenerationTaskGenerator;
+// %ignore TimeOptimalTrajectoryGenerationTaskInfo;
 // %include "tesseract_process_managers/task_generators/time_optimal_parameterization_task_generator.h"
 
 

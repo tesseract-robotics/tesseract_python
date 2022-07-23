@@ -61,14 +61,27 @@
 // tesseract_visualization
 #define TESSERACT_VISUALIZATION_PUBLIC
 
+%shared_ptr(tesseract_visualization::Marker)
 %include "tesseract_visualization/markers/marker.h"
+
+%shared_ptr(tesseract_visualization::ArrowMarker)
 %include "tesseract_visualization/markers/arrow_marker.h"
+
+%shared_ptr(tesseract_visualization::AxisMarker)
 %include "tesseract_visualization/markers/axis_marker.h"
+
+%shared_ptr(tesseract_visualization::ContactResultsMarker)
 %include "tesseract_visualization/markers/contact_results_marker.h"
+
+%shared_ptr(tesseract_visualization::GeometryMarker)
 %include "tesseract_visualization/markers/geometry_marker.h"
+
+%shared_ptr(tesseract_visualization::ToolpathMarker)
 %include "tesseract_visualization/markers/toolpath_marker.h"
 %include "tesseract_visualization/trajectory_interpolator.h"
 %include "tesseract_visualization/trajectory_player.h"
+
+%shared_ptr(tesseract_visualization::Visualization)
 %include "tesseract_visualization/visualization.h"
 %include "tesseract_visualization/visualization_loader.h"
 
