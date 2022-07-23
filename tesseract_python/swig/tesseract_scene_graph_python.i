@@ -65,7 +65,10 @@
 %shared_ptr(tesseract_scene_graph::JointCalibration)
 %shared_ptr(tesseract_scene_graph::Joint)
 %shared_ptr(tesseract_scene_graph::Link)
+%nocopyctor tesseract_scene_graph::Joint;
+%ignore clone;
 %include "tesseract_scene_graph/joint.h"
+%rename("%s") clone;
 %extend tesseract_scene_graph::Joint
 {
   tesseract_scene_graph::Joint::Ptr clone() const
@@ -87,7 +90,10 @@
 %shared_ptr(tesseract_scene_graph::Link)
 %template(tesseract_scene_graph_VisualVector) std::vector<std::shared_ptr<tesseract_scene_graph::Visual> >;
 %template(tesseract_scene_graph_CollisionVector) std::vector<std::shared_ptr<tesseract_scene_graph::Collision> >;
+%nocopyctor tesseract_scene_graph::Link;
+%ignore clone;
 %include "tesseract_scene_graph/link.h"
+%rename("%s") clone;
 %extend tesseract_scene_graph::Link
 {
   tesseract_scene_graph::Link::Ptr clone() const

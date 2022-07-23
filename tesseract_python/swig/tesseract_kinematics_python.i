@@ -80,7 +80,7 @@
 #define TESSERACT_KINEMATICS_IKFAST_PUBLIC
 #define TESSERACT_KINEMATICS_KDL_PUBLIC
 #define TESSERACT_KINEMATICS_OPW_PUBLIC
-%include "tesseract_kinematics/core/types.h"
+%include "rework_include/tesseract_kinematics/core/types.i"
 
 %shared_ptr(tesseract_kinematics::ForwardKinematics)
 %wrap_unique_ptr(ForwardKinematicsUPtr,tesseract_kinematics::ForwardKinematics)
@@ -96,7 +96,7 @@
 
 %shared_ptr(tesseract_kinematics::KinematicGroup)
 %wrap_unique_ptr(KinematicGroupUPtr,tesseract_kinematics::KinematicGroup)
-%include "tesseract_kinematics/core/kinematic_group.h"
+%include "rework_include/tesseract_kinematics/core/kinematic_group.i"
 %tesseract_aligned_vector(KinGroupIKInputs,tesseract_kinematics::KinGroupIKInput)
 
 %shared_ptr(tesseract_kinematics::KinematicsPluginFactory)

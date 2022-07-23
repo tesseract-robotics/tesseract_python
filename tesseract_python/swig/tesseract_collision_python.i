@@ -28,6 +28,11 @@
 
 #pragma SWIG nowarn=473
 
+namespace tesseract_collision
+{
+    class ContactResult;
+}
+
 %pythondynamic tesseract_collision::ContactResult;
 
 %include "tesseract_swig_include.i"
@@ -55,6 +60,7 @@
 %}
 
 %ignore getIsContactAllowedFn;
+%ignore tesseract_collision::ContactTestData;
 
 %tesseract_std_function(IsContactAllowedFn,tesseract_collision,bool,const std::string&,a,const std::string&,b);
 %tesseract_std_function(IsContactValidFn,tesseract_collision,bool,const tesseract_collision::ContactResult&,a);
@@ -74,9 +80,12 @@
 %tesseract_aligned_vector(ContactResultVector, tesseract_collision::ContactResult);
 %tesseract_aligned_map_of_aligned_vector(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
 
+//%tesseract_aligned_vector_using(ContactResultVector, tesseract_collision::ContactResult);
+//%tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
+
 // tesseract_collision
 #define TESSERACT_COLLISION_CORE_PUBLIC
-%include "tesseract_collision/core/types.h"
+%include "rework_include/tesseract_collision/core/types.i"
 %include "tesseract_collision/core/discrete_contact_manager.h"
 %include "tesseract_collision/core/continuous_contact_manager.h"
 %include "tesseract_collision/core/contact_managers_plugin_factory.h"

@@ -177,7 +177,7 @@ $1 = is_array($input);
 
 %shared_ptr(tesseract_geometry::Octree)
 %nodefaultctor tesseract_geometry::Octree;
-%include <tesseract_geometry/impl/octree.h>
+%include <rework_include/tesseract_geometry/impl/octree.i>
 
 %shared_ptr(tesseract_geometry::Plane)
 %include <tesseract_geometry/impl/plane.h>

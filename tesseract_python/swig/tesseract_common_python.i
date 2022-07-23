@@ -192,7 +192,7 @@ namespace std
 %ignore tcp_offset;
 %include "tesseract_common/manipulator_info.h"
 %rename("%s") tcp_offset;
-%include "tesseract_common/joint_state.h"
+%include "rework_include/tesseract_common/joint_state.i"
 %include "tesseract_common/collision_margin_data.h"
 %include "tesseract_common/allowed_collision_matrix.h"
 %include "tesseract_common/kinematic_limits.h"
