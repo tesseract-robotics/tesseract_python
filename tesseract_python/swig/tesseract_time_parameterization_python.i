@@ -43,6 +43,8 @@
 #include <tesseract_time_parameterization/instructions_trajectory.h>
 %}
 
+%ignore tesseract_planning::totg;
+
 // tesseract_time_parameterization
 #define TESSERACT_TIME_PARAMETERIZATION_PUBLIC
 %shared_ptr(tesseract_planning::TrajectoryContainer)

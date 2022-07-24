@@ -111,6 +111,9 @@
 %shared_ptr(tesseract_planning::IterativeSplineParameterizationProfile)
 %shared_ptr(tesseract_planning::ProfileSwitchProfile);
 
+%shared_ptr(tesseract_planning::EnvironmentCache)
+%shared_ptr(tesseract_planning::ProcessEnvironmentCache)
+%include "tesseract_process_managers/core/process_environment_cache.h"
 
 // TODO: Fix unique_ptr conversion problems
 %ignore tesseract_planning::TaskInput::TaskInput;
@@ -119,7 +122,6 @@
 %ignore tesseract_planning::TaskflowInterface::getTaskInfoMap;
 %ignore tesseract_planning::TaskInput::getTaskInfoMap;
 %ignore tesseract_planning::TaskInput::addTaskInfo;
-
 
 %wrap_unique_ptr(TaskInfoUPtr,tesseract_planning::TaskInfo)
 %shared_ptr(tesseract_planning::TaskInfoContainer)
@@ -132,6 +134,11 @@
 %shared_ptr(tesseract_planning::ProcessPlanningProblem)
 %ignore taskflow_container;
 
+//%wrap_unique_ptr(ManipulatorInfoUPtr, tesseract_planning::ManipulatorInfo)
+
+%ignore plan_profile_remapping;
+%ignore composite_profile_remapping;
+%ignore global_manip_info;
 %include "tesseract_process_managers/core/process_planning_problem.h"  
 %extend tesseract_planning::ProcessPlanningProblem {
     Instruction& getInput() { return *$self->input; }
@@ -158,6 +165,8 @@ bool waitFor(double seconds)
 
 %shared_ptr(tesseract_planning::ProcessPlanningServer)
 %nodefaultctor tesseract_planning::ProcessPlanningServer;
+%ignore registerProcessPlanner;
+%ignore tesseract_planning::ProcessPlanningServer::run(tf::Taskflow& taskflow, const std::string& name = PRIMARY_EXECUTOR_NAME) const;
 %include "tesseract_process_managers/core/process_planning_server.h"
 %extend tesseract_planning::ProcessPlanningServer
 {

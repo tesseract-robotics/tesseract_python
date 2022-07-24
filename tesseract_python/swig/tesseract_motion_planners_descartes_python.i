@@ -33,6 +33,10 @@
 
 %import "tesseract_motion_planners_python.i"
 
+%ignore edge_evaluator;
+%ignore state_evaluator;
+%ignore vertex_evaluator;
+
 %{
 // tesseract_motion_planner_descartes
 #include <tesseract_motion_planners/descartes/descartes_problem.h>

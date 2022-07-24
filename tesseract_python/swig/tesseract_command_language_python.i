@@ -30,6 +30,7 @@
 
 %include "tesseract_swig_include.i"
 %include "tesseract_std_function.i"
+%include "std_unique_ptr.i"
 
 %import "tesseract_common_python.i"
 
@@ -104,6 +105,7 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %ignore std::vector<tesseract_planning::Instruction>::vector(size_type);
 %ignore std::vector<tesseract_planning::Instruction>::resize(size_type);
 %ignore tesseract_planning::Instruction::getType;
+%wrap_unique_ptr(InstructionUPtr,tesseract_planning::Instruction);
 %pythondynamic tesseract_planning::Instruction;
 %include "tesseract_command_language/core/instruction.h"
 %template(Instructions) std::vector<tesseract_planning::Instruction>;
@@ -117,13 +119,13 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %include "tesseract_command_language/null_waypoint.h"
 %tesseract_command_language_add_waypoint_type(NullWaypoint)
 
-%include "tesseract_command_language/cartesian_waypoint.h"
+%include "rework_include/tesseract_command_language/cartesian_waypoint.i"
 %tesseract_command_language_add_waypoint_type(CartesianWaypoint)
 
-%include "tesseract_command_language/composite_instruction.h"
+%include "rework_include/tesseract_command_language/composite_instruction.i"
 %tesseract_command_language_add_instruction_type(CompositeInstruction)
 
-%include "tesseract_command_language/joint_waypoint.h"
+%include "rework_include/tesseract_command_language/joint_waypoint.i"
 %extend tesseract_planning::JointWaypoint {
   JointWaypoint(std::vector<std::string> joint_names, const Eigen::VectorXd& other)
   {
@@ -153,9 +155,19 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %tesseract_command_language_add_instruction_type(SetAnalogInstruction)
 
 %include "tesseract_command_language/utils/filter_functions.h"
+
+// TODO: implement validateSeedStructure
+%ignore validateSeedStructure;
 %include "tesseract_command_language/utils/utils.h"
 %include "tesseract_command_language/utils/get_instruction_utils.h"
 %include "tesseract_command_language/utils/flatten_utils.h"
+
+namespace tesseract_planning
+{
+bool clampToJointLimits(Waypoint& wp,
+    const Eigen::Ref<const Eigen::MatrixX2d>& limits,
+    double max_deviation = (std::numeric_limits<double>::max()));
+}
 
 %define %tesseract_command_language_add_profile_type( TYPE )
 %template(ProfileDictionary_hasProfileEntry_##TYPE) tesseract_planning::ProfileDictionary_hasProfileEntry<tesseract_planning::TYPE>;

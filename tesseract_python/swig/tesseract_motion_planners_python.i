@@ -57,6 +57,8 @@
 // tesseract_motion_planners
 #define TESSERACT_MOTION_PLANNERS_CORE_PUBLIC
 %include "tesseract_motion_planners/default_planner_namespaces.h"
+
+%wrap_unique_ptr(PlannerProfileRemappingUPtr,tesseract_planning::PlannerProfileRemapping)
 %include "tesseract_motion_planners/core/types.h"
 
 %shared_ptr(tesseract_planning::MotionPlanner)
