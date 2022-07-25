@@ -177,7 +177,13 @@ $1 = is_array($input);
 
 %shared_ptr(tesseract_geometry::Octree)
 %nodefaultctor tesseract_geometry::Octree;
-%include <rework_include/tesseract_geometry/impl/octree.i>
+namespace octomap 
+{ 
+%nodefaultctor OcTree;
+class OcTree {}; 
+}
+%shared_ptr(octomap::OcTree);
+%include <tesseract_geometry/impl/octree.h>
 
 %shared_ptr(tesseract_geometry::Plane)
 %include <tesseract_geometry/impl/plane.h>

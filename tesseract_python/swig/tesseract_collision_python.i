@@ -80,12 +80,16 @@ namespace tesseract_collision
 %tesseract_aligned_vector(ContactResultVector, tesseract_collision::ContactResult);
 %tesseract_aligned_map_of_aligned_vector(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
 
-//%tesseract_aligned_vector_using(ContactResultVector, tesseract_collision::ContactResult);
-//%tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
-
+namespace tesseract_collision { 
+class ContactResult;
+%tesseract_aligned_vector_using(ContactResultVector, tesseract_collision::ContactResult);
+%tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
+}
+%ignore ContactResultVector;
+%ignore ContactResultMap;
 // tesseract_collision
 #define TESSERACT_COLLISION_CORE_PUBLIC
-%include "rework_include/tesseract_collision/core/types.i"
+%include "tesseract_collision/core/types.h"
 %include "tesseract_collision/core/discrete_contact_manager.h"
 %include "tesseract_collision/core/continuous_contact_manager.h"
 %include "tesseract_collision/core/contact_managers_plugin_factory.h"

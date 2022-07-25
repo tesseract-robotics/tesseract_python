@@ -96,7 +96,14 @@
 
 %shared_ptr(tesseract_kinematics::KinematicGroup)
 %wrap_unique_ptr(KinematicGroupUPtr,tesseract_kinematics::KinematicGroup)
-%include "rework_include/tesseract_kinematics/core/kinematic_group.i"
+
+namespace tesseract_kinematics
+{
+struct KinGroupIKInput;
+%tesseract_aligned_vector_using(KinGroupIKInputs,tesseract_kinematics::KinGroupIKInput)
+}
+
+%include "tesseract_kinematics/core/kinematic_group.h"
 %tesseract_aligned_vector(KinGroupIKInputs,tesseract_kinematics::KinGroupIKInput)
 
 %shared_ptr(tesseract_kinematics::KinematicsPluginFactory)
