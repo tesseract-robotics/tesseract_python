@@ -80,12 +80,50 @@
 #define TESSERACT_KINEMATICS_IKFAST_PUBLIC
 #define TESSERACT_KINEMATICS_KDL_PUBLIC
 #define TESSERACT_KINEMATICS_OPW_PUBLIC
-%include "tesseract_kinematics/core/types.h"
+%include "rework_include/tesseract_kinematics/core/types.i"
+
+%shared_ptr(tesseract_kinematics::ForwardKinematics)
+%wrap_unique_ptr(ForwardKinematicsUPtr,tesseract_kinematics::ForwardKinematics)
 %include "tesseract_kinematics/core/forward_kinematics.h"
+
+%shared_ptr(tesseract_kinematics::InverseKinematics)
+%wrap_unique_ptr(InverseKinematicsUPtr,tesseract_kinematics::InverseKinematics)
 %include "tesseract_kinematics/core/inverse_kinematics.h"
+
+%shared_ptr(tesseract_kinematics::JointGroup)
+%wrap_unique_ptr(JointGroupUPtr,tesseract_kinematics::JointGroup)
 %include "tesseract_kinematics/core/joint_group.h"
+
+%shared_ptr(tesseract_kinematics::KinematicGroup)
+%wrap_unique_ptr(KinematicGroupUPtr,tesseract_kinematics::KinematicGroup)
+
+namespace tesseract_kinematics
+{
+struct KinGroupIKInput;
+%tesseract_aligned_vector_using(KinGroupIKInputs,tesseract_kinematics::KinGroupIKInput)
+}
+
 %include "tesseract_kinematics/core/kinematic_group.h"
+%tesseract_aligned_vector(KinGroupIKInputs,tesseract_kinematics::KinGroupIKInput)
+
+%shared_ptr(tesseract_kinematics::KinematicsPluginFactory)
+%shared_ptr(tesseract_kinematics::FwdKinFactory)
+%shared_ptr(tesseract_kinematics::InvKinFactory)
 %include "tesseract_kinematics/core/kinematics_plugin_factory.h"
+
+// TODO
+//%shared_ptr(tesseract_kinematics::RobotWithExternalPositionerInvKin)
+//%shared_ptr(tesseract_kinematics::RobotOnPositionerInvKin)
+//%shared_ptr(tesseract_kinematics::IKFastInvKin)
+//%shared_ptr(tesseract_kinematics::KDLFwdKinChain)
+//%shared_ptr(tesseract_kinematics::KDLInvKinChainLMA)
+//%shared_ptr(tesseract_kinematics::KDLInvKinChainNR)
+//%shared_ptr(tesseract_kinematics::OPWInvKin)
+
+
+
+
+
 
 %init %{
 tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::REPInvKinFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");

@@ -76,12 +76,36 @@
 #define TESSERACT_MOTION_PLANNERS_TRAJOPT_PUBLIC
 
 %include "tesseract_motion_planners/trajopt/trajopt_collision_config.h"
+
+%shared_ptr(tesseract_planning::TrajOptPlanProfile)
+%shared_ptr(tesseract_planning::TrajOptSolverProfile)
+%shared_ptr(tesseract_planning::TrajOptCompositeProfile)
 %include "tesseract_motion_planners/trajopt/profile/trajopt_profile.h"
+%template(TrajOptSolverProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptSolverProfile>>;
+%template(TrajOptCompositeProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptCompositeProfile>>;
+%template(TrajOptPlanProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptPlanProfile>>;
+%tesseract_command_language_add_profile_type(TrajOptSolverProfile);
+%tesseract_command_language_add_profile_type(TrajOptPlanProfile);
+%tesseract_command_language_add_profile_type(TrajOptCompositeProfile);
+
+%shared_ptr(tesseract_planning::TrajOptDefaultPlanProfile)
 %include "tesseract_motion_planners/trajopt/profile/trajopt_default_plan_profile.h"
+
+%shared_ptr(tesseract_planning::TrajOptDefaultSolverProfile)
 %include "tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h"
+
+%shared_ptr(tesseract_planning::TrajOptDefaultCompositeProfile)
 %include "tesseract_motion_planners/trajopt/profile/trajopt_default_composite_profile.h"
 
 %include "tesseract_motion_planners/trajopt/trajopt_utils.h"
+
+%shared_ptr(tesseract_planning::TrajOptMotionPlanner)
+%shared_ptr(tesseract_planning::TrajOptMotionPlannerStatusCategory)
 %include "tesseract_motion_planners/trajopt/trajopt_motion_planner.h"
 %include "tesseract_motion_planners/trajopt/serialize.h"
 %include "tesseract_motion_planners/trajopt/deserialize.h"
+
+// TODO
+// %template(TrajOptIfoptCompositeProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptIfoptCompositeProfile>>;
+// %template(TrajOptIfoptPlanProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptIfoptPlanProfile>>;
+

@@ -43,11 +43,18 @@
 #include <tesseract_time_parameterization/instructions_trajectory.h>
 %}
 
+%ignore tesseract_planning::totg;
+
 // tesseract_time_parameterization
 #define TESSERACT_TIME_PARAMETERIZATION_PUBLIC
+%shared_ptr(tesseract_planning::TrajectoryContainer)
 %include "tesseract_time_parameterization/trajectory_container.h"
+
+%shared_ptr(tesseract_planning::InstructionsTrajectory)
 %include "tesseract_time_parameterization/instructions_trajectory.h"
 %include "tesseract_time_parameterization/iterative_spline_parameterization.h"
+
+%shared_ptr(tesseract_planning::TimeOptimalTrajectoryGeneration)
 %include "tesseract_time_parameterization/time_optimal_trajectory_generation.h"
 
 

@@ -28,6 +28,11 @@
 
 #pragma SWIG nowarn=473
 
+namespace tesseract_collision
+{
+    class ContactResult;
+}
+
 %pythondynamic tesseract_collision::ContactResult;
 
 %include "tesseract_swig_include.i"
@@ -55,10 +60,33 @@
 %}
 
 %ignore getIsContactAllowedFn;
+%ignore tesseract_collision::ContactTestData;
 
 %tesseract_std_function(IsContactAllowedFn,tesseract_collision,bool,const std::string&,a,const std::string&,b);
 %tesseract_std_function(IsContactValidFn,tesseract_collision,bool,const tesseract_collision::ContactResult&,a);
 
+%shared_ptr(tesseract_collision::tesseract_collision_bullet::BulletCastBVHManager)
+%shared_ptr(tesseract_collision::tesseract_collision_bullet::BulletCastSimpleManager)
+%shared_ptr(tesseract_collision::tesseract_collision_bullet::BulletDiscreteBVHManager)
+%shared_ptr(tesseract_collision::tesseract_collision_bullet::BulletDiscreteSimpleManager)
+%shared_ptr(tesseract_collision::ContactManagersPluginFactory)
+%shared_ptr(tesseract_collision::DiscreteContactManagerFactory)
+%shared_ptr(tesseract_collision::ContinuousContactManagerFactory)
+%shared_ptr(tesseract_collision::ContinuousContactManager)
+%wrap_unique_ptr(ContinuousContactManagerUPtr,tesseract_collision::ContinuousContactManager)
+%shared_ptr(tesseract_collision::DiscreteContactManager)
+%wrap_unique_ptr(DiscreteContactManagerUPtr,tesseract_collision::DiscreteContactManager)
+%shared_ptr(tesseract_collision::tesseract_collision_fcl::FCLDiscreteBVHManager)
+%tesseract_aligned_vector(ContactResultVector, tesseract_collision::ContactResult);
+%tesseract_aligned_map_of_aligned_vector(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
+
+namespace tesseract_collision { 
+class ContactResult;
+%tesseract_aligned_vector_using(ContactResultVector, tesseract_collision::ContactResult);
+%tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
+}
+%ignore ContactResultVector;
+%ignore ContactResultMap;
 // tesseract_collision
 #define TESSERACT_COLLISION_CORE_PUBLIC
 %include "tesseract_collision/core/types.h"

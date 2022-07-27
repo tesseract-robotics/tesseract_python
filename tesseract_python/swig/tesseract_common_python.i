@@ -149,11 +149,13 @@ namespace std
   };
 }
 
+#define BOOST_CLASS_EXPORT_KEY(a)
 #define BOOST_CLASS_EXPORT_KEY2(a,b)
 #define BOOST_CLASS_VERSION(a,b)
 #define BOOST_CLASS_TRACKING(a,b)
 #define BOOST_CLASS_EXPORT_IMPLEMENT(a)
 #define BOOST_SERIALIZATION_ASSUME_ABSTRACT(a)
+#define BOOST_CONCEPT_ASSERT(a)
 
 #define EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 #define TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
@@ -166,19 +168,41 @@ namespace std
 
 %tesseract_std_function(SimpleResourceLocatorFn,tesseract_common,std::string,const std::string&,a);
 
+%shared_ptr(tesseract_common::AllowedCollisionMatrix)
+
+%shared_ptr(tesseract_common::Resource)
+%template(vector_uint8) std::vector<uint8_t>;
+%pybuffer_binary(const uint8_t* bytes, size_t bytes_len);
+%shared_ptr(tesseract_common::BytesResource)
+%feature("director") tesseract_common::ResourceLocator;
+%shared_ptr(tesseract_common::ResourceLocator)
+%shared_ptr(tesseract_common::SimpleResourceLocator)
+%shared_ptr(tesseract_common::SimpleLocatedResource)
+%shared_ptr(tesseract_common::StatusCategory)
+%shared_ptr(tesseract_common::GeneralStatusCategory)
+%shared_ptr(tesseract_common::StatusCode)
+
+
 // tesseract_common
 #define TESSERACT_COMMON_PUBLIC
 %include "tesseract_common/types.h"
+%template(AllowedCollisionEntries) std::unordered_map<std::pair<std::string,std::string>, std::string, tesseract_common::PairHash>;
+%template(PluginInfoMap) std::map<std::string, tesseract_common::PluginInfo>;
 %include "tesseract_common/status_code.h"
 %include "tesseract_common/resource_locator.h"
 %ignore tcp_offset;
 %include "tesseract_common/manipulator_info.h"
 %rename("%s") tcp_offset;
-%include "tesseract_common/joint_state.h"
+%include "rework_include/tesseract_common/joint_state.i"
 %include "tesseract_common/collision_margin_data.h"
 %include "tesseract_common/allowed_collision_matrix.h"
 %include "tesseract_common/kinematic_limits.h"
 %include "tesseract_common/timer.h"
+
+
+// TODO: ?
+//%template(Instructions) std::vector<tesseract_common::Any>;
+
 
 %extend tesseract_common::ManipulatorInfo {
   void _setTcpOffset(const Eigen::Isometry3d& offset)
