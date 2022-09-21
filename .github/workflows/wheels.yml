@@ -125,7 +125,7 @@ jobs:
         python-version: '${{ matrix.config.python_version }}'
         architecture: ${{ matrix.config.arch }}
     - name: vcpkg build
-      uses: johnwason/vcpkg-action@v2
+      uses: johnwason/vcpkg-action@961d53e
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
