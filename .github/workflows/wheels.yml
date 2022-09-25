@@ -33,22 +33,22 @@ jobs:
           runs_on: ubuntu-latest
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
-          python_version: 3.7
+          python_version: "3.7"
         - os: ubuntu-20.04
           runs_on: ubuntu-latest
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
-          python_version: 3.8
+          python_version: "3.8"
         - os: ubuntu-20.04
           runs_on: ubuntu-latest
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
-          python_version: 3.9
+          python_version: "3.9"
         - os: ubuntu-20.04
           runs_on: ubuntu-latest
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
-          python_version: 3.10        
+          python_version: "3.10"
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
@@ -77,8 +77,8 @@ jobs:
         python-version: '${{ matrix.config.python_version }}'
     - name: pip
       run: |
-        sudo python -m pip install --upgrade pip
-        sudo python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool
+        python -m pip install --upgrade pip
+        python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_python/dependencies_with_ext.rosinstall
