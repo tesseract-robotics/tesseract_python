@@ -109,7 +109,7 @@ jobs:
     - name: archive wheels
       uses: actions/upload-artifact@v2
       with:
-        name: 'python-wheels-${{ matrix.config.os }}'
+        name: 'python-wheels-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
         path: ws/build/tesseract_python/python/*
   build-win:
     runs-on: windows-2019
