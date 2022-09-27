@@ -33,10 +33,22 @@ jobs:
           runs_on: ubuntu-latest
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
-        # - os: ubuntu-22.04
-        #   runs_on: ubuntu-latest
-        #   container: ubuntu:22.04
-        #   py_platform: manylinux_2_35_x86_64
+          python_version: "3.7"
+        - os: ubuntu-20.04
+          runs_on: ubuntu-latest
+          container: ubuntu:20.04
+          py_platform: manylinux_2_31_x86_64
+          python_version: "3.8"
+        - os: ubuntu-20.04
+          runs_on: ubuntu-latest
+          container: ubuntu:20.04
+          py_platform: manylinux_2_31_x86_64
+          python_version: "3.9"
+        - os: ubuntu-20.04
+          runs_on: ubuntu-latest
+          container: ubuntu:20.04
+          py_platform: manylinux_2_31_x86_64
+          python_version: "3.10"
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
@@ -59,10 +71,14 @@ jobs:
         libflann-dev libjsoncpp-dev libyaml-cpp-dev git cmake ninja-build
         build-essential autoconf automake libtool bison libpcre2-dev libpcre3-dev
         lcov libbullet-dev libbullet-extras-dev patchelf python3-venv -y -qq
+    - uses: actions/setup-python@v4
+      id: setup-python
+      with:
+        python-version: '${{ matrix.config.python_version }}'
     - name: pip
       run: |
-        sudo python3 -m pip install --upgrade pip
-        sudo python3 -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool
+        python -m pip install --upgrade pip
+        python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_python/dependencies_with_ext.rosinstall
@@ -75,7 +91,8 @@ jobs:
         --event-handlers console_cohesion+
         --cmake-args -DCMAKE_BUILD_TYPE=Release
         -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF
-        -DPYTHON_EXECUTABLE=/usr/bin/python3 -DTESSERACT_PYTHON_BUILD_WHEEL=ON
+        -DPYTHON_EXECUTABLE="${{ steps.setup-python.outputs.python-path }}"
+        -DTESSERACT_PYTHON_BUILD_WHEEL=ON
         -DTESSERACT_PYTHON_WHEEL_PLATFORM=${{ matrix.config.py_platform }}
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON
     - name: test
@@ -92,7 +109,7 @@ jobs:
     - name: archive wheels
       uses: actions/upload-artifact@v2
       with:
-        name: 'python-wheels-${{ matrix.config.os }}'
+        name: 'python-wheels-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
         path: ws/build/tesseract_python/python/*
   build-win:
     runs-on: windows-2019
@@ -120,12 +137,13 @@ jobs:
     - uses: actions/checkout@v2
       with:
         path: ws/src/tesseract_python
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
+      id: setup-python
       with:
         python-version: '${{ matrix.config.python_version }}'
         architecture: ${{ matrix.config.arch }}
     - name: vcpkg build
-      uses: johnwason/vcpkg-action@961d53e336573f6165b896494fabb1abc002e8c1
+      uses: johnwason/vcpkg-action@v3
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
@@ -134,8 +152,6 @@ jobs:
     - name: pip3
       run: |
         python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
-    - name: env python3
-      run: echo  ("PYTHON3_EXE=" + (Get-Command Python.exe).Path) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
     - name: choco
       run: |
         choco install swig ninja -r
@@ -157,7 +173,7 @@ jobs:
         --event-handlers console_cohesion+ ^
         --packages-ignore tesseract_examples trajopt_ifopt trajopt_sqp gtest ^
         --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release ^
-        -DPYTHON_EXECUTABLE="${{ env.PYTHON3_EXE }}" ^
+        -DPYTHON_EXECUTABLE="${{ steps.setup-python.outputs.python-path }}" ^
         -DTESSERACT_PYTHON_BUILD_WHEEL=ON ^
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON ^
         -DVCPKG_APPLOCAL_DEPS=OFF ^
@@ -198,7 +214,22 @@ jobs:
       with:
         name: 'build-logs-win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}'
         path: "**/*.log"
-        retention-days: 2 
-    
-    
-    
+        retention-days: 2
+  collect-wheels:
+    needs:
+      - build-win
+      - build-ubuntu
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: robotraconteur
+    - name: Download CI artifacts
+      uses: actions/download-artifact@v2
+      with:
+        path: artifacts/main
+    - name: archive wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'python-wheels-all'
+        path: artifacts/**/wheelhouse/*.whl
