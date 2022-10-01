@@ -46,6 +46,10 @@
 #include <tesseract_srdf/srdf_model.h>
 #include <tesseract_srdf/utils.h>
 
+#include <tesseract_scene_graph/graph.h>
+#include <tesseract_common/utils.h>
+#include <tesseract_common/yaml_utils.h>
+
 %}
 
 // tesseract_srdf
@@ -55,3 +59,67 @@
 %include "tesseract_srdf/kinematics_information.h"
 %include "tesseract_srdf/srdf_model.h"
 %include "tesseract_srdf/utils.h"
+
+%inline {
+tesseract_common::CalibrationInfo parseCalibrationConfigString(const tesseract_scene_graph::SceneGraph& scene_graph,
+                                                         const std::string& yaml_str)
+{
+  YAML::Node config;
+  try
+  {
+    config = YAML::Load(yaml_str);
+  }
+  catch (...)
+  {
+    std::throw_with_nested(std::runtime_error("calibration_config: YAML failed to parse calibration config string"));
+  }
+
+  const YAML::Node& cal_info = config[tesseract_common::CalibrationInfo::CONFIG_KEY];
+  auto info = cal_info.as<tesseract_common::CalibrationInfo>();
+
+  // Check to make sure calibration joints exist
+  for (const auto& cal_joint : info.joints)
+  {
+    if (scene_graph.getJoint(cal_joint.first) == nullptr)
+      std::throw_with_nested(std::runtime_error("calibration_config: joint '" + cal_joint.first + "' does not exist!"));
+  }
+
+  return info;
+}
+
+tesseract_common::KinematicsPluginInfo parseKinematicsPluginConfigString(const std::string& yaml_str)
+{
+  
+  YAML::Node config;
+  try
+  {
+    config = YAML::Load(yaml_str);
+  }
+  catch (...)
+  {
+    std::throw_with_nested(std::runtime_error("kinematics_plugin_config: YAML failed to parse kinematics plugins string" ));
+  }
+
+  const YAML::Node& kin_plugin_info = config[tesseract_common::KinematicsPluginInfo::CONFIG_KEY];
+
+  return kin_plugin_info.as<tesseract_common::KinematicsPluginInfo>();
+}
+
+tesseract_common::ContactManagersPluginInfo
+parseContactManagersPluginConfigString(const std::string& yaml_str)
+{
+  YAML::Node config;
+  try
+  {
+    config = YAML::Load(yaml_str);
+  }
+  catch (...)
+  {
+    std::throw_with_nested(std::runtime_error("contact_managers_plugin_config: YAML failed to parse contact "
+                                              "managers plugins string"));
+  }
+
+  const YAML::Node& cm_plugin_info = config[tesseract_common::ContactManagersPluginInfo::CONFIG_KEY];
+  return cm_plugin_info.as<tesseract_common::ContactManagersPluginInfo>();
+}
+}
