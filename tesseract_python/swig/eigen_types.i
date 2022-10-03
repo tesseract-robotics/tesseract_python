@@ -52,7 +52,7 @@ namespace Eigen
 
 // Assume that Eigen::Index can be treated as int64_t
 namespace Eigen {
-typedef int64_t Index;
+typedef ptrdiff_t Index;
 }
 %template(vector_eigen_index) std::vector<Eigen::Index>;
 

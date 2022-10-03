@@ -3,7 +3,7 @@ import numpy as np
 
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo
-from tesseract_robotics.tesseract_kinematics import KinGroupIKInput, KinGroupIKInputs
+from tesseract_robotics.tesseract_kinematics import KinGroupIKInput, KinGroupIKInputs, getRedundantSolutions
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 def get_environment():
@@ -46,4 +46,23 @@ def test_kinematic_group():
 
     np.testing.assert_allclose(invkin.flatten(),joint_vals)
 
+def test_tesseract_redundant_solutions_tesseract_function():
+    
+    env, manip_info, joint_names = get_environment()
+
+    kin_group = env.getKinematicGroup(manip_info.manipulator).release()
+
+    limits = kin_group.getLimits()
+    redundancy_indices = list(kin_group.getRedundancyCapableJointIndices())
+
+    import tesseract_robotics.tesseract_kinematics as tes_com
+    sol = np.ones((6,1))*np.deg2rad(5)
+    redun_sol = tes_com.getRedundantSolutions(sol, limits.joint_limits, redundancy_indices)
+    
+    assert len(redun_sol) == 2
+
+    assert np.allclose(redun_sol[0].flatten(), 
+        np.array([0.08726646, 0.08726646,  0.08726646, 0.08726646, 0.08726646, -6.19591884])) or \
+            np.allclose(redun_sol[0].flatten(), 
+        np.array([0.08726646, 0.08726646,  0.08726646, 0.08726646, 0.08726646, 6.19591884]))
 
