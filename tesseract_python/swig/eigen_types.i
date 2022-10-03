@@ -40,13 +40,21 @@ namespace Eigen
 %eigen_typemaps(Eigen::Vector3d);
 %eigen_typemaps(Eigen::Vector4d);
 %eigen_typemaps(Eigen::VectorXd);
+%eigen_typemaps(%arg(Eigen::VectorX<double>));
 %eigen_typemaps(Eigen::MatrixXd);
 %eigen_typemaps(%arg(Eigen::Matrix3Xd));
+%eigen_typemaps(%arg(Eigen::MatrixX2d));
 %eigen_typemaps(%arg(Eigen::Matrix<uint32_t,3,Eigen::Dynamic>));
 %eigen_typemaps(%arg(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>));
 %eigen_typemaps(Eigen::VectorXi);
 %eigen_typemaps(Eigen::Matrix3d);
 %eigen_typemaps(Eigen::Matrix4d);
+
+// Assume that Eigen::Index can be treated as int64_t
+namespace Eigen {
+typedef int64_t Index;
+}
+%template(vector_eigen_index) std::vector<Eigen::Index>;
 
 /*
 //Workaround typemaps for Isometry3d
