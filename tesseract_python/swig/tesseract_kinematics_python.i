@@ -63,6 +63,7 @@
 #include <tesseract_kinematics/core/kinematics_plugin_factory.h>
 #include <tesseract_kinematics/core/rep_factory.h>
 #include <tesseract_kinematics/core/rop_factory.h>
+#include <tesseract_kinematics/core/utils.h>
 
 #include <tesseract_kinematics/kdl/kdl_factories.h>
 #include <tesseract_kinematics/opw/opw_factory.h>
@@ -111,6 +112,8 @@ struct KinGroupIKInput;
 %shared_ptr(tesseract_kinematics::InvKinFactory)
 %include "tesseract_kinematics/core/kinematics_plugin_factory.h"
 
+
+
 // TODO
 //%shared_ptr(tesseract_kinematics::RobotWithExternalPositionerInvKin)
 //%shared_ptr(tesseract_kinematics::RobotOnPositionerInvKin)
@@ -120,7 +123,9 @@ struct KinGroupIKInput;
 //%shared_ptr(tesseract_kinematics::KDLInvKinChainNR)
 //%shared_ptr(tesseract_kinematics::OPWInvKin)
 
-
+%eigen_typemaps(%arg(tesseract_kinematics::VectorX<double>));
+%include "tesseract_kinematics/core/utils.h"
+%template(getRedundantSolutions) tesseract_kinematics::getRedundantSolutions<double>;
 
 
 

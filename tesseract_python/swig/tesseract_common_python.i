@@ -244,4 +244,6 @@ namespace std
   %}
 }
 
-
+%template(isWithinPositionLimits) tesseract_common::isWithinPositionLimits<double>;
+%template(satisfiesPositionLimits) tesseract_common::satisfiesPositionLimits<double>;
+//%template(enforcePositionLimits) tesseract_common::enforcePositionLimits<double>;
