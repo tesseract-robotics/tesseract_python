@@ -46,4 +46,11 @@ def test_kinematic_group():
 
     np.testing.assert_allclose(invkin.flatten(),joint_vals)
 
+def test_kinematic_info():
+
+    env, manip_info, joint_names = get_environment()
+    kin_info = env.getKinematicsInformation()
+
+    assert list(kin_info.joint_groups) == []
+    assert list(kin_info.link_groups) == []
 
