@@ -1,27 +1,204 @@
 # Tesseract Python
 
-[![codecov](https://codecov.io/gh/ros-industrial-consortium/tesseract_python/branch/master/graph/badge.svg)](https://codecov.io/gh/ros-industrial-consortium/tesseract_python)
+[![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://github.com/tesseract-robotics/tesseract_python)
 
-[![Python](https://img.shields.io/badge/python-2.7+|3.6+-blue.svg)](https://github.com/ros-industrial-consortium/tesseract_python)
+![PyPI](https://img.shields.io/pypi/v/tesseract-robotics)
 
 Platform             | CI Status
 ---------------------|:---------
-Linux (Focal)        | [![Build Status](https://github.com/ros-industrial-consortium/tesseract_python/workflows/Focal-Build/badge.svg)](https://github.com/ros-industrial-consortium/tesseract_python/actions)
-Linux (Bionic)       | [![Build Status](https://github.com/ros-industrial-consortium/tesseract_python/workflows/Bionic-Build/badge.svg)](https://github.com/ros-industrial-consortium/tesseract_python/actions)
-Windows              | [![Build Status](https://github.com/ros-industrial-consortium/tesseract_python/workflows/Windows-Noetic-Build/badge.svg)](https://github.com/ros-industrial-consortium/tesseract_python/actions)
+Linux (Focal)        | [![Build Status](https://github.com/tesseract-robotics/tesseract_python/workflows/Focal-Build/badge.svg)](https://github.com/tesseract-robotics/tesseract_python/actions)
+Windows              | [![Build Status](https://github.com/tesseract-robotics/tesseract_python/workflows/Windows-Noetic-Build/badge.svg)](https://github.com/tesseract-robotics/tesseract_python/actions)
+Wheels               | [![Build Status](https://github.com/tesseract-robotics/tesseract_python/actions/workflows/wheels.yml/badge.svg)](https://github.com/tesseract-robotics/tesseract_python/actions)
 
-[![Github Issues](https://img.shields.io/github/issues/ros-industrial-consortium/tesseract.svg)](http://github.com/ros-industrial-consortium/tesseract/issues)
+[![Github Issues](https://img.shields.io/github/issues/tesseract-robotics/tesseract_python.svg)](http://github.com/tesseract-robotics/tesseract_python/issues)
 
 [![license - apache 2.0](https://img.shields.io/:license-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 [![license - bsd 2 clause](https://img.shields.io/:license-BSD%202--Clause-blue.svg)](https://opensource.org/licenses/BSD-2-Clause)
 
 [![support level: consortium](https://img.shields.io/badge/support%20level-consortium-brightgreen.png)](http://rosindustrial.org/news/2016/10/7/better-supporting-a-growing-ros-industrial-software-platform)
 
-Python wrapper for Tesseract package
+`tesseract_python` contains Python wrappers for the Tesseract robot motion planner, generated using SWIG. These wrappers
+contain most of the Tesseract functionality, including scene loading and management (URDF,SRDF, meshes), collision
+checking (Bullet, FCL), kinematics (KDL, OPW, UR), planning (OMPL, Descartes, TrajOpt), and visualization 
+(tesseract_viewer_python)
 
-## Tesseract Setup Wizard and Visualization Tools
+Standalone packages are provided on PyPi (pip install) for Windows and Linux, containing all the native dependencies 
+for Python 3.7+.
 
-[![](https://github.com/snapcore/snap-store-badges/blob/master/EN/%5BEN%5D-snap-store-black-uneditable%401x.png)](https://snapcraft.io/tesseract-ignition)
+**Note that these are low level wrappers.** The lifecycle of objects follow the underlying C++ objects, meaning
+that the target of C++ references may be destroyed before the reference, leading to a memory error. These wrappers
+do not attempt to change the memory lifecycle of the underlying C++ objects.
+
+## Installation
+
+Standalone packages are provided on PyPi (pip install) for Windows and Linux, containing Tesseract, Tesseract
+Planning, andall the native dependencies 
+for Python 3.7+. These packages have been tested on Windows 10, Ubuntu 20.04, and Ubuntu 22.04, but should work
+on any relatively recent x64 Windows or Linux operating system. Packages are available for Python 3.7 - 3.10.
+
+To install on Windows:
+```
+python -m pip install tesseract-robotics tesseract-robotics-viewer
+```
+To install on Ubuntu 20.04 and Ubuntu 22.04:
+
+```
+sudo apt install python3-pip python3-numpy
+# The supplied version of pip on Ubuntu 20.04 is too old for manylinux_2_31, upgrade pip
+python3 -m pip install -U pip
+python3 -m pip install --user  tesseract_robotics tesseract_robotics_viewer
+```
+
+## Example
+
+ABB Tesseract viewer plan and viewer example:
+
+Install `tesseract_robotics` and `tesseract_robotics_viewer` as shown in Installation section.
+
+Clone `tesseract` and `tesseract_python` repositories to retrieve example assets. This is not necessary
+if the example assets are not used.
+
+```
+git clone --depth=1 https://github.com/tesseract-robotics/tesseract.git
+git clone --depth=1 https://github.com/tesseract-robotics/tesseract_python.git
+```
+
+Set the `TESSERACT_SUPPORT_DIR` so the example can find the URDF resources:
+
+Linux:
+
+```
+export TESSERACT_SUPPORT_DIR=`pwd`/tesseract/tesseract_support
+```
+
+Windows:
+
+```
+set TESSERACT_SUPPORT_DIR=%CD%/tesseract/tesseract_support
+```
+
+Now run the example!
+
+Windows:
+
+```
+cd tesseract_python\tesseract_viewer_python\examples
+python abb_irb2400_viewer.py
+```
+
+Linux:
+
+```
+cd tesseract_python/tesseract_viewer_python/examples
+python3 abb_irb2400_viewer.py
+```
+
+And point a modern browser to `http://localhost:8000` to see the animation!
+
+Example source:
+
+```python
+from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
+    ManipulatorInfo
+from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
+from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Waypoint, \
+    MoveInstructionType_FREESPACE, MoveInstructionType_START, MoveInstruction, Instruction, \
+    CompositeInstruction, flatten
+from tesseract_robotics.tesseract_process_managers import ProcessPlanningServer, ProcessPlanningRequest, \
+    FREESPACE_PLANNER_NAME
+import os
+import re
+import traceback
+from tesseract_robotics_viewer import TesseractViewer
+import numpy as np
+import time
+import sys
+
+TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
+
+class TesseractSupportResourceLocator(ResourceLocator):
+    def __init__(self):
+        super().__init__()
+    
+    def locateResource(self, url):
+        try:
+            try:
+                if os.path.exists(url):
+                    return SimpleLocatedResource(url, url, self)
+            except:
+                pass
+            url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
+            if (url_match is None):
+                print("url_match failed")
+                return None
+            if not "TESSERACT_SUPPORT_DIR" in os.environ:
+                return None
+            tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
+            filename = os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
+            ret = SimpleLocatedResource(url, filename, self)
+            return ret
+        except:
+            traceback.print_exc()
+
+abb_irb2400_urdf_fname = FilesystemPath(os.path.join(TESSERACT_SUPPORT_DIR,"urdf","abb_irb2400.urdf"))
+abb_irb2400_srdf_fname = FilesystemPath(os.path.join(TESSERACT_SUPPORT_DIR,"urdf","abb_irb2400.srdf"))
+
+t_env = Environment()
+
+# locator_fn must be kept alive by maintaining a reference
+locator = TesseractSupportResourceLocator()
+t_env.init(abb_irb2400_urdf_fname, abb_irb2400_srdf_fname, locator)
+
+manip_info = ManipulatorInfo()
+manip_info.tcp_frame = "tool0"
+manip_info.manipulator = "manipulator"
+manip_info.working_frame = "base_link"
+
+viewer = TesseractViewer()
+
+viewer.update_environment(t_env, [0,0,0])
+
+joint_names = ["joint_%d" % (i+1) for i in range(6)]
+viewer.update_joint_positions(joint_names, np.array([1,-.2,.01,.3,-.5,1]))
+
+viewer.start_serve_background()
+
+t_env.setState(joint_names, np.ones(6)*0.1)
+
+wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,-0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
+wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
+wp3 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1) * Quaterniond(0.70710678,0,0.70710678,0))
+
+start_instruction = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "DEFAULT")
+plan_f1 = MoveInstruction(Waypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
+
+program = CompositeInstruction("DEFAULT")
+program.setStartInstruction(Instruction(start_instruction))
+program.setManipulatorInfo(manip_info)
+program.append(Instruction(plan_f1))
+
+planning_server = ProcessPlanningServer(t_env, 1)
+planning_server.loadDefaultProcessPlanners()
+request = ProcessPlanningRequest()
+request.name = FREESPACE_PLANNER_NAME
+request.instructions = Instruction(program)
+
+response = planning_server.run(request)
+planning_server.waitForAll()
+
+assert response.interface.isSuccessful()
+
+results = flatten(response.problem.getResults().as_CompositeInstruction())
+
+viewer.update_trajectory(joint_names, results)
+
+if sys.version_info[0] < 3:
+    input("press enter")
+else:
+    input("press enter")
+
+```
 
 ## Tesseract Python Supported Packages
 
@@ -41,125 +218,23 @@ Python wrapper for Tesseract package
 
 ## Related Repositories
 
-* [Tesseract](https://github.com/ros-industrial-consortium/tesseract)
-* [Tesseract ROS](https://github.com/ros-industrial-consortium/tesseract_ros)
+* [Tesseract](https://github.com/tesseract-robotics/tesseract)
+* [Tesseract Planning](https://github.com/tesseract-robotics/tesseract_planning)
+* [Tesseract ROS](https://github.com/tesseract-robotics/tesseract_ros)
 
 ## Documentation
 
 * [Wiki](https://ros-industrial-tesseract-python.rtfd.io)
-* [Doxygen](https://ros-industrial-consortium.github.io/tesseract_python/)
-* [Benchmark](https://ros-industrial-consortium.github.io/tesseract_python/dev/bench)
-
-## Evolution
-
-[![Tesseract Evolution Video](gh_pages/_static/tesseract_evolution.png)](https://www.youtube.com/watch?v=rxlzlsSBxAY)
-
-How to create:
-
-* Create Video: `gource -1280x720 -seconds-per-day 0.2 --auto-skip-seconds 0.2 --disable-bloom -background d0d3d4 --hide filenames,mouse,progress -o - | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -crf 1 -threads 0 -bf 0 gource.mp4`
-* Create Gif: `ffmpeg -i gource.mp4 -r 10 -vf "scale=800:-1,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" tesseract_evolution.gif`
+* [Doxygen](https://tesseract-robotics.github.io/tesseract_python/)
+* [Benchmark](https://tesseract-robotics.github.io/tesseract_python/dev/bench)
 
 ## TODO's
 
 Warning: These packages are under heavy development and are subject to change.
 
-See [issue #66](https://github.com/ros-industrial-consortium/tesseract/issues/66)
+See [issue #66](https://github.com/tesseract-robotics/tesseract/issues/66)
 
 ## Build Instructions
 
-1) Clone repository into your workspace
-2) Clone the repositories in the dependencies.rosinstall file using wstool or some other method (e.g. manually git cloning them)
-3) Build the workspace using catkin tools, colcon, or a similar tool
-
-NOTE: To speed up clean build you may want to add tesseract_ext to an extended workspace.
-
-NOTE: Install TaskFlow from [ROS-Industrial PPA](https://launchpad.net/~ros-industrial/+archive/ubuntu/ppa).
-
-### Building with Clang-Tidy Enabled
-
-Must pass the -DTESSERACT_ENABLE_CLANG_TIDY=ON to cmake when building. This is automatically enabled if cmake argument -DTESSERACT_ENABLE_TESTING_ALL=ON is passed.
-
-### Building Tests
-
-Must pass the -DTESSERACT_ENABLE_TESTING=ON to cmake when wanting to build tests. This is automatically enabled if cmake argument -DTESSERACT_ENABLE_TESTING_ALL=ON is passed.
-
-NOTE: If you are building using catkin tools, use `catkin build --force-cmake -DTESSERACT_ENABLE_TESTING=ON`.
-
-#### Running Tests
-
-Tesseract packages use ctest because it is ROS agnostic, so to run the test call `catkin test --no-deps tesseract_python`
-
-### Building Code Coverage
-
-Must pass the -DTESSERACT_ENABLE_CODE_COVERAGE=ON to cmake when wanting to build code coverage. The code coverage report is located in each individuals build directory inside a ccov/all-merged folder. Open the index.html file to see the packages code coverage report.
-
-NOTE: Must be a clean build when generating a code coverage report. Also must build in debug.
-
-#### Exclude Code From Code Coverage
-
-- LCOV_EXCL_LINE
-  - Lines containing this marker will be excluded.
-- LCOV_EXCL_START
-  - Marks the beginning of an excluded section. The current line is part of this section.
-- LCOV_EXCL_STOP
-  - Marks the end of an excluded section. The current line not part of this section.
-
-.. NOTE: You can replace **LCOV** above with **GCOV** or **GCOVR**.
-
-## Quality Tools Leverage
-
-Tesseract currently leverages Compiler Warnigs, Clang Tidy and Code Coverage. All warnings produced by Compiler and Clang Tidy are treated as errors during CI builds.
-
-- Compiler
-  - Wall
-  - Wextra
-  - Wconversion
-  - Wsign-conversion
-  - Wno-sign-compare
-  - Wnon-virtual-dtor
-- Clang Tidy
-  - clang-analyzer-*
-  - bugprone-*
-  - cppcoreguidelines-avoid-goto
-  - cppcoreguidelines-c-copy-assignment-signature
-  - cppcoreguidelines-interfaces-global-init
-  - cppcoreguidelines-narrowing-conversions
-  - cppcoreguidelines-no-malloc
-  - cppcoreguidelines-slicing
-  - cppcoreguidelines-special-member-functions
-  - misc-*,-misc-non-private-member-variables-in-classes
-  - modernize-*,-modernize-use-trailing-return-type,-modernize-use-nodiscard
-  - performance-*
-  - readability-avoid-const-params-in-decls
-  - readability-container-size-empty
-  - readability-delete-null-pointer
-  - readability-deleted-default
-  - readability-else-after-return
-  - readability-function-size
-  - readability-identifier-naming
-  - readability-inconsistent-declaration-parameter-name
-  - readability-misleading-indentation
-  - readability-misplaced-array-index
-  - readability-non-const-parameter
-  - readability-redundant-*
-  - readability-simplify-*
-  - readability-static-*
-  - readability-string-compare
-  - readability-uniqueptr-delete-release
-  - readability-rary-objects
-
-## Build Branch Sphinx Documentation
-
-```
-cd gh_pages
-sphinx-build . output
-```
-Now open gh_pages/output/index.rst and remove *output* directory before commiting changes.
-
-## Debugging Windows Build
-
-- Search Directories CI
-  - dir /s /b c:\opt\ros\noetic\*assimp*
-- Location of ROS Windows Builds
-  - https://ros-win.visualstudio.com/ros-win/_build
-  - https://ros-win.visualstudio.com/ros-win/_build/results?buildId=8711&view=artifacts&type=publishedArtifacts
+Building the tesseract_python package is complicated and not recommended for novice users. See the wheels.yml
+workflow for details on how to build the packages and all dependencies.
