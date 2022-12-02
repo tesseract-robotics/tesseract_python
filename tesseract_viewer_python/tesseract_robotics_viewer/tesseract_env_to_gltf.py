@@ -17,6 +17,7 @@
 
 import json
 import struct
+import cv2
 import numpy as np
 import math
 from tesseract_robotics import tesseract_geometry
