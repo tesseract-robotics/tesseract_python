@@ -1,0 +1,12 @@
+digraph "tesseract_python/tests/tesseract_process_managers"
+{
+ // LATEX_PDF_SIZE
+  bgcolor="transparent";
+  edge [fontname=Helvetica,fontsize=10,labelfontname=Helvetica,labelfontsize=10];
+  node [fontname=Helvetica,fontsize=10,shape=box,height=0.2,width=0.4];
+  compound=true
+  subgraph clusterdir_81f787f970d050b4e03c03290d30d513 {
+    graph [ bgcolor="#edf0f7", pencolor="grey50", label="tests", fontname=Helvetica,fontsize=10 style="filled,dashed", URL="dir_81f787f970d050b4e03c03290d30d513.html",tooltip=""]
+  dir_071d7e59d88d08af6dac41d7201a0d3a [label="tesseract_process_managers", fillcolor="#edf0f7", color="grey25", style="filled,bold", URL="dir_071d7e59d88d08af6dac41d7201a0d3a.html",tooltip=""];
+  }
+}
