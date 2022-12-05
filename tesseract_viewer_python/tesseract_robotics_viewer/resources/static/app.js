@@ -4,6 +4,19 @@ import { OrbitControls } from 'https://unpkg.com/three@0.127.0/examples/jsm/cont
 import { GLTFLoader } from 'https://unpkg.com/three@0.127.0/examples/jsm/loaders/GLTFLoader.js'
 import { VRButton } from 'https://unpkg.com/three@0.127.0/examples/jsm/webxr/VRButton.js'
 
+function updateTransparency(obj) {
+    obj.children.forEach((model) => {
+        if (typeof model.material !== "undefined") {
+            if (model.material.opacity < 0.99) {
+                // The material must explicitly be set to transparent or else opacity
+                // will only be used to determine the color.
+                model.material.transparent = true;
+            }
+        }
+        updateTransparency(model);
+    });
+}
+
 class TesseractViewer {
 
     constructor()
@@ -136,7 +149,15 @@ class TesseractViewer {
         const loader = new GLTFLoader();
 
         let gltf = await new Promise((resolve, reject) => {
-            loader.load('tesseract_scene.gltf', data=> resolve(data), null, reject);
+            loader.load(
+                "tesseract_scene.gltf",
+                (result) => {
+                    updateTransparency(result.scene);
+                    resolve(result);
+                },
+                null,
+                reject
+            );
         });
 
         if (this._root_env)
