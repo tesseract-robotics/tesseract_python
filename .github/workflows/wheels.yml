@@ -30,25 +30,30 @@ jobs:
       matrix:
         config:
         - os: ubuntu-20.04
-          runs_on: ubuntu-latest
+          runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.7"
         - os: ubuntu-20.04
-          runs_on: ubuntu-latest
+          runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.8"
         - os: ubuntu-20.04
-          runs_on: ubuntu-latest
+          runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.9"
         - os: ubuntu-20.04
-          runs_on: ubuntu-latest
+          runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.10"
+        - os: ubuntu-20.04
+          runs_on: ubuntu-20.04
+          container: ubuntu:20.04
+          py_platform: manylinux_2_31_x86_64
+          python_version: "3.11"
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
@@ -133,6 +138,10 @@ jobs:
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
             python_version: "3.10"
+          - arch: x64
+            vcpkg_triplet: x64-windows-release
+            cmake_arch: x64
+            python_version: "3.11"
     steps:
     - uses: actions/checkout@v2
       with:
