@@ -53,7 +53,7 @@ jobs:
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
-          python_version: "3.11"
+          python_version: "3.11.0"
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
@@ -141,7 +141,7 @@ jobs:
           - arch: x64
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
-            python_version: "3.11"
+            python_version: "3.11.0"
     steps:
     - uses: actions/checkout@v2
       with:
