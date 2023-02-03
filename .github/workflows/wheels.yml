@@ -75,7 +75,7 @@ jobs:
         liburdfdom-dev liboctomap-dev liborocos-kdl-dev libpcl-dev
         libflann-dev libjsoncpp-dev libyaml-cpp-dev git cmake ninja-build
         build-essential autoconf automake libtool bison libpcre2-dev libpcre3-dev
-        lcov libbullet-dev libbullet-extras-dev patchelf python3-venv -y -qq
+        lcov libbullet-dev libbullet-extras-dev python3-venv -y -qq
     - uses: actions/setup-python@v4
       id: setup-python
       with:
@@ -83,7 +83,7 @@ jobs:
     - name: pip
       run: |
         python -m pip install --upgrade pip
-        python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool
+        python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool patchelf
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_python/dependencies_with_ext.rosinstall
