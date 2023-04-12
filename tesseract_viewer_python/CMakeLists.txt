@@ -31,8 +31,6 @@ STRING (REGEX REPLACE "<version>([0-9]+\\.[0-9]+\\.[0-9]+)</version>" "\\1" tess
 STRING (STRIP ${tesseract_viewer_python_version2} tesseract_viewer_python_version)
 MESSAGE(STATUS "tesseract_viewer_python version: ${tesseract_viewer_python_version}")
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
-
 if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 
 set(enable_setuptools_deb_layout OFF)

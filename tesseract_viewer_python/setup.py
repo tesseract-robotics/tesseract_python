@@ -1,9 +1,16 @@
 # Based on https://github.com/robotraconteur/robotraconteur/blob/master/RobotRaconteurPython/setup.py.in
 
 from setuptools import setup, Distribution
+import os
+from xml.etree import ElementTree as ET
+
+tree = ET.parse(os.path.join(os.path.dirname(__file__), 'package.xml'))
+root = tree.getroot()
+version = root.find('version').text
+
 
 setup(name='tesseract-robotics-viewer',
-      version='@tesseract_viewer_python_version@',
+      version=version,
       description='Tesseract Viewer Python Library',
       author='John Wason',
       author_email='wason@wasontech.com',
