@@ -234,8 +234,7 @@ def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, sha
             
                 tf_material = {
                     "name": "material_" + visual_name,
-                    "alphaMode": "MASK",
-                    "alphaCutoff": 0.4
+                    "alphaMode": "BLEND"
                 }
             
                 base_color_factor = mesh_material.getBaseColorFactor().flatten().tolist()
@@ -298,7 +297,10 @@ def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, sha
         visual_node["scale"] = [cylinder.getRadius(), cylinder.getRadius(), 0.5*cylinder.getLength()]
 
     if tf_material is None:
-        tf_material = {"name": "material_" + visual_name}
+        tf_material = {
+            "name": "material_" + visual_name,
+            "alphaMode": "BLEND"
+        }
 
         material = visual.material
 
