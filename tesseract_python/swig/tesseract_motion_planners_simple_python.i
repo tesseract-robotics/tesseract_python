@@ -81,6 +81,8 @@
 %shared_ptr(tesseract_planning::SimplePlannerFixedSizeAssignPlanProfile)
 %include "tesseract_motion_planners/simple/profile/simple_planner_fixed_size_assign_plan_profile.h"
 
+%pythondynamic tesseract_planning::SimpleMotionPlanner;
+%pythondynamic tesseract_planning::SimpleMotionPlannerStatusCategory;
 %shared_ptr(tesseract_planning::SimpleMotionPlanner)
 %shared_ptr(tesseract_planning::SimpleMotionPlannerStatusCategory)
 %include "tesseract_motion_planners/simple/simple_motion_planner.h"

@@ -64,7 +64,7 @@
 
 %define %tesseract_erasure_ctor(class_type,inner_type)
 %extend tesseract_planning::class_type {
-  class_type (tesseract_planning::inner_type && inner_waypoint)
+  class_type (tesseract_planning::inner_type  inner_waypoint)
   {
      return new tesseract_planning::class_type (inner_waypoint);
   }
@@ -138,6 +138,7 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %include "tesseract_command_language/move_instruction.h"
 %tesseract_command_language_add_instruction_type(MoveInstruction)
 
+%pythondynamic tesseract_planning::StateWaypoint;
 %include "tesseract_command_language/state_waypoint.h"
 %tesseract_command_language_add_waypoint_type(StateWaypoint)
 

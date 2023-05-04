@@ -103,6 +103,7 @@
 %include "tesseract_motion_planners/ompl/ompl_problem.h"
 %template(OMPLProblems) std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>;
 
+%pythondynamic tesseract_planning::OMPLMotionPlannerStatusCategory;
 %shared_ptr(tesseract_planning::OMPLMotionPlannerStatusCategory)
 %include "tesseract_motion_planners/ompl/ompl_motion_planner_status_category.h"
 
@@ -118,6 +119,7 @@
 %tesseract_std_function_base(OMPLProblemGeneratorFn,tesseract_planning,std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::OMPLPlanProfileMap&,c);
 %tesseract_std_function(OMPLProblemGeneratorFn,tesseract_planning,std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::OMPLPlanProfileMap&,c);
 
+%pythondynamic tesseract_planning::OMPLMotionPlanner;
 %shared_ptr(tesseract_planning::OMPLMotionPlanner)
 %include "tesseract_motion_planners/ompl/ompl_motion_planner.h"
 %include "tesseract_motion_planners/ompl/serialize.h"
