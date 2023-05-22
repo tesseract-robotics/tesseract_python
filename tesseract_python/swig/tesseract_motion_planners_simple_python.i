@@ -35,7 +35,6 @@
 
 %{
 // tesseract_motion_planners_simple
-#include <tesseract_motion_planners/simple/profile/simple_planner_utils.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_profile.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_lvs_plan_profile.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_lvs_no_ik_plan_profile.h>
@@ -44,7 +43,9 @@
 #include <tesseract_motion_planners/simple/simple_motion_planner.h>
 
 
+#include <tesseract_geometry/geometries.h>
 #include <tesseract_common/resource_locator.h>
+#include <tesseract_srdf/kinematics_information.h>
 
 // tesseract_state_solver
 #include <tesseract_state_solver/mutable_state_solver.h>
@@ -59,7 +60,6 @@
 
 // tesseract_motion_planners_simple
 #define TESSERACT_MOTION_PLANNERS_SIMPLE_PUBLIC
-%include "tesseract_motion_planners/simple/profile/simple_planner_utils.h"
 
 %shared_ptr(tesseract_planning::SimplePlannerPlanProfile)
 %shared_ptr(tesseract_planning::SimplePlannerPlanCompositeProfile)

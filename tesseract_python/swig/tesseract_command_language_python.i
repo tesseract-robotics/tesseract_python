@@ -156,6 +156,8 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %template(Waypoints) std::vector<tesseract_planning::WaypointPoly>;
 %template(Instructions) std::vector<tesseract_planning::InstructionPoly>;
 
+%template(MoveInstructionPolyVector) std::vector<tesseract_planning::MoveInstructionPoly>;
+
 %include "tesseract_command_language/instruction_type.h"
 
 %include "tesseract_command_language/cartesian_waypoint.h"

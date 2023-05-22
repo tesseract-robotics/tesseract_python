@@ -38,9 +38,10 @@
 #include <tesseract_common/resource_locator.h>
 
 // tesseract_time_parameterization
-#include <tesseract_time_parameterization/iterative_spline_parameterization.h>
-#include <tesseract_time_parameterization/time_optimal_trajectory_generation.h>
-#include <tesseract_time_parameterization/instructions_trajectory.h>
+#include <tesseract_time_parameterization/isp/iterative_spline_parameterization.h>
+#include <tesseract_time_parameterization/totg/time_optimal_trajectory_generation.h>
+#include <tesseract_time_parameterization/ruckig/ruckig_trajectory_smoothing.h>
+#include <tesseract_time_parameterization/core/instructions_trajectory.h>
 %}
 
 %ignore tesseract_planning::totg;
@@ -48,13 +49,18 @@
 // tesseract_time_parameterization
 #define TESSERACT_TIME_PARAMETERIZATION_PUBLIC
 %shared_ptr(tesseract_planning::TrajectoryContainer)
-%include "tesseract_time_parameterization/trajectory_container.h"
+%include "tesseract_time_parameterization/core/trajectory_container.h"
 
 %shared_ptr(tesseract_planning::InstructionsTrajectory)
-%include "tesseract_time_parameterization/instructions_trajectory.h"
-%include "tesseract_time_parameterization/iterative_spline_parameterization.h"
+%include "tesseract_time_parameterization/core/instructions_trajectory.h"
 
+// tesseract_time_parameterization_isp
+%include "tesseract_time_parameterization/isp/iterative_spline_parameterization.h"
+
+// tesseract_time_parameterization_totg
 %shared_ptr(tesseract_planning::TimeOptimalTrajectoryGeneration)
-%include "tesseract_time_parameterization/time_optimal_trajectory_generation.h"
+%include "tesseract_time_parameterization/totg/time_optimal_trajectory_generation.h"
 
+// tesseract_time_parameterization_ruckig
+%include "tesseract_time_parameterization/ruckig/ruckig_trajectory_smoothing.h"
 

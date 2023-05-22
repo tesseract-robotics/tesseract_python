@@ -136,7 +136,7 @@ struct SafetyMarginData
                                const double& safety_margin,
                                const double& safety_margin_coeff);
 	
-	Eigen::Vector2d getPairSafetyMarginData(const std::string& obj1, const std::string& obj2) const;
+	const std::array<double,2>& getPairSafetyMarginData(const std::string& obj1, const std::string& obj2) const;
 	
 	const double getMaxSafetyMargin() const;	
 	

@@ -44,7 +44,9 @@
 #include <tesseract_motion_planners/ompl/deserialize.h>
 
 
+#include <tesseract_geometry/geometries.h>
 #include <tesseract_common/resource_locator.h>
+#include <tesseract_srdf/kinematics_information.h>
 
 // tesseract_state_solver
 #include <tesseract_state_solver/mutable_state_solver.h>
