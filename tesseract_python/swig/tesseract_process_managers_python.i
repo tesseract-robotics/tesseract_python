@@ -61,7 +61,6 @@
 // tesseract_motion_planners_ompl
 #include <tesseract_motion_planners/ompl/ompl_planner_configurator.h>
 #include <tesseract_motion_planners/ompl/ompl_problem.h>
-#include <tesseract_motion_planners/ompl/ompl_motion_planner_status_category.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_profile.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_default_plan_profile.h>
 #include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
@@ -70,7 +69,6 @@
 
 // tesseract_motion_planner_descartes
 #include <tesseract_motion_planners/descartes/descartes_problem.h>
-#include <tesseract_motion_planners/descartes/descartes_motion_planner_status_category.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_profile.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_default_plan_profile.h>
 #include <tesseract_motion_planners/descartes/descartes_motion_planner.h>
@@ -90,7 +88,7 @@
 #include <tesseract_process_managers/task_generators/iterative_spline_parameterization_task_generator.h>
 #include "tesseract_process_managers/task_generators/time_optimal_parameterization_task_generator.h"
 
-#include <tesseract_common/status_code.h>
+
 #include <tesseract_common/resource_locator.h>
 
 // tesseract_state_solver

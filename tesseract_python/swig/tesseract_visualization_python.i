@@ -33,6 +33,11 @@
 %import "tesseract_environment_python.i"
 
 %{
+
+// tesseract_geometry
+
+#include <tesseract_geometry/geometries.h>
+
 // tesseract_visualization
 #include <tesseract_visualization/markers/marker.h>
 #include <tesseract_visualization/markers/arrow_marker.h>
@@ -45,7 +50,7 @@
 #include <tesseract_visualization/trajectory_interpolator.h>
 #include <tesseract_visualization/trajectory_player.h>
 
-#include <tesseract_common/status_code.h>
+
 #include <tesseract_common/resource_locator.h>
 
 // tesseract_state_solver

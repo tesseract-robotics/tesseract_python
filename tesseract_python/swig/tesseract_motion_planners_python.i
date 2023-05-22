@@ -41,7 +41,7 @@
 #include <tesseract_motion_planners/core/utils.h>
 #include <tesseract_motion_planners/default_planner_namespaces.h>
 
-#include <tesseract_common/status_code.h>
+
 #include <tesseract_common/resource_locator.h>
 
 // tesseract_state_solver

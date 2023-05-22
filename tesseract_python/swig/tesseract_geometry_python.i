@@ -33,7 +33,7 @@
 %import "tesseract_common_python.i"
 
 %{
-#include <tesseract_common/status_code.h>
+
 
 // tesseract_geometry
 #include <tesseract_geometry/geometry.h>

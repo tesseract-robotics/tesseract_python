@@ -42,7 +42,6 @@ namespace tesseract_collision
 %import "tesseract_geometry_python.i"
 
 %{
-#include <tesseract_common/status_code.h>
 // tesseract_collision
 #include <tesseract_collision/core/types.h>
 #include <tesseract_collision/core/discrete_contact_manager.h>
@@ -55,6 +54,10 @@ namespace tesseract_collision
 #include <tesseract_collision/bullet/bullet_discrete_bvh_manager.h>
 #include <tesseract_collision/bullet/bullet_discrete_simple_manager.h>
 #include <tesseract_collision/fcl/fcl_discrete_managers.h>
+
+// tesseract_common
+#include <tesseract_common/resource_locator.h>
+#include <tesseract_geometry/geometries.h>
 
 #include "tesseract_collisions_python_std_functions.h"
 %}

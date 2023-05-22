@@ -44,7 +44,7 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/breadth_first_search.hpp>
 
-#include <tesseract_common/status_code.h>
+
 #include <tesseract_geometry/geometries.h>
 #include <tesseract_common/resource_locator.h>
 #include <tesseract_srdf/kinematics_information.h>

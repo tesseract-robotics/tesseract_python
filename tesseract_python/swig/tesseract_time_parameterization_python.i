@@ -34,7 +34,7 @@
 
 %{
 
-#include <tesseract_common/status_code.h>
+
 #include <tesseract_common/resource_locator.h>
 
 // tesseract_time_parameterization

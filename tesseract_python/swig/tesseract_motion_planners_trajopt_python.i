@@ -48,7 +48,7 @@
 #include <tesseract_motion_planners/trajopt/serialize.h>
 #include <tesseract_motion_planners/trajopt/deserialize.h>
 
-#include <tesseract_common/status_code.h>
+
 #include <tesseract_common/resource_locator.h>
 
 // tesseract_state_solver
@@ -100,9 +100,7 @@
 %include "tesseract_motion_planners/trajopt/trajopt_utils.h"
 
 %pythondynamic tesseract_planning::TrajOptMotionPlanner;
-%pythondynamic tesseract_planning::TrajOptMotionPlannerStatusCategory;
 %shared_ptr(tesseract_planning::TrajOptMotionPlanner)
-%shared_ptr(tesseract_planning::TrajOptMotionPlannerStatusCategory)
 %include "tesseract_motion_planners/trajopt/trajopt_motion_planner.h"
 %include "tesseract_motion_planners/trajopt/serialize.h"
 %include "tesseract_motion_planners/trajopt/deserialize.h"

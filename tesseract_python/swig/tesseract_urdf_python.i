@@ -35,7 +35,7 @@
 
 %{
 
-#include <tesseract_common/status_code.h>
+
 #include <tesseract_common/resource_locator.h>
 
 #include <boost/graph/adjacency_list.hpp>

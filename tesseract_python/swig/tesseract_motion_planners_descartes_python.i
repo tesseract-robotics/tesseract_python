@@ -40,14 +40,13 @@
 %{
 // tesseract_motion_planner_descartes
 #include <tesseract_motion_planners/descartes/descartes_problem.h>
-#include <tesseract_motion_planners/descartes/descartes_motion_planner_status_category.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_profile.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_default_plan_profile.h>
 #include <tesseract_motion_planners/descartes/descartes_motion_planner.h>
 #include <tesseract_motion_planners/descartes/serialize.h>
 #include <tesseract_motion_planners/descartes/deserialize.h>
 
-#include <tesseract_common/status_code.h>
+
 #include <tesseract_common/resource_locator.h>
 
 // tesseract_state_solver
@@ -72,10 +71,6 @@
 %shared_ptr(DescartesProblemD)
 %include "tesseract_motion_planners/descartes/descartes_problem.h"
 %template(DescartesProblemD) tesseract_planning::DescartesProblem<double>;
-
-%pythondynamic tesseract_planning::DescartesMotionPlannerStatusCategory;
-%shared_ptr(tesseract_planning::DescartesMotionPlannerStatusCategory)
-%include "tesseract_motion_planners/descartes/descartes_motion_planner_status_category.h"
 
 %shared_ptr(tesseract_planning::DescartesPlanProfile<double>)
 %include "tesseract_motion_planners/descartes/profile/descartes_profile.h"

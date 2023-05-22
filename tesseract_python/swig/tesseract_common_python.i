@@ -38,7 +38,7 @@
 
 // tesseract_common
 #include <tesseract_common/types.h>
-#include <tesseract_common/status_code.h>
+
 #include <tesseract_common/resource_locator.h>
 #include <tesseract_common/manipulator_info.h>
 #include <tesseract_common/joint_state.h>
@@ -179,9 +179,7 @@ namespace std
 %shared_ptr(tesseract_common::ResourceLocator)
 %shared_ptr(tesseract_common::SimpleResourceLocator)
 %shared_ptr(tesseract_common::SimpleLocatedResource)
-%shared_ptr(tesseract_common::StatusCategory)
-%shared_ptr(tesseract_common::GeneralStatusCategory)
-%shared_ptr(tesseract_common::StatusCode)
+%shared_ptr(tesseract_common::GeneralResourceLocator)
 
 
 // tesseract_common
@@ -189,7 +187,6 @@ namespace std
 %include "tesseract_common/types.h"
 %template(AllowedCollisionEntries) std::unordered_map<std::pair<std::string,std::string>, std::string, tesseract_common::PairHash>;
 %template(PluginInfoMap) std::map<std::string, tesseract_common::PluginInfo>;
-%include "tesseract_common/status_code.h"
 %include "tesseract_common/resource_locator.h"
 %ignore tcp_offset;
 %include "tesseract_common/manipulator_info.h"
