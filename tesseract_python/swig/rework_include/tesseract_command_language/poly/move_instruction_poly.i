@@ -12,10 +12,12 @@ enum class MoveInstructionType : int
 
 namespace tesseract_planning
 {
-
+class MoveInstruction;
 struct MoveInstructionPoly
 {
   MoveInstructionPoly();
+  MoveInstructionPoly(const MoveInstructionPoly&);
+  MoveInstructionPoly(const MoveInstruction&);
   const boost::uuids::uuid& getUUID() const;
   void regenerateUUID();
 

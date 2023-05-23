@@ -100,7 +100,7 @@ def run_test(checker):
     result = tesseract_collision.ContactResultMap()
     checker.contactTest(result, tesseract_collision.ContactRequest(tesseract_collision.ContactTestType_CLOSEST))
     result_vector = tesseract_collision.ContactResultVector()
-    tesseract_collision.flattenResults(result,result_vector)
+    result.flattenMoveResults(result_vector)
 
     assert len(result_vector) > 0
     nptest.assert_almost_equal(result_vector[0].distance, -0.55)

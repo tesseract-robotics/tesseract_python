@@ -8,16 +8,16 @@ from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedRe
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
-from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, Waypoint, \
-    MoveInstructionType_LINEAR, MoveInstructionType_START, MoveInstruction, Instruction, \
-    isMoveInstruction, isStateWaypoint, CompositeInstruction, flatten, isMoveInstruction, isStateWaypoint, \
-    ProfileDictionary
-from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateSeed, \
-    DESCARTES_DEFAULT_NAMESPACE
+from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, WaypointPoly, \
+    MoveInstructionType_LINEAR, MoveInstruction, InstructionPoly, CartesianWaypointPoly, MoveInstructionPoly, \
+    CompositeInstruction, ProfileDictionary, InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly
+from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
 from tesseract_robotics.tesseract_motion_planners_descartes import DescartesDefaultPlanProfileD, \
-    DescartesMotionPlannerD, DescartesMotionPlannerStatusCategory, DescartesPlanProfileD, \
+    DescartesMotionPlannerD, DescartesPlanProfileD, \
     ProfileDictionary_addProfile_DescartesPlanProfileD, cast_DescartesPlanProfileD
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
+
+DESCARTES_DEFAULT_NAMESPACE = "DescartesMotionPlannerTask"
 
 def get_environment():
     locator = TesseractSupportResourceLocator()
@@ -45,15 +45,15 @@ def test_descartes_freespace_fixed_poses():
     wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,-0.2,0.8) * Quaterniond(0,0,-1.0,0))
     wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.2,0.8) * Quaterniond(0,0,-1.0,0))
 
-    start_instruction = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "TEST_PROFILE", manip)
-    plan_f1 = MoveInstruction(Waypoint(wp2), MoveInstructionType_LINEAR, "TEST_PROFILE", manip)
+    start_instruction = MoveInstruction(CartesianWaypointPoly(wp1), MoveInstructionType_LINEAR, "TEST_PROFILE", manip)
+    plan_f1 = MoveInstruction(CartesianWaypointPoly(wp2), MoveInstructionType_LINEAR, "TEST_PROFILE", manip)
 
     program = CompositeInstruction()
-    program.setStartInstruction(Instruction(start_instruction))
     program.setManipulatorInfo(manip)
-    program.append(Instruction(plan_f1))
+    program.appendMoveInstruction(MoveInstructionPoly(start_instruction))
+    program.appendMoveInstruction(MoveInstructionPoly(plan_f1))
 
-    seed = generateSeed(program, cur_state, env, 3.14, 1.0, 3.14, 10)
+    interpolated_program = generateInterpolatedProgram(program, cur_state, env, 3.14, 1.0, 3.14, 10)
 
     plan_profile = DescartesDefaultPlanProfileD()
     # DescartesDefaultPlanProfileD is not upcasting automatically, use helper function
@@ -62,31 +62,28 @@ def test_descartes_freespace_fixed_poses():
     profiles = ProfileDictionary()
     ProfileDictionary_addProfile_DescartesPlanProfileD(profiles,DESCARTES_DEFAULT_NAMESPACE,"TEST_PROFILE",plan_profile1)
     
-    single_descartes_planner = DescartesMotionPlannerD()
+    single_descartes_planner = DescartesMotionPlannerD(DESCARTES_DEFAULT_NAMESPACE)
     plan_profile.num_threads = 1
     
 
     request = PlannerRequest()
-    request.seed = seed
-    request.instructions = program
+    request.instructions = interpolated_program
     request.env = env
     request.env_state = cur_state
     request.profiles = profiles
     
-    response = PlannerResponse()
+    response = single_descartes_planner.solve(request)
+    assert response.successful
 
-    assert single_descartes_planner.solve(request, response)
-    assert response.status.value() == DescartesMotionPlannerStatusCategory.SolutionFound
-
-    results = flatten(response.results)
+    results = response.results.flatten()
 
     assert len(results) == 11
     for instr in results:
-        assert isMoveInstruction(instr)
-        move_instr=instr.as_MoveInstruction()
+        # assert isMoveInstruction(instr)
+        move_instr=InstructionPoly_as_MoveInstructionPoly(instr)
         wp1 = move_instr.getWaypoint()
-        assert isStateWaypoint(wp1)
-        wp = wp1.as_StateWaypoint()
-        assert len(wp.joint_names) == 6
-        assert isinstance(wp.position,np.ndarray)
-        assert len(wp.position) == 6
+        # assert isStateWaypoint(wp1)
+        wp = WaypointPoly_as_StateWaypointPoly(wp1)
+        assert len(wp.getNames()) == 6
+        assert isinstance(wp.getPosition(),np.ndarray)
+        assert len(wp.getPosition()) == 6

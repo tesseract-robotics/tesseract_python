@@ -81,15 +81,15 @@ namespace tesseract_collision
 %wrap_unique_ptr(DiscreteContactManagerUPtr,tesseract_collision::DiscreteContactManager)
 %shared_ptr(tesseract_collision::tesseract_collision_fcl::FCLDiscreteBVHManager)
 %tesseract_aligned_vector(ContactResultVector, tesseract_collision::ContactResult);
-%tesseract_aligned_map_of_aligned_vector(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
+// %tesseract_aligned_map_of_aligned_vector(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
 
 namespace tesseract_collision { 
 class ContactResult;
 %tesseract_aligned_vector_using(ContactResultVector, tesseract_collision::ContactResult);
-%tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
+// %tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
 }
 %ignore ContactResultVector;
-%ignore ContactResultMap;
+// %ignore ContactResultMap;
 // tesseract_collision
 #define TESSERACT_COLLISION_CORE_PUBLIC
 %include "tesseract_collision/core/types.h"

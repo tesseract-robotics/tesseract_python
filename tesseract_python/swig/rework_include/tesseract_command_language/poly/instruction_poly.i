@@ -3,6 +3,7 @@ namespace tesseract_planning
 struct InstructionPoly
 {
   InstructionPoly();
+  InstructionPoly(const InstructionPoly&);
   const boost::uuids::uuid& getUUID() const;
   void regenerateUUID();
 

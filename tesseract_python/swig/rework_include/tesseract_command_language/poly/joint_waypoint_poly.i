@@ -1,22 +1,21 @@
 namespace tesseract_planning
 {
+class JointWaypoint;
 struct JointWaypointPoly
 {
   JointWaypointPoly();
+  JointWaypointPoly(const JointWaypointPoly&);
+  JointWaypointPoly(const JointWaypoint&);
   void setNames(const std::vector<std::string>& names);
-  std::vector<std::string>& getNames();
   const std::vector<std::string>& getNames() const;
 
   void setPosition(const Eigen::VectorXd& position);
-  Eigen::VectorXd& getPosition();
   const Eigen::VectorXd& getPosition() const;
 
   void setUpperTolerance(const Eigen::VectorXd& upper_tol);
-  Eigen::VectorXd& getUpperTolerance();
   const Eigen::VectorXd& getUpperTolerance() const;
 
   void setLowerTolerance(const Eigen::VectorXd& lower_tol);
-  Eigen::VectorXd& getLowerTolerance();
   const Eigen::VectorXd& getLowerTolerance() const;
 
   void setIsConstrained(bool value);

@@ -133,8 +133,6 @@ $1 = is_array($input);
 %template(Geometries) std::vector<std::shared_ptr<tesseract_geometry::Geometry> >;
 %template(GeometriesConst) std::vector<std::shared_ptr<const tesseract_geometry::Geometry> >;
 
-
-
 %shared_factory(
     tesseract_geometry::Geometry,
     tesseract_geometry::Box,
@@ -149,6 +147,7 @@ $1 = is_array($input);
     tesseract_geometry::SDFMesh,
     tesseract_geometry::Sphere
 )
+
 
 %shared_ptr(tesseract_geometry::Box)
 %include <tesseract_geometry/impl/box.h>
@@ -197,7 +196,6 @@ class OcTree {};
 
 %include "tesseract_geometry/geometries.h"
 %include "tesseract_geometry/utils.h"
-
 
 %include "tesseract_geometry/mesh_parser.h"
 %pybuffer_binary(const uint8_t* bytes, size_t bytes_len);

@@ -140,6 +140,9 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %include "tesseract_command_language/profile_dictionary.h"
 %include "tesseract_command_language_python_profile_dictionary_functions.h"
 
+%pythondynamic tesseract_planning::InstructionPoly;
+%pythondynamic tesseract_planning::WaypointPoly;
+
 %include "rework_include/tesseract_command_language/poly/waypoint_poly.i"
 %include "rework_include/tesseract_command_language/poly/cartesian_waypoint_poly.i"
 %include "rework_include/tesseract_command_language/poly/joint_waypoint_poly.i"
@@ -171,8 +174,6 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %include "tesseract_command_language/state_waypoint.h"
 %tesseract_command_language_add_waypoint_type(StateWaypoint)
 
-%include "rework_include/tesseract_command_language/composite_instruction.i"
-%tesseract_command_language_add_instruction_type(CompositeInstruction)
 
 #define TESSERACT_MOVE_INSTRUCTION_EXPORT_KEY(a,b)
 %include "tesseract_command_language/move_instruction.h"
@@ -189,6 +190,9 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 
 %include "tesseract_command_language/set_analog_instruction.h"
 %tesseract_command_language_add_instruction_type(SetAnalogInstruction)
+
+%include "rework_include/tesseract_command_language/composite_instruction.i"
+%tesseract_command_language_add_instruction_type(CompositeInstruction)
 
 // TODO: implement validateSeedStructure
 %ignore validateSeedStructure;

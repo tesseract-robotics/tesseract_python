@@ -1,6 +1,6 @@
-from tesseract_robotics.tesseract_command_language import CompositeInstruction, StateWaypoint, Waypoint, \
-    Instruction, MoveInstruction, Instructions, MoveInstructionType_START, MoveInstructionType_FREESPACE, \
-    flatten
+from tesseract_robotics.tesseract_command_language import CompositeInstruction, StateWaypoint, WaypointPoly, \
+    InstructionPoly, MoveInstruction, Instructions, MoveInstructionType_FREESPACE, StateWaypointPoly, \
+     MoveInstructionPoly, InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly
 from tesseract_robotics.tesseract_time_parameterization import IterativeSplineParameterization, \
     InstructionsTrajectory
 import numpy as np
@@ -17,15 +17,14 @@ def create_straight_trajectory():
         p = np.zeros((6,),dtype=np.float64)
         p[0] = i * (max_/num)
         swp = StateWaypoint(joint_names, p)        
-        if i == 0:
-            program.setStartInstruction(Instruction(MoveInstruction(Waypoint(swp), MoveInstructionType_START)))
-        else:
-            program.append(Instruction(MoveInstruction(Waypoint(swp), MoveInstructionType_FREESPACE)))
+        program.appendMoveInstruction(MoveInstructionPoly(MoveInstruction(StateWaypointPoly(swp), 
+                                        MoveInstructionType_FREESPACE)))
 
     p = np.zeros((6,),dtype=np.float64)
     p[0] = max_
     swp = StateWaypoint(joint_names, p)
-    program.append(Instruction(MoveInstruction(Waypoint(swp), MoveInstructionType_FREESPACE)))
+    program.appendMoveInstruction(MoveInstructionPoly(MoveInstruction(StateWaypointPoly(swp), 
+                                    MoveInstructionType_FREESPACE)))
 
     return program
 
@@ -38,8 +37,10 @@ def test_time_parameterization():
     max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
     max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
     assert time_parameterization.compute(traj, max_velocity, max_acceleration)
-    assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time > 1.0
-    assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time < 5.0
+    res_wp1 = InstructionPoly_as_MoveInstructionPoly(program[-1]).getWaypoint()
+    WaypointPoly_as_StateWaypointPoly(res_wp1).getTime() > 1.0
+    res_wp2 = InstructionPoly_as_MoveInstructionPoly(program[-1]).getWaypoint()
+    WaypointPoly_as_StateWaypointPoly(res_wp2).getTime() < 5.0
 
 def test_time_parameterization_vec():
 
@@ -50,5 +51,7 @@ def test_time_parameterization_vec():
     max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
     max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
     assert time_parameterization.compute(traj, max_velocity, max_acceleration)
-    assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time > 1.0
-    assert program[-1].as_MoveInstruction().getWaypoint().as_StateWaypoint().time < 5.0
+    res_wp1 = InstructionPoly_as_MoveInstructionPoly(program[-1]).getWaypoint()
+    WaypointPoly_as_StateWaypointPoly(res_wp1).getTime() > 1.0
+    res_wp2 = InstructionPoly_as_MoveInstructionPoly(program[-1]).getWaypoint()
+    WaypointPoly_as_StateWaypointPoly(res_wp2).getTime() < 5.0

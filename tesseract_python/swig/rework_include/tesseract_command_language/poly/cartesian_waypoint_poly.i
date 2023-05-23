@@ -1,22 +1,21 @@
 namespace tesseract_planning
 {
+class CartesianWaypoint;
 struct CartesianWaypointPoly
 {
   CartesianWaypointPoly();
+  CartesianWaypointPoly(const CartesianWaypointPoly&);
+  CartesianWaypointPoly(const CartesianWaypoint&);
   void setTransform(const Eigen::Isometry3d& transform);
-  Eigen::Isometry3d& getTransform();
   const Eigen::Isometry3d& getTransform() const;
 
   void setUpperTolerance(const Eigen::VectorXd& upper_tol);
-  Eigen::VectorXd& getUpperTolerance();
   const Eigen::VectorXd& getUpperTolerance() const;
 
   void setLowerTolerance(const Eigen::VectorXd& lower_tol);
-  Eigen::VectorXd& getLowerTolerance();
   const Eigen::VectorXd& getLowerTolerance() const;
 
   void setSeed(const tesseract_common::JointState& seed);
-  tesseract_common::JointState& getSeed();
   const tesseract_common::JointState& getSeed() const;
 
   void setName(const std::string& name);

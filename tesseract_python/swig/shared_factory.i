@@ -54,12 +54,50 @@ if (!dcast) {
   }
 }%enddef
 
+%define %_shared_factory_const_dispatch(Type)
+if (!dcast) {
+  SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const Type> dobj
+          = SWIG_SHARED_PTR_QNAMESPACE::dynamic_pointer_cast<const Type>($1);
+  if (dobj) {
+    dcast = 1;
+    SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const Type> *smartresult
+            = dobj ? new SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const Type>(dobj) : 0;
+    %set_output(SWIG_NewPointerObj(%as_voidptr(smartresult),
+                                   $descriptor(SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<Type> *),
+                                   SWIG_POINTER_OWN));
+  }
+}%enddef
+
+%define %_shared_factory_const_dispatch_ref(Type)
+if (!dcast) {
+  SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const Type> dobj
+          = SWIG_SHARED_PTR_QNAMESPACE::dynamic_pointer_cast<const Type>(*$1);
+  if (dobj) {
+    dcast = 1;
+    SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const Type> *smartresult
+            = dobj ? new SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const Type>(dobj) : 0;
+    %set_output(SWIG_NewPointerObj(%as_voidptr(smartresult),
+                                   $descriptor(SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<Type> *),
+                                   SWIG_POINTER_OWN));
+  }
+}%enddef
+
 %define %_shared_factory_dispatch_pointer(Type)
 if (!dcast) {
   Type* temp = dynamic_cast<Type*>($1);
   if (temp) {
     dcast = 1;
     SWIG_SHARED_PTR_QNAMESPACE::shared_ptr< Type > *smartresult = temp ? new SWIG_SHARED_PTR_QNAMESPACE::shared_ptr< Type >(temp SWIG_NO_NULL_DELETER_$owner) : 0;
+    %set_output(SWIG_NewPointerObj(%as_voidptr(smartresult), $descriptor(SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<Type > *), $owner | SWIG_POINTER_OWN));
+  }
+}%enddef
+
+%define %_shared_factory_const_dispatch_pointer(Type)
+if (!dcast) {
+  Type* temp = dynamic_cast<const Type*>($1);
+  if (temp) {
+    dcast = 1;
+    SWIG_SHARED_PTR_QNAMESPACE::shared_ptr< const Type > *smartresult = temp ? new SWIG_SHARED_PTR_QNAMESPACE::shared_ptr< const Type >(temp SWIG_NO_NULL_DELETER_$owner) : 0;
     %set_output(SWIG_NewPointerObj(%as_voidptr(smartresult), $descriptor(SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<Type > *), $owner | SWIG_POINTER_OWN));
   }
 }%enddef
@@ -89,6 +127,30 @@ if (!dcast) {
   }
 }
 
+%typemap(out) SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const BaseType> {
+  int dcast = 0;
+  %formacro(%_shared_factory_const_dispatch, Types)
+  if (!dcast) {
+      SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const BaseType> *smartresult
+              = $1 ? new SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const BaseType>($1) : 0;
+      %set_output(SWIG_NewPointerObj(%as_voidptr(smartresult),
+                                     $descriptor(SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<BaseType> *),
+                                     SWIG_POINTER_OWN));
+  }
+}
+
+%typemap(out) SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const BaseType>&, const SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const BaseType>& {
+  int dcast = 0;
+  %formacro(%_shared_factory_const_dispatch_ref, Types)
+  if (!dcast) {
+      SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const BaseType> *smartresult
+              = *$1 ? new SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<const BaseType>(*$1) : 0;
+      %set_output(SWIG_NewPointerObj(%as_voidptr(smartresult),
+                                     $descriptor(SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<BaseType> *),
+                                     SWIG_POINTER_OWN));
+  }
+}
+
 %typemap(out, fragment="SWIG_null_deleter_python") BaseType* {
   int dcast = 0;
   %formacro(%_shared_factory_dispatch_pointer, Types)
@@ -98,5 +160,13 @@ if (!dcast) {
   }
 }
 
+%typemap(out, fragment="SWIG_null_deleter_python") const BaseType* {
+  int dcast = 0;
+  %formacro(%_shared_factory_const_dispatch_pointer, Types)
+  if (!dcast) {
+  SWIG_SHARED_PTR_QNAMESPACE::shared_ptr< const BaseType > *smartresult = $1 ? new SWIG_SHARED_PTR_QNAMESPACE::shared_ptr< const BaseType >($1 SWIG_NO_NULL_DELETER_$owner) : 0;
+  %set_output(SWIG_NewPointerObj(%as_voidptr(smartresult), $descriptor(SWIG_SHARED_PTR_QNAMESPACE::shared_ptr<BaseType > *), $owner | SWIG_POINTER_OWN));
+  }
+}
 
 %enddef
