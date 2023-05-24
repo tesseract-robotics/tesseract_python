@@ -62,7 +62,6 @@ else()
 endif()
 
 else()
-install(CODE "message(STATUS \"Running setup.py in ${CMAKE_CURRENT_SOURCE_DIR}\")
-execute_process(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/python/setup.py bdist_wheel WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})")
+add_custom_target(tesseract_viewer_python_wheel ALL ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/setup.py bdist_wheel WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 endif()
