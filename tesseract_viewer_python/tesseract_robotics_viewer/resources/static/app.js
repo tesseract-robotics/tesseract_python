@@ -147,6 +147,12 @@ class TesseractViewer {
             }
         }
 
+        gltf.scene.traverse( function( node ) {
+            if( node.material ) {
+                node.material.side = THREE.DoubleSide;
+            }
+        });
+
         this._root_env.add(gltf.scene);        
 
         if (gltf.animations.length > 0)

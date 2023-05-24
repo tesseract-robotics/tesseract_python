@@ -26,7 +26,8 @@ import pkgutil
 import re
 import base64
 import io
-from tesseract_robotics.tesseract_command_language import isStateWaypoint, isMoveInstruction
+
+from .util import tesseract_trajectory_to_list
 
 def tesseract_env_to_gltf(t_env, origin_offset=[0,0,0], name = None, trajectory = None):
     gltf_dict, gltf_buf_io = tesseract_env_to_gltf_dict_and_buf(t_env,origin_offset,name)
@@ -223,8 +224,8 @@ def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, sha
             "name": visual_name + "_mesh"
         })
 
-        if normals_ind is not None:
-            mesh_dict["primitives"][0]["attributes"]["NORMAL"] = normals_ind
+        # if normals_ind is not None:
+        #     mesh_dict["primitives"][0]["attributes"]["NORMAL"] = normals_ind
 
         visual_node["scale"] = list(mesh.getScale().flatten())
 
@@ -234,7 +235,8 @@ def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, sha
             
                 tf_material = {
                     "name": "material_" + visual_name,
-                    "alphaMode": "BLEND"
+                    "alphaMode": "MASK",
+                    "alphaCutoff": 0.4
                 }
             
                 base_color_factor = mesh_material.getBaseColorFactor().flatten().tolist()
@@ -242,7 +244,7 @@ def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, sha
                 tf_material["pbrMetallicRoughness"] = {
                     "baseColorFactor": base_color_factor,
                     "roughnessFactor": mesh_material.getRoughnessFactor(),
-                    "metallicFactor": mesh_material.getMetallicFactor(),
+                    "metallicFactor": mesh_material.getMetallicFactor(),                    
                 }
 
                 mesh_textures = mesh.getTextures()
@@ -299,7 +301,8 @@ def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, sha
     if tf_material is None:
         tf_material = {
             "name": "material_" + visual_name,
-            "alphaMode": "BLEND"
+            "alphaMode": "MASK",
+            "alphaCutoff": 0.4
         }
 
         material = visual.material
@@ -432,27 +435,13 @@ def _append_bufview(gltf_dict, gltf_buf_io, dat):
 
 def _append_trajectory_animation(gltf_dict, gltf_buf_io, tesseract_trajectory):
 
-    start_instruction_o = tesseract_trajectory[0]
-    assert isMoveInstruction(start_instruction_o)
-    start_waypoint_o = start_instruction_o.as_MoveInstruction().getWaypoint()
-    assert isStateWaypoint(start_waypoint_o)
-    start_waypoint = start_waypoint_o.as_StateWaypoint()
+    traj, joint_names = tesseract_trajectory_to_list(tesseract_trajectory)
 
-    joint_names = list(start_waypoint.joint_names)
-    
-    trajectory2 = []
-    trajectory_time2 = []
-    for i in range(len(tesseract_trajectory)):
-        instr = tesseract_trajectory[i]
-        assert isMoveInstruction(instr)
-        wp = instr.as_MoveInstruction().getWaypoint()
-        assert isStateWaypoint(wp)
-        state_wp = wp.as_StateWaypoint()
-        trajectory2.append(state_wp.position.flatten().tolist())
-        trajectory_time2.append(state_wp.time)
-    
-    print(trajectory2)
-    print(trajectory_time2)
+    traj_np = np.asarray(traj)
+
+    trajectory_time2_np = traj_np[:,-1].flatten().astype(np.float32)
+    trajectory2_np = traj_np[:,:-1].astype(np.float32)
+
 
     joint_inds = {}
     joint_axes = {}
@@ -467,9 +456,7 @@ def _append_trajectory_animation(gltf_dict, gltf_buf_io, tesseract_trajectory):
                 joint_axes[e1["name"]] = np.array(e1["axis"],dtype=np.float32)
                 joint_types[e1["name"]] = e1["type"]
 
-    _, t_ind = _append_accessor(gltf_dict, gltf_buf_io,np.array(trajectory_time2, dtype=np.float32))
-
-    trajectory2_np = np.array(trajectory2,dtype=np.float32)
+    _, t_ind = _append_accessor(gltf_dict, gltf_buf_io,trajectory_time2_np)
 
     animation = {
         "channels": [],

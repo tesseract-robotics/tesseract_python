@@ -30,7 +30,7 @@ from tesseract_robotics import tesseract_environment
 import hashlib
 import base64
 import sys
-from tesseract_robotics.tesseract_command_language import isStateWaypoint, isMoveInstruction
+from .util import tesseract_trajectory_to_list
 
 if sys.version_info[0] < 3:
     from BaseHTTPServer import BaseHTTPRequestHandler
@@ -156,28 +156,13 @@ class TesseractViewer():
 
     def update_trajectory(self, tesseract_trajectory):
         
-        start_instruction_o = tesseract_trajectory[0]
-        assert isMoveInstruction(start_instruction_o)
-        start_waypoint_m = start_instruction_o.as_MoveInstruction()
-        start_waypoint_o = start_waypoint_m.getWaypoint()
-        assert isStateWaypoint(start_waypoint_o)
-        start_waypoint = start_waypoint_o.as_StateWaypoint()
+        traj, joint_names = tesseract_trajectory_to_list(tesseract_trajectory)
 
         trajectory_json = dict()
         trajectory_json["use_time"] = True
         trajectory_json["loop_time"] = 20
-        trajectory_json["joint_names"] = list(start_waypoint.joint_names)
-        
-        trajectory2 = []
-        for i in range(len(tesseract_trajectory)):
-            instr = tesseract_trajectory[i]
-            assert isMoveInstruction(instr)
-            instr_m = instr.as_MoveInstruction()
-            wp = instr_m.getWaypoint()
-            assert isStateWaypoint(wp)
-            state_wp = wp.as_StateWaypoint()
-            trajectory2.append(state_wp.position.flatten().tolist() + [state_wp.time])
-        trajectory_json["trajectory"] = trajectory2
+        trajectory_json["joint_names"] = joint_names
+        trajectory_json["trajectory"] = traj
         self.trajectory_json=json.dumps(trajectory_json)
         
     def serve_forever(self):
