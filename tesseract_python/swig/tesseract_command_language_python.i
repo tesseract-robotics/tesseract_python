@@ -149,10 +149,14 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %include "rework_include/tesseract_command_language/poly/move_instruction_poly.i"
 
 %tesseract_command_language_add_waypoint_poly_type(CartesianWaypointPoly)
+%tesseract_erasure_ctor_planning(CartesianWaypointPoly,CartesianWaypoint);
 %tesseract_command_language_add_waypoint_poly_type(JointWaypointPoly)
+%tesseract_erasure_ctor_planning(JointWaypointPoly,JointWaypoint);
 %tesseract_command_language_add_waypoint_poly_type(StateWaypointPoly)
+%tesseract_erasure_ctor_planning(StateWaypointPoly,StateWaypoint);
 
 %tesseract_command_language_add_instruction_poly_type(MoveInstructionPoly)
+%tesseract_erasure_ctor_planning(MoveInstructionPoly,MoveInstruction);
 
 %template(Waypoints) std::vector<tesseract_planning::WaypointPoly>;
 %template(Instructions) std::vector<tesseract_planning::InstructionPoly>;

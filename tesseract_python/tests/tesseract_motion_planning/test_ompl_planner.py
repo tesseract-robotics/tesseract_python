@@ -11,7 +11,9 @@ from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Tran
 from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, WaypointPoly, \
     MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, MoveInstructionPoly,\
     CompositeInstruction,  ProfileDictionary, CartesianWaypointPoly, JointWaypointPoly, \
-    InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly
+    InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
+    JointWaypointPoly_wrap_JointWaypoint, CartesianWaypointPoly_wrap_CartesianWaypoint, \
+    MoveInstructionPoly_wrap_MoveInstruction
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
 from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
     OMPLProblemGeneratorFn, OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
@@ -50,13 +52,13 @@ def test_ompl_freespace_joint_cart():
     goal = kin_group.calcFwdKin(end_state)[manip.tcp_frame]
     wp2 = CartesianWaypoint(goal)
 
-    start_instruction = MoveInstruction(JointWaypointPoly(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE")
-    plan_f1 = MoveInstruction(CartesianWaypointPoly(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE")
+    start_instruction = MoveInstruction(JointWaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE")
+    plan_f1 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE")
 
     program = CompositeInstruction("TEST_PROFILE")
     program.setManipulatorInfo(manip)
-    program.appendMoveInstruction(MoveInstructionPoly(start_instruction))
-    program.appendMoveInstruction(MoveInstructionPoly(plan_f1))
+    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
+    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
     interpolated_program = generateInterpolatedProgram(program, cur_state, env, 3.14, 1.0, 3.14, 10)
 

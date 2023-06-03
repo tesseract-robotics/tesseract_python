@@ -1,6 +1,7 @@
 from tesseract_robotics.tesseract_command_language import CompositeInstruction, StateWaypoint, WaypointPoly, \
     InstructionPoly, MoveInstruction, Instructions, MoveInstructionType_FREESPACE, StateWaypointPoly, \
-     MoveInstructionPoly, InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly
+     MoveInstructionPoly, InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
+     MoveInstructionPoly_wrap_MoveInstruction, StateWaypointPoly_wrap_StateWaypoint
 from tesseract_robotics.tesseract_time_parameterization import IterativeSplineParameterization, \
     InstructionsTrajectory
 import numpy as np
@@ -17,13 +18,15 @@ def create_straight_trajectory():
         p = np.zeros((6,),dtype=np.float64)
         p[0] = i * (max_/num)
         swp = StateWaypoint(joint_names, p)        
-        program.appendMoveInstruction(MoveInstructionPoly(MoveInstruction(StateWaypointPoly(swp), 
+        program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(MoveInstruction(
+                                        StateWaypointPoly_wrap_StateWaypoint(swp), 
                                         MoveInstructionType_FREESPACE)))
 
     p = np.zeros((6,),dtype=np.float64)
     p[0] = max_
     swp = StateWaypoint(joint_names, p)
-    program.appendMoveInstruction(MoveInstructionPoly(MoveInstruction(StateWaypointPoly(swp), 
+    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(MoveInstruction(
+                                    StateWaypointPoly_wrap_StateWaypoint(swp), 
                                     MoveInstructionType_FREESPACE)))
 
     return program

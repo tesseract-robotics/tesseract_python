@@ -9,7 +9,9 @@ from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo
 from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, WaypointPoly, \
     MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, \
     MoveInstructionPoly, MoveInstructionType_LINEAR, JointWaypointPoly, CartesianWaypointPoly, \
-    InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly
+    InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
+    JointWaypointPoly_wrap_JointWaypoint, CartesianWaypointPoly_wrap_CartesianWaypoint, \
+    MoveInstructionPoly_wrap_MoveInstruction
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest
 from tesseract_robotics.tesseract_motion_planners_simple import SimplePlannerLVSPlanProfile
 
@@ -43,16 +45,16 @@ def test_interpolatestatewaypoint_jointcart_freespace():
     wp1 = JointWaypoint(joint_names, np.zeros((7,),dtype=np.float64))
     wp1_seed = JointWaypoint(joint_names, request.env_state.getJointValues(joint_names))
     wp2 = CartesianWaypoint(joint_group.calcFwdKin(np.ones((7,),dtype=np.float64))[manip_info.tcp_frame])
-    instr1 = MoveInstruction(JointWaypointPoly(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
-    instr1_seed = MoveInstruction(JointWaypointPoly(wp1), MoveInstructionType_LINEAR, "TEST_PROFILE", manip_info)
-    instr1_seed.assignJointWaypoint(JointWaypointPoly(wp1_seed))
-    instr2 = MoveInstruction(CartesianWaypointPoly(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
+    instr1 = MoveInstruction(JointWaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
+    instr1_seed = MoveInstruction(JointWaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_LINEAR, "TEST_PROFILE", manip_info)
+    instr1_seed.assignJointWaypoint(JointWaypointPoly_wrap_JointWaypoint(wp1_seed))
+    instr2 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
  
     instr3 = InstructionPoly()
 
     profile = SimplePlannerLVSPlanProfile(3.14,0.5,1.57,5)
-    composite = profile.generate(MoveInstructionPoly(instr1),MoveInstructionPoly(instr1_seed),
-                                 MoveInstructionPoly(instr2),instr3,request,manip_info)
+    composite = profile.generate(MoveInstructionPoly_wrap_MoveInstruction(instr1),MoveInstructionPoly_wrap_MoveInstruction(instr1_seed),
+                                 MoveInstructionPoly_wrap_MoveInstruction(instr2),instr3,request,manip_info)
 
     for c in composite:
         assert c.getWaypoint().isCartesianWaypoint() or c.getWaypoint().isJointWaypoint()

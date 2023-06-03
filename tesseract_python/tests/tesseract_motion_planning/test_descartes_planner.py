@@ -10,7 +10,8 @@ from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Tran
     ManipulatorInfo
 from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, WaypointPoly, \
     MoveInstructionType_LINEAR, MoveInstruction, InstructionPoly, CartesianWaypointPoly, MoveInstructionPoly, \
-    CompositeInstruction, ProfileDictionary, InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly
+    CompositeInstruction, ProfileDictionary, InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly,\
+    CartesianWaypointPoly_wrap_CartesianWaypoint, MoveInstructionPoly_wrap_MoveInstruction
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
 from tesseract_robotics.tesseract_motion_planners_descartes import DescartesDefaultPlanProfileD, \
     DescartesMotionPlannerD, DescartesPlanProfileD, \
@@ -45,13 +46,13 @@ def test_descartes_freespace_fixed_poses():
     wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,-0.2,0.8) * Quaterniond(0,0,-1.0,0))
     wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.2,0.8) * Quaterniond(0,0,-1.0,0))
 
-    start_instruction = MoveInstruction(CartesianWaypointPoly(wp1), MoveInstructionType_LINEAR, "TEST_PROFILE", manip)
-    plan_f1 = MoveInstruction(CartesianWaypointPoly(wp2), MoveInstructionType_LINEAR, "TEST_PROFILE", manip)
+    start_instruction = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp1), MoveInstructionType_LINEAR, "TEST_PROFILE", manip)
+    plan_f1 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_LINEAR, "TEST_PROFILE", manip)
 
     program = CompositeInstruction()
     program.setManipulatorInfo(manip)
-    program.appendMoveInstruction(MoveInstructionPoly(start_instruction))
-    program.appendMoveInstruction(MoveInstructionPoly(plan_f1))
+    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
+    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
     interpolated_program = generateInterpolatedProgram(program, cur_state, env, 3.14, 1.0, 3.14, 10)
 

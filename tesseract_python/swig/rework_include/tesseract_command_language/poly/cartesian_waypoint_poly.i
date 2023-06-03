@@ -5,7 +5,7 @@ struct CartesianWaypointPoly
 {
   CartesianWaypointPoly();
   CartesianWaypointPoly(const CartesianWaypointPoly&);
-  CartesianWaypointPoly(const CartesianWaypoint&);
+  
   void setTransform(const Eigen::Isometry3d& transform);
   const Eigen::Isometry3d& getTransform() const;
 

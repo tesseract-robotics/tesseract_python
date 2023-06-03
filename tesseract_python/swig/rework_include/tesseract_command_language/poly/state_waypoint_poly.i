@@ -6,7 +6,6 @@ struct StateWaypointPoly
 
   StateWaypointPoly();
   StateWaypointPoly(const StateWaypointPoly&);
-  StateWaypointPoly(const StateWaypoint&);
   
   void setNames(const std::vector<std::string>& names);
   const std::vector<std::string>& getNames() const;

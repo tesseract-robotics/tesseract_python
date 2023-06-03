@@ -5,7 +5,7 @@ struct JointWaypointPoly
 {
   JointWaypointPoly();
   JointWaypointPoly(const JointWaypointPoly&);
-  JointWaypointPoly(const JointWaypoint&);
+  
   void setNames(const std::vector<std::string>& names);
   const std::vector<std::string>& getNames() const;
 
