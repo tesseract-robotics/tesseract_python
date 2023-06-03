@@ -210,15 +210,6 @@ enum class future_status {
 
 %include "tesseract_task_composer/task_composer_plugin_factory.h"
 
-// TODO: Are these needed?
-// // task_composer_task_plugin_factory
-// %shared_ptr(tesseract_planning::TaskComposerTaskFactory)
-// %include "tesseract_task_composer/task_composer_task_plugin_factory.h"
-
-// // task_composer_executor_plugin_factory
-// %shared_ptr(tesseract_planning::TaskComposerExecutorFactory)
-// %include "tesseract_task_composer/task_composer_executor_plugin_factory.h"
-
 // task_composer_server
 %shared_ptr(tesseract_planning::TaskComposerServer)
 %include "tesseract_task_composer/task_composer_server.h"
@@ -275,6 +266,10 @@ enum class future_status {
 %include "tesseract_task_composer/profiles/upsample_trajectory_profile.h"
 %tesseract_command_language_add_profile_type(UpsampleTrajectoryProfile);
 
+%init %{
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskFactoryAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerExecutorFactoryAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
 
+%}
 
 // %tesseract_command_language_add_profile_type(TrajOptCompositeProfile);
