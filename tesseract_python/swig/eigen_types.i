@@ -54,7 +54,7 @@ namespace Eigen
 namespace Eigen {
 typedef ptrdiff_t Index;
 }
-%template(vector_eigen_index) std::vector<Eigen::Index>;
+%template(VectorEigenIndex) std::vector<Eigen::Index>;
 
 /*
 //Workaround typemaps for Isometry3d

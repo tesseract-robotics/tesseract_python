@@ -96,8 +96,8 @@ trajopt_plan_profile = TrajOptDefaultPlanProfile()
 trajopt_composite_profile = TrajOptDefaultCompositeProfile()
 
 trajopt_profiles = ProfileDictionary()
-ProfileDictionary_addProfile_TrajOptPlanProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_plan_profile)
-ProfileDictionary_addProfile_TrajOptCompositeProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_composite_profile)
+ProfileDictionary_addProfile_TrajOptPlanProfile(trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_plan_profile)
+ProfileDictionary_addProfile_TrajOptCompositeProfile(trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_composite_profile)
 
 trajopt_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
 

@@ -48,6 +48,7 @@
 #include <tesseract_common/timer.h>
 #include <tesseract_common/type_erasure.h>
 #include <console_bridge/console.h>
+#include <tesseract_common/any_poly.h>
 
 #include "tesseract_common_python_std_functions.h"
 
@@ -55,33 +56,36 @@
 
 %include "tinyxml2.i"
 %include "boost_filesystem_path.i"
+%include "boost_uuid.i"
 %include "eigen_geometry.i"
 %include "console_bridge.i"
 
 %pythondynamic sco::ModelType;
 
-%template(vector_string) std::vector<std::string>;
-%template(set_string) std::set<std::string>;
-%template(pair_string) std::pair<std::string, std::string>;
-%template(vector_pair_string) std::vector<std::pair<std::string, std::string> >;
-%template(map_string_vector_string) std::unordered_map<std::string, std::vector<std::string>>;
-%template(map_string_vector_pair_string) std::unordered_map<std::string, std::vector<std::pair<std::string, std::string>>>;
-%template(pair_vector_string) std::pair<std::vector<std::string>, std::vector<std::string>>;
+%template(VectorString) std::vector<std::string>;
+%template(SetString) std::set<std::string>;
+%template(PairString) std::pair<std::string, std::string>;
+%template(VectorPairString) std::vector<std::pair<std::string, std::string> >;
+%template(MapStringString) std::unordered_map<std::string, std::string>;
+%template(MapStringString2) std::map<std::string, std::string>;
+%template(MapStringVectorString) std::unordered_map<std::string, std::vector<std::string>>;
+%template(MapStringVectorPairString) std::unordered_map<std::string, std::vector<std::pair<std::string, std::string>>>;
+%template(PairVectorString) std::pair<std::vector<std::string>, std::vector<std::string>>;
 
-%template(vector_double) std::vector<double>;
-%template(map_string_vector_double) std::unordered_map<std::string, std::vector<double> >;
-%template(map_string_double) std::unordered_map<std::string, double>;
-%template(map_string_map_string_double) std::unordered_map<std::string, std::unordered_map<std::string, double> >;
-%template(map_string_map_string_string) std::unordered_map<std::string, std::unordered_map<std::string, std::string> >;
-%template(map_string_map_string_map_string_double) std::unordered_map<std::string, std::unordered_map<std::string, std::unordered_map<std::string, double> > >;
+%template(VectorDouble) std::vector<double>;
+%template(MapStringVectorDouble) std::unordered_map<std::string, std::vector<double> >;
+%template(MapStringDouble) std::unordered_map<std::string, double>;
+%template(MapStringMapStringDouble) std::unordered_map<std::string, std::unordered_map<std::string, double> >;
+%template(MapStringMapStringString) std::unordered_map<std::string, std::unordered_map<std::string, std::string> >;
+%template(MapStringMapStringMapStringDouble) std::unordered_map<std::string, std::unordered_map<std::string, std::unordered_map<std::string, double> > >;
 
 %template(vector_size_t) std::vector<std::size_t>;
 
-%template(array2_int) std::array<int,2>;
-%template(array2_string) std::array<std::string,2>;
-%template(array2_Vector3d) std::array<Eigen::Vector3d,2>;
-%template(array2_Isometry3d) std::array<Eigen::Isometry3d,2>;
-%template(array2_double) std::array<double,2>;
+%template(Array2Int) std::array<int,2>;
+%template(Array2String) std::array<std::string,2>;
+%template(Array2Vector3d) std::array<Eigen::Vector3d,2>;
+%template(Array2Isometry3d) std::array<Eigen::Isometry3d,2>;
+%template(Array2Double) std::array<double,2>;
 
 %define %tesseract_aligned_vector(name,T)
 %template(name) std::vector<T , Eigen::aligned_allocator<T >>;
@@ -126,6 +130,8 @@ namespace tesseract_common
 %tesseract_aligned_vector_using(VectorVector4d, Eigen::Vector4d);
 %tesseract_aligned_map_using(TransformMap, std::string, Eigen::Isometry3d);
 }
+
+%template(VectorUuid) std::vector<boost::uuids::uuid>;
 
 %ignore toXML(tinyxml2::XMLDocument& doc) const;
 %ignore CONFIG_KEY;
@@ -172,7 +178,7 @@ namespace std
 %shared_ptr(tesseract_common::AllowedCollisionMatrix)
 
 %shared_ptr(tesseract_common::Resource)
-%template(vector_uint8) std::vector<uint8_t>;
+%template(VectorUInt8) std::vector<uint8_t>;
 %pybuffer_binary(const uint8_t* bytes, size_t bytes_len);
 %shared_ptr(tesseract_common::BytesResource)
 %feature("director") tesseract_common::ResourceLocator;
@@ -245,3 +251,18 @@ namespace std
 %template(isWithinPositionLimits) tesseract_common::isWithinPositionLimits<double>;
 %template(satisfiesPositionLimits) tesseract_common::satisfiesPositionLimits<double>;
 //%template(enforcePositionLimits) tesseract_common::enforcePositionLimits<double>;
+
+%ignore tesseract_common::TypeErasureInterface::clone;
+%include "tesseract_common/type_erasure.h"
+
+%include "tesseract_type_erasure_macros.i"
+
+namespace tesseract_common
+{
+class AnyPoly {};
+}
+
+%tesseract_any_poly_type2(double)
+%tesseract_any_poly_type(string,std)
+
+

@@ -75,22 +75,18 @@
 // tesseract_command_language
 #define TESSERACT_COMMAND_LANGUAGE_PUBLIC
 
-%define %tesseract_erasure_ctor(class_type,inner_type)
-%extend tesseract_planning::class_type {
-  class_type (tesseract_planning::inner_type  inner_waypoint)
-  {
-     return new tesseract_planning::class_type (inner_waypoint);
-  }
-}
+%include "tesseract_type_erasure_macros.i"
+
+%define %tesseract_erasure_ctor_planning(source_class_type,dest_class_type)
+%tesseract_erasure_ctor(source_class_type,tesseract_planning,dest_class_type,tesseract_planning);
 %enddef
 
-%define %tesseract_erasure_as(source_class_type,dest_class_type)
-%inline {
-  tesseract_planning::dest_class_type source_class_type ## _as_ ## dest_class_type (tesseract_planning::source_class_type& self)
-  {
-    return self.as<tesseract_planning::dest_class_type>();
-  }
-}
+%define %tesseract_erasure_as_planning(source_class_type,dest_class_type)
+%tesseract_erasure_as(source_class_type,tesseract_planning,dest_class_type,tesseract_planning);
+%enddef
+
+%define %tesseract_any_poly_type_planning(TYPE)
+%tesseract_any_poly_type(TYPE,tesseract_planning);
 %enddef
 
 %define %tesseract_command_language_add_waypoint_type(TYPE)
@@ -98,8 +94,9 @@
 tesseract_planning::TYPE as_ ## TYPE() {return $self->as<tesseract_planning::TYPE>();}
 const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesseract_planning::TYPE>();}
 }*/
-%tesseract_erasure_ctor(WaypointPoly,TYPE);
-%tesseract_erasure_as(WaypointPoly,TYPE);
+%tesseract_erasure_ctor_planning(WaypointPoly,TYPE);
+%tesseract_erasure_as_planning(WaypointPoly,TYPE);
+%tesseract_any_poly_type_planning(TYPE);
 %enddef
 
 %define %tesseract_command_language_add_instruction_type(TYPE)
@@ -107,8 +104,9 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 tesseract_planning::TYPE  as_ ## TYPE() {return $self->as<tesseract_planning::TYPE>();}
 const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesseract_planning::TYPE>();}
 }*/
-%tesseract_erasure_ctor(InstructionPoly,TYPE);
-%tesseract_erasure_as(InstructionPoly,TYPE);
+%tesseract_erasure_ctor_planning(InstructionPoly,TYPE);
+%tesseract_erasure_as_planning(InstructionPoly,TYPE);
+%tesseract_any_poly_type_planning(TYPE);
 %enddef
 
 %define %tesseract_command_language_add_waypoint_poly_type(TYPE)
@@ -116,8 +114,9 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 tesseract_planning::TYPE as_ ## TYPE() {return $self->as<tesseract_planning::TYPE>();}
 const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesseract_planning::TYPE>();}
 }*/
-%tesseract_erasure_as(WaypointPoly,TYPE);
-%tesseract_erasure_as(TYPE,WaypointPoly);
+%tesseract_erasure_as_planning(WaypointPoly,TYPE);
+%tesseract_erasure_as_planning(TYPE,WaypointPoly);
+%tesseract_any_poly_type_planning(TYPE);
 %enddef
 
 %define %tesseract_command_language_add_instruction_poly_type(TYPE)
@@ -125,15 +124,14 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 tesseract_planning::TYPE  as_ ## TYPE() {return $self->as<tesseract_planning::TYPE>();}
 const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesseract_planning::TYPE>();}
 }*/
-%tesseract_erasure_as(InstructionPoly,TYPE);
-%tesseract_erasure_as(TYPE,InstructionPoly);
+%tesseract_erasure_as_planning(InstructionPoly,TYPE);
+%tesseract_erasure_as_planning(TYPE,InstructionPoly);
+%tesseract_any_poly_type_planning(TYPE);
 %enddef
 
 %tesseract_std_function(flattenFilterFn,tesseract_planning,bool,const tesseract_planning::InstructionPoly&,a,const tesseract_planning::CompositeInstruction&,b,bool,c);
 %tesseract_std_function(locateFilterFn,tesseract_planning,bool,const tesseract_planning::InstructionPoly&,a,const tesseract_planning::CompositeInstruction&,b,bool,c);
 
-%ignore tesseract_common::TypeErasureInterface::clone;
-%include "tesseract_common/type_erasure.h"
 %include "tesseract_command_language/types.h"
 
 %shared_ptr(tesseract_planning::ProfileDictionary)
@@ -217,3 +215,5 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %template(ProfileDictionary_hasProfile_##NAME) tesseract_planning::ProfileDictionary_hasProfile<tesseract_planning::TYPE>;
 %template(ProfileDictionary_removeProfile_##NAME) tesseract_planning::ProfileDictionary_removeProfile<tesseract_planning::TYPE>;
 %enddef
+
+%include "tesseract_command_language/constants.h"
