@@ -236,3 +236,22 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_build_wheel.cmake.in ${
 add_custom_target(tesseract_python_wheel ALL ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/install_build_wheel.cmake 
   DEPENDS ${TESSERACT_PYTHON_MODULE_TARGETS} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 endif()
+
+if(TESSERACT_PYTHON_BUILD_DOCUMENTATION)
+find_program(SPHINX_EXECUTABLE NAMES sphinx-build)
+
+    if(NOT SPHINX_EXECUTABLE)
+        message(FATAL_ERROR "Sphinx is required to build Python documentation")
+    endif()
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs_build)
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/docs)
+    add_custom_target(tesseract_python_doc
+        COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_BINARY_DIR}/python
+        ${SPHINX_EXECUTABLE} -b html
+        ${CMAKE_SOURCE_DIR}/../docs
+        ${CMAKE_BINARY_DIR}/docs
+        COMMENT "Generating Python API documentation with Sphinx"
+        DEPENDS ${TESSERACT_PYTHON_MODULE_TARGETS}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs_build
+    )
+endif()

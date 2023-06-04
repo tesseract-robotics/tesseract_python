@@ -62,6 +62,8 @@
 
 %pythondynamic sco::ModelType;
 
+%template(VectorEigenIndex) std::vector<Eigen::Index>;
+
 %template(VectorString) std::vector<std::string>;
 %template(SetString) std::set<std::string>;
 %template(PairString) std::pair<std::string, std::string>;
@@ -79,7 +81,7 @@
 %template(MapStringMapStringString) std::unordered_map<std::string, std::unordered_map<std::string, std::string> >;
 %template(MapStringMapStringMapStringDouble) std::unordered_map<std::string, std::unordered_map<std::string, std::unordered_map<std::string, double> > >;
 
-%template(vector_size_t) std::vector<std::size_t>;
+%template(VectorSizet) std::vector<std::size_t>;
 
 %template(Array2Int) std::array<int,2>;
 %template(Array2String) std::array<std::string,2>;

@@ -33,6 +33,13 @@
  namespace boost {
 namespace uuids {
     %rename(Uuid) uuid;
+    /**
+    * @brief Wrapper for boost::uuids::uuid
+    *
+    * @details
+    * This class is a simple wrapper for boost::uuids::uuid.  It is used to
+    * provide a simple interface for the uuid class in python.
+    */
     class uuid
     {
     public:
@@ -47,6 +54,10 @@ namespace uuids {
             return *$self != other;
         }
 
+        /**
+        * @brief Convert uuid to string
+        *
+        */
         std::string __str__() const
         {
             return boost::uuids::to_string(*$self);
@@ -59,6 +70,15 @@ namespace uuids {
 }
 
 %inline {
+    /**
+    * @brief Generate a new random uuid
+    *
+    * @details
+    * This function generates a new random uuid
+    *
+    * @return A new random uuid
+    */
+
     boost::uuids::uuid newRandomUuid()
     {
         return boost::uuids::random_generator()();

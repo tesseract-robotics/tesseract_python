@@ -7,7 +7,7 @@
 Welcome to the Tesseract Python wiki
 ====================================
 
-Python wrapper for Tesseract package
+Python wrapper for Tesseract package, generated automatically by SWIG.
 
 Tesseract Python Supported Packages
 -----------------------------------
@@ -30,28 +30,30 @@ Related Repositories
 --------------------
 
 * [Tesseract](https://github.com/ros-industrial-consortium/tesseract)
-* [Tesseract ROS](https://github.com/ros-industrial-consortium/tesseract_ros)
+* [Tesseract Planning](https://github.com/ros-industrial-consortium/tesseract_planning)
 
 Packages
 ------------
 
 .. toctree::
-   :maxdepth: 1
-
-   tesseract_scene_graph <_source/tesseract_scene_graph_doc.rst>
-   tesseract_collision <_source/tesseract_collision_doc.rst>
-   tesseract_geometry <_source/tesseract_geometry_doc.rst>
-   tesseract_ros <_source/tesseract_ros_doc.rst>
-   tesseract_msgs <_source/tesseract_msgs_doc.rst>
-   tesseract_rviz <_source/tesseract_rviz_doc.rst>
-   tesseract_monitoring <_source/tesseract_monitoring_doc.rst>
-   tesseract_planning <_source/tesseract_planning_doc.rst>
-   tesseract_urdf <_source/tesseract_urdf_doc.rst>
-   tesseract_srdf <_source/tesseract_srdf_doc.rst>
-
-FAQ
----
-.. toctree::
    :maxdepth: 2
 
-   Questions?<_source/FAQ.rst>
+      tesseract_common <_source/modules/tesseract_common/tesseract_common.rst>
+
+..    tesseract_scene_graph <_source/tesseract_scene_graph_doc.rst>
+..    tesseract_collision <_source/tesseract_collision_doc.rst>
+..    tesseract_geometry <_source/tesseract_geometry_doc.rst>
+..    tesseract_ros <_source/tesseract_ros_doc.rst>
+..    tesseract_msgs <_source/tesseract_msgs_doc.rst>
+..    tesseract_rviz <_source/tesseract_rviz_doc.rst>
+..    tesseract_monitoring <_source/tesseract_monitoring_doc.rst>
+..    tesseract_planning <_source/tesseract_planning_doc.rst>
+..    tesseract_urdf <_source/tesseract_urdf_doc.rst>
+..    tesseract_srdf <_source/tesseract_srdf_doc.rst>
+
+.. FAQ
+.. ---
+.. .. toctree::
+..    :maxdepth: 2
+
+..    Questions?<_source/FAQ.rst>
