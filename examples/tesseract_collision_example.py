@@ -8,6 +8,10 @@ from tesseract_robotics.tesseract_collision import ContactResultMap, ContactTest
 import numpy as np
 
 # Initialize Environment with a robot from URDF file
+# The collision checker is configured using a yaml configuration file specified by the SRDF file. This configuration
+# file must be configured for collision checking to work. This example uses the `contact_manager_plugins.yaml` file
+# to configure the plugins using Bullet for collision checking. This configuration file can be copied and 
+# used for most scenes.
 
 locator = GeneralResourceLocator()
 env = Environment()
