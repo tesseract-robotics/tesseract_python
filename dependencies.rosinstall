@@ -8,12 +8,12 @@
     version: 0.16.3
 - git:
     local-name: tesseract_planning
-    uri: https://github.com/tesseract-robotics/tesseract_planning.git
-    version: 0.16.3
+    uri: https://github.com/johnwason/tesseract_planning.git
+    version: windows_updates_may_2023_2
 - git:
     local-name: trajopt
-    uri: https://github.com/tesseract-robotics/trajopt.git
-    version: 0.5.1
+    uri: https://github.com/johnwason/trajopt_ros.git
+    version: win_ci_fix
 - git:
     local-name: descartes_light
     uri: https://github.com/swri-robotics/descartes_light.git

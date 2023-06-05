@@ -152,7 +152,7 @@ jobs:
         python-version: '${{ matrix.config.python_version }}'
         architecture: ${{ matrix.config.arch }}
     - name: vcpkg build
-      uses: johnwason/vcpkg-action@v4
+      uses: johnwason/vcpkg-action@v5
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
@@ -160,6 +160,7 @@ jobs:
         extra-args: --clean-after-build
         token: ${{ github.token }}
         cache-key: win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}
+        revision: master
     - name: pip3
       run: |
         python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
