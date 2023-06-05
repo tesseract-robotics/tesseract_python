@@ -12,6 +12,21 @@ import numpy as np
 # be specified in the plugin configuration file in addition to the URDF file for the plugin to work.
 # The other main solver is the KDL solver, which is used by the lbr_iiwa_14_r820 robot also included in the
 # tesseract_support package. The KDL solver is a numerical solver and does not require additional configuration.
+
+# This example uses the GeneralResourceLocator to find resources on the file system. The GeneralResourceLocator
+# uses the TESSERACT_RESOURCE_PATH environmental variable.
+#
+# TESSERACT_RESOURCE_PATH must be set to the directory containing the `tesseract_support` package. This can be done
+# by running:
+#
+# git clone https://github.com/tesseract-robotics/tesseract.git
+# export TESSERACT_RESOURCE_PATH="$(pwd)/tesseract/"
+#
+# or on Windows
+#
+# git clone https://github.com/tesseract-robotics/tesseract.git
+# set TESSERACT_RESOURCE_PATH=%cd%\tesseract\
+
 locator = GeneralResourceLocator()
 env = Environment()
 urdf_path_str = locator.locateResource("package://tesseract_support/urdf/abb_irb2400.urdf").getFilePath()

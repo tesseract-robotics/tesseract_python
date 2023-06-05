@@ -13,6 +13,20 @@ import numpy as np
 # to configure the plugins using Bullet for collision checking. This configuration file can be copied and 
 # used for most scenes.
 
+# This example uses the GeneralResourceLocator to find resources on the file system. The GeneralResourceLocator
+# uses the TESSERACT_RESOURCE_PATH environmental variable.
+#
+# TESSERACT_RESOURCE_PATH must be set to the directory containing the `tesseract_support` package. This can be done
+# by running:
+#
+# git clone https://github.com/tesseract-robotics/tesseract.git
+# export TESSERACT_RESOURCE_PATH="$(pwd)/tesseract/"
+#
+# or on Windows
+#
+# git clone https://github.com/tesseract-robotics/tesseract.git
+# set TESSERACT_RESOURCE_PATH=%cd%\tesseract\
+
 locator = GeneralResourceLocator()
 env = Environment()
 urdf_path_str = locator.locateResource("package://tesseract_support/urdf/abb_irb2400.urdf").getFilePath()
