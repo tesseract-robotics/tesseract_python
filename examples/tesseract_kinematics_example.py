@@ -4,6 +4,9 @@ from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_kinematics import KinGroupIKInput, KinGroupIKInputs
 import numpy as np
 
+# Example of using kinematics to solve for forward and inverse kinematics. A tesseract environment is created
+# using URDF and SRDF files. The kinematics solver is configured using the SRDF file and plugin configuration files.
+
 # Initialize Environment with a robot from URDF file
 # The URDF and SRDF file must be configured. The kinematics solver also requires plugin configuration,
 # which is specified in the SRDF file. For this example, the plugin configuration file is `abb_irb2400_plugins.yaml`
