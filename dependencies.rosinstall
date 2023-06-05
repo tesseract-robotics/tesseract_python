@@ -5,7 +5,7 @@
 - git:
     local-name: tesseract
     uri: https://github.com/tesseract-robotics/tesseract.git
-    version: 0.16.3
+    version: master
 - git:
     local-name: tesseract_planning
     uri: https://github.com/johnwason/tesseract_planning.git
