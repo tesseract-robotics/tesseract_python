@@ -55,26 +55,30 @@ ABB Tesseract viewer plan and viewer example:
 
 Install `tesseract_robotics` and `tesseract_robotics_viewer` as shown in Installation section.
 
-Clone `tesseract` and `tesseract_python` repositories to retrieve example assets. This is not necessary
-if the example assets are not used.
+Clone `tesseract`, `tesseract_planning`, and `tesseract_python` repositories to retrieve example assets. This is not 
+necessary if the example assets are not used.
 
 ```
 git clone --depth=1 https://github.com/tesseract-robotics/tesseract.git
+git clone --depth=1 https://github.com/tesseract-robotics/tesseract_planning.git
 git clone --depth=1 https://github.com/tesseract-robotics/tesseract_python.git
 ```
 
-Set the `TESSERACT_SUPPORT_DIR` so the example can find the URDF resources:
+Set the `TESSERACT_RESOURCE_PATH` and `TESSERACT_TASK_COMPOSER_CONFIG_FILE` environmental variables so the example 
+can find required resources:
 
 Linux:
 
 ```
-export TESSERACT_SUPPORT_DIR=`pwd`/tesseract/tesseract_support
+export TESSERACT_RESOURCE_PATH=`pwd`/tesseract
+export TESSERACT_TASK_COMPOSER_CONFIG_FILE=`pwd`/tesseract_planning/tesseract_task_composer/config/task_composer_plugins_no_trajopt_ifopt.yaml
 ```
 
 Windows:
 
 ```
-set TESSERACT_SUPPORT_DIR=%CD%/tesseract/tesseract_support
+set TESSERACT_RESOURCE_PATH=%CD%/tesseract
+set TESSERACT_TASK_COMPOSER_CONFIG_FILE=%CD%/tesseract_planning/tesseract_task_composer/config/task_composer_plugins_no_trajopt_ifopt.yaml
 ```
 
 Now run the example!
@@ -82,15 +86,15 @@ Now run the example!
 Windows:
 
 ```
-cd tesseract_python\tesseract_viewer_python\examples
-python abb_irb2400_viewer.py
+cd tesseract_python\examples
+python tesseract_planning_example_composer.py
 ```
 
 Linux:
 
 ```
-cd tesseract_python/tesseract_viewer_python/examples
-python3 abb_irb2400_viewer.py
+cd tesseract_python/examples
+python3 tesseract_planning_example_composer.py
 ```
 
 And point a modern browser to `http://localhost:8000` to see the animation!
@@ -98,106 +102,142 @@ And point a modern browser to `http://localhost:8000` to see the animation!
 Example source:
 
 ```python
-from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
-    ManipulatorInfo
-from tesseract_robotics.tesseract_environment import Environment
-from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
-from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Waypoint, \
-    MoveInstructionType_FREESPACE, MoveInstructionType_START, MoveInstruction, Instruction, \
-    CompositeInstruction, flatten
-from tesseract_robotics.tesseract_process_managers import ProcessPlanningServer, ProcessPlanningRequest, \
-    FREESPACE_PLANNER_NAME
-import os
 import re
 import traceback
-from tesseract_robotics_viewer import TesseractViewer
+import os
 import numpy as np
-import time
-import sys
+import numpy.testing as nptest
 
-TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
+from tesseract_robotics.tesseract_common import GeneralResourceLocator
+from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
+    ManipulatorInfo, AnyPoly, AnyPoly_wrap_double
+from tesseract_robotics.tesseract_command_language import CartesianWaypoint, WaypointPoly, \
+    MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, StateWaypoint, StateWaypointPoly, \
+    CompositeInstruction, MoveInstructionPoly, CartesianWaypointPoly, ProfileDictionary, \
+        AnyPoly_as_CompositeInstruction, CompositeInstructionOrder_ORDERED, DEFAULT_PROFILE_KEY, \
+        AnyPoly_wrap_CompositeInstruction, DEFAULT_PROFILE_KEY, JointWaypoint, JointWaypointPoly, \
+        InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
+        MoveInstructionPoly_wrap_MoveInstruction, StateWaypointPoly_wrap_StateWaypoint, \
+        CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint
 
-class TesseractSupportResourceLocator(ResourceLocator):
-    def __init__(self):
-        super().__init__()
-    
-    def locateResource(self, url):
-        try:
-            try:
-                if os.path.exists(url):
-                    return SimpleLocatedResource(url, url, self)
-            except:
-                pass
-            url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-            if (url_match is None):
-                print("url_match failed")
-                return None
-            if not "TESSERACT_SUPPORT_DIR" in os.environ:
-                return None
-            tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-            filename = os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
-            ret = SimpleLocatedResource(url, filename, self)
-            return ret
-        except:
-            traceback.print_exc()
+from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, TaskComposerProblem, \
+    TaskComposerDataStorage, TaskComposerInput
 
-abb_irb2400_urdf_fname = FilesystemPath(os.path.join(TESSERACT_SUPPORT_DIR,"urdf","abb_irb2400.urdf"))
-abb_irb2400_srdf_fname = FilesystemPath(os.path.join(TESSERACT_SUPPORT_DIR,"urdf","abb_irb2400.srdf"))
+from tesseract_robotics_viewer import TesseractViewer
+
+# Run example FreespacePipeline planner
+
+OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
+TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
+
+task_composer_filename = os.environ["TESSERACT_TASK_COMPOSER_CONFIG_FILE"]
+
+# Initialize the resource locator and environment
+locator = GeneralResourceLocator()
+abb_irb2400_urdf_package_url = "package://tesseract_support/urdf/abb_irb2400.urdf"
+abb_irb2400_srdf_package_url = "package://tesseract_support/urdf/abb_irb2400.srdf"
+abb_irb2400_urdf_fname = FilesystemPath(locator.locateResource(abb_irb2400_urdf_package_url).getFilePath())
+abb_irb2400_srdf_fname = FilesystemPath(locator.locateResource(abb_irb2400_srdf_package_url).getFilePath())
 
 t_env = Environment()
 
 # locator_fn must be kept alive by maintaining a reference
-locator = TesseractSupportResourceLocator()
-t_env.init(abb_irb2400_urdf_fname, abb_irb2400_srdf_fname, locator)
+assert t_env.init(abb_irb2400_urdf_fname, abb_irb2400_srdf_fname, locator)
 
+# Fill in the manipulator information. This is used to find the kinematic chain for the manipulator. This must
+# match the SRDF, although the exact tcp_frame can differ if a tool is used.
 manip_info = ManipulatorInfo()
 manip_info.tcp_frame = "tool0"
 manip_info.manipulator = "manipulator"
 manip_info.working_frame = "base_link"
 
+# Create a viewer and set the environment so the results can be displayed later
 viewer = TesseractViewer()
-
 viewer.update_environment(t_env, [0,0,0])
 
+# Set the initial state of the robot
 joint_names = ["joint_%d" % (i+1) for i in range(6)]
 viewer.update_joint_positions(joint_names, np.array([1,-.2,.01,.3,-.5,1]))
 
+# Start the viewer
 viewer.start_serve_background()
 
+# Set the initial state of the robot
 t_env.setState(joint_names, np.ones(6)*0.1)
 
+# Create the input command program waypoints
 wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,-0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
 wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
-wp3 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1) * Quaterniond(0.70710678,0,0.70710678,0))
+wp3 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.5,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
 
-start_instruction = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "DEFAULT")
-plan_f1 = MoveInstruction(Waypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
+# Create the input command program instructions. Note the use of explicit construction of the CartesianWaypointPoly
+# using the *_wrap_CartesianWaypoint functions. This is required because the Python bindings do not support implicit
+# conversion from the CartesianWaypoint to the CartesianWaypointPoly.
+start_instruction = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp1), MoveInstructionType_FREESPACE, "DEFAULT")
+plan_f1 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
+plan_f2 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp3), MoveInstructionType_FREESPACE, "DEFAULT")
 
+# Create the input command program. Note the use of *_wrap_MoveInstruction functions. This is required because the
+# Python bindings do not support implicit conversion from the MoveInstruction to the MoveInstructionPoly.
 program = CompositeInstruction("DEFAULT")
-program.setStartInstruction(Instruction(start_instruction))
 program.setManipulatorInfo(manip_info)
-program.append(Instruction(plan_f1))
+program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
+program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
+# program.appendMoveInstruction(MoveInstructionPoly(plan_f2))
 
-planning_server = ProcessPlanningServer(t_env, 1)
-planning_server.loadDefaultProcessPlanners()
-request = ProcessPlanningRequest()
-request.name = FREESPACE_PLANNER_NAME
-request.instructions = Instruction(program)
+# Create the task composer plugin factory and load the plugins
+config_path = FilesystemPath(task_composer_filename)
+factory = TaskComposerPluginFactory(config_path)
 
-response = planning_server.run(request)
-planning_server.waitForAll()
+# Create the task composer node. In this case the FreespacePipeline is used. Many other are available.
+task = factory.createTaskComposerNode("FreespacePipeline")
 
-assert response.interface.isSuccessful()
+# Get the input and output keys for the task
+input_key = task.getInputKeys()[0]
+output_key = task.getOutputKeys()[0]
 
-results = flatten(response.problem.getResults().as_CompositeInstruction())
+# Create a profile dictionary. Profiles can be customized by adding to this dictionary and setting the profiles
+# in the instructions.
+profiles = ProfileDictionary()
 
-viewer.update_trajectory(joint_names, results)
+# Create an AnyPoly containing the program. This explicit step is required because the Python bindings do not
+# support implicit conversion from the CompositeInstruction to the AnyPoly.
+program_anypoly = AnyPoly_wrap_CompositeInstruction(program)
 
-if sys.version_info[0] < 3:
-    input("press enter")
-else:
-    input("press enter")
+# Create the task data storage and set the data
+task_data = TaskComposerDataStorage()
+task_data.setData(input_key, program_anypoly)
 
+# Create the task problem and input
+task_problem = TaskComposerProblem(t_env, task_data)
+task_input = TaskComposerInput(task_problem, profiles)
+
+# Create an executor to run the task
+task_executor = factory.createTaskComposerExecutor("TaskflowExecutor")
+
+# Run the task and wait for completion
+future = task_executor.run(task.get(), task_input)
+future.wait()
+
+# Retrieve the output, converting the AnyPoly back to a CompositeInstruction
+results = AnyPoly_as_CompositeInstruction(task_input.data_storage.getData(output_key))
+
+# Display the output
+# Print out the resulting waypoints
+for instr in results:
+    assert instr.isMoveInstruction()
+    move_instr1 = InstructionPoly_as_MoveInstructionPoly(instr)
+    wp1 = move_instr1.getWaypoint()
+    assert wp1.isStateWaypoint()
+    wp = WaypointPoly_as_StateWaypointPoly(wp1)
+    print(f"Joint Positions: {wp.getPosition().flatten()} time: {wp.getTime()}")
+
+# Update the viewer with the results to animate the trajectory
+# Open web browser to http://localhost:8000 to view the results
+viewer.update_trajectory(results)
+
+input("press enter to exit")
 ```
 
 ## Tesseract Python Supported Packages
@@ -213,8 +253,8 @@ else:
 * **tesseract_visualization** – This package contains visualization utilities and libraries.
 * **tesseract_command_language** - This is a generic programing language used as input for motion and process planning. It is very similar to how you currently program a robot on an industrial teach pendant.
 * **tesseract_motion_planners** – This package contains a common interface for Planners and includes implementation for OMPL, TrajOpt, TrajOpt IFOPT and Descartes.
-* **tesseract_process_managers** – This package contains a common interface for Process Planning and includes implementation for a wide variaty of process found industrial automation like painting, griding, welding, pick and place and more.
-* **tesseract_time_parameterization** – This package contains a time parameterization algorithms and includes iteritive spline.
+* **tesseract_task_composer** – This package contains a common interface for task pipelines and includes implementation for a wide variaty of process found industrial automation like painting, griding, welding, pick and place and more.
+* **tesseract_time_parameterization** – This package contains a time parameterization algorithms and includes iterative spline.
 
 ## Related Repositories
 
@@ -227,12 +267,6 @@ else:
 * [Wiki](https://ros-industrial-tesseract-python.rtfd.io)
 * [Doxygen](https://tesseract-robotics.github.io/tesseract_python/)
 * [Benchmark](https://tesseract-robotics.github.io/tesseract_python/dev/bench)
-
-## TODO's
-
-Warning: These packages are under heavy development and are subject to change.
-
-See [issue #66](https://github.com/tesseract-robotics/tesseract/issues/66)
 
 ## Build Instructions
 
