@@ -18,7 +18,12 @@
 #
 import os
 import git
+import sys
 curr_path = os.path.abspath('.')
+# add __file__ directory to path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+
 # The try catch is need because of the subversion tool when it creates the master.
 try:
   repo = git.Repo(curr_path)
@@ -36,7 +41,11 @@ except git.exc.InvalidGitRepositoryError:
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.githubpages','sphinx.ext.autodoc']
+extensions = ['sphinx.ext.githubpages',
+              'sphinx.ext.autodoc',
+              'preprocess_docstrings',
+              'recommonmark'
+              ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -124,11 +133,40 @@ html_context = {
     "github_user": "ros-industrial-consortium",
     "github_repo": "tesseract_python",
     "github_version": current_branch,
-    "conf_py_path": "gh_pages/",
+    "conf_py_path": "docs/",
     "source_suffix": source_suffix,
     "css_files": ['_static/override.css'],
 }
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'TesseractPythonDocumentation'
+
+# https://www.lieret.net/2021/05/20/include-readme-sphinx/
+import pathlib
+
+# The readme that already exists
+readme_path = pathlib.Path(__file__).parent.resolve().parent / "README.md"
+# We copy a modified version here
+readme_target = pathlib.Path(__file__).parent / "readme.md"
+
+with readme_target.open("w") as outf:
+    # Change the title to "Readme"
+    outf.write(
+        "\n".join(
+            [
+                "Readme",
+                "======",
+            ]
+        )
+    )
+    lines = []
+    for line in readme_path.read_text().split("\n"):
+        if line.startswith("# "):
+            # Skip title, because we now use "Readme"
+            # Could also simply exclude first line for the same effect
+            continue
+        line = line.replace("docs/figures", "figures/")
+        line = line.replace("docs/", "")
+        lines.append(line)
+    outf.write("\n".join(lines))
 
