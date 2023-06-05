@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-====================================
-Welcome to the Tesseract Python wiki
-====================================
+======================================================
+Welcome to the Tesseract Robotics Python Documentation
+======================================================
 
 Python wrapper for Tesseract motion planning framework, generated automatically by SWIG. 
 Developed and maintained by Wason Technology, LLC.

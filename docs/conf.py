@@ -62,7 +62,7 @@ source_suffix = ['.rst', '.md']
 master_doc = 'index'
 
 # General information about the project.
-project = u'Tesseract Python'
+project = u'Tesseract Robotics Python'
 copyright = u'2023, Wason Technology LLC, ROS-Industrial'
 
 # The version info for the project you're documenting, acts as replacement for
