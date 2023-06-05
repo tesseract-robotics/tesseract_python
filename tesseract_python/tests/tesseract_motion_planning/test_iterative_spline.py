@@ -40,10 +40,10 @@ def test_time_parameterization():
     max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
     max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
     assert time_parameterization.compute(traj, max_velocity, max_acceleration)
-    res_wp1 = InstructionPoly_as_MoveInstructionPoly(program[-1]).getWaypoint()
-    WaypointPoly_as_StateWaypointPoly(res_wp1).getTime() > 1.0
-    res_wp2 = InstructionPoly_as_MoveInstructionPoly(program[-1]).getWaypoint()
-    WaypointPoly_as_StateWaypointPoly(res_wp2).getTime() < 5.0
+    res_instr1 = InstructionPoly_as_MoveInstructionPoly(program[-1])
+    WaypointPoly_as_StateWaypointPoly(res_instr1.getWaypoint()).getTime() > 1.0
+    res_instr2 = InstructionPoly_as_MoveInstructionPoly(program[-1])
+    WaypointPoly_as_StateWaypointPoly(res_instr2.getWaypoint()).getTime() < 5.0
 
 def test_time_parameterization_vec():
 
@@ -54,7 +54,7 @@ def test_time_parameterization_vec():
     max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
     max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
     assert time_parameterization.compute(traj, max_velocity, max_acceleration)
-    res_wp1 = InstructionPoly_as_MoveInstructionPoly(program[-1]).getWaypoint()
-    WaypointPoly_as_StateWaypointPoly(res_wp1).getTime() > 1.0
-    res_wp2 = InstructionPoly_as_MoveInstructionPoly(program[-1]).getWaypoint()
-    WaypointPoly_as_StateWaypointPoly(res_wp2).getTime() < 5.0
+    res_instr1 = InstructionPoly_as_MoveInstructionPoly(program[-1])
+    WaypointPoly_as_StateWaypointPoly(res_instr1.getWaypoint()).getTime() > 1.0
+    res_instr2 = InstructionPoly_as_MoveInstructionPoly(program[-1])
+    WaypointPoly_as_StateWaypointPoly(res_instr2.getWaypoint()).getTime() < 5.0
