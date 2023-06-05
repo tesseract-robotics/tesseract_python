@@ -7,7 +7,7 @@
 Welcome to the Tesseract Python wiki
 ====================================
 
-Python wrapper for Tesseract package, generated automatically by SWIG.
+Python wrapper for Tesseract motion planning framework, generated automatically by SWIG.
 
 .. Tesseract Python Supported Packages
 .. -----------------------------------
@@ -39,6 +39,7 @@ Contents
    :maxdepth: 2
 
       Readme <readme.md>
+      Important Usage Notes <_source/important_notes.rst>
       Examples <_source/examples/examples.rst>
       API Reference <_source/modules/api.rst>
 

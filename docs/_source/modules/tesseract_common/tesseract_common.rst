@@ -10,7 +10,7 @@ tesseract_robotics.tesseract_common
 Introduction
 ************
 
-``tesseract_common`` contains functionality that is common to all tesseract packages. This includes general types,
+``tesseract_common`` contains functionality that is common to all tesseract modules. This includes general types,
 container templates, utility functions, and more. The Python wrappers contain additional functionality for 
 using with Eigen Geometry, Boost Filesystem, Boost Uuid, console_bridge, and TinyXML2.
 

@@ -7,7 +7,7 @@ tesseract_robotics.tesseract_motion_planners_descartes
    :local:
    :backlinks: none
 
-This package provides a Descartes motion planner for Tesseract. Descartes is a library for Cartesian planning.
+This module provides a Descartes motion planner for Tesseract. Descartes is a library for Cartesian planning.
 Planning is typically done using the ``tesseract_task_composer`` interface.
 
 .. include:: api_docs_generated.rst

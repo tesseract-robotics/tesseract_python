@@ -7,7 +7,7 @@ tesseract_robotics.tesseract_kinematics
    :local:
    :backlinks: none
 
-This package provides kinematics support. These are typically accessed through the environment classes. See
+This module provides kinematics support. These are typically accessed through the environment classes. See
  `tesseract_kinematics_example.py` for examples of using forward and inverse kinematics. The kinematics
  functionality is provided using plugins, that must be configured by yaml files. See the documentation for the main
  Tesseract package for more details on configuring plugins.

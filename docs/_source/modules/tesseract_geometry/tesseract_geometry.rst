@@ -7,7 +7,7 @@ tesseract_robotics.tesseract_geometry
    :local:
    :backlinks: none
 
-This package contains the geometry data structures for Tesseract. The user dose not typically need to use
+This module contains the geometry data structures for Tesseract. The user dose not typically need to use
 these classes since they are loaded from URDF. However, they are available for use for purposes such as
 dynamically modifying the environment using "Environment Commands".
 
