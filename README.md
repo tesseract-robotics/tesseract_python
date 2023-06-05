@@ -25,6 +25,8 @@ checking (Bullet, FCL), kinematics (KDL, OPW, UR), planning (OMPL, Descartes, Tr
 Standalone packages are provided on PyPi (pip install) for Windows and Linux, containing all the native dependencies 
 for Python 3.7+.
 
+The Tesseract Python package is developed and maintained by Wason Technology, LLC.
+
 **Note that these are low level wrappers.** The lifecycle of objects follow the underlying C++ objects, meaning
 that the target of C++ references may be destroyed before the reference, leading to a memory error. These wrappers
 do not attempt to change the memory lifecycle of the underlying C++ objects.
@@ -34,7 +36,7 @@ do not attempt to change the memory lifecycle of the underlying C++ objects.
 Standalone packages are provided on PyPi (pip install) for Windows and Linux, containing Tesseract, Tesseract
 Planning, andall the native dependencies 
 for Python 3.7+. These packages have been tested on Windows 10, Ubuntu 20.04, and Ubuntu 22.04, but should work
-on any relatively recent x64 Windows or Linux operating system. Packages are available for Python 3.7 - 3.10.
+on any relatively recent x64 Windows or Linux operating system. Packages are available for Python 3.7 - 3.11.
 
 To install on Windows:
 ```
@@ -261,6 +263,8 @@ input("press enter to exit")
 * [Tesseract](https://github.com/tesseract-robotics/tesseract)
 * [Tesseract Planning](https://github.com/tesseract-robotics/tesseract_planning)
 * [Tesseract ROS](https://github.com/tesseract-robotics/tesseract_ros)
+* [General Robotics Toolbox](https://github.com/rpiRobotics/rpi_general_robotics_toolbox_py)
+* [PyRI Open Source Teach Pendant](https://github.com/pyri-project)
 
 ## Documentation
 

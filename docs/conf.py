@@ -130,7 +130,7 @@ html_static_path = ['_static']
 html_context = {
     #"wiki_title": "Tesseract",
     "display_github": True,
-    "github_user": "ros-industrial-consortium",
+    "github_user": "tesseract-robotics",
     "github_repo": "tesseract_python",
     "github_version": current_branch,
     "conf_py_path": "docs/",

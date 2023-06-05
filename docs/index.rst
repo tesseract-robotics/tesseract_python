@@ -7,7 +7,8 @@
 Welcome to the Tesseract Python wiki
 ====================================
 
-Python wrapper for Tesseract motion planning framework, generated automatically by SWIG.
+Python wrapper for Tesseract motion planning framework, generated automatically by SWIG. 
+Developed and maintained by Wason Technology, LLC.
 
 .. Tesseract Python Supported Packages
 .. -----------------------------------
@@ -29,8 +30,10 @@ Python wrapper for Tesseract motion planning framework, generated automatically 
 Related Repositories
 --------------------
 
-* [Tesseract](https://github.com/ros-industrial-consortium/tesseract)
-* [Tesseract Planning](https://github.com/ros-industrial-consortium/tesseract_planning)
+* `Tesseract <https://github.com/tesseract-robotics/tesseract>`_
+* `Tesseract Planning <https://github.com/tesseract-robotics/tesseract_planning>`_
+* `General Robotics Toolbox <https://github.com/rpiRobotics/rpi_general_robotics_toolbox_py>`_
+* `PyRI Open Source Teach Pendant <https://github.com/pyri-project>`_
 
 Contents
 ------------
