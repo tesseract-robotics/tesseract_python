@@ -39,6 +39,7 @@ Contents
    :maxdepth: 2
 
       Readme <readme.md>
+      Examples <_source/examples/examples.rst>
       API Reference <_source/modules/api.rst>
 
       
