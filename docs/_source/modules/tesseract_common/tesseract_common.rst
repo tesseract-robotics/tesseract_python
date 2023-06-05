@@ -3,7 +3,7 @@ tesseract_robotics.tesseract_common
 ===================================
 
 .. contents:: Table of Contents
-   :depth: 4
+   :depth: 2
    :local:
    :backlinks: none
 
@@ -26,6 +26,17 @@ available in ``tesseract_common``:
 * ``AngleAxisd`` - Represents a rotation as an angle around an axis
 * ``Translation3d`` - Represents a translation in 3D space
 * ``Isometry3d`` - Represents a rotation and translation in 3D space. This is used by Tesseract to represent transforms and poses.
+
+Resource Locators
+=================
+
+Resource locators are used by Tesseract to locate resources such as meshes, urdfs, srdfs, etc. The 
+:py:class:`tesseract_common.GeneralResourceLocator` class is available to locate resources in Python. This
+class searches paths in the environmental variable ``TESSERACT_RESOURCE_PATH`` to find resources. Each ``package://<dir>/``
+will search for the subdirectory ``<dir>`` in each path in ``TESSERACT_RESOURCE_PATH``. 
+
+It is also possible to create a custom resource locator. See the ``TesseractSupportResourceLocator`` in the
+unit tests for an example of a custom resource locator.
 
 Boost Filesystem
 ================
