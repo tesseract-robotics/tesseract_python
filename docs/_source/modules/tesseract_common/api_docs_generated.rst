@@ -322,6 +322,36 @@ type_index Class
 Functions
 *********
 
+AnyPoly_as_double Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_as_double
+   :noindex:
+
+AnyPoly_as_string Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_as_string
+   :noindex:
+
+AnyPoly_is_double Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_is_double
+   :noindex:
+
+AnyPoly_is_string Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_is_string
+   :noindex:
+
+AnyPoly_wrap_double Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_wrap_double
+   :noindex:
+
+AnyPoly_wrap_string Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_wrap_string
+   :noindex:
+
 getLogLevel Function
 =======================
 .. autofunction:: tesseract_robotics.tesseract_common.getLogLevel
@@ -451,15 +481,4 @@ Container Templates
 * ``VectorIsometry3d`` -> ``tesseract_common::AlignedVector< Eigen::Isometry3d>``
 * ``VectorVector2d`` -> ``tesseract_common::AlignedVector< Eigen::Vector2d>``
 * ``VectorVector4d`` -> ``tesseract_common::AlignedVector< Eigen::Vector4d>``
-
-
-AnyPoly Accessor Functions
-**************************
-
-* ``AnyPoly_as_double``
-* ``AnyPoly_as_string``
-* ``AnyPoly_is_double``
-* ``AnyPoly_is_string``
-* ``AnyPoly_wrap_double``
-* ``AnyPoly_wrap_string``
 

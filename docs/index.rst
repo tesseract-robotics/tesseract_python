@@ -32,31 +32,14 @@ Related Repositories
 * [Tesseract](https://github.com/ros-industrial-consortium/tesseract)
 * [Tesseract Planning](https://github.com/ros-industrial-consortium/tesseract_planning)
 
-Packages
+Contents
 ------------
 
 .. toctree::
    :maxdepth: 2
 
       Readme <readme.md>
-      tesseract_common <_source/modules/tesseract_common/tesseract_common.rst>
-      tesseract_geometry <_source/modules/tesseract_geometry/tesseract_geometry.rst>
-      tesseract_collision <_source/modules/tesseract_collision/tesseract_collision.rst>
-      tesseract_scene_graph <_source/modules/tesseract_scene_graph/tesseract_scene_graph.rst>
-      tesseract_srdf <_source/modules/tesseract_srdf/tesseract_srdf.rst>
-      tesseract_urdf <_source/modules/tesseract_urdf/tesseract_urdf.rst>
-      tesseract_state_solver <_source/modules/tesseract_state_solver/tesseract_state_solver.rst>
-      tesseract_kinematics <_source/modules/tesseract_kinematics/tesseract_kinematics.rst>
-      tesseract_environment <_source/modules/tesseract_environment/tesseract_environment.rst>
-      tesseract_visualization <_source/modules/tesseract_visualization/tesseract_visualization.rst>
-      tesseract_command_language <_source/modules/tesseract_command_language/tesseract_command_language.rst>
-      tesseract_motion_planners <_source/modules/tesseract_motion_planners/tesseract_motion_planners.rst>
-      tesseract_motion_planners_descartes <_source/modules/tesseract_motion_planners_descartes/tesseract_motion_planners_descartes.rst>
-      tesseract_motion_planners_trajopt <_source/modules/tesseract_motion_planners_trajopt/tesseract_motion_planners_trajopt.rst>
-      tesseract_motion_planners_ompl <_source/modules/tesseract_motion_planners_ompl/tesseract_motion_planners_ompl.rst>
-      tesseract_motion_planners_simple <_source/modules/tesseract_motion_planners_simple/tesseract_motion_planners_simple.rst>
-      tesseract_time_parameterization <_source/modules/tesseract_time_parameterization/tesseract_time_parameterization.rst>
-      tesseract_task_composer <_source/modules/tesseract_task_composer/tesseract_task_composer.rst>
+      API Reference <_source/modules/api.rst>
 
       
 ..    tesseract_scene_graph <_source/tesseract_scene_graph_doc.rst>
@@ -70,9 +53,4 @@ Packages
 ..    tesseract_urdf <_source/tesseract_urdf_doc.rst>
 ..    tesseract_srdf <_source/tesseract_srdf_doc.rst>
 
-.. FAQ
-.. ---
-.. .. toctree::
-..    :maxdepth: 2
 
-..    Questions?<_source/FAQ.rst>

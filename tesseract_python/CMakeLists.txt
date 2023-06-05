@@ -247,7 +247,7 @@ find_program(SPHINX_EXECUTABLE NAMES sphinx-build)
     file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/docs)
     add_custom_target(tesseract_python_doc
         COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_BINARY_DIR}/python
-        ${SPHINX_EXECUTABLE} -b html
+        ${SPHINX_EXECUTABLE} -E -a -b html
         ${CMAKE_SOURCE_DIR}/../docs
         ${CMAKE_BINARY_DIR}/docs
         COMMENT "Generating Python API documentation with Sphinx"

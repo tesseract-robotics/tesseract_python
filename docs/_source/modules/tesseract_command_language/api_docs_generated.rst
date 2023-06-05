@@ -147,6 +147,201 @@ locateFilterFnBase Class
 Functions
 *********
 
+AnyPoly_as_CartesianWaypoint Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_CartesianWaypoint
+   :noindex:
+
+AnyPoly_as_CartesianWaypointPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_CartesianWaypointPoly
+   :noindex:
+
+AnyPoly_as_CompositeInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_CompositeInstruction
+   :noindex:
+
+AnyPoly_as_JointWaypoint Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_JointWaypoint
+   :noindex:
+
+AnyPoly_as_JointWaypointPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_JointWaypointPoly
+   :noindex:
+
+AnyPoly_as_MoveInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_MoveInstruction
+   :noindex:
+
+AnyPoly_as_MoveInstructionPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_MoveInstructionPoly
+   :noindex:
+
+AnyPoly_as_SetAnalogInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_SetAnalogInstruction
+   :noindex:
+
+AnyPoly_as_SetToolInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_SetToolInstruction
+   :noindex:
+
+AnyPoly_as_StateWaypoint Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_StateWaypoint
+   :noindex:
+
+AnyPoly_as_StateWaypointPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_StateWaypointPoly
+   :noindex:
+
+AnyPoly_as_TimerInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_TimerInstruction
+   :noindex:
+
+AnyPoly_as_WaitInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_WaitInstruction
+   :noindex:
+
+AnyPoly_is_CartesianWaypoint Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_CartesianWaypoint
+   :noindex:
+
+AnyPoly_is_CartesianWaypointPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_CartesianWaypointPoly
+   :noindex:
+
+AnyPoly_is_CompositeInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_CompositeInstruction
+   :noindex:
+
+AnyPoly_is_JointWaypoint Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_JointWaypoint
+   :noindex:
+
+AnyPoly_is_JointWaypointPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_JointWaypointPoly
+   :noindex:
+
+AnyPoly_is_MoveInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_MoveInstruction
+   :noindex:
+
+AnyPoly_is_MoveInstructionPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_MoveInstructionPoly
+   :noindex:
+
+AnyPoly_is_SetAnalogInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_SetAnalogInstruction
+   :noindex:
+
+AnyPoly_is_SetToolInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_SetToolInstruction
+   :noindex:
+
+AnyPoly_is_StateWaypoint Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_StateWaypoint
+   :noindex:
+
+AnyPoly_is_StateWaypointPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_StateWaypointPoly
+   :noindex:
+
+AnyPoly_is_TimerInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_TimerInstruction
+   :noindex:
+
+AnyPoly_is_WaitInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_WaitInstruction
+   :noindex:
+
+AnyPoly_wrap_CartesianWaypoint Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_CartesianWaypoint
+   :noindex:
+
+AnyPoly_wrap_CartesianWaypointPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_CartesianWaypointPoly
+   :noindex:
+
+AnyPoly_wrap_CompositeInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_CompositeInstruction
+   :noindex:
+
+AnyPoly_wrap_JointWaypoint Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_JointWaypoint
+   :noindex:
+
+AnyPoly_wrap_JointWaypointPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_JointWaypointPoly
+   :noindex:
+
+AnyPoly_wrap_MoveInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_MoveInstruction
+   :noindex:
+
+AnyPoly_wrap_MoveInstructionPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_MoveInstructionPoly
+   :noindex:
+
+AnyPoly_wrap_SetAnalogInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_SetAnalogInstruction
+   :noindex:
+
+AnyPoly_wrap_SetToolInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_SetToolInstruction
+   :noindex:
+
+AnyPoly_wrap_StateWaypoint Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_StateWaypoint
+   :noindex:
+
+AnyPoly_wrap_StateWaypointPoly Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_StateWaypointPoly
+   :noindex:
+
+AnyPoly_wrap_TimerInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_TimerInstruction
+   :noindex:
+
+AnyPoly_wrap_WaitInstruction Function
+=======================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_WaitInstruction
+   :noindex:
+
 CartesianWaypointPoly_as_WaypointPoly Function
 =======================
 .. autofunction:: tesseract_robotics.tesseract_command_language.CartesianWaypointPoly_as_WaypointPoly
@@ -401,48 +596,4 @@ Container Templates
 * ``Instructions`` -> ``std::vector<tesseract_planning::InstructionPoly>``
 * ``MoveInstructionPolyVector`` -> ``std::vector<tesseract_planning::MoveInstructionPoly>``
 * ``Waypoints`` -> ``std::vector<tesseract_planning::WaypointPoly>``
-
-
-AnyPoly Accessor Functions
-**************************
-
-* ``AnyPoly_as_CartesianWaypoint``
-* ``AnyPoly_as_CartesianWaypointPoly``
-* ``AnyPoly_as_CompositeInstruction``
-* ``AnyPoly_as_JointWaypoint``
-* ``AnyPoly_as_JointWaypointPoly``
-* ``AnyPoly_as_MoveInstruction``
-* ``AnyPoly_as_MoveInstructionPoly``
-* ``AnyPoly_as_SetAnalogInstruction``
-* ``AnyPoly_as_SetToolInstruction``
-* ``AnyPoly_as_StateWaypoint``
-* ``AnyPoly_as_StateWaypointPoly``
-* ``AnyPoly_as_TimerInstruction``
-* ``AnyPoly_as_WaitInstruction``
-* ``AnyPoly_is_CartesianWaypoint``
-* ``AnyPoly_is_CartesianWaypointPoly``
-* ``AnyPoly_is_CompositeInstruction``
-* ``AnyPoly_is_JointWaypoint``
-* ``AnyPoly_is_JointWaypointPoly``
-* ``AnyPoly_is_MoveInstruction``
-* ``AnyPoly_is_MoveInstructionPoly``
-* ``AnyPoly_is_SetAnalogInstruction``
-* ``AnyPoly_is_SetToolInstruction``
-* ``AnyPoly_is_StateWaypoint``
-* ``AnyPoly_is_StateWaypointPoly``
-* ``AnyPoly_is_TimerInstruction``
-* ``AnyPoly_is_WaitInstruction``
-* ``AnyPoly_wrap_CartesianWaypoint``
-* ``AnyPoly_wrap_CartesianWaypointPoly``
-* ``AnyPoly_wrap_CompositeInstruction``
-* ``AnyPoly_wrap_JointWaypoint``
-* ``AnyPoly_wrap_JointWaypointPoly``
-* ``AnyPoly_wrap_MoveInstruction``
-* ``AnyPoly_wrap_MoveInstructionPoly``
-* ``AnyPoly_wrap_SetAnalogInstruction``
-* ``AnyPoly_wrap_SetToolInstruction``
-* ``AnyPoly_wrap_StateWaypoint``
-* ``AnyPoly_wrap_StateWaypointPoly``
-* ``AnyPoly_wrap_TimerInstruction``
-* ``AnyPoly_wrap_WaitInstruction``
 
