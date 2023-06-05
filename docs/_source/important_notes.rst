@@ -76,3 +76,11 @@ matrix or vector.
 
 Some Eigen geometry types are wrapped as classes in the `tesseract_common` module. See the `tesseract_common`
 documentation for more information and the examples.
+
+Documentation Generation
+------------------------
+
+The Python documentation is semi-automatically generated using the SWIG doxygen-docstring feature, Sphinx
+autodoc, and several custom scripts. The documentation is not perfect, and may contain errors. Because of the large
+number of classes and methods, it is not possible to manually check all of the documentation. If you find an error,
+please submit a pull request to fix it.
