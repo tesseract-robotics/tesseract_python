@@ -76,6 +76,12 @@ jobs:
         libflann-dev libjsoncpp-dev libyaml-cpp-dev git cmake ninja-build
         build-essential autoconf automake libtool bison libpcre2-dev libpcre3-dev
         lcov libbullet-dev libbullet-extras-dev python3-venv -y -qq
+    - name: build-swig
+      uses: johnwason/swig-build-action@v1
+      with:
+        cache-key: ${{ matrix.config.os }}-${{ matrix.config.python_version }}
+        version: "4.1.1"
+
     - uses: actions/setup-python@v4
       id: setup-python
       with:
