@@ -4,70 +4,70 @@ Classes
 
 
 ArrowMarker Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_visualization.ArrowMarker
    :noindex:
    :exclude-members: thisown
    :members:
 
 AxisMarker Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_visualization.AxisMarker
    :noindex:
    :exclude-members: thisown
    :members:
 
 ContactResultsMarker Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_visualization.ContactResultsMarker
    :noindex:
    :exclude-members: thisown
    :members:
 
 GeometryMarker Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_visualization.GeometryMarker
    :noindex:
    :exclude-members: thisown
    :members:
 
 Marker Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_visualization.Marker
    :noindex:
    :exclude-members: thisown
    :members:
 
 ToolpathMarker Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_visualization.ToolpathMarker
    :noindex:
    :exclude-members: thisown
    :members:
 
 TrajectoryInterpolator Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_visualization.TrajectoryInterpolator
    :noindex:
    :exclude-members: thisown
    :members:
 
 TrajectoryPlayer Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_visualization.TrajectoryPlayer
    :noindex:
    :exclude-members: thisown
    :members:
 
 Visualization Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_visualization.Visualization
    :noindex:
    :exclude-members: thisown
    :members:
 
 VisualizationLoader Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_visualization.VisualizationLoader
    :noindex:
    :exclude-members: thisown

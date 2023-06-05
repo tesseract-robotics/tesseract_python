@@ -4,315 +4,315 @@ Classes
 
 
 AllowedCollisionMatrix Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.AllowedCollisionMatrix
    :noindex:
    :exclude-members: thisown
    :members:
 
 AngleAxisd Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.AngleAxisd
    :noindex:
    :exclude-members: thisown
    :members:
 
 AnyPoly Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.AnyPoly
    :noindex:
    :exclude-members: thisown
    :members:
 
 BytesResource Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.BytesResource
    :noindex:
    :exclude-members: thisown
    :members:
 
 CalibrationInfo Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.CalibrationInfo
    :noindex:
    :exclude-members: thisown
    :members:
 
 CollisionMarginData Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.CollisionMarginData
    :noindex:
    :exclude-members: thisown
    :members:
 
 ContactManagersPluginInfo Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.ContactManagersPluginInfo
    :noindex:
    :exclude-members: thisown
    :members:
 
 FilesystemPath Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.FilesystemPath
    :noindex:
    :exclude-members: thisown
    :members:
 
 GeneralResourceLocator Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.GeneralResourceLocator
    :noindex:
    :exclude-members: thisown
    :members:
 
 Isometry3d Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.Isometry3d
    :noindex:
    :exclude-members: thisown
    :members:
 
 JointState Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.JointState
    :noindex:
    :exclude-members: thisown
    :members:
 
 JointStates Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.JointStates
    :noindex:
    :exclude-members: thisown
    :members:
 
 JointTrajectory Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.JointTrajectory
    :noindex:
    :exclude-members: thisown
    :members:
 
 KinematicLimits Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.KinematicLimits
    :noindex:
    :exclude-members: thisown
    :members:
 
 KinematicsPluginInfo Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.KinematicsPluginInfo
    :noindex:
    :exclude-members: thisown
    :members:
 
 ManipulatorInfo Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.ManipulatorInfo
    :noindex:
    :exclude-members: thisown
    :members:
 
 OutputHandler Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.OutputHandler
    :noindex:
    :exclude-members: thisown
    :members:
 
 PairHash Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.PairHash
    :noindex:
    :exclude-members: thisown
    :members:
 
 PluginInfo Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.PluginInfo
    :noindex:
    :exclude-members: thisown
    :members:
 
 PluginInfoContainer Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.PluginInfoContainer
    :noindex:
    :exclude-members: thisown
    :members:
 
 Quaterniond Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.Quaterniond
    :noindex:
    :exclude-members: thisown
    :members:
 
 Resource Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.Resource
    :noindex:
    :exclude-members: thisown
    :members:
 
 ResourceLocator Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.ResourceLocator
    :noindex:
    :exclude-members: thisown
    :members:
 
 SimpleLocatedResource Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.SimpleLocatedResource
    :noindex:
    :exclude-members: thisown
    :members:
 
 SimpleResourceLocatorFn Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.SimpleResourceLocatorFn
    :noindex:
    :exclude-members: thisown
    :members:
 
 SimpleResourceLocatorFnBase Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.SimpleResourceLocatorFnBase
    :noindex:
    :exclude-members: thisown
    :members:
 
 TaskComposerPluginInfo Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.TaskComposerPluginInfo
    :noindex:
    :exclude-members: thisown
    :members:
 
 Timer Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.Timer
    :noindex:
    :exclude-members: thisown
    :members:
 
 Translation3d Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.Translation3d
    :noindex:
    :exclude-members: thisown
    :members:
 
 TypeErasureInterface Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.TypeErasureInterface
    :noindex:
    :exclude-members: thisown
    :members:
 
 Uuid Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.Uuid
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLAttribute Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLAttribute
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLComment Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLComment
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLConstHandle Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLConstHandle
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLDeclaration Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLDeclaration
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLDocument Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLDocument
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLElement Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLElement
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLHandle Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLHandle
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLNode Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLNode
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLPrinter Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLPrinter
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLText Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLText
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLUnknown Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLUnknown
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLUtil Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLUtil
    :noindex:
    :exclude-members: thisown
    :members:
 
 XMLVisitor Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.XMLVisitor
    :noindex:
    :exclude-members: thisown
    :members:
 
 type_index Class
-=================
+===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.type_index
    :noindex:
    :exclude-members: thisown
@@ -323,82 +323,82 @@ Functions
 *********
 
 AnyPoly_as_double Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_as_double
    :noindex:
 
 AnyPoly_as_string Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_as_string
    :noindex:
 
 AnyPoly_is_double Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_is_double
    :noindex:
 
 AnyPoly_is_string Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_is_string
    :noindex:
 
 AnyPoly_wrap_double Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_wrap_double
    :noindex:
 
 AnyPoly_wrap_string Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.AnyPoly_wrap_string
    :noindex:
 
 getLogLevel Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.getLogLevel
    :noindex:
 
 isWithinPositionLimits Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.isWithinPositionLimits
    :noindex:
 
 log Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.log
    :noindex:
 
 makeOrderedLinkPair Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.makeOrderedLinkPair
    :noindex:
 
 newRandomUuid Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.newRandomUuid
    :noindex:
 
 noOutputHandler Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.noOutputHandler
    :noindex:
 
 restorePreviousOutputHandler Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.restorePreviousOutputHandler
    :noindex:
 
 satisfiesPositionLimits Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.satisfiesPositionLimits
    :noindex:
 
 setLogLevel Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.setLogLevel
    :noindex:
 
 useOutputHandler Function
-=======================
+===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_common.useOutputHandler
    :noindex:
 
