@@ -84,6 +84,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool patchelf
+        python -m pip install -r ws/src/tesseract_python/docs/requirements.txt
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_python/dependencies_with_ext.rosinstall
@@ -100,6 +101,7 @@ jobs:
         -DTESSERACT_PYTHON_BUILD_WHEEL=ON
         -DTESSERACT_PYTHON_WHEEL_PLATFORM=${{ matrix.config.py_platform }}
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON
+        -DTESSERACT_PYTHON_BUILD_DOCUMENTATION=ON
     - name: test
       shell: bash
       run: |
@@ -112,11 +114,21 @@ jobs:
         export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
         cd ws/src/tesseract_python/tesseract_python
         pytest -s
+    - name: build docs
+      shell: bash
+      working-directory: ws/build/tesseract_python
+      run: |
+        cmake --build . --config Release --target tesseract_python_doc
     - name: archive wheels
       uses: actions/upload-artifact@v2
       with:
         name: 'python-wheels-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
         path: ws/build/tesseract_python/python/*
+    - name: archive docs
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'python-docs-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
+        path: ws/build/tesseract_python/docs/*
   build-win:
     runs-on: windows-2019
     strategy:
