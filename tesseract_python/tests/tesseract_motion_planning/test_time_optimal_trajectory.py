@@ -43,5 +43,5 @@ def test_time_parameterization():
     instr1_1 = InstructionPoly_as_MoveInstructionPoly(instr1)
     result_wp1 = instr1_1.getWaypoint()
     assert WaypointPoly_as_StateWaypointPoly(result_wp1).getTime() > 1.0
-    result_wp2 = InstructionPoly_as_MoveInstructionPoly(program[-1]).getWaypoint()
-    assert WaypointPoly_as_StateWaypointPoly(result_wp2).getTime() < 5.0
+    instr1_2 = InstructionPoly_as_MoveInstructionPoly(program[-1])
+    assert WaypointPoly_as_StateWaypointPoly(instr1_2.getWaypoint()).getTime() < 5.0

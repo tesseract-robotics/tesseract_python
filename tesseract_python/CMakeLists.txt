@@ -115,7 +115,7 @@ cmake_policy(SET CMP0086 OLD)
 endif()
 
 include(FindSWIG)
-find_package(SWIG 4.0 REQUIRED)
+find_package(SWIG 4.1.1 REQUIRED)
 include(UseSWIG)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tesseract_python_module.cmake)
