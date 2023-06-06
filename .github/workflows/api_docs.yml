@@ -2,10 +2,10 @@ name: DeployDocumentation
 
 on:
   workflow_dispatch:
-    - inputs:
-        run_number:
-          description: 'Run number of the wheels workflow to pull documentation from'
-          required: true
+    inputs:
+      run_number:
+        description: 'Run number of the wheels workflow to pull documentation from'
+        required: true
 
 jobs:
   collect_documentation:
