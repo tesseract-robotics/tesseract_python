@@ -1,24 +1,42 @@
 name: DeployDocumentation
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+    - inputs:
+        run_number:
+          description: 'Run number of the wheels workflow to pull documentation from'
+          required: true
 
 jobs:
-  deploy_documentation:
-    runs-on: ubuntu-18.04
+  collect_documentation:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-
-      - name: Build Doxygen Documentation
-        uses: mattnotmitt/doxygen-action@v1
+      - uses: dawidd6/action-download-artifact@v2
         with:
-            doxyfile-path: 'doxygen.config'
-
-      - name: Deploy Documentation
-        uses: peaceiris/actions-gh-pages@v3
+          workflow: 'wheels.yml'
+          run_number: ${{ github.event.inputs.run_number }}
+          name: 'python-docs-ubuntu-20.04-3.10'
+          path: 'docs'
+      - uses: actions/upload-pages-artifacts@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
-          keep_files: true
+          path: 'docs'
+  deploy_documentation:
+    # Add a dependency to the build job
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
