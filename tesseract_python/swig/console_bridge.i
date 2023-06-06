@@ -6,10 +6,15 @@ namespace console_bridge
 /** \brief The set of priorities for message logging */
 enum LogLevel
   {
+    /** \brief Debug level */
     CONSOLE_BRIDGE_LOG_DEBUG = 0,
+    /** \brief Informative message */
     CONSOLE_BRIDGE_LOG_INFO,
+    /** \brief Warning */
     CONSOLE_BRIDGE_LOG_WARN,
+    /** \brief Error condition */
     CONSOLE_BRIDGE_LOG_ERROR,
+    /** \brief Fatal error */
     CONSOLE_BRIDGE_LOG_NONE
   };
 
