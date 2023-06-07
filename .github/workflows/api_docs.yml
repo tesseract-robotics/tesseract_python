@@ -22,7 +22,7 @@ jobs:
           path: 'docs'
   deploy_documentation:
     # Add a dependency to the build job
-    needs: build
+    needs: collect_documentation
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
