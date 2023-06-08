@@ -1,8 +1,8 @@
 from tesseract_robotics.tesseract_common import JointTrajectory
 from tesseract_robotics.tesseract_command_language import CompositeInstruction, InstructionPoly_as_MoveInstructionPoly, \
     WaypointPoly_as_StateWaypointPoly
-
-
+import json
+import numpy as np
 
 def tesseract_trajectory_to_list(tesseract_trajectory):
         
@@ -24,3 +24,29 @@ def tesseract_trajectory_to_list(tesseract_trajectory):
         trajectory2.append(state_wp.getPosition().flatten().tolist() + [state_wp.getTime()])
     
     return trajectory2, joint_names
+
+def trajectory_list_to_json(trajectory_list, joint_names, use_time = True, loop_time = 20):
+
+    trajectory_json = dict()
+    trajectory_json["use_time"] = use_time
+    trajectory_json["loop_time"] = loop_time
+    trajectory_json["joint_names"] = joint_names
+    trajectory_json["trajectory"] = trajectory_list
+    return json.dumps(trajectory_json)
+
+def joint_positions_to_trajectory_json(joint_names, joint_positions):
+    # Create "infinite" animation with constant joint angles
+
+    trajectory_json = dict()
+    trajectory_json["use_time"] = True
+    trajectory_json["loop_time"] = 10000
+
+    assert joint_names and all(isinstance(s,str) for s in joint_names), "Joint names must all be strings"
+    trajectory_json["joint_names"] = joint_names
+    assert isinstance(joint_positions,np.ndarray), "Expected numpy array for joint_positions"
+    assert joint_positions.dtype == np.float64, "Expected double float array for joint_positions"
+    joint_positions = list(joint_positions.flatten())
+    assert len(joint_positions) == len(joint_names)
+    trajectory_json["trajectory"] = [joint_positions + [0.0], joint_positions + [1e6]]
+
+    return json.dumps(trajectory_json)
