@@ -185,6 +185,7 @@ for instr in trajopt_results:
 # Update the viewer with the results to animate the trajectory
 # Open web browser to http://localhost:8000 to view the results
 viewer.update_trajectory(trajopt_results)
+viewer.plot_trajectory(trajopt_results, manip_info, axes_length=0.05)
 
 input("press enter to exit")
 

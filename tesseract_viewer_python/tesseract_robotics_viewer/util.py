@@ -1,4 +1,4 @@
-from tesseract_robotics.tesseract_common import JointTrajectory
+from tesseract_robotics.tesseract_common import JointTrajectory, Quaterniond
 from tesseract_robotics.tesseract_command_language import CompositeInstruction, InstructionPoly_as_MoveInstructionPoly, \
     WaypointPoly_as_StateWaypointPoly
 import json
@@ -50,3 +50,16 @@ def joint_positions_to_trajectory_json(joint_names, joint_positions):
     trajectory_json["trajectory"] = [joint_positions + [0.0], joint_positions + [1e6]]
 
     return json.dumps(trajectory_json)
+
+def trajectory_list_to_frames(tesseract_env, manipulator_info, trajectory_list, joint_names):
+    ret = []
+    kin = tesseract_env.getKinematicGroup(manipulator_info.manipulator)
+    for i in range(len(trajectory_list)):
+        frames = kin.calcFwdKin(np.asarray(trajectory_list[i],dtype=np.float64))
+        frame = frames[manipulator_info.tcp_frame]
+        p = frame.translation().flatten()
+        q1 = Quaterniond(frame.linear())
+        q = np.array([q1.w(), q1.x(), q1.y(), q1.z()])
+
+        ret.append([p,q])
+    return ret

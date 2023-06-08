@@ -111,7 +111,7 @@ request.profiles = trajopt_profiles
 trajopt_response = trajopt_planner.solve(request)
 assert trajopt_response.successful
     
-trajopt_results_instruction =response.results #= trajopt_response.results
+trajopt_results_instruction = trajopt_response.results
 
 time_parameterization = TimeOptimalTrajectoryGeneration()
 instructions_trajectory = InstructionsTrajectory(trajopt_results_instruction)
@@ -121,6 +121,7 @@ assert time_parameterization.computeTimeStamps(instructions_trajectory, max_velo
 
 trajopt_results = trajopt_results_instruction.flatten()
 viewer.update_trajectory(trajopt_results)
+viewer.plot_trajectory(trajopt_results, manip_info, axes_length=0.05)
 
 if sys.version_info[0] < 3:
     input("press enter")

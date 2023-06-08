@@ -76,9 +76,9 @@ class TesseractViewer():
         self.loop.run_forever()
 
 
-    async def _a_update_environment(self, scene_gltf, scene_glb):
+    async def _a_update_environment(self, scene_gltf, scene_glb, t_env):
         if self.aio_viewer is not None:
-            await self.aio_viewer._update_environment_gltf(scene_gltf, scene_glb)
+            await self.aio_viewer._update_environment_gltf(scene_gltf, scene_glb, t_env)
 
     def update_environment(self, tesseract_env, origin_offset = [0,0,0], trajectory = None):
 
@@ -86,7 +86,7 @@ class TesseractViewer():
         with self._lock:
             self.scene_json = tesseract_env_to_gltf(tesseract_env, origin_offset, trajectory=trajectory)
             self.scene_glb = tesseract_env_to_glb(tesseract_env, origin_offset)
-            asyncio.run_coroutine_threadsafe(self._a_update_environment(self.scene_json, self.scene_glb), self.loop).result()
+            asyncio.run_coroutine_threadsafe(self._a_update_environment(self.scene_json, self.scene_glb, tesseract_env), self.loop).result()
 
     async def _a_set_trajectory(self, trajectory_json):
         if self.aio_viewer is not None:
@@ -180,6 +180,12 @@ class TesseractViewer():
     def send_update_markers(self):
         if self.aio_viewer is not None:
             return asyncio.run_coroutine_threadsafe(self.aio_viewer.send_update_markers(), self.loop).result()
+        else:
+            return None
+        
+    def plot_trajectory(self, tesseract_trajectory, manipulator_info, color = None, linewidth = 0.001, axes = True, axes_length = 0.1, tags = None, update_now=True):
+        if self.aio_viewer is not None:
+            return asyncio.run_coroutine_threadsafe(self.aio_viewer.plot_trajectory(tesseract_trajectory, manipulator_info, color, linewidth, axes, axes_length, tags, update_now), self.loop).result()
         else:
             return None
 

@@ -176,5 +176,6 @@ for instr in results:
 # Update the viewer with the results to animate the trajectory
 # Open web browser to http://localhost:8000 to view the results
 viewer.update_trajectory(results)
+viewer.plot_trajectory(results, manip_info)
 
 input("press enter to exit")

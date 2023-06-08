@@ -12,7 +12,7 @@ import base64
 import sys
 
 from .tesseract_env_to_gltf import tesseract_env_to_gltf, tesseract_env_to_glb
-from .util import tesseract_trajectory_to_list, trajectory_list_to_json
+from .util import tesseract_trajectory_to_list, trajectory_list_to_json, trajectory_list_to_frames
 import importlib_resources
 import asyncio
 import hashlib
@@ -425,6 +425,36 @@ class TesseractViewerAIO:
     async def clear_markers_by_name(self, name, update_now = True):
         async with self._lock:
             self.markers = [m for m in self.markers if m["name"] != name]
+            await self._update_markers(self.markers, update_now)
+
+    async def plot_trajectory(self, trajectory, manipulator_info, color = None, linewidth = 0.001, axes = True, axes_length = 0.1, tags = None, update_now = True):
+        async with self._lock:
+            if self.t_env is None:
+                return None
+            t_env = self.t_env()
+            if t_env is None:
+                return None
+            if tags is None:
+                tags = []
+            tags.append("trajectory")
+            if color is None:
+                color = [0,1,0,1]
+            if not isinstance(trajectory, list):
+                trajectory, joint_names = tesseract_trajectory_to_list(trajectory)
+            trajectory_frames = trajectory_list_to_frames(t_env, manipulator_info, trajectory, joint_names)
+            root_link = t_env.getRootLinkName()
+            points = []
+            for i in range(len(trajectory_frames)):
+                points.append(trajectory_frames[i][0])
+            line_marker = self._new_marker_dict("lines", root_link, [0,0,0], [1,0,0,0], None, color, tags)
+            line_marker["vertices"] = [_fix_marker_vector(p) for p in points]
+            line_marker["linewidth"] = linewidth
+            await self._do_append_marker(line_marker, update_now)
+            if axes:
+                for i in range(len(trajectory_frames)):
+                    axes_marker = self._new_marker_dict("axes", root_link, trajectory_frames[i][0], trajectory_frames[i][1], None, None, tags)
+                    axes_marker["size"] = axes_length
+                    await self._do_append_marker(axes_marker, False)
             await self._update_markers(self.markers, update_now)
 
 async def amain():
