@@ -165,6 +165,18 @@ class TesseractViewer():
         else:
             return None
         
+    def clear_markers_by_tags(self, tags, update_now=True):
+        if self.aio_viewer is not None:
+            return asyncio.run_coroutine_threadsafe(self.aio_viewer.clear_markers_by_tags(tags, update_now), self.loop).result()
+        else:
+            return None
+        
+    def clear_markers_by_name(self, name, update_now=True):
+        if self.aio_viewer is not None:
+            return asyncio.run_coroutine_threadsafe(self.aio_viewer.clear_markers_by_name(name, update_now), self.loop).result()
+        else:
+            return None
+        
     def send_update_markers(self):
         if self.aio_viewer is not None:
             return asyncio.run_coroutine_threadsafe(self.aio_viewer.send_update_markers(), self.loop).result()

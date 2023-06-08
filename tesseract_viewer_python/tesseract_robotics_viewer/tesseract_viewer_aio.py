@@ -16,6 +16,7 @@ from .util import tesseract_trajectory_to_list, trajectory_list_to_json
 import importlib_resources
 import asyncio
 import hashlib
+import weakref
 
 import aiohttp
 from aiohttp import web as aiohttp_web
@@ -277,6 +278,7 @@ class TesseractViewerAIO:
         self.server_task = None
         self.marker_count = 1
         self.markers = []
+        self.t_env = None
 
     async def update_environment(self, tesseract_env, origin_offset = [0,0,0], trajectory = None):
 
@@ -286,10 +288,11 @@ class TesseractViewerAIO:
             self.scene_glb = tesseract_env_to_glb(tesseract_env, origin_offset)
             await self.server.set_environment(self.scene_json, self.scene_glb)
     
-    async def _update_environment_gltf(self, scene_glft, scene_glb):
+    async def _update_environment_gltf(self, scene_glft, scene_glb, t_env):
         async with self._lock:
             self.scene_json = scene_glft
             self.scene_glb = scene_glb
+            self.t_env = weakref.ref(t_env)
             await self.server.set_environment(self.scene_json, self.scene_glb)
 
     async def update_trajectory(self, trajectory):
@@ -413,6 +416,16 @@ class TesseractViewerAIO:
         async with self._lock:
             self.markers = []
             await self._update_markers(self.markers, True)
+
+    async def clear_markers_by_tags(self, tags, update_now = True):
+        async with self._lock:
+            self.markers = [m for m in self.markers if m["tags"] != tags]
+            await self._update_markers(self.markers, update_now)
+
+    async def clear_markers_by_name(self, name, update_now = True):
+        async with self._lock:
+            self.markers = [m for m in self.markers if m["name"] != name]
+            await self._update_markers(self.markers, update_now)
 
 async def amain():
     t = _TesseractViewerAIOServer()
