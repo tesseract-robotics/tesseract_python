@@ -125,9 +125,18 @@ class TesseractViewer {
         let this_ = this;
         socket.onopen = function(event) {
         console.log('WebSocket connection established');
-        setTimeout(() => this_.updateScene(), 500);
-        setTimeout(() => this_.updateTrajectory(), 500);
-        setTimeout(() => this_.updateMarkers(), 500);
+        if (this_._update_scene_timer) {
+            clearTimeout(this_._update_scene_timer);
+        }
+        this_._update_scene_timer = setTimeout(() => this_.updateScene(), 500);
+        if (this_._update_trajectory_timer) {
+            clearTimeout(this_._update_trajectory_timer);
+        }
+        this_._update_trajectory_timer = setTimeout(() => this_.updateTrajectory(), 500);
+        if (this_._update_markers_timer) {
+            clearTimeout(this_._update_markers_timer);
+        }
+        this_._update_markers_timer = setTimeout(() => this_.updateMarkers(), 500);
         };
         
         socket.onmessage = function(event) {
@@ -178,7 +187,7 @@ class TesseractViewer {
         }
         catch (_a) {
             let _this = this;
-            self._update_scene_timer = setTimeout(() => _this.updateScene(), 1000);
+            self._update_scene_timer = setTimeout(() => _this.updateScene(), 5000);
             return;
         }
         let etag = fetch_res.headers.get('etag');
@@ -192,7 +201,7 @@ class TesseractViewer {
                 }
                 else {
                     let _this = this;
-                    self._update_scene_timer = setTimeout(() => _this.updateScene(), 1000);
+                    self._update_scene_timer = setTimeout(() => _this.updateScene(), 5000);
                     return;
                 }
             }
@@ -234,8 +243,16 @@ class TesseractViewer {
 
         this._trajectory_etag = null;
         this._markers_etag = null;
-        setTimeout(() => this.updateTrajectory(), 250);
-        setTimeout(() => this.updateMarkers(), 250);
+        if (this._update_trajectory_timer !== null) {
+            clearTimeout(this._update_trajectory_timer);
+            this._update_trajectory_timer = null;
+        }
+        this._update_trajectory_timer = setTimeout(() => this.updateTrajectory(), 250);
+        if (this._update_markers_timer !== null) {
+            clearTimeout(this._update_markers_timer);
+            this._update_markers_timer = null;
+        }
+        this._update_markers_timer = setTimeout(() => this.updateMarkers(), 250);
 
         if (etag !== null) {
             this._scene_etag = etag;
@@ -261,7 +278,7 @@ class TesseractViewer {
                 console.log("No updated trajectory");
             }
             else{
-                console.log(trajectory_json)
+                // console.log(trajectory_json)
                 this.setTrajectory(trajectory_json.joint_names, trajectory_json.trajectory);
             }
         }
@@ -328,12 +345,16 @@ class TesseractViewer {
 
     setTrajectory(joint_names, trajectory) {
         
-        this._animation_mixer.stopAllAction();
-        this._animation_mixer.uncacheRoot(this._root_env);
-
+        //this._animation_mixer.stopAllAction();
+        //this._animation_mixer.uncacheRoot(this._root_env);
+        
         let anim = this.trajectoryToAnimation(joint_names, trajectory);
         let animation_action = this._animation_mixer.clipAction(anim);
         animation_action.play();
+        if (this._animation_action !== null)
+        {
+            this._animation_action.stop();
+        }
 
         this._animation = anim;
         this._animation_action = animation_action;

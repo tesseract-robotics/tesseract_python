@@ -35,7 +35,7 @@ class _TesseractViewerAIOServer:
         self.trajectory_json_etag = self.hash_bytes(self.trajectory_json)
         self.markers_json = None
         self.markers_json_etag = self.hash_bytes(self.markers_json)
-        self._ws = None
+        self._ws = []
         self._ws_send_lock = asyncio.Lock()
 
     def hash_bytes(self, data):
@@ -65,7 +65,6 @@ class _TesseractViewerAIOServer:
             self._site = aiohttp_web.TCPSite(self._runner, host, port)
             await self._site.start()
 
-            self._ws = None
         except:
             traceback.print_exc()
             raise
@@ -140,18 +139,26 @@ class _TesseractViewerAIOServer:
         handler = _TesseractViewerAIOWebsocketConnection(ws)
         await handler.start()
 
-        self._ws = ws
+        self._ws.append(ws)
 
         await handler.message_listener()
     
     async def send_ws_message(self, msg):
-        if self._ws is not None:
-            async with self._ws_send_lock:
-                await self._ws.send_str(msg)
+        async with self._ws_send_lock:
+            remove_list = []
+            for ws in self._ws:
+                try:
+                    await ws.send_str(msg)
+                except:
+                    traceback.print_exc()
+                    remove_list.append(ws)
+            for ws in remove_list:
+                self._ws.remove(ws)
 
     async def close_ws(self):
-        if self._ws is not None:
-            await self._ws.close()
+        for ws in self._ws:
+            await ws.close()
+        self._ws = []
 
     async def get_static_file(self, filename):
         with importlib_resources.as_file(self._static_pkg / filename) as f_path:
@@ -300,6 +307,11 @@ class TesseractViewerAIO:
             traj, joint_names = tesseract_trajectory_to_list(trajectory)
             self.trajectory_json = trajectory_list_to_json(traj, joint_names)
             await self.server.set_trajectory(self.trajectory_json)
+    
+    async def update_trajectory_list(self, trajectory, joint_names):
+        async with self._lock:            
+            self.trajectory_json = trajectory_list_to_json(trajectory, joint_names)
+            await self.server.set_trajectory(self.trajectory_json)
 
     async def _update_trajectory_json(self, trajectory_json):
         async with self._lock:
@@ -428,6 +440,10 @@ class TesseractViewerAIO:
             await self._update_markers(self.markers, update_now)
 
     async def plot_trajectory(self, trajectory, manipulator_info, color = None, linewidth = 0.001, axes = True, axes_length = 0.1, tags = None, update_now = True):
+        trajectory, joint_names = tesseract_trajectory_to_list(trajectory)
+        return await self.plot_trajectory_list(trajectory, joint_names, manipulator_info, color, linewidth, axes, axes_length, tags, update_now)            
+
+    async def plot_trajectory_list(self, trajectory, joint_names, manipulator_info, color = None, linewidth = 0.001, axes = True, axes_length = 0.1, tags = None, update_now = True):
         async with self._lock:
             if self.t_env is None:
                 return None
@@ -439,8 +455,6 @@ class TesseractViewerAIO:
             tags.append("trajectory")
             if color is None:
                 color = [0,1,0,1]
-            if not isinstance(trajectory, list):
-                trajectory, joint_names = tesseract_trajectory_to_list(trajectory)
             trajectory_frames = trajectory_list_to_frames(t_env, manipulator_info, trajectory, joint_names)
             root_link = t_env.getRootLinkName()
             points = []

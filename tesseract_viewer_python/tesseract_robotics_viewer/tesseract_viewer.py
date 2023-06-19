@@ -103,6 +103,12 @@ class TesseractViewer():
 
         self.trajectory_json = trajectory_list_to_json(traj, joint_names)
         asyncio.run_coroutine_threadsafe(self._a_set_trajectory(self.trajectory_json), self.loop).result()
+
+    def update_trajectory_list(self, trajectory, joint_names):
+        
+
+        self.trajectory_json = trajectory_list_to_json(trajectory, joint_names)
+        asyncio.run_coroutine_threadsafe(self._a_set_trajectory(self.trajectory_json), self.loop).result()
         
     def serve_forever(self):
         self.start_server_background()
@@ -186,6 +192,12 @@ class TesseractViewer():
     def plot_trajectory(self, tesseract_trajectory, manipulator_info, color = None, linewidth = 0.001, axes = True, axes_length = 0.1, tags = None, update_now=True):
         if self.aio_viewer is not None:
             return asyncio.run_coroutine_threadsafe(self.aio_viewer.plot_trajectory(tesseract_trajectory, manipulator_info, color, linewidth, axes, axes_length, tags, update_now), self.loop).result()
+        else:
+            return None
+        
+    def plot_trajectory_list(self, trajectory, joint_names, manipulator_info, color = None, linewidth = 0.001, axes = True, axes_length = 0.1, tags = None, update_now = True):
+        if self.aio_viewer is not None:
+            return asyncio.run_coroutine_threadsafe(self.aio_viewer.plot_trajectory_list(trajectory, joint_names, manipulator_info, color, linewidth, axes, axes_length, tags, update_now), self.loop).result()
         else:
             return None
 
