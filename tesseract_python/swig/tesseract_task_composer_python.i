@@ -82,35 +82,36 @@
 #include <tesseract_time_parameterization/core/instructions_trajectory.h>
 
 // tesseract_task_composer
-#include <tesseract_task_composer/task_composer_node_info.h>
-#include <tesseract_task_composer/task_composer_data_storage.h>
-#include <tesseract_task_composer/task_composer_problem.h>
-#include <tesseract_task_composer/task_composer_input.h>
-#include <tesseract_task_composer/task_composer_node.h>
-#include <tesseract_task_composer/task_composer_graph.h>
-#include <tesseract_task_composer/task_composer_future.h>
-#include <tesseract_task_composer/task_composer_task.h>
-#include <tesseract_task_composer/task_composer_executor.h>
-#include <tesseract_task_composer/task_composer_plugin_factory.h>
-#include <tesseract_task_composer/task_composer_task_plugin_factory.h>
-#include <tesseract_task_composer/task_composer_executor_plugin_factory.h>
-#include <tesseract_task_composer/task_composer_server.h>
+#include <tesseract_task_composer/core/task_composer_node_info.h>
+#include <tesseract_task_composer/core/task_composer_data_storage.h>
+#include <tesseract_task_composer/core/task_composer_problem.h>
+#include <tesseract_task_composer/core/task_composer_input.h>
+#include <tesseract_task_composer/core/task_composer_node.h>
+#include <tesseract_task_composer/core/task_composer_graph.h>
+#include <tesseract_task_composer/core/task_composer_future.h>
+#include <tesseract_task_composer/core/task_composer_task.h>
+#include <tesseract_task_composer/core/task_composer_executor.h>
+#include <tesseract_task_composer/core/task_composer_plugin_factory.h>
+#include <tesseract_task_composer/core/task_composer_server.h>
+
+#include <tesseract_task_composer/taskflow/factories/taskflow_task_composer_plugin_factories.h>
+#include <tesseract_task_composer/planning/factories/planning_task_composer_plugin_factories.h>
 
 // TODO: task_composer.h doesn't compile??
 // #include <tesseract_task_composer/task_composer.h>
 
 // tesseract_task_composer profiles
 
-#include <tesseract_task_composer/profiles/check_input_profile.h>
-#include <tesseract_task_composer/profiles/contact_check_profile.h>
-#include <tesseract_task_composer/profiles/fix_state_bounds_profile.h>
-#include <tesseract_task_composer/profiles/fix_state_collision_profile.h>
-#include <tesseract_task_composer/profiles/iterative_spline_parameterization_profile.h>
-#include <tesseract_task_composer/profiles/min_length_profile.h>
-#include <tesseract_task_composer/profiles/profile_switch_profile.h>
-#include <tesseract_task_composer/profiles/ruckig_trajectory_smoothing_profile.h>
-#include <tesseract_task_composer/profiles/time_optimal_parameterization_profile.h>
-#include <tesseract_task_composer/profiles/upsample_trajectory_profile.h>
+#include <tesseract_task_composer/planning/profiles/check_input_profile.h>
+#include <tesseract_task_composer/planning/profiles/contact_check_profile.h>
+#include <tesseract_task_composer/planning/profiles/fix_state_bounds_profile.h>
+#include <tesseract_task_composer/planning/profiles/fix_state_collision_profile.h>
+#include <tesseract_task_composer/planning/profiles/iterative_spline_parameterization_profile.h>
+#include <tesseract_task_composer/planning/profiles/min_length_profile.h>
+#include <tesseract_task_composer/planning/profiles/profile_switch_profile.h>
+#include <tesseract_task_composer/planning/profiles/ruckig_trajectory_smoothing_profile.h>
+#include <tesseract_task_composer/planning/profiles/time_optimal_parameterization_profile.h>
+#include <tesseract_task_composer/planning/profiles/upsample_trajectory_profile.h>
 
 
 
@@ -142,31 +143,33 @@
 // TODO: Handle maps containing unique_ptr
 // %template(MapUuidTaskComposerNodeInfoUPtr) std::map<boost::uuids::uuid, std::unique_ptr<tesseract_planning::TaskComposerNodeInfo> >;
 %ignore tesseract_planning::TaskComposerNodeInfoContainer::getInfoMap;
-%include "tesseract_task_composer/task_composer_node_info.h"
+%include "tesseract_task_composer/core/task_composer_node_info.h"
 
 // task_composer_data_storage
 
 %s_u_ptr(TaskComposerDataStorage)
 // TODO: Handle tesseract_common::AnyPoly
-%include "tesseract_task_composer/task_composer_data_storage.h"
+%include "tesseract_task_composer/core/task_composer_data_storage.h"
 
 // task_composer_problem
 
 %s_u_ptr(TaskComposerProblem)
-%include "tesseract_task_composer/task_composer_problem.h"
+%include "tesseract_task_composer/core/task_composer_problem.h"
 
 // task_composer_input
 %s_u_ptr(TaskComposerInput)
-%include "tesseract_task_composer/task_composer_input.h"
+// missing function definition
+%ignore tesseract_planning::TaskComposerInput::abort;
+%include "tesseract_task_composer/core/task_composer_input.h"
 
 // task_composer_node
 %s_u_ptr(TaskComposerNode)
-%include "tesseract_task_composer/task_composer_node.h"
+%include "tesseract_task_composer/core/task_composer_node.h"
 
 // task_composer_graph
 %s_u_ptr(TaskComposerGraph)
 %template(MapUuidTaskComposerNodeConstPtr) std::map<boost::uuids::uuid, tesseract_planning::TaskComposerNode::ConstPtr>;
-%include "tesseract_task_composer/task_composer_graph.h"
+%include "tesseract_task_composer/core/task_composer_graph.h"
 
 namespace std
 {
@@ -193,82 +196,82 @@ enum class future_status {
 %ignore tesseract_planning::TaskComposerFuture::wait_until;
 
 // %template(MapUuidTaskComposerFuture) std::map<boost::uuids::uuid, tesseract_planning::TaskComposerFuture>;
-%include "tesseract_task_composer/task_composer_future.h"
+%include "tesseract_task_composer/core/task_composer_future.h"
 
 // task_composer_task
 %s_u_ptr(TaskComposerTask)
 %ignore tesseract_planning::TaskComposerTask::run;
-%include "tesseract_task_composer/task_composer_task.h"
+%include "tesseract_task_composer/core/task_composer_task.h"
 
 // task_composer_executor
 %s_u_ptr(TaskComposerExecutor)
-%include "tesseract_task_composer/task_composer_executor.h"
+%include "tesseract_task_composer/core/task_composer_executor.h"
 
 // task_composer_plugin_factory
 %shared_ptr(tesseract_planning::TaskComposerNodeFactory)
 %shared_ptr(tesseract_planning::TaskComposerExecutorFactory)
 
-%include "tesseract_task_composer/task_composer_plugin_factory.h"
+%include "tesseract_task_composer/core/task_composer_plugin_factory.h"
 
 // task_composer_server
 %shared_ptr(tesseract_planning::TaskComposerServer)
-%include "tesseract_task_composer/task_composer_server.h"
+%include "tesseract_task_composer/core/task_composer_server.h"
 
 // check_input_profile
 %shared_ptr(tesseract_planning::CheckInputProfile)
-%include "tesseract_task_composer/profiles/check_input_profile.h"
+%include "tesseract_task_composer/planning/profiles/check_input_profile.h"
 %tesseract_command_language_add_profile_type(CheckInputProfile);
 
 // contact_check_profile
 %shared_ptr(tesseract_planning::ContactCheckProfile)
-%include "tesseract_task_composer/profiles/contact_check_profile.h"
+%include "tesseract_task_composer/planning/profiles/contact_check_profile.h"
 %tesseract_command_language_add_profile_type(ContactCheckProfile);
 
 // fix_state_bounds_profile
 %shared_ptr(tesseract_planning::FixStateBoundsProfile)
-%include "tesseract_task_composer/profiles/fix_state_bounds_profile.h"
+%include "tesseract_task_composer/planning/profiles/fix_state_bounds_profile.h"
 %tesseract_command_language_add_profile_type(FixStateBoundsProfile);
 
 // fix_state_collision_profile
 %shared_ptr(tesseract_planning::FixStateCollisionProfile)
-%include "tesseract_task_composer/profiles/fix_state_collision_profile.h"
+%include "tesseract_task_composer/planning/profiles/fix_state_collision_profile.h"
 %tesseract_command_language_add_profile_type(FixStateCollisionProfile);
 
 // iterative_spline_parameterization_profile
 %shared_ptr(tesseract_planning::IterativeSplineParameterizationProfile)
-%include "tesseract_task_composer/profiles/iterative_spline_parameterization_profile.h"
+%include "tesseract_task_composer/planning/profiles/iterative_spline_parameterization_profile.h"
 %tesseract_command_language_add_profile_type(IterativeSplineParameterizationProfile);
 
 // min_length_profile
 %shared_ptr(tesseract_planning::MinLengthProfile)
-%include "tesseract_task_composer/profiles/min_length_profile.h"
+%include "tesseract_task_composer/planning/profiles/min_length_profile.h"
 %tesseract_command_language_add_profile_type(MinLengthProfile);
 
 // profile_switch_profile
 %shared_ptr(tesseract_planning::ProfileSwitchProfile)
-%include "tesseract_task_composer/profiles/profile_switch_profile.h"
+%include "tesseract_task_composer/planning/profiles/profile_switch_profile.h"
 %tesseract_command_language_add_profile_type(ProfileSwitchProfile);
 
 // ruckig_trajectory_smoothing_profile
 %shared_ptr(tesseract_planning::RuckigTrajectorySmoothingCompositeProfile)
 %shared_ptr(tesseract_planning::RuckigTrajectorySmoothingMoveProfile)
-%include "tesseract_task_composer/profiles/ruckig_trajectory_smoothing_profile.h"
+%include "tesseract_task_composer/planning/profiles/ruckig_trajectory_smoothing_profile.h"
 %tesseract_command_language_add_profile_type(RuckigTrajectorySmoothingCompositeProfile);
 %tesseract_command_language_add_profile_type(RuckigTrajectorySmoothingMoveProfile);
 
 //time_optimal_parameterization_profile
 %shared_ptr(tesseract_planning::TimeOptimalParameterizationProfile)
-%include "tesseract_task_composer/profiles/time_optimal_parameterization_profile.h"
+%include "tesseract_task_composer/planning/profiles/time_optimal_parameterization_profile.h"
 %tesseract_command_language_add_profile_type(TimeOptimalParameterizationProfile);
 
 // upsample_trajectory_profile
 %shared_ptr(tesseract_planning::UpsampleTrajectoryProfile)
-%include "tesseract_task_composer/profiles/upsample_trajectory_profile.h"
+%include "tesseract_task_composer/planning/profiles/upsample_trajectory_profile.h"
 %tesseract_command_language_add_profile_type(UpsampleTrajectoryProfile);
 
 %init %{
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskFactoryAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerExecutorFactoryAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerPlanningFactoriesAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskflowFactoriesAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
 
 %}
 
