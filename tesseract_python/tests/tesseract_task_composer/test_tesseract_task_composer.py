@@ -25,8 +25,9 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
 # from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
 #     TrajOptProblemGeneratorFn, TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
 #     ProfileDictionary_addProfile_TrajOptCompositeProfile
-from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, TaskComposerProblem, \
-    TaskComposerDataStorage, TaskComposerInput
+from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, \
+    TaskComposerDataStorage, TaskComposerInput, PlanningTaskComposerProblemUPtr, \
+    PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr
 
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
@@ -93,9 +94,10 @@ def test_task_composer_trajopt_example():
     task_data = TaskComposerDataStorage()
     task_data.setData(input_key, program_anypoly)
 
-    task_problem = TaskComposerProblem(env, task_data)
+    planning_task_problem = PlanningTaskComposerProblemUPtr.make_unique(env, task_data, profiles)
+    task_problem = PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr(planning_task_problem)
 
-    task_input = TaskComposerInput(task_problem, profiles)
+    task_input = TaskComposerInput(task_problem)
     
 
     task_executor = factory.createTaskComposerExecutor("TaskflowExecutor")
