@@ -17,8 +17,8 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
         MoveInstructionPoly_wrap_MoveInstruction, StateWaypointPoly_wrap_StateWaypoint, \
         CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint
 
-from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, TaskComposerProblem, \
-    TaskComposerDataStorage, TaskComposerInput
+from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, PlanningTaskComposerProblemUPtr, \
+    TaskComposerDataStorage, TaskComposerInput, TaskComposerProblemUPtr, PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr
 
 from tesseract_robotics_viewer import TesseractViewer
 
@@ -150,8 +150,9 @@ task_data = TaskComposerDataStorage()
 task_data.setData(input_key, program_anypoly)
 
 # Create the task problem and input
-task_problem = TaskComposerProblem(t_env, task_data)
-task_input = TaskComposerInput(task_problem, profiles)
+task_planning_problem = PlanningTaskComposerProblemUPtr.make_unique(t_env, task_data, profiles)
+task_problem = PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr(task_planning_problem)
+task_input = TaskComposerInput(task_problem)
 
 # Create an executor to run the task
 task_executor = factory.createTaskComposerExecutor("TaskflowExecutor")

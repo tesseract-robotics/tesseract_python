@@ -94,6 +94,8 @@
 #include <tesseract_task_composer/core/task_composer_plugin_factory.h>
 #include <tesseract_task_composer/core/task_composer_server.h>
 
+#include <tesseract_task_composer/planning/planning_task_composer_problem.h>
+
 #include <tesseract_task_composer/taskflow/factories/taskflow_task_composer_plugin_factories.h>
 #include <tesseract_task_composer/planning/factories/planning_task_composer_plugin_factories.h>
 
@@ -136,6 +138,10 @@
 %define %s_u_ptr(name)
 %shared_ptr(tesseract_planning::name)
 %wrap_unique_ptr(name ## UPtr, tesseract_planning::name)
+%enddef
+
+%define %unique_ptr_as_planning(source_class_type, dest_class_type)
+%unique_ptr_as(source_class_type, tesseract_planning, dest_class_type, tesseract_planning)
 %enddef
 
 // task_composer_node_info
@@ -218,6 +224,70 @@ enum class future_status {
 // task_composer_server
 %shared_ptr(tesseract_planning::TaskComposerServer)
 %include "tesseract_task_composer/core/task_composer_server.h"
+
+// planning_task_composer_problem
+%s_u_ptr(PlanningTaskComposerProblem)
+%include "tesseract_task_composer/planning/planning_task_composer_problem.h"
+%unique_ptr_as_planning(PlanningTaskComposerProblem, TaskComposerProblem);
+
+%unique_ptr_constructor(tesseract_planning::PlanningTaskComposerProblem, %arg(std::string name), %arg(name));
+%unique_ptr_constructor(tesseract_planning::PlanningTaskComposerProblem, %arg(tesseract_environment::Environment::ConstPtr env,
+                              tesseract_common::ManipulatorInfo manip_info,
+                              tesseract_planning::TaskComposerDataStorage input_data,
+                              tesseract_planning::ProfileDictionary::ConstPtr profiles = nullptr,
+                              std::string name = "unset"),
+                              %arg(env, manip_info, input_data, profiles, name));
+%unique_ptr_constructor(tesseract_planning::PlanningTaskComposerProblem, %arg(tesseract_environment::Environment::ConstPtr env,
+                              tesseract_planning::TaskComposerDataStorage input_data,
+                              tesseract_planning::ProfileDictionary::ConstPtr profiles = nullptr,
+                              std::string name = "unset"),
+                              %arg(env, input_data, profiles, name));
+
+// %extend std::unique_ptr<tesseract_planning::PlanningTaskComposerProblem> {
+//     static std::unique_ptr<tesseract_planning::TaskComposerProblem> make_unique(std::string name = "unset") {
+//         return std::make_unique<tesseract_planning::PlanningTaskComposerProblem>(name);
+//     }
+
+//     static std::unique_ptr<tesseract_planning::TaskComposerProblem> make_unique(tesseract_environment::Environment::ConstPtr env,
+//                               tesseract_common::ManipulatorInfo manip_info,
+//                               tesseract_planning::TaskComposerDataStorage input_data,
+//                               tesseract_planning::ProfileDictionary::ConstPtr profiles = nullptr,
+//                               std::string name = "unset") {
+//         return std::make_unique<tesseract_planning::PlanningTaskComposerProblem>(env, manip_info, input_data, profiles, name);
+//     }
+
+//     static std::unique_ptr<tesseract_planning::TaskComposerProblem> make_unique(tesseract_environment::Environment::ConstPtr env,
+//                               tesseract_common::ManipulatorInfo manip_info,
+//                               tesseract_planning::ProfileRemapping move_profile_remapping,
+//                               tesseract_planning::ProfileRemapping composite_profile_remapping,
+//                               tesseract_planning::TaskComposerDataStorage input_data,
+//                               tesseract_planning::ProfileDictionary::ConstPtr profiles = nullptr,
+//                               std::string name = "unset") {
+//         return std::make_unique<tesseract_planning::PlanningTaskComposerProblem>(env, manip_info, move_profile_remapping, composite_profile_remapping, input_data, profiles, name);
+
+//     }
+
+//     static std::unique_ptr<tesseract_planning::TaskComposerProblem> make_unique(tesseract_environment::Environment::ConstPtr env,
+//                               tesseract_common::ManipulatorInfo manip_info,
+//                               tesseract_planning::ProfileRemapping move_profile_remapping,
+//                               tesseract_planning::ProfileRemapping composite_profile_remapping,
+//                               tesseract_planning::TaskComposerDataStorage input_data,
+//                               tesseract_planning::ProfileDictionary::ConstPtr profiles = nullptr,
+//                               std::string name = "unset") {
+//         return std::make_unique<tesseract_planning::PlanningTaskComposerProblem>(env, manip_info, move_profile_remapping, composite_profile_remapping, input_data, profiles, name);
+
+//     }
+
+//     static std::unique_ptr<tesseract_planning::TaskComposerProblem> make_unique(tesseract_environment::Environment::ConstPtr env,
+//                               tesseract_planning::TaskComposerDataStorage input_data,
+//                               tesseract_planning::ProfileDictionary::ConstPtr profiles = nullptr,
+//                               std::string name = "unset") {
+//         return std::make_unique<tesseract_planning::PlanningTaskComposerProblem>(env, input_data, profiles, name);
+
+//     }
+
+    
+// }
 
 // check_input_profile
 %shared_ptr(tesseract_planning::CheckInputProfile)

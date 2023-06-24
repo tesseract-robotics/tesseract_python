@@ -8,7 +8,9 @@ namespace std {
   struct unique_ptr {
      typedef Type* pointer;
 
+     unique_ptr();
      explicit unique_ptr( pointer Ptr );
+     unique_ptr( pointer Ptr );
      unique_ptr (unique_ptr&& Right);
      template<class Type2, Class Del2> unique_ptr( unique_ptr<Type2, Del2>&& Right );
      unique_ptr( const unique_ptr& Right) = delete;
@@ -101,7 +103,7 @@ namespace std {
     $1 = std::move(*$input);
   %}
 
-
+  %implicitconv std::unique_ptr<Type>;
   %valuewrapper std::unique_ptr<Type>;
   %apply SWIGTYPE MOVE { std::unique_ptr<Type> }
   %template(Name) std::unique_ptr<Type>;
@@ -115,4 +117,23 @@ namespace std {
 
   
 
+%enddef
+
+
+%define %unique_ptr_constructor(Type, callargs, callvars)
+  %extend std::unique_ptr<Type> {
+    static std::unique_ptr<Type> make_unique(callargs) {
+      return std::make_unique<Type>(callvars);
+    } 
+  }
+%enddef
+
+%define %unique_ptr_as(source_class_type,source_class_namespace,dest_class_type,dest_class_namespace)
+
+%inline {
+  std::unique_ptr<dest_class_namespace::dest_class_type> source_class_type ## UPtr_as_ ## dest_class_type ## UPtr (std::unique_ptr<source_class_namespace::source_class_type>& self)
+  {
+    return std::unique_ptr<dest_class_namespace::dest_class_type>(static_cast<dest_class_namespace::dest_class_type*>(self.release()));
+  }
+}
 %enddef
