@@ -89,6 +89,7 @@ class ContactResult;
 // %tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
 }
 %ignore ContactResultVector;
+%ignore trajectoryCollisionResultsTable;
 // %ignore ContactResultMap;
 // tesseract_collision
 #define TESSERACT_COLLISION_CORE_PUBLIC

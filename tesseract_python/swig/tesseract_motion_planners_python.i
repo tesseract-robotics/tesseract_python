@@ -56,6 +56,9 @@
 
 %}
 
+%unique_ptr_value_wrapper(tesseract_kinematics::KinematicGroup);
+%unique_ptr_value_wrapper(tesseract_kinematics::JointGroup);
+
 // tesseract_motion_planners
 #define TESSERACT_MOTION_PLANNERS_CORE_PUBLIC
 

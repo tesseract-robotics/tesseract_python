@@ -51,6 +51,6 @@
 
 %}
 
-// TODO: deal with UPtr return from parse
+%unique_ptr_value_wrapper(tesseract_scene_graph::SceneGraph);
 
 %include "tesseract_urdf/urdf_parser.h"

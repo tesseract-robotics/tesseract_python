@@ -131,6 +131,8 @@
 
 %}
 
+%unique_ptr_value_wrapper(tesseract_collision::DiscreteContactManager);
+
 %define %s_u_ptr(name)
 %shared_ptr(tesseract_planning::name)
 %wrap_unique_ptr(name ## UPtr, tesseract_planning::name)
@@ -140,6 +142,7 @@
 
 %s_u_ptr(TaskComposerNodeInfo)
 %s_u_ptr(TaskComposerNodeInfoContainer)
+%s_u_ptr(TaskComposerProblem)
 // TODO: Handle maps containing unique_ptr
 // %template(MapUuidTaskComposerNodeInfoUPtr) std::map<boost::uuids::uuid, std::unique_ptr<tesseract_planning::TaskComposerNodeInfo> >;
 %ignore tesseract_planning::TaskComposerNodeInfoContainer::getInfoMap;
@@ -153,7 +156,6 @@
 
 // task_composer_problem
 
-%s_u_ptr(TaskComposerProblem)
 %include "tesseract_task_composer/core/task_composer_problem.h"
 
 // task_composer_input
