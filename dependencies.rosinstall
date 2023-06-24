@@ -13,7 +13,7 @@
 - git:
     local-name: trajopt
     uri: https://github.com/johnwason/trajopt_ros.git
-    version: win_ci_fix
+    version: master
 - git:
     local-name: descartes_light
     uri: https://github.com/swri-robotics/descartes_light.git
