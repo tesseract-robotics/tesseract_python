@@ -179,6 +179,9 @@
 %template(MapUuidTaskComposerNodeConstPtr) std::map<boost::uuids::uuid, tesseract_planning::TaskComposerNode::ConstPtr>;
 %include "tesseract_task_composer/core/task_composer_graph.h"
 
+%s_u_ptr(TaskComposerPipeline)
+%include "tesseract_task_composer/core/task_composer_pipeline.h"
+
 namespace std
 {
 enum class future_status {
