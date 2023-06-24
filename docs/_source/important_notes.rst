@@ -42,7 +42,11 @@ C++ wrappers, here is a simple breakdown of the lifecycle of each type:
   Reference counts are not kept, since there is always only one owning unique pointer. These are wrapped in Python
   with the suffix `UPtr` after the name of the class. There is also typically another definition in Python for the class
   without the unique pointer suffix. The real pointer can be accessed by calling the `get()` method on the unique pointer.
-  The `UPtr` Python type can be used to construct a new object contained in a unique pointer.
+  The `UPtr` Python type can be used to construct a new object contained in a unique pointer. Unique pointers do
+  not have normal constructors, or the ability to implicitly cast to other types. Constructing unique pointers is not
+  typically necessary for Python users, however some types have ``make_unique`` functions available. When necessary,
+  casting function like ``Type1UPtr_as_Type2UPtr`` may be available. Check the API documentation for the specific
+  type to see if these functions are available.
 
 Using the various pointer types can be confusing, and it is important to read the C++ documentation to understand
 the lifecycle of any particular object. It is also important to understand the difference between a pointer and a
