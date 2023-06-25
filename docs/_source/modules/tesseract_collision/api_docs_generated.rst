@@ -45,6 +45,27 @@ ContactResultMap Class
    :exclude-members: thisown
    :members:
 
+ContactTrajectoryResults Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_collision.ContactTrajectoryResults
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
+ContactTrajectoryStepResults Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_collision.ContactTrajectoryStepResults
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
+ContactTrajectorySubstepResults Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_collision.ContactTrajectorySubstepResults
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
 ContinuousContactManager Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_collision.ContinuousContactManager

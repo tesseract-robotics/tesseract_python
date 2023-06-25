@@ -45,6 +45,20 @@ MinLengthProfile Class
    :exclude-members: thisown
    :members:
 
+PlanningTaskComposerProblem Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_task_composer.PlanningTaskComposerProblem
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
+PlanningTaskComposerProblemUPtr Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_task_composer.PlanningTaskComposerProblemUPtr
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
 ProfileSwitchProfile Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_task_composer.ProfileSwitchProfile
@@ -192,6 +206,20 @@ TaskComposerNodeUPtr Class
    :exclude-members: thisown
    :members:
 
+TaskComposerPipeline Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_task_composer.TaskComposerPipeline
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
+TaskComposerPipelineUPtr Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_task_composer.TaskComposerPipelineUPtr
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
 TaskComposerPluginFactory Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_task_composer.TaskComposerPluginFactory
@@ -251,6 +279,11 @@ UpsampleTrajectoryProfile Class
 
 Functions
 *********
+
+PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_task_composer.PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr
+   :noindex:
 
 ProfileDictionary_addProfile_CheckInputProfile Function
 ===================================================================================================
@@ -655,6 +688,7 @@ Constants
 * ``Settings_START_ONLY``
 * ``Settings_START_ONLY``
 * ``TaskComposerNodeType_GRAPH``
+* ``TaskComposerNodeType_PIPELINE``
 * ``TaskComposerNodeType_TASK``
 
 Container Templates

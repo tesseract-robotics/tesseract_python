@@ -507,11 +507,6 @@ formatJointPosition Function
 .. autofunction:: tesseract_robotics.tesseract_command_language.formatJointPosition
    :noindex:
 
-generateSkeletonSeed Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_command_language.generateSkeletonSeed
-   :noindex:
-
 getJointNames Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_command_language.getJointNames
@@ -520,11 +515,6 @@ getJointNames Function
 getJointPosition Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_command_language.getJointPosition
-   :noindex:
-
-isCommentInstruction Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_command_language.isCommentInstruction
    :noindex:
 
 isSetAnalogInstruction Function
@@ -540,11 +530,6 @@ isSetToolInstruction Function
 isTimerInstruction Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_command_language.isTimerInstruction
-   :noindex:
-
-isVariableInstruction Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_command_language.isVariableInstruction
    :noindex:
 
 isWaitInstruction Function
