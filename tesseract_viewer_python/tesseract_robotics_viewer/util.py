@@ -23,9 +23,9 @@ def tesseract_trajectory_to_list(tesseract_trajectory):
         state_wp = WaypointPoly_as_StateWaypointPoly(wp)
         trajectory2.append(state_wp.getPosition().flatten().tolist() + [state_wp.getTime()])
     
-    return trajectory2, joint_names
+    return joint_names, trajectory2
 
-def trajectory_list_to_json(trajectory_list, joint_names, use_time = True, loop_time = 20):
+def trajectory_list_to_json(joint_names, trajectory_list, use_time = True, loop_time = 20):
 
     trajectory_json = dict()
     trajectory_json["use_time"] = use_time
@@ -51,7 +51,7 @@ def joint_positions_to_trajectory_json(joint_names, joint_positions):
 
     return json.dumps(trajectory_json)
 
-def trajectory_list_to_frames(tesseract_env, manipulator_info, trajectory_list, joint_names):
+def trajectory_list_to_frames(tesseract_env, manipulator_info, joint_names, trajectory_list):
     ret = []
     kin = tesseract_env.getKinematicGroup(manipulator_info.manipulator)
     for i in range(len(trajectory_list)):

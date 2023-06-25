@@ -278,6 +278,22 @@ class _TesseractViewerAIOWebsocketConnection:
             await self.ws.close()
 
 class TesseractViewerAIO:
+    """
+    A class for viewing Tesseract environments in a web browser using a Python asyncio server.
+
+    TesseractViewer uses ThreeJS to render the environment and trajectories in a web browser. It uses a websocket
+    to communicate with the browser. The scene is converted to glTF format and sent to the browser. Trajectories
+    are converted to JSON format and sent to the browser. The browser then renders the scene and trajectories.
+
+    By default the server will listen on port 8000 on the local machine. Use http://localhost:8000 to view the
+    scene in a web browser. 
+    
+    The server can be started and stopped using the start() and close() methods. A task is created to run the server
+    in the background. The server will continue to run until close() is called.
+
+    :param server_address: The address to listen on. Default is localhost:8000.
+    :type server_address: tuple
+    """
     def __init__(self, server_address = ("localhost", 8080)):
         self.server_address = server_address
         self.server = _TesseractViewerAIOServer()
@@ -288,6 +304,17 @@ class TesseractViewerAIO:
         self.t_env = None
 
     async def update_environment(self, tesseract_env, origin_offset = [0,0,0], trajectory = None):
+        """
+        Update the environment from a tesseract_environment.Environment object. This must be called to load the
+        environment, and after the environment changes.
+
+        :param tesseract_env: The environment to load
+        :type tesseract_env: tesseract_environment.Environment
+        :param origin_offset: The offset of the origin in the world frame, defaults to [0,0,0]
+        :type origin_offset: List[float], optional
+        :param trajectory: The trajectory to display, defaults to None
+        :type trajectory: tesseract_command_language.CompositeInstruction, optional
+        """
 
         assert isinstance(tesseract_env, tesseract_environment.Environment)
         async with self._lock:
@@ -303,14 +330,30 @@ class TesseractViewerAIO:
             await self.server.set_environment(self.scene_json, self.scene_glb)
 
     async def update_trajectory(self, trajectory):
+        """
+        Update the trajectory to display. The trajectory will be animated based on the timestamps in the trajectory.
+
+        :param tesseract_trajectory: The trajectory to display
+        :type tesseract_trajectory: tesseract_robotics.tesseract_command_language.CompositeInstruction
+        """
         async with self._lock:
-            traj, joint_names = tesseract_trajectory_to_list(trajectory)
-            self.trajectory_json = trajectory_list_to_json(traj, joint_names)
+            joint_names, traj = tesseract_trajectory_to_list(trajectory)
+            self.trajectory_json = trajectory_list_to_json(joint_names, traj)
             await self.server.set_trajectory(self.trajectory_json)
     
-    async def update_trajectory_list(self, trajectory, joint_names):
+    async def update_trajectory_list(self, joint_names, trajectory):
+        """
+        Update the trajectory from a list. Each entry in the trajectory should be the joint values and the timestamp
+        as the last element. For instance, a robot with 6 joints would have a 7 element array for each entry in the
+        list, the first 6 elements being the joint values, and the last element being the timestamp.
+
+        :param joint_names: The joint names
+        :type joint_names: List[str]
+        :param trajectory: The trajectory to display
+        :type trajectory: Union[List[List[float]], List[np.ndarray]]
+        """
         async with self._lock:            
-            self.trajectory_json = trajectory_list_to_json(trajectory, joint_names)
+            self.trajectory_json = trajectory_list_to_json(joint_names, trajectory)
             await self.server.set_trajectory(self.trajectory_json)
 
     async def _update_trajectory_json(self, trajectory_json):
@@ -319,10 +362,17 @@ class TesseractViewerAIO:
             await self.server.set_trajectory(self.trajectory_json)
 
     async def start(self):
+        """
+        Start the server. This will start the server in the background. The server will continue to run until
+        close() is called.
+        """
         async with self._lock:
             self.server_task = asyncio.create_task(self.server.start(self.server_address[0], self.server_address[1]))
 
     async def close(self):
+        """
+        Close the server. This will stop the server and wait for it to finish.
+        """
         if self.server_task is not None:
             async with self._lock:
                 await self.server.close()
@@ -352,12 +402,58 @@ class TesseractViewerAIO:
         return marker["name"]
 
     async def add_axes_marker(self, position, quaternion, size=0.15, parent_link = "world", name = None, tags = None, update_now = True):
+        """
+        Add an axes marker to the scene. This is useful for visualizing coordinate frames and waypoints.
+
+        :param position: The position of the marker
+        :type position: Union[List[float], np.ndarray]
+        :param quaternion: The orientation of the marker in (w,x,y,z) format
+        :type quaternion: Union[List[float], np.ndarray]
+        :param size: The size of the marker, defaults to 0.15
+        :type size: float, optional
+        :param parent_link: The name of the parent link, defaults to "world"
+        :type parent_link: str, optional
+        :param name: The name of the marker, defaults to a generated name
+        :type name: str, optional
+        :param tags: The tags for the marker, defaults to None
+        :type tags: List[str], optional
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if adding multiple markers at once.
+        :type update_now: bool, optional
+        :return: The name of the marker
+        :rtype: str
+        """
         async with self._lock:            
             marker = self._new_marker_dict("axes", parent_link, position, quaternion, name, None, tags)
             marker["size"] = size
             return await self._do_append_marker(marker, update_now)
         
     async def add_arrow_marker(self, direction, origin, length, color = None, parent_link = "world",name=None, tags=None, update_now = True, position = None, quaternion = None):
+        """
+        Add an arrow marker to the scene. 
+
+        :param direction: The direction of the arrow as a unit vector
+        :type direction: Union[List[float], np.ndarray]
+        :param origin: The origin of the arrow
+        :type origin: Union[List[float], np.ndarray]
+        :param length: The length of the arrow
+        :type length: float
+        :param color: The color of the arrow, defaults to white
+        :type color: Union[List[float], np.ndarray], optional
+        :param parent_link: The name of the parent link, defaults to "world"
+        :type parent_link: str, optional
+        :param name: The name of the marker, defaults to a generated name
+        :type name: str, optional
+        :param tags: The tags for the marker, defaults to None
+        :type tags: List[str], optional
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if adding multiple markers at once.
+        :type update_now: bool, optional
+        :param position: The position of the marker, defaults to origin
+        :type position: Union[List[float], np.ndarray], optional
+        :param quaternion: The orientation of the marker in (w,x,y,z) format, defaults to no rotation
+        :type quaternion: Union[List[float], np.ndarray], optional
+        :return: The name of the marker
+        :rtype: str
+        """
         if position is None:
             position = [0,0,0]
         if quaternion is None:
@@ -371,12 +467,54 @@ class TesseractViewerAIO:
             return await self._do_append_marker(marker, update_now)
         
     async def add_box_marker(self, position, quaternion, size, color = None, parent_link = "world",  name=None, tags=None, update_now = True):
+        """
+        Add a box marker to the scene.
+
+        :param position: The position of the marker
+        :type position: Union[List[float], np.ndarray]
+        :param quaternion: The orientation of the marker in (w,x,y,z) format
+        :type quaternion: Union[List[float], np.ndarray]
+        :param size: The size of the marker in (x,y,z) format
+        :type size: Union[List[float], np.ndarray]
+        :param color: The color of the marker, defaults to white
+        :type color: Union[List[float], np.ndarray], optional
+        :param parent_link: The name of the parent link, defaults to "world"
+        :type parent_link: str, optional
+        :param name: The name of the marker, defaults to a generated name
+        :type name: str, optional
+        :param tags: The tags for the marker, defaults to None
+        :type tags: List[str], optional
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if adding multiple markers at once.
+        :type update_now: bool, optional
+        :return: The name of the marker
+        :rtype: str
+        """
         async with self._lock:
             marker = self._new_marker_dict("box", parent_link, position, quaternion, name, color, tags)
             marker["size"] = _fix_marker_vector(size)
             return await self._do_append_marker(marker, update_now)
         
     async def add_sphere_marker(self, position, radius, color = None, parent_link = "world",  name=None, tags=None, update_now = True):
+        """
+        Add a sphere marker to the scene.
+
+        :param position: The position of the marker
+        :type position: Union[List[float], np.ndarray]
+        :param radius: The radius of the sphere
+        :type radius: float
+        :param color: The color of the marker, defaults to white
+        :type color: Union[List[float], np.ndarray], optional
+        :param parent_link: The name of the parent link, defaults to "world"
+        :type parent_link: str, optional
+        :param name: The name of the marker, defaults to a generated name
+        :type name: str, optional
+        :param tags: The tags for the marker, defaults to None
+        :type tags: List[str], optional
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if adding multiple markers at once.
+        :type update_now: bool, optional
+        :return: The name of the marker
+        :rtype: str
+        """
         async with self._lock:
             quaternion = [1,0,0,0]
             marker = self._new_marker_dict("sphere", parent_link, position, quaternion, name, color, tags)
@@ -384,13 +522,30 @@ class TesseractViewerAIO:
             return await self._do_append_marker(marker, update_now)
         
     async def add_cylinder_marker(self, position, quaternion, radius, length, color = None, parent_link = "world", name=None, tags=None, update_now = True):
-        async with self._lock:
-            marker = self._new_marker_dict("cylinder", parent_link, position, quaternion, name, color, tags)
-            marker["radius"] = radius
-            marker["length"] = length
-            return await self._do_append_marker(marker, update_now)
-        
-    async def add_cylinder_marker(self, position, quaternion, radius, length, color = None, parent_link = "world", name=None, tags=None, update_now = True):
+        """
+        Add a cylinder marker to the scene.
+
+        :param position: The position of the marker
+        :type position: Union[List[float], np.ndarray]
+        :param quaternion: The orientation of the marker in (w,x,y,z) format
+        :type quaternion: Union[List[float], np.ndarray]
+        :param length: The length of the cylinder
+        :type length: float
+        :param radius: The radius of the cylinder
+        :type radius: float
+        :param color: The color of the marker, defaults to white
+        :type color: Union[List[float], np.ndarray], optional
+        :param parent_link: The name of the parent link, defaults to "world"
+        :type parent_link: str, optional
+        :param name: The name of the marker, defaults to a generated name
+        :type name: str, optional
+        :param tags: The tags for the marker, defaults to None
+        :type tags: List[str], optional
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if adding multiple markers at once.
+        :type update_now: bool, optional
+        :return: The name of the marker
+        :rtype: str
+        """
         async with self._lock:
             marker = self._new_marker_dict("cylinder", parent_link, position, quaternion, name, color, tags)
             marker["radius"] = radius
@@ -398,6 +553,30 @@ class TesseractViewerAIO:
             return await self._do_append_marker(marker, update_now)
         
     async def add_capsule_marker(self, position, quaternion, radius, length, color = None, parent_link = "world", name=None, tags=None, update_now = True):
+        """
+        Add a capsule marker to the scene.
+
+        :param position: The position of the marker
+        :type position: Union[List[float], np.ndarray]
+        :param quaternion: The orientation of the marker in (w,x,y,z) format
+        :type quaternion: Union[List[float], np.ndarray]
+        :param length: The length of the capsule
+        :type length: float
+        :param radius: The radius of the capsule
+        :type radius: float
+        :param color: The color of the marker, defaults to white
+        :type color: Union[List[float], np.ndarray], optional
+        :param parent_link: The name of the parent link, defaults to "world"
+        :type parent_link: str, optional
+        :param name: The name of the marker, defaults to a generated name
+        :type name: str, optional
+        :param tags: The tags for the marker, defaults to None
+        :type tags: List[str], optional
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if adding multiple markers at once.
+        :type update_now: bool, optional
+        :return: The name of the marker
+        :rtype: str
+        """
         async with self._lock:
             marker = self._new_marker_dict("capsule", parent_link, position, quaternion, name, color, tags)
             marker["radius"] = radius
@@ -405,6 +584,26 @@ class TesseractViewerAIO:
             return await self._do_append_marker(marker, update_now)
         
     async def add_lines_marker(self, vertices, color = None, linewidth = 1.0, parent_link = "world", name=None, tags=None, update_now = True, position = None, quaternion = None):
+        """
+        Add line segments marker to the scene.
+
+        :param vertices: The vertices of the line segments
+        :type vertices: Union[List[List[float]], List[np.ndarray]]
+        :param color: The color of the marker, defaults to white
+        :type color: Union[List[float], np.ndarray], optional
+        :param linewidth: The width of the lines, defaults to 1.0
+        :type linewidth: float, optional
+        :param parent_link: The name of the parent link, defaults to "world"
+        :type parent_link: str, optional
+        :param name: The name of the marker, defaults to a generated name
+        :type name: str, optional
+        :param tags: The tags for the marker, defaults to None
+        :type tags: List[str], optional
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if adding multiple markers at once.
+        :type update_now: bool, optional
+        :return: The name of the marker
+        :rtype: str
+        """
         if position is None:
             position = [0,0,0]
         if quaternion is None:
@@ -425,25 +624,93 @@ class TesseractViewerAIO:
             self._update_markers(markers_json)
 
     async def clear_all_markers(self):
+        """
+        Clear all markers from the scene.
+        """
         async with self._lock:
             self.markers = []
             await self._update_markers(self.markers, True)
 
     async def clear_markers_by_tags(self, tags, update_now = True):
+        """
+        Clear all markers with the given tags from the scene.
+
+        :param tags: The tags to clear
+        :type tags: List[str]
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if clearing multiple markers at once.
+        :type update_now: bool, optional
+        """
         async with self._lock:
             self.markers = [m for m in self.markers if m["tags"] != tags]
             await self._update_markers(self.markers, update_now)
 
     async def clear_markers_by_name(self, name, update_now = True):
+        """
+        Clear all markers with the given name from the scene.
+
+        :param name: The name to clear
+        :type name: str
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if clearing multiple markers at once.
+        :type update_now: bool, optional
+        """
         async with self._lock:
             self.markers = [m for m in self.markers if m["name"] != name]
             await self._update_markers(self.markers, update_now)
 
     async def plot_trajectory(self, trajectory, manipulator_info, color = None, linewidth = 0.001, axes = True, axes_length = 0.1, tags = None, update_now = True):
-        trajectory, joint_names = tesseract_trajectory_to_list(trajectory)
-        return await self.plot_trajectory_list(trajectory, joint_names, manipulator_info, color, linewidth, axes, axes_length, tags, update_now)            
+        """
+        Plot a trajectory stored in a tesseract_robotics.tesseract_command_language.CompositeInstruction to the scene. 
+        This will draw the trajectory
+        as a series of line segments and display axes at each trajectory waypoint.
 
-    async def plot_trajectory_list(self, trajectory, joint_names, manipulator_info, color = None, linewidth = 0.001, axes = True, axes_length = 0.1, tags = None, update_now = True):
+        :param tesseract_trajectory: The trajectory to plot
+        :type tesseract_trajectory: tesseract_robotics.tesseract_command_language.CompositeInstruction
+        :param manipulator_info: The manipulator info for the manipulator that generated the trajectory
+        :type manipulator_info: tesseract_robotics.tesseract_kinematics.ManipulatorInfo
+        :param color: The color of the trajectory, defaults to white
+        :type color: Union[List[float], np.ndarray], optional
+        :param linewidth: The width of the trajectory line segments, defaults to 0.001
+        :type linewidth: float, optional
+        :param axes: Whether to display axes at each trajectory waypoint, defaults to True
+        :type axes: bool, optional
+        :param axes_length: The length of the axes, defaults to 0.1
+        :type axes_length: float, optional
+        :param tags: The tags for the trajectory, defaults to None
+        :type tags: List[str], optional
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if plotting multiple trajectories at once.
+        :type update_now: bool, optional
+        :return: The name of the trajectory
+        :rtype: str
+        """
+        joint_names, trajectory = tesseract_trajectory_to_list(trajectory)
+        return await self.plot_trajectory_list(joint_names, trajectory, manipulator_info, color, linewidth, axes, axes_length, tags, update_now)            
+
+    async def plot_trajectory_list(self, joint_names, trajectory, manipulator_info, color = None, linewidth = 0.001, axes = True, axes_length = 0.1, tags = None, update_now = True):
+        """
+        Plot a trajectory stored as a list of joint positions to the scene. This will draw the trajectory
+        as a series of line segments and display axes at each trajectory waypoint.
+
+        :param joint_names: The joint names for the trajectory
+        :type joint_names: List[str]
+        :param trajectory: The trajectory to plot
+        :type trajectory: Union[List[List[float]], List[np.ndarray]]
+        :param manipulator_info: The manipulator info for the manipulator that generated the trajectory
+        :type manipulator_info: tesseract_robotics.tesseract_kinematics.ManipulatorInfo
+        :param color: The color of the trajectory, defaults to white
+        :type color: Union[List[float], np.ndarray], optional
+        :param linewidth: The width of the trajectory line segments, defaults to 0.001
+        :type linewidth: float, optional
+        :param axes: Whether to display axes at each trajectory waypoint, defaults to True
+        :type axes: bool, optional
+        :param axes_length: The length of the axes, defaults to 0.1
+        :type axes_length: float, optional
+        :param tags: The tags for the trajectory, defaults to None
+        :type tags: List[str], optional
+        :param update_now: Whether to update the scene immediately, defaults to True. Set to False if plotting multiple trajectories at once.
+        :type update_now: bool, optional
+        :return: The name of the trajectory
+        :rtype: str
+        """
         async with self._lock:
             if self.t_env is None:
                 return None
@@ -455,7 +722,7 @@ class TesseractViewerAIO:
             tags.append("trajectory")
             if color is None:
                 color = [0,1,0,1]
-            trajectory_frames = trajectory_list_to_frames(t_env, manipulator_info, trajectory, joint_names)
+            trajectory_frames = trajectory_list_to_frames(t_env, manipulator_info, joint_names, trajectory)
             root_link = t_env.getRootLinkName()
             points = []
             for i in range(len(trajectory_frames)):

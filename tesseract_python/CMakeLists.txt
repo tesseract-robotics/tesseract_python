@@ -238,7 +238,14 @@ add_custom_target(tesseract_python_wheel ALL ${CMAKE_COMMAND} -P ${CMAKE_CURRENT
 endif()
 
 if(TESSERACT_PYTHON_BUILD_DOCUMENTATION)
-find_program(SPHINX_EXECUTABLE NAMES sphinx-build)
+  find_program(SPHINX_EXECUTABLE NAMES sphinx-build)
+    # Get absolute path of ${CMAKE_CURRENT_SOURCE_DIR}/../tesseract_viewer_python
+    get_filename_component(ABS_TESSERACT_VIEWER_PYTHON ${CMAKE_SOURCE_DIR}/../tesseract_viewer_python ABSOLUTE)
+    if(WIN32)
+      set(docs_pythonpath "${CMAKE_BINARY_DIR}/python\;${ABS_TESSERACT_VIEWER_PYTHON}")
+    else()
+      set(docs_pythonpath "${CMAKE_BINARY_DIR}/python:${ABS_TESSERACT_VIEWER_PYTHON}")
+    endif()
 
     if(NOT SPHINX_EXECUTABLE)
         message(FATAL_ERROR "Sphinx is required to build Python documentation")
@@ -246,7 +253,7 @@ find_program(SPHINX_EXECUTABLE NAMES sphinx-build)
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs_build)
     file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/docs)
     add_custom_target(tesseract_python_doc
-        COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_BINARY_DIR}/python
+        COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${docs_pythonpath}
         ${SPHINX_EXECUTABLE} -E -a -b html
         ${CMAKE_SOURCE_DIR}/../docs
         ${CMAKE_BINARY_DIR}/docs

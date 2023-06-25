@@ -435,7 +435,7 @@ def _append_bufview(gltf_dict, gltf_buf_io, dat):
 
 def _append_trajectory_animation(gltf_dict, gltf_buf_io, tesseract_trajectory):
 
-    traj, joint_names = tesseract_trajectory_to_list(tesseract_trajectory)
+    joint_names, traj = tesseract_trajectory_to_list(tesseract_trajectory)
 
     traj_np = np.asarray(traj)
 

@@ -23,3 +23,4 @@ API Reference
    tesseract_motion_planners_simple <tesseract_motion_planners_simple/tesseract_motion_planners_simple.rst>
    tesseract_time_parameterization <tesseract_time_parameterization/tesseract_time_parameterization.rst>
    tesseract_task_composer <tesseract_task_composer/tesseract_task_composer.rst>
+   tesseract_robotics_viewer <tesseract_robotics_viewer/index.rst>
