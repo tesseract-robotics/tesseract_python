@@ -1,0 +1,52 @@
+
+Classes
+*******
+
+{% for tesseract_class in classes %}
+{{ tesseract_class }} Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.{{ tesseract_module }}.{{ tesseract_class }}
+   :noindex:
+   :exclude-members: thisown
+   :members:
+{% endfor %}
+
+{% if functions|length > 0 -%}
+Functions
+*********
+{% for function in functions %}
+{{ function }} Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.{{ tesseract_module }}.{{ function }}
+   :noindex:
+{% endfor %}
+{% endif -%}
+
+{% if constants|length > 0 -%}
+Constants
+*********
+
+{% for constant in constants -%} 
+* ``{{ constant }}``
+{% endfor %}
+{% endif -%}
+
+{% if containers|length > 0 -%}
+Container Templates
+*******************
+
+{% for container in containers -%}
+* ``{{ container[0] }}`` -> ``{{ container[1] }}``
+{% endfor %}
+{% endif -%}
+
+{%if any_poly|length > 0%}
+AnyPoly Accessor Functions
+**************************
+
+{% for poly in any_poly -%}
+* ``{{ poly }}``
+{% endfor %}
+{% endif -%}
+
+
