@@ -470,7 +470,7 @@ def _append_trajectory_animation(gltf_dict, gltf_buf_io, tesseract_trajectory):
         joint_type = joint_types[joint_name]
         joint_axis = joint_axes[joint_name]
 
-        if joint_type == 1:
+        if joint_type in (1,2):
             sampler_np = np.zeros((len(trajectory2_i),4),dtype=np.float32)
             joint_axisd = np.array(joint_axis,dtype=np.float64)
             for j in range(len(trajectory2_i)):
@@ -492,7 +492,7 @@ def _append_trajectory_animation(gltf_dict, gltf_buf_io, tesseract_trajectory):
                     "path": "rotation"
                 }
             })
-        elif joint_type == 2:
+        elif joint_type == 3:
             sampler_np = np.zeros((len(trajectory2_i),3),dtype=np.float32)
             joint_axisd = np.array(joint_axis,dtype=np.float64)
             for j in range(len(trajectory2_i)):

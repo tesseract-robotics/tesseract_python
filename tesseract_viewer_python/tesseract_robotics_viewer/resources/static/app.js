@@ -367,6 +367,7 @@ class TesseractViewer {
             let joint = joints[joint_name];
             switch (joint.type) {
                 case 1:
+                case 2:
                     {
                         let values = [];
                         let times = []
@@ -381,7 +382,7 @@ class TesseractViewer {
                         tracks.push(track);
                     }
                     break;
-                case 2:
+                case 3:
                     {
                         let values = [];
                         let times = []
