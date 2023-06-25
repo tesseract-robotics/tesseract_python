@@ -12,7 +12,7 @@
     version: windows_updates_may_2023_2
 - git:
     local-name: trajopt
-    uri: https://github.com/johnwason/trajopt_ros.git
+    uri: https://github.com/tesseract-robotics/trajopt.git
     version: master
 - git:
     local-name: descartes_light
