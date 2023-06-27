@@ -96,9 +96,9 @@
 
 #include <tesseract_task_composer/planning/planning_task_composer_problem.h>
 
-#include <tesseract_task_composer/taskflow/factories/taskflow_task_composer_plugin_factories.h>
-#include <tesseract_task_composer/planning/factories/planning_task_composer_plugin_factories.h>
-#include <tesseract_task_composer/core/factories/task_composer_task_plugin_factory.h>
+#include <tesseract_task_composer/taskflow/taskflow_task_composer_plugin_factories.h>
+#include <tesseract_task_composer/planning/planning_task_composer_plugin_factories.h>
+#include <tesseract_task_composer/core/task_composer_task_plugin_factory.h>
 
 // TODO: task_composer.h doesn't compile??
 // #include <tesseract_task_composer/task_composer.h>
