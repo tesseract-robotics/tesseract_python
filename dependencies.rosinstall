@@ -8,8 +8,8 @@
     version: master
 - git:
     local-name: tesseract_planning
-    uri: https://github.com/johnwason/tesseract_planning.git
-    version: windows_updates_may_2023_2
+    uri: https://github.com/tesseract-robotics/tesseract_planning.git
+    version: master
 - git:
     local-name: trajopt
     uri: https://github.com/tesseract-robotics/trajopt.git
