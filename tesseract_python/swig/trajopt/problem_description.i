@@ -16,7 +16,7 @@
 %shared_ptr(trajopt::JointJerkTermInfo);
 %shared_ptr(trajopt::CollisionTermInfo);
 %shared_ptr(trajopt::TotalTimeTermInfo);
-%shared_ptr(util::SafetyMarginData);
+%shared_ptr(trajopt_common::SafetyMarginData);
 %shared_ptr(trajopt::ProblemConstructionInfo);
 
 
@@ -56,7 +56,7 @@
 }
 
 
-%template(SafetyMarginDataPtr_vector) std::vector<std::shared_ptr<util::SafetyMarginData>>;
+%template(SafetyMarginDataPtr_vector) std::vector<std::shared_ptr<trajopt_common::SafetyMarginData>>;
 %template(TermInfoPtr_vector) std::vector<std::shared_ptr<trajopt::TermInfo>>;
 
 
@@ -121,7 +121,7 @@ struct BasicTrustRegionSQPParameters
 
 }
 
-namespace util
+namespace trajopt_common
 {
 struct SafetyMarginData
 {
@@ -361,7 +361,7 @@ public:
   CollisionEvaluatorType evaluator_type;
   std::vector<int> fixed_steps;
   double longest_valid_segment_length = 0.5;
-  std::vector<std::shared_ptr<util::SafetyMarginData> > info;
+  std::vector<std::shared_ptr<trajopt_common::SafetyMarginData> > info;
   tesseract_collision::ContactTestType contact_test_type;
   void fromJson(ProblemConstructionInfo& pci, const Json::Value& v);
   void hatch(TrajOptProb& prob);
