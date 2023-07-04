@@ -688,6 +688,7 @@ Constants
 * ``Settings_START_ONLY``
 * ``Settings_START_ONLY``
 * ``TaskComposerNodeType_GRAPH``
+* ``TaskComposerNodeType_NODE``
 * ``TaskComposerNodeType_PIPELINE``
 * ``TaskComposerNodeType_TASK``
 
