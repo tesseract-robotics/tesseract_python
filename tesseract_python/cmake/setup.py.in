@@ -20,7 +20,7 @@ class build_ext(build_ext_orig):
       pass
 
 setup(name='tesseract-robotics',
-      version='@tesseract_python_version@',
+      version='@tesseract_python_version@.post1',
       description='Tesseract Python Library',
       author='John Wason',
       author_email='wason@wasontech.com',
