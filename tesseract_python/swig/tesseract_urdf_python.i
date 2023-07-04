@@ -35,7 +35,7 @@
 
 %{
 
-#include <tesseract_common/status_code.h>
+
 #include <tesseract_common/resource_locator.h>
 
 #include <boost/graph/adjacency_list.hpp>
@@ -51,6 +51,6 @@
 
 %}
 
-// TODO: deal with UPtr return from parse
+%unique_ptr_value_wrapper(tesseract_scene_graph::SceneGraph);
 
 %include "tesseract_urdf/urdf_parser.h"

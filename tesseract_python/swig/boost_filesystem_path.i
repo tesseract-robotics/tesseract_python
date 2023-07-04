@@ -34,11 +34,25 @@ namespace filesystem
 {
 
 %rename(FilesystemPath) path;
+/**
+ * @brief Wrapper for boost::filesystem::path
+ */
 class path
 {
 public:
 
+/**
+ * @brief Construct a new path object
+ *
+ * @param s The path
+ */
 path(const std::string& s);
+
+/**
+    @brief Return the path as a string
+
+    @return The path as a string
+    */
 std::string string();
 
 %pythoncode %{

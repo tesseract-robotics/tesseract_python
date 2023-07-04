@@ -37,15 +37,16 @@
 // tesseract_motion_planners_ompl
 #include <tesseract_motion_planners/ompl/ompl_planner_configurator.h>
 #include <tesseract_motion_planners/ompl/ompl_problem.h>
-#include <tesseract_motion_planners/ompl/ompl_motion_planner_status_category.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_profile.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_default_plan_profile.h>
 #include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
 #include <tesseract_motion_planners/ompl/serialize.h>
 #include <tesseract_motion_planners/ompl/deserialize.h>
 
-#include <tesseract_common/status_code.h>
+
+#include <tesseract_geometry/geometries.h>
 #include <tesseract_common/resource_locator.h>
+#include <tesseract_srdf/kinematics_information.h>
 
 // tesseract_state_solver
 #include <tesseract_state_solver/mutable_state_solver.h>
@@ -103,9 +104,6 @@
 %include "tesseract_motion_planners/ompl/ompl_problem.h"
 %template(OMPLProblems) std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>;
 
-%shared_ptr(tesseract_planning::OMPLMotionPlannerStatusCategory)
-%include "tesseract_motion_planners/ompl/ompl_motion_planner_status_category.h"
-
 %shared_ptr(tesseract_planning::OMPLPlanProfile)
 %include "tesseract_motion_planners/ompl/profile/ompl_profile.h"
 %template(OMPLPlanProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::OMPLPlanProfile>>;
@@ -118,6 +116,7 @@
 %tesseract_std_function_base(OMPLProblemGeneratorFn,tesseract_planning,std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::OMPLPlanProfileMap&,c);
 %tesseract_std_function(OMPLProblemGeneratorFn,tesseract_planning,std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::OMPLPlanProfileMap&,c);
 
+%pythondynamic tesseract_planning::OMPLMotionPlanner;
 %shared_ptr(tesseract_planning::OMPLMotionPlanner)
 %include "tesseract_motion_planners/ompl/ompl_motion_planner.h"
 %include "tesseract_motion_planners/ompl/serialize.h"

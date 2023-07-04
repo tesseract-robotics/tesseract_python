@@ -47,9 +47,12 @@
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h>
 #include <tesseract_motion_planners/trajopt/serialize.h>
 #include <tesseract_motion_planners/trajopt/deserialize.h>
+#include <tesseract_motion_planners/trajopt/trajopt_collision_config.h>
 
-#include <tesseract_common/status_code.h>
+
+#include <tesseract_geometry/geometries.h>
 #include <tesseract_common/resource_locator.h>
+#include <tesseract_srdf/kinematics_information.h>
 
 // tesseract_state_solver
 #include <tesseract_state_solver/mutable_state_solver.h>
@@ -99,8 +102,10 @@
 
 %include "tesseract_motion_planners/trajopt/trajopt_utils.h"
 
+%include "tesseract_motion_planners/trajopt/trajopt_collision_config.h"
+
+%pythondynamic tesseract_planning::TrajOptMotionPlanner;
 %shared_ptr(tesseract_planning::TrajOptMotionPlanner)
-%shared_ptr(tesseract_planning::TrajOptMotionPlannerStatusCategory)
 %include "tesseract_motion_planners/trajopt/trajopt_motion_planner.h"
 %include "tesseract_motion_planners/trajopt/serialize.h"
 %include "tesseract_motion_planners/trajopt/deserialize.h"

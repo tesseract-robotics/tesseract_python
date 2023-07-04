@@ -39,10 +39,12 @@
 #include <tesseract_motion_planners/robot_config.h>
 #include <tesseract_motion_planners/interface_utils.h>
 #include <tesseract_motion_planners/core/utils.h>
-#include <tesseract_motion_planners/default_planner_namespaces.h>
+#include <tesseract_motion_planners/core/types.h>
+#include <tesseract_motion_planners/core/interpolation.h>
 
-#include <tesseract_common/status_code.h>
+#include <tesseract_geometry/geometries.h>
 #include <tesseract_common/resource_locator.h>
+#include <tesseract_srdf/kinematics_information.h>
 
 // tesseract_state_solver
 #include <tesseract_state_solver/mutable_state_solver.h>
@@ -54,9 +56,11 @@
 
 %}
 
+%unique_ptr_value_wrapper(tesseract_kinematics::KinematicGroup);
+%unique_ptr_value_wrapper(tesseract_kinematics::JointGroup);
+
 // tesseract_motion_planners
 #define TESSERACT_MOTION_PLANNERS_CORE_PUBLIC
-%include "tesseract_motion_planners/default_planner_namespaces.h"
 
 %wrap_unique_ptr(PlannerProfileRemappingUPtr,tesseract_planning::PlannerProfileRemapping)
 %include "tesseract_motion_planners/core/types.h"
@@ -64,10 +68,15 @@
 %shared_ptr(tesseract_planning::MotionPlanner)
 %include "tesseract_motion_planners/core/planner.h"
 
+%include "tesseract_motion_planners/core/utils.h"
+
+%ignore tesseract_planning::JointGroupInstructionInfo::getWorkingFrame;
+%include "tesseract_motion_planners/core/interpolation.h"
+
 %include "tesseract_motion_planners/robot_config.h"
 %template(getRobotConfig) tesseract_planning::getRobotConfig<double>;
 %template(getJointTurns) tesseract_planning::getJointTurns<double>;
 
 %include "tesseract_motion_planners/interface_utils.h"
-%include "tesseract_motion_planners/core/utils.h"
+
 

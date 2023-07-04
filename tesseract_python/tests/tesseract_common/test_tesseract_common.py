@@ -3,13 +3,6 @@ from inspect import currentframe, getframeinfo
 
 import numpy.testing as nptest
 
-def test_status_code():
-    # Test that status codes can be created
-
-    status_code = tesseract_common.StatusCode(100, tesseract_common.GeneralStatusCategory())
-
-    print(status_code)
-
 def test_bytes_resource():
 
     my_bytes = bytearray([10,57,92,56,92,46,92,127])

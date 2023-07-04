@@ -40,15 +40,16 @@
 %{
 // tesseract_motion_planner_descartes
 #include <tesseract_motion_planners/descartes/descartes_problem.h>
-#include <tesseract_motion_planners/descartes/descartes_motion_planner_status_category.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_profile.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_default_plan_profile.h>
 #include <tesseract_motion_planners/descartes/descartes_motion_planner.h>
 #include <tesseract_motion_planners/descartes/serialize.h>
 #include <tesseract_motion_planners/descartes/deserialize.h>
 
-#include <tesseract_common/status_code.h>
+
+#include <tesseract_geometry/geometries.h>
 #include <tesseract_common/resource_locator.h>
+#include <tesseract_srdf/kinematics_information.h>
 
 // tesseract_state_solver
 #include <tesseract_state_solver/mutable_state_solver.h>
@@ -73,9 +74,6 @@
 %include "tesseract_motion_planners/descartes/descartes_problem.h"
 %template(DescartesProblemD) tesseract_planning::DescartesProblem<double>;
 
-%shared_ptr(tesseract_planning::DescartesMotionPlannerStatusCategory)
-%include "tesseract_motion_planners/descartes/descartes_motion_planner_status_category.h"
-
 %shared_ptr(tesseract_planning::DescartesPlanProfile<double>)
 %include "tesseract_motion_planners/descartes/profile/descartes_profile.h"
 %template(DescartesPlanProfileD) std::shared_ptr<tesseract_planning::DescartesPlanProfile<double> >;
@@ -89,6 +87,8 @@ namespace tesseract_planning {using DescartesPlanProfileMapD = std::unordered_ma
 %include "tesseract_motion_planners/descartes/profile/descartes_default_plan_profile.h"
 %template(DescartesDefaultPlanProfileD) tesseract_planning::DescartesDefaultPlanProfile<double>;
 
+%pythondynamic tesseract_planning::DescartesMotionPlannerD;
+%pythondynamic tesseract_planning::DescartesMotionPlanner<double>;
 %shared_ptr(tesseract_planning::DescartesMotionPlannerD);
 %shared_ptr(tesseract_planning::DescartesMotionPlanner<double>);
 %include "tesseract_motion_planners/descartes/descartes_motion_planner.h"

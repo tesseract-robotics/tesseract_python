@@ -8,17 +8,20 @@ from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedRe
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
-from tesseract_robotics.tesseract_command_language import  JointWaypoint, CartesianWaypoint, Waypoint, \
-    MoveInstructionType_FREESPACE, MoveInstructionType_START, MoveInstruction, Instruction, \
-    isMoveInstruction, isStateWaypoint, CompositeInstruction, flatten, isMoveInstruction, isStateWaypoint, \
-    ProfileDictionary
-from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateSeed, \
-    TRAJOPT_DEFAULT_NAMESPACE
+from tesseract_robotics.tesseract_command_language import  JointWaypoint, CartesianWaypoint, WaypointPoly, \
+    MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, \
+    CompositeInstruction, ProfileDictionary, CartesianWaypointPoly, JointWaypointPoly, MoveInstructionPoly, \
+    InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
+    JointWaypointPoly_wrap_JointWaypoint, CartesianWaypointPoly_wrap_CartesianWaypoint, \
+    MoveInstructionPoly_wrap_MoveInstruction
+from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
 from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
-    TrajOptProblemGeneratorFn, TrajOptMotionPlanner, TrajOptMotionPlannerStatusCategory, \
-    ProfileDictionary_addProfile_TrajOptPlanProfile, ProfileDictionary_addProfile_TrajOptCompositeProfile
+    TrajOptProblemGeneratorFn, TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
+    ProfileDictionary_addProfile_TrajOptCompositeProfile
 
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
+
+TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
 def get_environment():
     locator = TesseractSupportResourceLocator()
@@ -46,15 +49,15 @@ def test_trajopt_freespace_joint_cart():
     wp1 = JointWaypoint(joint_names, np.array([0,0,0,-1.57,0,0,0],dtype=np.float64))
     wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(-.2,.4,0.2) * Quaterniond(0,0,1.0,0))
 
-    start_instruction = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "TEST_PROFILE")
-    plan_f1 = MoveInstruction(Waypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE")
+    start_instruction = MoveInstruction(JointWaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE")
+    plan_f1 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE")
 
     program = CompositeInstruction("TEST_PROFILE")
-    program.setStartInstruction(Instruction(start_instruction))
     program.setManipulatorInfo(manip)
-    program.append(Instruction(plan_f1))
+    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
+    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
-    seed = generateSeed(program, cur_state, env, 3.14, 1.0, 3.14, 10)
+    interpolated_program = generateInterpolatedProgram(program, cur_state, env, 3.14, 1.0, 3.14, 10)
 
     plan_profile = TrajOptDefaultPlanProfile()
     composite_profile = TrajOptDefaultCompositeProfile()
@@ -64,30 +67,27 @@ def test_trajopt_freespace_joint_cart():
     ProfileDictionary_addProfile_TrajOptCompositeProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", composite_profile)
 
 
-    test_planner = TrajOptMotionPlanner()
+    test_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
     
 
     request = PlannerRequest()
-    request.seed = seed
-    request.instructions = program
+    request.instructions = interpolated_program
     request.env = env
     request.env_state = cur_state
     request.profiles = profiles
     
-    response = PlannerResponse()
+    response = test_planner.solve(request)
+    assert response.successful
 
-    assert test_planner.solve(request, response)
-    assert response.status.value() == TrajOptMotionPlannerStatusCategory.SolutionFound
-
-    results = flatten(response.results)
+    results = response.results.flatten()
 
     assert len(results) == 11
     for instr in results:
-        assert isMoveInstruction(instr)
-        move_instr1 = instr.as_MoveInstruction()
+        instr.isMoveInstruction()
+        move_instr1 = InstructionPoly_as_MoveInstructionPoly(instr)
         wp1 = move_instr1.getWaypoint()
-        assert isStateWaypoint(wp1)
-        wp = wp1.as_StateWaypoint()
-        assert len(wp.joint_names) == 7
-        assert isinstance(wp.position,np.ndarray)
-        assert len(wp.position) == 7
+        wp1.isStateWaypoint()
+        wp = WaypointPoly_as_StateWaypointPoly(wp1)
+        assert len(wp.getNames()) == 7
+        assert isinstance(wp.getPosition(),np.ndarray)
+        assert len(wp.getPosition()) == 7

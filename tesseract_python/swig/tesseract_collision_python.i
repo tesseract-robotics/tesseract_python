@@ -42,7 +42,6 @@ namespace tesseract_collision
 %import "tesseract_geometry_python.i"
 
 %{
-#include <tesseract_common/status_code.h>
 // tesseract_collision
 #include <tesseract_collision/core/types.h>
 #include <tesseract_collision/core/discrete_contact_manager.h>
@@ -55,6 +54,10 @@ namespace tesseract_collision
 #include <tesseract_collision/bullet/bullet_discrete_bvh_manager.h>
 #include <tesseract_collision/bullet/bullet_discrete_simple_manager.h>
 #include <tesseract_collision/fcl/fcl_discrete_managers.h>
+
+// tesseract_common
+#include <tesseract_common/resource_locator.h>
+#include <tesseract_geometry/geometries.h>
 
 #include "tesseract_collisions_python_std_functions.h"
 %}
@@ -78,15 +81,16 @@ namespace tesseract_collision
 %wrap_unique_ptr(DiscreteContactManagerUPtr,tesseract_collision::DiscreteContactManager)
 %shared_ptr(tesseract_collision::tesseract_collision_fcl::FCLDiscreteBVHManager)
 %tesseract_aligned_vector(ContactResultVector, tesseract_collision::ContactResult);
-%tesseract_aligned_map_of_aligned_vector(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
+// %tesseract_aligned_map_of_aligned_vector(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
 
 namespace tesseract_collision { 
 class ContactResult;
 %tesseract_aligned_vector_using(ContactResultVector, tesseract_collision::ContactResult);
-%tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
+// %tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
 }
 %ignore ContactResultVector;
-%ignore ContactResultMap;
+%ignore trajectoryCollisionResultsTable;
+// %ignore ContactResultMap;
 // tesseract_collision
 #define TESSERACT_COLLISION_CORE_PUBLIC
 %include "tesseract_collision/core/types.h"

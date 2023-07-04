@@ -44,7 +44,7 @@ if(SETUPTOOLS_DEB_LAYOUT)
 endif()
 
 install(CODE "message(STATUS \"Running setup.py in ${CMAKE_CURRENT_SOURCE_DIR}\")
-execute_process(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/python/setup.py install -f
+execute_process(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/setup.py install -f
 --root=/ --prefix=${CMAKE_INSTALL_PREFIX} ${SETUPTOOLS_ARG_EXTRA} --single-version-externally-managed WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})")
 
   # Allows Colcon to find non-Ament packages when using workspace underlays
@@ -62,7 +62,6 @@ else()
 endif()
 
 else()
-install(CODE "message(STATUS \"Running setup.py in ${CMAKE_CURRENT_SOURCE_DIR}\")
-execute_process(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/python/setup.py bdist_wheel WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})")
+add_custom_target(tesseract_viewer_python_wheel ALL ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/setup.py bdist_wheel WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 endif()

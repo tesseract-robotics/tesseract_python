@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - dev
   pull_request:
   release:
     types:
@@ -75,7 +76,13 @@ jobs:
         liburdfdom-dev liboctomap-dev liborocos-kdl-dev libpcl-dev
         libflann-dev libjsoncpp-dev libyaml-cpp-dev git cmake ninja-build
         build-essential autoconf automake libtool bison libpcre2-dev libpcre3-dev
-        lcov libbullet-dev libbullet-extras-dev python3-venv -y -qq
+        lcov libbullet-dev libbullet-extras-dev python3-venv curl -y -qq
+    - name: build-swig
+      uses: johnwason/swig-build-action@v1
+      with:
+        cache-key: ${{ matrix.config.os }}-${{ matrix.config.python_version }}
+        version: "4.1.1"
+
     - uses: actions/setup-python@v4
       id: setup-python
       with:
@@ -84,6 +91,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool patchelf
+        python -m pip install -r ws/src/tesseract_python/docs/requirements.txt
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_python/dependencies_with_ext.rosinstall
@@ -100,6 +108,7 @@ jobs:
         -DTESSERACT_PYTHON_BUILD_WHEEL=ON
         -DTESSERACT_PYTHON_WHEEL_PLATFORM=${{ matrix.config.py_platform }}
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON
+        -DTESSERACT_PYTHON_BUILD_DOCUMENTATION=ON
     - name: test
       shell: bash
       run: |
@@ -107,15 +116,26 @@ jobs:
         source venv/bin/activate
         python -m pip install --upgrade pip
         python -m pip install ws/build/tesseract_python/python/wheelhouse/*
-        python -m pip install pytest
+        python -m pip install pytest        
         export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
+        export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
         cd ws/src/tesseract_python/tesseract_python
         pytest -s
+    - name: build docs
+      shell: bash
+      working-directory: ws/build/tesseract_python
+      run: |
+        cmake --build . --config Release --target tesseract_python_doc
     - name: archive wheels
       uses: actions/upload-artifact@v2
       with:
         name: 'python-wheels-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
         path: ws/build/tesseract_python/python/*
+    - name: archive docs
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'python-docs-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
+        path: ws/build/tesseract_python/docs/*
   build-win:
     runs-on: windows-2019
     strategy:
@@ -152,7 +172,7 @@ jobs:
         python-version: '${{ matrix.config.python_version }}'
         architecture: ${{ matrix.config.arch }}
     - name: vcpkg build
-      uses: johnwason/vcpkg-action@v4
+      uses: johnwason/vcpkg-action@v5
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
@@ -160,6 +180,7 @@ jobs:
         extra-args: --clean-after-build
         token: ${{ github.token }}
         cache-key: win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}
+        revision: master
     - name: pip3
       run: |
         python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
@@ -208,6 +229,7 @@ jobs:
         python -m pip install pytest
         if %errorlevel% neq 0 exit /b %errorlevel%
         set TESSERACT_SUPPORT_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract\tesseract_support
+        set TESSERACT_TASK_COMPOSER_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract_planning\tesseract_task_composer
         if %errorlevel% neq 0 exit /b %errorlevel%
         cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python
         if %errorlevel% neq 0 exit /b %errorlevel%

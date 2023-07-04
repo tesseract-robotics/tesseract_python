@@ -24,12 +24,12 @@
  * limitations under the License.
  */
 
-#include <tesseract_command_language/utils/filter_functions.h>
+#include <tesseract_command_language/utils.h>
 
 class flattenFilterFnBase
 {
 public:
-  virtual bool call(const tesseract_planning::Instruction&,
+  virtual bool call(const tesseract_planning::InstructionPoly&,
                     const tesseract_planning::CompositeInstruction&,
                     bool parent_is_first_composite) = 0;
   virtual ~flattenFilterFnBase() {}
@@ -38,7 +38,7 @@ public:
 class locateFilterFnBase
 {
 public:
-  virtual bool call(const tesseract_planning::Instruction&,
+  virtual bool call(const tesseract_planning::InstructionPoly&,
                     const tesseract_planning::CompositeInstruction&,
                     bool parent_is_first_composite) = 0;
   virtual ~locateFilterFnBase() {}

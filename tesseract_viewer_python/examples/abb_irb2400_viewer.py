@@ -1,12 +1,21 @@
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
-    ManipulatorInfo
+    ManipulatorInfo, GeneralResourceLocator
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
-from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Waypoint, \
-    MoveInstructionType_FREESPACE, MoveInstructionType_START, MoveInstruction, Instruction, \
-    CompositeInstruction, flatten
-from tesseract_robotics.tesseract_process_managers import ProcessPlanningServer, ProcessPlanningRequest, \
-    FREESPACE_PLANNER_NAME
+from tesseract_robotics.tesseract_command_language import CartesianWaypoint, WaypointPoly, \
+    MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, \
+    CompositeInstruction, MoveInstructionPoly, CartesianWaypointPoly, ProfileDictionary, \
+    CartesianWaypointPoly_wrap_CartesianWaypoint, MoveInstructionPoly_wrap_MoveInstruction
+
+from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
+from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
+    OMPLProblemGeneratorFn, OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
+from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
+    InstructionsTrajectory
+from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
+    TrajOptProblemGeneratorFn, TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
+    ProfileDictionary_addProfile_TrajOptCompositeProfile
+
 import os
 import re
 import traceback
@@ -15,40 +24,21 @@ import numpy as np
 import time
 import sys
 
+OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
+TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
+
 TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
 
-class TesseractSupportResourceLocator(ResourceLocator):
-    def __init__(self):
-        super().__init__()
-    
-    def locateResource(self, url):
-        try:
-            try:
-                if os.path.exists(url):
-                    return SimpleLocatedResource(url, url, self)
-            except:
-                pass
-            url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-            if (url_match is None):
-                print("url_match failed")
-                return None
-            if not "TESSERACT_SUPPORT_DIR" in os.environ:
-                return None
-            tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-            filename = os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
-            ret = SimpleLocatedResource(url, filename, self)
-            return ret
-        except:
-            traceback.print_exc()
-
-abb_irb2400_urdf_fname = FilesystemPath(os.path.join(TESSERACT_SUPPORT_DIR,"urdf","abb_irb2400.urdf"))
-abb_irb2400_srdf_fname = FilesystemPath(os.path.join(TESSERACT_SUPPORT_DIR,"urdf","abb_irb2400.srdf"))
+locator = GeneralResourceLocator()
+abb_irb2400_urdf_package_url = "package://tesseract_support/urdf/abb_irb2400.urdf"
+abb_irb2400_srdf_package_url = "package://tesseract_support/urdf/abb_irb2400.srdf"
+abb_irb2400_urdf_fname = FilesystemPath(locator.locateResource(abb_irb2400_urdf_package_url).getFilePath())
+abb_irb2400_srdf_fname = FilesystemPath(locator.locateResource(abb_irb2400_srdf_package_url).getFilePath())
 
 t_env = Environment()
 
 # locator_fn must be kept alive by maintaining a reference
-locator = TesseractSupportResourceLocator()
-t_env.init(abb_irb2400_urdf_fname, abb_irb2400_srdf_fname, locator)
+assert t_env.init(abb_irb2400_urdf_fname, abb_irb2400_srdf_fname, locator)
 
 manip_info = ManipulatorInfo()
 manip_info.tcp_frame = "tool0"
@@ -68,30 +58,70 @@ t_env.setState(joint_names, np.ones(6)*0.1)
 
 wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,-0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
 wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
-wp3 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1) * Quaterniond(0.70710678,0,0.70710678,0))
+wp3 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.5,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
 
-start_instruction = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "DEFAULT")
-plan_f1 = MoveInstruction(Waypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
+start_instruction = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp1), MoveInstructionType_FREESPACE, "DEFAULT")
+plan_f1 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
+plan_f2 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp3), MoveInstructionType_FREESPACE, "DEFAULT")
 
 program = CompositeInstruction("DEFAULT")
-program.setStartInstruction(Instruction(start_instruction))
 program.setManipulatorInfo(manip_info)
-program.append(Instruction(plan_f1))
+program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
+program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
+# program.appendMoveInstruction(MoveInstructionPoly(plan_f2))
 
-planning_server = ProcessPlanningServer(t_env, 1)
-planning_server.loadDefaultProcessPlanners()
-request = ProcessPlanningRequest()
-request.name = FREESPACE_PLANNER_NAME
-request.instructions = Instruction(program)
+plan_profile = OMPLDefaultPlanProfile()
+plan_profile.planners.clear()
+plan_profile.planners.append(RRTConnectConfigurator())
 
-response = planning_server.run(request)
-planning_server.waitForAll()
+profiles = ProfileDictionary()
+ProfileDictionary_addProfile_OMPLPlanProfile(profiles,OMPL_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
 
-assert response.interface.isSuccessful()
+cur_state = t_env.getState()
 
-results = flatten(response.problem.getResults().as_CompositeInstruction())
+request = PlannerRequest()
+request.instructions = program
+request.env = t_env
+request.env_state = cur_state
+request.profiles = profiles
 
-viewer.update_trajectory(results)
+ompl_planner = OMPLMotionPlanner(OMPL_DEFAULT_NAMESPACE) 
+
+response=ompl_planner.solve(request)
+assert response.successful
+results_instruction = response.results
+
+interpolated_results_instruction = generateInterpolatedProgram(results_instruction, cur_state, t_env, 3.14, 1.0, 3.14, 10)
+
+trajopt_plan_profile = TrajOptDefaultPlanProfile()
+trajopt_composite_profile = TrajOptDefaultCompositeProfile()
+
+trajopt_profiles = ProfileDictionary()
+ProfileDictionary_addProfile_TrajOptPlanProfile(trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_plan_profile)
+ProfileDictionary_addProfile_TrajOptCompositeProfile(trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_composite_profile)
+
+trajopt_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
+
+trajopt_request = PlannerRequest()
+request.instructions = interpolated_results_instruction
+request.env = t_env
+request.env_state = cur_state
+request.profiles = trajopt_profiles
+
+trajopt_response = trajopt_planner.solve(request)
+assert trajopt_response.successful
+    
+trajopt_results_instruction = trajopt_response.results
+
+time_parameterization = TimeOptimalTrajectoryGeneration()
+instructions_trajectory = InstructionsTrajectory(trajopt_results_instruction)
+max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
+max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
+assert time_parameterization.computeTimeStamps(instructions_trajectory, max_velocity, max_acceleration)
+
+trajopt_results = trajopt_results_instruction.flatten()
+viewer.update_trajectory(trajopt_results)
+viewer.plot_trajectory(trajopt_results, manip_info, axes_length=0.05)
 
 if sys.version_info[0] < 3:
     input("press enter")

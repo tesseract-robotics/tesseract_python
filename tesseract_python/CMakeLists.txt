@@ -40,7 +40,7 @@ endif()
 # find_package(TinyXML2 REQUIRED)
 # find_package(opw_kinematics REQUIRED)
 
-find_package(tesseract_process_managers REQUIRED)
+find_package(tesseract_task_composer REQUIRED)
 
 if(NOT TinyXML2_INCLUDE_DIRS AND TARGET tinyxml2::tinyxml2)
 get_target_property(TinyXML2_INCLUDE_DIRS tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
@@ -63,7 +63,7 @@ include_directories(
   ${tesseract_command_language_INCLUDE_DIRS}
   ${tesseract_time_parameterization_INCLUDE_DIRS}
   ${tesseract_visualization_INCLUDE_DIRS}
-  ${tesseract_process_managers_INCLUDE_DIRS}
+  ${tesseract_task_composer_INCLUDE_DIRS}
   ${opw_kinematics_INCLUDE_DIRS}
   ${TinyXML2_INCLUDE_DIRS}
 )
@@ -115,7 +115,7 @@ cmake_policy(SET CMP0086 OLD)
 endif()
 
 include(FindSWIG)
-find_package(SWIG 4.0 REQUIRED)
+find_package(SWIG 4.1.1 REQUIRED)
 include(UseSWIG)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tesseract_python_module.cmake)
@@ -136,8 +136,29 @@ tesseract_python_module(tesseract_motion_planners_simple_python SWIG_SRCS swig/t
 tesseract_python_module(tesseract_motion_planners_trajopt_python SWIG_SRCS swig/tesseract_motion_planners_trajopt_python.i PACKAGE tesseract_motion_planners_trajopt LIBS tesseract::tesseract_motion_planners_trajopt )
 tesseract_python_module(tesseract_motion_planners_ompl_python SWIG_SRCS swig/tesseract_motion_planners_ompl_python.i PACKAGE tesseract_motion_planners_ompl LIBS tesseract::tesseract_motion_planners_ompl )
 tesseract_python_module(tesseract_motion_planners_descartes_python SWIG_SRCS swig/tesseract_motion_planners_descartes_python.i PACKAGE tesseract_motion_planners_descartes LIBS tesseract::tesseract_motion_planners_descartes )
-tesseract_python_module(tesseract_time_parameterization_python SWIG_SRCS swig/tesseract_time_parameterization_python.i PACKAGE tesseract_time_parameterization LIBS tesseract::tesseract_time_parameterization )
-tesseract_python_module(tesseract_process_managers_python SWIG_SRCS swig/tesseract_process_managers_python.i PACKAGE tesseract_process_managers LIBS tesseract::tesseract_process_managers )
+tesseract_python_module(tesseract_time_parameterization_python SWIG_SRCS swig/tesseract_time_parameterization_python.i PACKAGE tesseract_time_parameterization LIBS tesseract::tesseract_time_parameterization_core tesseract::tesseract_time_parameterization_isp tesseract::tesseract_time_parameterization_totg tesseract::tesseract_time_parameterization_ruckig)
+tesseract_python_module(tesseract_task_composer_python SWIG_SRCS swig/tesseract_task_composer_python.i PACKAGE tesseract_task_composer LIBS tesseract::tesseract_task_composer tesseract::tesseract_task_composer_nodes tesseract::tesseract_task_composer_taskflow tesseract::tesseract_task_composer_factories tesseract::tesseract_task_composer_planning_factories tesseract::tesseract_task_composer_planning tesseract::tesseract_task_composer_taskflow_factories )
+
+set(TESSERACT_PYTHON_MODULE_TARGETS 
+  _tesseract_common_python
+  _tesseract_geometry_python
+  _tesseract_collision_python
+  _tesseract_scene_graph_python
+  _tesseract_srdf_python
+  _tesseract_urdf_python
+  _tesseract_state_solver_python
+  _tesseract_kinematics_python
+  _tesseract_environment_python
+  _tesseract_visualization_python
+  _tesseract_command_language_python
+  _tesseract_motion_planners_python
+  _tesseract_motion_planners_simple_python
+  _tesseract_motion_planners_trajopt_python
+  _tesseract_motion_planners_ompl_python
+  _tesseract_motion_planners_descartes_python
+  _tesseract_time_parameterization_python
+  _tesseract_task_composer_python
+)
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/__package_init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_robotics/__init__.py @ONLY)
@@ -189,14 +210,7 @@ if(TESSERACT_ENABLE_TESTING)
   add_run_tests_target(ENABLE ${TESSERACT_ENABLE_RUN_TESTING})
 
   if (${TESSERACT_ENABLE_RUN_TESTING})
-  add_dependencies(run_tests _tesseract_common_python _tesseract_geometry_python _tesseract_collision_python 
-    _tesseract_collision_bullet_python _tesseract_collision_fcl_python _tesseract_scene_graph_python
-    _tesseract_urdf_python _tesseract_kinematics_python _tesseract_kinematics_kdl_python
-    _tesseract_kinematics_opw_python _tesseract_environment_python _tesseract_command_language_python
-    _tesseract_motion_planners_python _tesseract_motion_planners_simple_python
-    _tesseract_motion_planners_trajopt_python _tesseract_motion_planners_ompl_python
-    _tesseract_motion_planners_descartes_python _tesseract_time_parameterization_python
-    _tesseract_visualization_python _tesseract_srdf_python)
+  add_dependencies(run_tests ${TESSERACT_PYTHON_MODULE_TARGETS})
     endif()
 
   add_test (NAME python-tests
@@ -218,5 +232,33 @@ else()
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/install_build_wheel.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/install_build_wheel.cmake @ONLY)
 
-install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/install_build_wheel.cmake)
+# install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/install_build_wheel.cmake)
+add_custom_target(tesseract_python_wheel ALL ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/install_build_wheel.cmake 
+  DEPENDS ${TESSERACT_PYTHON_MODULE_TARGETS} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+endif()
+
+if(TESSERACT_PYTHON_BUILD_DOCUMENTATION)
+  find_program(SPHINX_EXECUTABLE NAMES sphinx-build)
+    # Get absolute path of ${CMAKE_CURRENT_SOURCE_DIR}/../tesseract_viewer_python
+    get_filename_component(ABS_TESSERACT_VIEWER_PYTHON ${CMAKE_SOURCE_DIR}/../tesseract_viewer_python ABSOLUTE)
+    if(WIN32)
+      set(docs_pythonpath "${CMAKE_BINARY_DIR}/python\;${ABS_TESSERACT_VIEWER_PYTHON}")
+    else()
+      set(docs_pythonpath "${CMAKE_BINARY_DIR}/python:${ABS_TESSERACT_VIEWER_PYTHON}")
+    endif()
+
+    if(NOT SPHINX_EXECUTABLE)
+        message(FATAL_ERROR "Sphinx is required to build Python documentation")
+    endif()
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs_build)
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/docs)
+    add_custom_target(tesseract_python_doc
+        COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${docs_pythonpath}
+        ${SPHINX_EXECUTABLE} -E -a -b html
+        ${CMAKE_SOURCE_DIR}/../docs
+        ${CMAKE_BINARY_DIR}/docs
+        COMMENT "Generating Python API documentation with Sphinx"
+        DEPENDS ${TESSERACT_PYTHON_MODULE_TARGETS}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs_build
+    )
 endif()

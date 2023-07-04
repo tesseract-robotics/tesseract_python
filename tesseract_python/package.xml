@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>tesseract_python</name>
-  <version>0.1.8</version>
+  <version>0.2.0</version>
   <description>The tesseract_python package</description>
   <maintainer email="wason@wasontech.com">John Wason</maintainer>
   <license>Apache 2.0</license>
@@ -25,7 +25,7 @@
   <depend>tesseract_environment</depend>
   <depend>tesseract_command_language</depend>
   <depend>tesseract_time_parameterization</depend>
-  <depend>tesseract_process_managers</depend>
+  <depend>tesseract_task_composer</depend>
   <depend>libjsoncpp-dev</depend>
 
   <depend condition="$ROS_PYTHON_VERSION == 2">python</depend>

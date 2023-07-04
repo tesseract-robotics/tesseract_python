@@ -8,17 +8,19 @@ from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedRe
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
-from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, Waypoint, \
-    MoveInstructionType_FREESPACE, MoveInstructionType_START, MoveInstruction, Instruction, \
-    isMoveInstruction, isStateWaypoint, CompositeInstruction, flatten, isMoveInstruction, isStateWaypoint, \
-    ProfileDictionary
-from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateSeed, \
-    OMPL_DEFAULT_NAMESPACE
+from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, WaypointPoly, \
+    MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, MoveInstructionPoly,\
+    CompositeInstruction,  ProfileDictionary, CartesianWaypointPoly, JointWaypointPoly, \
+    InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
+    JointWaypointPoly_wrap_JointWaypoint, CartesianWaypointPoly_wrap_CartesianWaypoint, \
+    MoveInstructionPoly_wrap_MoveInstruction
+from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
 from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
-    OMPLProblemGeneratorFn, OMPLMotionPlanner, OMPLMotionPlannerStatusCategory, \
-    ProfileDictionary_addProfile_OMPLPlanProfile
+    OMPLProblemGeneratorFn, OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
 
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
+
+OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
 
 def get_environment():
     locator = TesseractSupportResourceLocator()
@@ -50,15 +52,15 @@ def test_ompl_freespace_joint_cart():
     goal = kin_group.calcFwdKin(end_state)[manip.tcp_frame]
     wp2 = CartesianWaypoint(goal)
 
-    start_instruction = MoveInstruction(Waypoint(wp1), MoveInstructionType_START, "TEST_PROFILE")
-    plan_f1 = MoveInstruction(Waypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE")
+    start_instruction = MoveInstruction(JointWaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE")
+    plan_f1 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE")
 
     program = CompositeInstruction("TEST_PROFILE")
-    program.setStartInstruction(Instruction(start_instruction))
     program.setManipulatorInfo(manip)
-    program.append(Instruction(plan_f1))
+    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
+    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
-    seed = generateSeed(program, cur_state, env, 3.14, 1.0, 3.14, 10)
+    interpolated_program = generateInterpolatedProgram(program, cur_state, env, 3.14, 1.0, 3.14, 10)
 
     plan_profile = OMPLDefaultPlanProfile()
     plan_profile.planners.clear()
@@ -68,29 +70,28 @@ def test_ompl_freespace_joint_cart():
     ProfileDictionary_addProfile_OMPLPlanProfile(profiles,OMPL_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
     
     request = PlannerRequest()
-    request.instructions = program
-    request.seed = seed    
+    request.instructions = interpolated_program
     request.env = env
     request.env_state = cur_state
     request.profiles = profiles
     
 
-    ompl_planner = OMPLMotionPlanner()    
+    ompl_planner = OMPLMotionPlanner(OMPL_DEFAULT_NAMESPACE) 
     response = PlannerResponse()
 
-    assert ompl_planner.solve(request, response)
-    assert response.status.value() == OMPLMotionPlannerStatusCategory.SolutionFound
-
-    results = flatten(response.results)
+    response=ompl_planner.solve(request)
+    assert response.successful
+    
+    results = response.results.flatten()
 
     assert len(results) == 11
     for instr in results:
-        assert isMoveInstruction(instr)
-        move_instr1 = instr.as_MoveInstruction()
+        instr.isMoveInstruction()
+        move_instr1 = InstructionPoly_as_MoveInstructionPoly(instr)
         wp1 = move_instr1.getWaypoint()
-        assert isStateWaypoint(wp1)
-        wp = wp1.as_StateWaypoint()
-        assert len(wp.joint_names) == 7
-        assert isinstance(wp.position,np.ndarray)
-        assert len(wp.position) == 7
+        wp1.isStateWaypoint()
+        wp = WaypointPoly_as_StateWaypointPoly(wp1)
+        assert len(wp.getNames()) == 7
+        assert isinstance(wp.getPosition(),np.ndarray)
+        assert len(wp.getPosition()) == 7
 
