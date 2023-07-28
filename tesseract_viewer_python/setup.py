@@ -18,6 +18,6 @@ setup(name='tesseract-robotics-viewer',
       packages=['tesseract_robotics_viewer','tesseract_robotics_viewer.resources'],
       package_data={'tesseract_robotics_viewer.resources':['static/index.html','static/app.js','geometries.json']},
 	  license='Apache-2.0',
-	  install_requires=['numpy','tesseract_robotics>=0.2.0','opencv-contrib-python'],
+	  install_requires=['numpy','tesseract_robotics>=0.2.0','opencv-contrib-python','aiohttp','importlib-resources'],
 	  long_description='Tesseract Robotics viewer package for Python'
      )
