@@ -72,11 +72,14 @@ class TesseractViewer {
         document.body.appendChild( renderer.domElement );
 
         const controls = new OrbitControls( camera, renderer.domElement );
-
+        
         // Only add VR button if it is supported
-        if (await navigator.xr.isSessionSupported( 'immersive-vr' ))
+        if ( 'xr' in navigator )
         {
-            document.body.appendChild( VRButton.createButton( renderer ) );
+            if (await navigator.xr.isSessionSupported( 'immersive-vr' ))
+            {
+                document.body.appendChild( VRButton.createButton( renderer ) );
+            }
         }
 
         renderer.setAnimationLoop( this.render.bind(this) );
