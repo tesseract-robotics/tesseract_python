@@ -1,6 +1,8 @@
 import time
 import os, sys
 
+# TODO
+# Seems to me that a `Vector3d` class isn't available from tesseract?
 from compas.geometry import Vector
 
 # this example is transliterated from C++, you'll find the original here:
