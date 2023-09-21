@@ -1,15 +1,17 @@
 import os
 
+import numpy as np
 from tesseract_robotics.tesseract_command_language import (
     InstructionPoly_as_MoveInstructionPoly,
-    WaypointPoly_as_StateWaypointPoly,
+    WaypointPoly_as_StateWaypointPoly, AnyPoly_as_CompositeInstruction, toJointTrajectory,
 )
 from tesseract_robotics.tesseract_common import (
     FilesystemPath,
     ManipulatorInfo,
-    GeneralResourceLocator,
+    GeneralResourceLocator, Isometry3d, JointTrajectory, AnyPoly,
 )
 from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_task_composer import TaskComposerDataStorage, TaskComposerNode
 
 TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_RESOURCE_PATH"]
 TESSERACT_TASK_COMPOSER_DIR = os.environ["TESSERACT_TASK_COMPOSER_CONFIG_FILE"]
@@ -68,3 +70,23 @@ def print_joints(results):
         assert wp1.isStateWaypoint()
         wp = WaypointPoly_as_StateWaypointPoly(wp1)
         print(f"Joint Positions: {wp.getPosition().flatten()} time: {wp.getTime()}")
+
+
+def _translation(p) -> Isometry3d:
+    H = np.eye(4)
+    H[0:3,3] = p
+    return Isometry3d(H)
+
+
+def as_joint_trajectory(task: TaskComposerNode, tcds: TaskComposerDataStorage) -> JointTrajectory:
+    # Plot Process Trajectory
+    # TODO as composite instruction
+
+    output_key = task.getOutputKeys()[0]
+    _ci: AnyPoly = tcds.getData(output_key)
+
+    ci = AnyPoly_as_CompositeInstruction(_ci)
+
+    trajectory: JointTrajectory = toJointTrajectory(ci)
+    return trajectory
+

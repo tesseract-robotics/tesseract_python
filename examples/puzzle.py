@@ -63,7 +63,7 @@ from tesseract_robotics.tesseract_task_composer import (
     PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr,
 )
 
-from utils import get_environment, tesseract_task_composer_config_file
+from utils import get_environment, tesseract_task_composer_config_file, as_joint_trajectory
 
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
@@ -198,7 +198,7 @@ class Planner:
 
         start = time.time()
         # Run the task and wait for completion
-        future = self.task_executor.run(self.task.get(), self.task_input)
+        future = self.task_executor.plan(self.task.get(), self.task_input)
         future.wait()
         stop = time.time() - start
 
@@ -215,18 +215,6 @@ class Planner:
         else:
             print(results)
             return results
-
-
-def as_joint_trajectory(planner: Planner) -> JointTrajectory:
-    # Plot Process Trajectory
-    # TODO as composite instruction
-    _ci: AnyPoly = planner.input_data.getData(planner.output_key)
-
-    ci = AnyPoly_as_CompositeInstruction(_ci)
-
-    trajectory: JointTrajectory = toJointTrajectory(ci)
-    state_solver = planner.t_env.getStateSolver()
-    return trajectory
 
 
 def make_puzzle_tool_poses() -> list[Isometry3d]:
@@ -257,7 +245,7 @@ def make_puzzle_tool_poses() -> list[Isometry3d]:
 
         norm.unitize()
 
-        temp_x = (Vector(-1, -1, -1) * pos).unitized()
+        temp_x = (pos*-1).unitized()
         y_axis = norm.cross(temp_x).unitized()
         x_axis = y_axis.cross(norm).unitized()
 
@@ -324,7 +312,7 @@ class PuzzlePieceExample:
         pl.create_task()
         results = pl.plan()
 
-        joint_trajectory = as_joint_trajectory(pl)
+        joint_trajectory = as_joint_trajectory(pl.task, pl.task_data)
 
         # print("Final trajectory is collision-free")
         # return input.isSuccessful()
