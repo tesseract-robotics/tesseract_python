@@ -3,15 +3,23 @@ import os
 import numpy as np
 from tesseract_robotics.tesseract_command_language import (
     InstructionPoly_as_MoveInstructionPoly,
-    WaypointPoly_as_StateWaypointPoly, AnyPoly_as_CompositeInstruction, toJointTrajectory,
+    WaypointPoly_as_StateWaypointPoly,
+    AnyPoly_as_CompositeInstruction,
+    toJointTrajectory,
 )
 from tesseract_robotics.tesseract_common import (
     FilesystemPath,
     ManipulatorInfo,
-    GeneralResourceLocator, Isometry3d, JointTrajectory, AnyPoly,
+    GeneralResourceLocator,
+    Isometry3d,
+    JointTrajectory,
+    AnyPoly,
 )
 from tesseract_robotics.tesseract_environment import Environment
-from tesseract_robotics.tesseract_task_composer import TaskComposerDataStorage, TaskComposerNode
+from tesseract_robotics.tesseract_task_composer import (
+    TaskComposerDataStorage,
+    TaskComposerNode,
+)
 
 TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_RESOURCE_PATH"]
 TESSERACT_TASK_COMPOSER_DIR = os.environ["TESSERACT_TASK_COMPOSER_CONFIG_FILE"]
@@ -20,10 +28,9 @@ task_composer_filename = os.environ["TESSERACT_TASK_COMPOSER_CONFIG_FILE"]
 
 
 def tesseract_task_composer_config_file():
-    # OVERRIDE defaults that has no IPOPT trajopt
-    # TODO
     config_path = FilesystemPath(
-        "Y:\\CADCAM\\tesseract_planning\\tesseract_task_composer\\config\\task_composer_plugins.yaml"
+        # "Y:\\CADCAM\\tesseract_planning\\tesseract_task_composer\\config\\task_composer_plugins.yaml"
+        TESSERACT_TASK_COMPOSER_DIR
     )
     return config_path
 
@@ -74,11 +81,13 @@ def print_joints(results):
 
 def _translation(p) -> Isometry3d:
     H = np.eye(4)
-    H[0:3,3] = p
+    H[0:3, 3] = p
     return Isometry3d(H)
 
 
-def as_joint_trajectory(task: TaskComposerNode, tcds: TaskComposerDataStorage) -> JointTrajectory:
+def as_joint_trajectory(
+    task: TaskComposerNode, tcds: TaskComposerDataStorage
+) -> JointTrajectory:
     # Plot Process Trajectory
     # TODO as composite instruction
 
@@ -89,4 +98,3 @@ def as_joint_trajectory(task: TaskComposerNode, tcds: TaskComposerDataStorage) -
 
     trajectory: JointTrajectory = toJointTrajectory(ci)
     return trajectory
-

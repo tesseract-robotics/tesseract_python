@@ -12,9 +12,9 @@ from compas.geometry import Vector
 # https://vimeo.com/293314190 @ 4:27
 
 # TODO
-sys.path.extend(
-    ["Y:\CADCAM\tesseract_python\tesseract_viewer_python\tesseract_robotics_viewer"]
-)
+# sys.path.extend(
+#     ["Y:\CADCAM\tesseract_python\tesseract_viewer_python\tesseract_robotics_viewer"]
+# )
 
 from tesseract_viewer_python.tesseract_robotics_viewer import TesseractViewer
 
@@ -63,7 +63,11 @@ from tesseract_robotics.tesseract_task_composer import (
     PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr,
 )
 
-from utils import get_environment, tesseract_task_composer_config_file, as_joint_trajectory
+from utils import (
+    get_environment,
+    tesseract_task_composer_config_file,
+    as_joint_trajectory,
+)
 
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
@@ -192,29 +196,23 @@ class Planner:
             self.program.appendMoveInstruction(plan_instruction)
 
     def plan(self) -> AnyPoly_as_CompositeInstruction:
-
         # Assign the current state as the seed for cartesian waypoints
         assignCurrentStateAsSeed(self.program, self.t_env)
 
         start = time.time()
         # Run the task and wait for completion
-        future = self.task_executor.plan(self.task.get(), self.task_input)
+        future = self.task_executor.run(self.task.get(), self.task_input)
         future.wait()
         stop = time.time() - start
 
-        print(f"Planning took {stop} seconds.")
+        is_aborted = self.task_input.isAborted()
+        is_successful = self.task_input.isSuccessful()
 
-        # Retrieve the output, converting the AnyPoly back to a CompositeInstruction
-        try:
-            results = AnyPoly_as_CompositeInstruction(
-                self.task_input.data_storage.getData(self.output_key)
-            )
-        except RuntimeError as e:
-            print(e)
-            return None
-        else:
-            print(results)
-            return results
+        print(f"Planning took {stop} seconds.")
+        print(f"was planning aborted? {is_aborted}")
+        print(f"was planning succesful? {is_successful}")
+
+        return is_aborted, is_successful
 
 
 def make_puzzle_tool_poses() -> list[Isometry3d]:
@@ -245,7 +243,7 @@ def make_puzzle_tool_poses() -> list[Isometry3d]:
 
         norm.unitize()
 
-        temp_x = (pos*-1).unitized()
+        temp_x = (pos * -1).unitized()
         y_axis = norm.cross(temp_x).unitized()
         x_axis = y_axis.cross(norm).unitized()
 
@@ -307,18 +305,12 @@ class PuzzlePieceExample:
 
         profile_dict = create_trajopt_profile()
 
-        pl = Planner(mi, env, profile_dict)
-        pl.add_poses(tool_poses)
-        pl.create_task()
-        results = pl.plan()
+        self.planner = Planner(mi, env, profile_dict)
+        self.planner.add_poses(tool_poses)
+        self.planner.create_task()
+        is_aborted, is_successful = self.planner.plan()
 
-        joint_trajectory = as_joint_trajectory(pl.task, pl.task_data)
-
-        # print("Final trajectory is collision-free")
-        # return input.isSuccessful()
-
-        # return results
-        return joint_trajectory
+        return is_aborted, is_successful
 
 
 if __name__ == "__main__":
@@ -338,11 +330,14 @@ if __name__ == "__main__":
     viewer.start_serve_background()
 
     ppe = PuzzlePieceExample(env)
-    results = ppe.run()
+    is_aborted, is_successful = ppe.run()
 
-    # Update the viewer with the results to animate the trajectory
-    # Open web browser to http://localhost:8000 to view the results
-    viewer.update_trajectory(results)
-    viewer.plot_trajectory(results, manip_info)
+    if not is_aborted and is_successful:
+        joint_trajectory = as_joint_trajectory(ppe.planner.task, ppe.planner.task_data)
 
-    input("press to exit the viewer ( http://localhost:8000 )")
+        # Update the viewer with the results to animate the trajectory
+        # Open web browser to http://localhost:8000 to view the results
+        viewer.update_trajectory(joint_trajectory)
+        viewer.plot_trajectory(joint_trajectory, manip_info)
+
+        input("press to exit the viewer ( http://localhost:8000 )")

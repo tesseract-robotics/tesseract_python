@@ -44,11 +44,12 @@ from tesseract_robotics.tesseract_task_composer import (
     TaskComposerInput,
 )
 
-from examples.puzzle import TRAJOPT_DEFAULT_NAMESPACE
+from examples.puzzle_piece_example import TRAJOPT_DEFAULT_NAMESPACE
 from examples.utils import (
     get_environment,
     tesseract_task_composer_config_file,
     as_joint_trajectory,
+    print_joints,
 )
 from tesseract_viewer_python.tesseract_robotics_viewer import TesseractViewer
 
@@ -239,15 +240,8 @@ class GlassUprightExample:
 
         print(f"planning took {stop} seconds")
 
-        try:
-            # output_key = self.task.getOutputKeys()[0]
-            _ci: AnyPoly = self.task_data.getData(self.output_key)
-            ci = AnyPoly_as_CompositeInstruction(_ci)
-        except RuntimeError:
-            print("could not create a composite instruction from results")
-            raise
-        else:
-            trajectory: JointTrajectory = toJointTrajectory(ci)
+        if self.task_input.isSuccessful():
+            self.plot()
 
     # TODO: move to planner
     def _create_viewer(self):
@@ -296,7 +290,6 @@ def run():
 
     gue = GlassUprightExample(env, manip_info, True)
     gue.plan()
-    gue.plot()
 
     input("press enter to exit")
 
