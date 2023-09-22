@@ -6,19 +6,50 @@ import numpy.testing as nptest
 
 from tesseract_robotics.tesseract_common import GeneralResourceLocator
 from tesseract_robotics.tesseract_environment import Environment
-from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
-    ManipulatorInfo, AnyPoly, AnyPoly_wrap_double
-from tesseract_robotics.tesseract_command_language import CartesianWaypoint, WaypointPoly, \
-    MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, StateWaypoint, StateWaypointPoly, \
-    CompositeInstruction, MoveInstructionPoly, CartesianWaypointPoly, ProfileDictionary, \
-        AnyPoly_as_CompositeInstruction, CompositeInstructionOrder_ORDERED, DEFAULT_PROFILE_KEY, \
-        AnyPoly_wrap_CompositeInstruction, DEFAULT_PROFILE_KEY, JointWaypoint, JointWaypointPoly, \
-        InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
-        MoveInstructionPoly_wrap_MoveInstruction, StateWaypointPoly_wrap_StateWaypoint, \
-        CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint
+from tesseract_robotics.tesseract_common import (
+    FilesystemPath,
+    Isometry3d,
+    Translation3d,
+    Quaterniond,
+    ManipulatorInfo,
+    AnyPoly,
+    AnyPoly_wrap_double,
+)
+from tesseract_robotics.tesseract_command_language import (
+    CartesianWaypoint,
+    WaypointPoly,
+    MoveInstructionType_FREESPACE,
+    MoveInstruction,
+    InstructionPoly,
+    StateWaypoint,
+    StateWaypointPoly,
+    CompositeInstruction,
+    MoveInstructionPoly,
+    CartesianWaypointPoly,
+    ProfileDictionary,
+    AnyPoly_as_CompositeInstruction,
+    CompositeInstructionOrder_ORDERED,
+    DEFAULT_PROFILE_KEY,
+    AnyPoly_wrap_CompositeInstruction,
+    DEFAULT_PROFILE_KEY,
+    JointWaypoint,
+    JointWaypointPoly,
+    InstructionPoly_as_MoveInstructionPoly,
+    WaypointPoly_as_StateWaypointPoly,
+    MoveInstructionPoly_wrap_MoveInstruction,
+    StateWaypointPoly_wrap_StateWaypoint,
+    CartesianWaypointPoly_wrap_CartesianWaypoint,
+    JointWaypointPoly_wrap_JointWaypoint,
+)
 
-from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, PlanningTaskComposerProblemUPtr, \
-    TaskComposerDataStorage, TaskComposerInput, TaskComposerProblemUPtr, PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr
+from tesseract_robotics.tesseract_task_composer import (
+    TaskComposerPluginFactory,
+    PlanningTaskComposerProblemUPtr,
+    TaskComposerDataStorage,
+    TaskComposerInput,
+    TaskComposerProblemUPtr,
+    PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr,
+)
 
 from tesseract_robotics_viewer import TesseractViewer
 
@@ -28,7 +59,7 @@ from tesseract_robotics_viewer import TesseractViewer
 # runs a sequence of planning steps to generate an output plan with minimal configuration. "Profiles" are used to
 # configure the planning steps. Profiles are a dictionary of key value pairs that are used to configure the planning
 # steps. The various planners have default configurations that should work for most use cases. There are numerous
-# configurations available for the task composer that execute different sequences of planning steps. This example 
+# configurations available for the task composer that execute different sequences of planning steps. This example
 # demonstrates using the "freespace" planner, which is for moving the robot to a desired pose in free space while
 # avoiding collisions. The freespace planner first uses OMPL to find a collision free path, and then uses TrajOpt
 # to refine the path. Finally, the TimeOptimalTrajectoryGeneration time parametrization algorithm is used to generate
@@ -77,8 +108,12 @@ task_composer_filename = os.environ["TESSERACT_TASK_COMPOSER_CONFIG_FILE"]
 locator = GeneralResourceLocator()
 abb_irb2400_urdf_package_url = "package://tesseract_support/urdf/abb_irb2400.urdf"
 abb_irb2400_srdf_package_url = "package://tesseract_support/urdf/abb_irb2400.srdf"
-abb_irb2400_urdf_fname = FilesystemPath(locator.locateResource(abb_irb2400_urdf_package_url).getFilePath())
-abb_irb2400_srdf_fname = FilesystemPath(locator.locateResource(abb_irb2400_srdf_package_url).getFilePath())
+abb_irb2400_urdf_fname = FilesystemPath(
+    locator.locateResource(abb_irb2400_urdf_package_url).getFilePath()
+)
+abb_irb2400_srdf_fname = FilesystemPath(
+    locator.locateResource(abb_irb2400_srdf_package_url).getFilePath()
+)
 
 t_env = Environment()
 
@@ -94,35 +129,61 @@ manip_info.working_frame = "base_link"
 
 # Create a viewer and set the environment so the results can be displayed later
 viewer = TesseractViewer()
-viewer.update_environment(t_env, [0,0,0])
+viewer.update_environment(t_env, [0, 0, 0])
 
 # Set the initial state of the robot
-joint_names = ["joint_%d" % (i+1) for i in range(6)]
-viewer.update_joint_positions(joint_names, np.array([1,-.2,.01,.3,-.5,1]))
+joint_names = ["joint_%d" % (i + 1) for i in range(6)]
+viewer.update_joint_positions(joint_names, np.array([1, -0.2, 0.01, 0.3, -0.5, 1]))
 
 # Start the viewer
 viewer.start_serve_background()
 
 # Set the initial state of the robot
-t_env.setState(joint_names, np.ones(6)*0.1)
+t_env.setState(joint_names, np.ones(6) * 0.1)
 
 # Create the input command program waypoints
-wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,-0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
-wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.3,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
-wp3 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.5,1.455) * Quaterniond(0.70710678,0,0.70710678,0))
+wp1 = CartesianWaypoint(
+    Isometry3d.Identity()
+    * Translation3d(0.8, -0.3, 1.455)
+    * Quaterniond(0.70710678, 0, 0.70710678, 0)
+)
+wp2 = CartesianWaypoint(
+    Isometry3d.Identity()
+    * Translation3d(0.8, 0.3, 1.455)
+    * Quaterniond(0.70710678, 0, 0.70710678, 0)
+)
+wp3 = CartesianWaypoint(
+    Isometry3d.Identity()
+    * Translation3d(0.8, 0.5, 1.455)
+    * Quaterniond(0.70710678, 0, 0.70710678, 0)
+)
 
 # Create the input command program instructions. Note the use of explicit construction of the CartesianWaypointPoly
 # using the *_wrap_CartesianWaypoint functions. This is required because the Python bindings do not support implicit
 # conversion from the CartesianWaypoint to the CartesianWaypointPoly.
-start_instruction = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp1), MoveInstructionType_FREESPACE, "DEFAULT")
-plan_f1 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
-plan_f2 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp3), MoveInstructionType_FREESPACE, "DEFAULT")
+start_instruction = MoveInstruction(
+    CartesianWaypointPoly_wrap_CartesianWaypoint(wp1),
+    MoveInstructionType_FREESPACE,
+    "DEFAULT",
+)
+plan_f1 = MoveInstruction(
+    CartesianWaypointPoly_wrap_CartesianWaypoint(wp2),
+    MoveInstructionType_FREESPACE,
+    "DEFAULT",
+)
+plan_f2 = MoveInstruction(
+    CartesianWaypointPoly_wrap_CartesianWaypoint(wp3),
+    MoveInstructionType_FREESPACE,
+    "DEFAULT",
+)
 
 # Create the input command program. Note the use of *_wrap_MoveInstruction functions. This is required because the
 # Python bindings do not support implicit conversion from the MoveInstruction to the MoveInstructionPoly.
 program = CompositeInstruction("DEFAULT")
 program.setManipulatorInfo(manip_info)
-program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
+program.appendMoveInstruction(
+    MoveInstructionPoly_wrap_MoveInstruction(start_instruction)
+)
 program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 # program.appendMoveInstruction(MoveInstructionPoly(plan_f2))
 
@@ -150,8 +211,12 @@ task_data = TaskComposerDataStorage()
 task_data.setData(input_key, program_anypoly)
 
 # Create the task problem and input
-task_planning_problem = PlanningTaskComposerProblemUPtr.make_unique(t_env, task_data, profiles)
-task_problem = PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr(task_planning_problem)
+task_planning_problem = PlanningTaskComposerProblemUPtr.make_unique(
+    t_env, task_data, profiles
+)
+task_problem = PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr(
+    task_planning_problem
+)
 task_input = TaskComposerInput(task_problem)
 
 # Create an executor to run the task
