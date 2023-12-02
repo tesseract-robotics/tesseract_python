@@ -35,31 +35,37 @@ jobs:
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.7"
+          docs: false
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.8"
+          docs: true
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.9"
+          docs: true
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.10"
+          docs: true
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.11.0"
+          docs: true
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.12.0"
+          docs: true
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
@@ -127,6 +133,7 @@ jobs:
         cd ws/src/tesseract_python/tesseract_python
         pytest -s
     - name: build docs
+      if: matrix.config.docs == true
       shell: bash
       working-directory: ws/build/tesseract_python
       run: |
