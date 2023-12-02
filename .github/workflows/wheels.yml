@@ -125,6 +125,7 @@ jobs:
       shell: bash
       working-directory: ws/build/tesseract_python
       run: |
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GITHUB_WORKSPACE/ws/install/lib
         cmake --build . --config Release --target tesseract_python_doc
     - name: archive wheels
       uses: actions/upload-artifact@v2
