@@ -80,6 +80,20 @@ RuckigTrajectorySmoothingMoveProfile Class
    :exclude-members: thisown
    :members:
 
+TaskComposerContext Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_task_composer.TaskComposerContext
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
+TaskComposerContextUPtr Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_task_composer.TaskComposerContextUPtr
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
 TaskComposerDataStorage Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_task_composer.TaskComposerDataStorage
@@ -139,20 +153,6 @@ TaskComposerGraph Class
 TaskComposerGraphUPtr Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_task_composer.TaskComposerGraphUPtr
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
-TaskComposerInput Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_task_composer.TaskComposerInput
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
-TaskComposerInputUPtr Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_task_composer.TaskComposerInputUPtr
    :noindex:
    :exclude-members: thisown
    :members:
