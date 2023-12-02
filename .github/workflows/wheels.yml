@@ -102,6 +102,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool patchelf
+    - name: pip
+      if: matrix.config.docs == true
+      run: |
         python -m pip install -r ws/src/tesseract_python/docs/requirements.txt
     - name: vcs import
       working-directory: ws/src
