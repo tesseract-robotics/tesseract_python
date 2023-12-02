@@ -12,10 +12,11 @@ from tesseract_robotics.tesseract_command_language import JointWaypoint, Cartesi
     MoveInstructionType_LINEAR, MoveInstruction, InstructionPoly, CartesianWaypointPoly, MoveInstructionPoly, \
     CompositeInstruction, ProfileDictionary, InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly,\
     CartesianWaypointPoly_wrap_CartesianWaypoint, MoveInstructionPoly_wrap_MoveInstruction
-from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
+from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_descartes import DescartesDefaultPlanProfileD, \
     DescartesMotionPlannerD, DescartesPlanProfileD, \
     ProfileDictionary_addProfile_DescartesPlanProfileD, cast_DescartesPlanProfileD
+from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 DESCARTES_DEFAULT_NAMESPACE = "DescartesMotionPlannerTask"

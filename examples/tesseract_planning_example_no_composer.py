@@ -8,7 +8,8 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
     CartesianWaypointPoly_wrap_CartesianWaypoint, MoveInstructionPoly_wrap_MoveInstruction, \
     InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly
 
-from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
+from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
+from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
     OMPLProblemGeneratorFn, OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
 from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \

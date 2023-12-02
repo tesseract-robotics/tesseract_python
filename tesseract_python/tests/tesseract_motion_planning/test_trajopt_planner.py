@@ -14,10 +14,11 @@ from tesseract_robotics.tesseract_command_language import  JointWaypoint, Cartes
     InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
     JointWaypointPoly_wrap_JointWaypoint, CartesianWaypointPoly_wrap_CartesianWaypoint, \
     MoveInstructionPoly_wrap_MoveInstruction
-from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
+from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
     TrajOptProblemGeneratorFn, TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
     ProfileDictionary_addProfile_TrajOptCompositeProfile
+from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 

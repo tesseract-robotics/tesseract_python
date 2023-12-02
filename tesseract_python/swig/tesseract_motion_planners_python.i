@@ -37,10 +37,8 @@
 // tesseract_motion_planners
 #include <tesseract_motion_planners/core/planner.h>
 #include <tesseract_motion_planners/robot_config.h>
-#include <tesseract_motion_planners/interface_utils.h>
 #include <tesseract_motion_planners/core/utils.h>
 #include <tesseract_motion_planners/core/types.h>
-#include <tesseract_motion_planners/core/interpolation.h>
 
 #include <tesseract_geometry/geometries.h>
 #include <tesseract_common/resource_locator.h>
@@ -70,13 +68,6 @@
 
 %include "tesseract_motion_planners/core/utils.h"
 
-%ignore tesseract_planning::JointGroupInstructionInfo::getWorkingFrame;
-%include "tesseract_motion_planners/core/interpolation.h"
-
 %include "tesseract_motion_planners/robot_config.h"
 %template(getRobotConfig) tesseract_planning::getRobotConfig<double>;
 %template(getJointTurns) tesseract_planning::getJointTurns<double>;
-
-%include "tesseract_motion_planners/interface_utils.h"
-
-
