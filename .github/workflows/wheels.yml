@@ -35,26 +35,43 @@ jobs:
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.7"
+          docs: false
+          docs_cmake: OFF
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.8"
+          docs: true
+          docs_cmake: ON
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.9"
+          docs: true
+          docs_cmake: ON
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.10"
+          docs: true
+          docs_cmake: ON
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.11.0"
+          docs: true
+          docs_cmake: ON
+        - os: ubuntu-20.04
+          runs_on: ubuntu-20.04
+          container: ubuntu:20.04
+          py_platform: manylinux_2_31_x86_64
+          python_version: "3.12.0"
+          docs: true
+          docs_cmake: ON
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
@@ -91,6 +108,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool patchelf
+    - name: pip
+      if: matrix.config.docs == true
+      run: |
         python -m pip install -r ws/src/tesseract_python/docs/requirements.txt
     - name: vcs import
       working-directory: ws/src
@@ -108,7 +128,7 @@ jobs:
         -DTESSERACT_PYTHON_BUILD_WHEEL=ON
         -DTESSERACT_PYTHON_WHEEL_PLATFORM=${{ matrix.config.py_platform }}
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON
-        -DTESSERACT_PYTHON_BUILD_DOCUMENTATION=ON
+        -DTESSERACT_PYTHON_BUILD_DOCUMENTATION=${{ matrix.config.docs_cmake }}
     - name: test
       shell: bash
       run: |
@@ -122,9 +142,11 @@ jobs:
         cd ws/src/tesseract_python/tesseract_python
         pytest -s
     - name: build docs
+      if: matrix.config.docs == true
       shell: bash
       working-directory: ws/build/tesseract_python
       run: |
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GITHUB_WORKSPACE/ws/install/lib
         cmake --build . --config Release --target tesseract_python_doc
     - name: archive wheels
       uses: actions/upload-artifact@v2
@@ -162,6 +184,10 @@ jobs:
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
             python_version: "3.11.0"
+          - arch: x64
+            vcpkg_triplet: x64-windows-release
+            cmake_arch: x64
+            python_version: "3.12.0"
     steps:
     - uses: actions/checkout@v2
       with:

@@ -17,8 +17,8 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
         MoveInstructionPoly_wrap_MoveInstruction, StateWaypointPoly_wrap_StateWaypoint, \
         CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint
 
-from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, PlanningTaskComposerProblemUPtr, \
-    TaskComposerDataStorage, TaskComposerInput, TaskComposerProblemUPtr, PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr
+from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, PlanningTaskComposerProblem, \
+    TaskComposerDataStorage, TaskComposerContext
 
 from tesseract_robotics_viewer import TesseractViewer
 
@@ -133,8 +133,7 @@ factory = TaskComposerPluginFactory(config_path)
 # Create the task composer node. In this case the FreespacePipeline is used. Many other are available.
 task = factory.createTaskComposerNode("FreespacePipeline")
 
-# Get the input and output keys for the task
-input_key = task.getInputKeys()[0]
+# Get the output keys for the task
 output_key = task.getOutputKeys()[0]
 
 # Create a profile dictionary. Profiles can be customized by adding to this dictionary and setting the profiles
@@ -145,24 +144,19 @@ profiles = ProfileDictionary()
 # support implicit conversion from the CompositeInstruction to the AnyPoly.
 program_anypoly = AnyPoly_wrap_CompositeInstruction(program)
 
-# Create the task data storage and set the data
-task_data = TaskComposerDataStorage()
-task_data.setData(input_key, program_anypoly)
-
 # Create the task problem and input
-task_planning_problem = PlanningTaskComposerProblemUPtr.make_unique(t_env, task_data, profiles)
-task_problem = PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr(task_planning_problem)
-task_input = TaskComposerInput(task_problem)
+task_planning_problem = PlanningTaskComposerProblem(t_env, profiles)
+task_planning_problem.input = program_anypoly
 
 # Create an executor to run the task
 task_executor = factory.createTaskComposerExecutor("TaskflowExecutor")
 
 # Run the task and wait for completion
-future = task_executor.run(task.get(), task_input)
+future = task_executor.run(task.get(), task_planning_problem)
 future.wait()
 
 # Retrieve the output, converting the AnyPoly back to a CompositeInstruction
-results = AnyPoly_as_CompositeInstruction(task_input.data_storage.getData(output_key))
+results = AnyPoly_as_CompositeInstruction(future.context.data_storage.getData(output_key))
 
 # Display the output
 # Print out the resulting waypoints

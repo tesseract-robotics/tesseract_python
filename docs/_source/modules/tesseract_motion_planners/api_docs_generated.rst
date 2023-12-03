@@ -3,20 +3,6 @@ Classes
 *******
 
 
-JointGroupInstructionInfo Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners.JointGroupInstructionInfo
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
-KinematicGroupInstructionInfo Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners.KinematicGroupInstructionInfo
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
 MotionPlanner Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_motion_planners.MotionPlanner
@@ -64,21 +50,6 @@ formatProgram Function
 .. autofunction:: tesseract_robotics.tesseract_motion_planners.formatProgram
    :noindex:
 
-generateInterpolatedProgram Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners.generateInterpolatedProgram
-   :noindex:
-
-getClosestJointSolution Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners.getClosestJointSolution
-   :noindex:
-
-getInterpolatedInstructions Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners.getInterpolatedInstructions
-   :noindex:
-
 getJointTurns Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_motion_planners.getJointTurns
@@ -87,36 +58,6 @@ getJointTurns Function
 getRobotConfig Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_motion_planners.getRobotConfig
-   :noindex:
-
-interpolate Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners.interpolate
-   :noindex:
-
-interpolateCartCartWaypoint Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners.interpolateCartCartWaypoint
-   :noindex:
-
-interpolateCartJointWaypoint Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners.interpolateCartJointWaypoint
-   :noindex:
-
-interpolateJointCartWaypoint Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners.interpolateJointCartWaypoint
-   :noindex:
-
-interpolateJointJointWaypoint Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners.interpolateJointJointWaypoint
-   :noindex:
-
-interpolate_waypoint Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners.interpolate_waypoint
    :noindex:
 
 toToolpath Function

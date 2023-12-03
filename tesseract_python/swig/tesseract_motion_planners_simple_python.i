@@ -41,6 +41,7 @@
 #include <tesseract_motion_planners/simple/profile/simple_planner_fixed_size_plan_profile.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_fixed_size_assign_plan_profile.h>
 #include <tesseract_motion_planners/simple/simple_motion_planner.h>
+#include <tesseract_motion_planners/simple/interpolation.h>
 
 
 #include <tesseract_geometry/geometries.h>
@@ -60,6 +61,9 @@
 
 // tesseract_motion_planners_simple
 #define TESSERACT_MOTION_PLANNERS_SIMPLE_PUBLIC
+
+%ignore tesseract_planning::JointGroupInstructionInfo::getWorkingFrame;
+%include "tesseract_motion_planners/simple/interpolation.h"
 
 %shared_ptr(tesseract_planning::SimplePlannerPlanProfile)
 %shared_ptr(tesseract_planning::SimplePlannerPlanCompositeProfile)

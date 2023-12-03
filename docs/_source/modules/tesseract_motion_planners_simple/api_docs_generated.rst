@@ -3,6 +3,20 @@ Classes
 *******
 
 
+JointGroupInstructionInfo Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_motion_planners_simple.JointGroupInstructionInfo
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
+KinematicGroupInstructionInfo Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_motion_planners_simple.KinematicGroupInstructionInfo
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
 SimpleMotionPlanner Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_motion_planners_simple.SimpleMotionPlanner
@@ -124,6 +138,51 @@ ProfileDictionary_removeProfile_SimplePlannerCompositeProfile Function
 ProfileDictionary_removeProfile_SimplePlannerPlanProfile Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_motion_planners_simple.ProfileDictionary_removeProfile_SimplePlannerPlanProfile
+   :noindex:
+
+generateInterpolatedProgram Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_motion_planners_simple.generateInterpolatedProgram
+   :noindex:
+
+getClosestJointSolution Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_motion_planners_simple.getClosestJointSolution
+   :noindex:
+
+getInterpolatedInstructions Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_motion_planners_simple.getInterpolatedInstructions
+   :noindex:
+
+interpolate Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_motion_planners_simple.interpolate
+   :noindex:
+
+interpolateCartCartWaypoint Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_motion_planners_simple.interpolateCartCartWaypoint
+   :noindex:
+
+interpolateCartJointWaypoint Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_motion_planners_simple.interpolateCartJointWaypoint
+   :noindex:
+
+interpolateJointCartWaypoint Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_motion_planners_simple.interpolateJointCartWaypoint
+   :noindex:
+
+interpolateJointJointWaypoint Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_motion_planners_simple.interpolateJointJointWaypoint
+   :noindex:
+
+interpolate_waypoint Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_motion_planners_simple.interpolate_waypoint
    :noindex:
 
 Container Templates

@@ -26,8 +26,7 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
 #     TrajOptProblemGeneratorFn, TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
 #     ProfileDictionary_addProfile_TrajOptCompositeProfile
 from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, \
-    TaskComposerDataStorage, TaskComposerInput, PlanningTaskComposerProblemUPtr, \
-    PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr
+    TaskComposerDataStorage, TaskComposerContext, PlanningTaskComposerProblem
 
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
@@ -76,38 +75,40 @@ def freespace_example_progam_iiwa(manipulator_info, goal = None, composite_profi
 
 
 def test_task_composer_trajopt_example():
+
+    planning_task_problem = None
+    output_program = None
+    future = None
+    task_executor = None
+    task = None
+
     env, manip_info = get_environment()
 
-    config_path = FilesystemPath(os.path.join(TESSERACT_TASK_COMPOSER_DIR, "config/task_composer_plugins.yaml"))
+    config_path = FilesystemPath(os.path.join(TESSERACT_TASK_COMPOSER_DIR, "config/task_composer_plugins_no_trajopt_ifopt.yaml"))
     factory = TaskComposerPluginFactory(config_path)
 
     task = factory.createTaskComposerNode("TrajOptPipeline")
+    print("trajopt task name: " + task.getName())
     
-    input_key = task.getInputKeys()[0]
     output_key = task.getOutputKeys()[0]
 
     profiles = ProfileDictionary()
 
     program = freespace_example_progam_iiwa(manip_info)
 
-    program_anypoly = AnyPoly_wrap_CompositeInstruction(program)
-    task_data = TaskComposerDataStorage()
-    task_data.setData(input_key, program_anypoly)
+    problem_input = AnyPoly_wrap_CompositeInstruction(program)
 
-    planning_task_problem = PlanningTaskComposerProblemUPtr.make_unique(env, task_data, profiles)
-    task_problem = PlanningTaskComposerProblemUPtr_as_TaskComposerProblemUPtr(planning_task_problem)
-
-    task_input = TaskComposerInput(task_problem)
-    
+    planning_task_problem = PlanningTaskComposerProblem(env, profiles)
+    planning_task_problem.input = problem_input
 
     task_executor = factory.createTaskComposerExecutor("TaskflowExecutor")
 
     output_program = None
     try:
-        future = task_executor.run(task.get(), task_input)
+        future = task_executor.run(task.get(), planning_task_problem)
         future.wait()
 
-        output_program = AnyPoly_as_CompositeInstruction(task_input.data_storage.getData(output_key))
+        output_program = AnyPoly_as_CompositeInstruction(future.context.data_storage.getData(output_key))
         assert len(output_program) == 11
 
         # Print out the output program
@@ -125,11 +126,9 @@ def test_task_composer_trajopt_example():
     finally:
 
         # Cleanup memory to prevent segfault on exit
-        del task_problem
-        del task_input
+        del planning_task_problem
         del output_program
         del future
-        del task_data
         del task_executor
         del task
     

@@ -188,7 +188,7 @@ def generate_api_docs(py_module_name):
     # Run jinja2 tempalate file api_docs_generated.rst.j2
     from jinja2 import Environment, FileSystemLoader, select_autoescape
     env = Environment(
-        loader=FileSystemLoader(searchpath=""),
+        loader=FileSystemLoader(searchpath=f"{script_dir}"),
         autoescape=select_autoescape(['html', 'xml'])
     )
 
