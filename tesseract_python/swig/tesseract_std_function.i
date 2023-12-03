@@ -83,6 +83,23 @@ public:
   }
 }
 
+%typemap(in) Namespace::Name * (void *argp, int res = 0, std::shared_ptr< Name##Base > temp1, Namespace::Name temp2) {
+    // const tesseract_std_function& %typemap(in)
+  int newmem = 0;
+  res = SWIG_ConvertPtrAndOwn($input, &argp, $descriptor(std::shared_ptr< Name##Base > *), %convertptr_flags, &newmem);
+  if (!SWIG_IsOK(res)) {
+    %argument_fail(res, "$type", $symname, $argnum);
+  }
+  if (!argp) {
+    %argument_nullref("$type", $symname, $argnum);
+  } else {
+    temp1 = *(%reinterpret_cast(argp, std::shared_ptr< Name##Base > *));
+    temp2 = [temp1]( %formacro_2n(_tesseract_std_function_call_args,__VA_ARGS__) ) { return temp1->call(  %formacro_2n(_tesseract_std_function_call_vars,__VA_ARGS__)  ); };
+    $1 = &temp2;
+    if (newmem & SWIG_CAST_NEW_MEMORY) delete %reinterpret_cast(argp, std::shared_ptr< Name##Base > *);
+  }
+}
+
 %typemap(out) Namespace::Name const &  {
     // tesseract_std_function & %typemap(out)
     Py_INCREF(Py_None);
