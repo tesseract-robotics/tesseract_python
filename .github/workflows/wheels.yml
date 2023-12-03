@@ -36,36 +36,42 @@ jobs:
           py_platform: manylinux_2_31_x86_64
           python_version: "3.7"
           docs: false
+          docs_cmake: OFF
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.8"
           docs: true
+          docs_cmake: ON
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.9"
           docs: true
+          docs_cmake: ON
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.10"
           docs: true
+          docs_cmake: ON
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.11.0"
           docs: true
+          docs_cmake: ON
         - os: ubuntu-20.04
           runs_on: ubuntu-20.04
           container: ubuntu:20.04
           py_platform: manylinux_2_31_x86_64
           python_version: "3.12.0"
           docs: true
+          docs_cmake: ON
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
@@ -122,7 +128,7 @@ jobs:
         -DTESSERACT_PYTHON_BUILD_WHEEL=ON
         -DTESSERACT_PYTHON_WHEEL_PLATFORM=${{ matrix.config.py_platform }}
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON
-        -DTESSERACT_PYTHON_BUILD_DOCUMENTATION=ON
+        -DTESSERACT_PYTHON_BUILD_DOCUMENTATION=${{ matrix.config.docs_cmake }}
     - name: test
       shell: bash
       run: |
