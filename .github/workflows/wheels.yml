@@ -260,8 +260,8 @@ jobs:
         retention-days: 2
   build-macos:
     runs-on: macos-latest
-    fail-fast: false
     strategy:
+      fail-fast: false
       matrix:
         config:
         - py_platform: macosx-10.9-x86_64
