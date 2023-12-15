@@ -273,7 +273,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        path: ws/src/tesseract_planning
+        path: ws/src/tesseract_python
     - uses: actions/setup-python@v4
       id: setup-python
       with:
