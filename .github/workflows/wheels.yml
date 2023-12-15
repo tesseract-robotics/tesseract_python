@@ -261,14 +261,15 @@ jobs:
   build-macos:
     runs-on: macos-latest
     fail-fast: false
-    matrix:
-      config:
-      - py_platform: macosx-10.9-x86_64
-        python_version: "3.10"
-      - py_platform: macosx-10.9-x86_64
-        python_version: "3.11"
-      - py_platform: macosx-10.9-x86_64
-        python_version: "3.12"
+    strategy:
+      matrix:
+        config:
+        - py_platform: macosx-10.9-x86_64
+          python_version: "3.10"
+        - py_platform: macosx-10.9-x86_64
+          python_version: "3.11"
+        - py_platform: macosx-10.9-x86_64
+          python_version: "3.12"
     steps:
     - uses: actions/checkout@v2
       with:
