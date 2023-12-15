@@ -296,7 +296,7 @@ jobs:
         python3 -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool delocate
     - name: vcs import
       working-directory: ws/src
-      run: vcs import --input tesseract_python/.github/workflows/windows_dependencies.repos
+      run: vcs import --input tesseract_python/dependencies.rosinstall
     - name: colcon build
       working-directory: ws
       run: |
