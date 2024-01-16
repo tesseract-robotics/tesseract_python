@@ -340,7 +340,7 @@ jobs:
     - name: test
       shell: bash
       run: |
-        python3 -m venv venv
+        ${{ steps.setup-python.outputs.python-path }} -m venv venv
         source venv/bin/activate
         python -m pip install --upgrade pip
         python -m pip install ws/build/tesseract_python/python/wheelhouse/*
