@@ -312,7 +312,7 @@ jobs:
     - name: colcon build
       working-directory: ws
       run: |
-        export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$GITHUB_WORKSPACE/vcpkg/installed/x64-osx-dynamic-release/lib
+        export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$GITHUB_WORKSPACE/vcpkg/installed/x64-osx-dynamic-release/lib:$GITHUB_WORKSPACE/ws/install/lib
         export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/vcpkg/installed/x64-osx-dynamic-release
 
         colcon build --merge-install \
