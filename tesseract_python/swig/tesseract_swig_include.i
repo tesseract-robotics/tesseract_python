@@ -73,6 +73,9 @@ namespace std {
 %{
 namespace std
 {
+
+#if SWIG_VERSION < 0x040200
+  // SwigPySequence_Ref is not defined in swig  >= 4.2.0
   template<typename T> struct remove_reference<swig::SwigPySequence_Ref<T>>
   {
     typedef T type;
@@ -82,6 +85,7 @@ namespace std
   {
     typedef const T type;
   };
+#endif
 
   template<typename T> struct remove_reference<SwigValueWrapper<T>>
   {
