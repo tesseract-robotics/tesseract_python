@@ -227,7 +227,7 @@ def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, sha
         # if normals_ind is not None:
         #     mesh_dict["primitives"][0]["attributes"]["NORMAL"] = normals_ind
 
-        visual_node["scale"] = list(mesh.getScale().flatten())
+        visual_node["scale"] = [1.0, 1.0, 1.0] 
 
         if not mesh.getResource().getUrl().lower().endswith('.stl'):
             mesh_material = mesh.getMaterial()
