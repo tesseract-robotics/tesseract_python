@@ -15,7 +15,7 @@ from tesseract_robotics.tesseract_command_language import JointWaypoint, Cartesi
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_descartes import DescartesDefaultPlanProfileD, \
     DescartesMotionPlannerD, DescartesPlanProfileD, \
-    ProfileDictionary_addProfile_DescartesPlanProfileD, cast_DescartesPlanProfileD
+    ProfileDictionary_addProfile_DescartesPlanProfileD, cast_DescartesPlanProfileD, PoseSamplerFn
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
@@ -89,3 +89,14 @@ def test_descartes_freespace_fixed_poses():
         assert len(wp.getNames()) == 6
         assert isinstance(wp.getPosition(),np.ndarray)
         assert len(wp.getPosition()) == 6
+
+def _sampler_fun(tool_pose):
+    return []
+
+def test_sampler_std_fun():
+    
+    plan_profile = DescartesDefaultPlanProfileD()
+    # DescartesDefaultPlanProfileD is not upcasting automatically, use helper function
+    plan_profile1 = cast_DescartesPlanProfileD(plan_profile)
+    pp = PoseSamplerFn(_sampler_fun)
+    plan_profile.target_pose_sampler = pp
