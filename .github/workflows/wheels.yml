@@ -206,7 +206,7 @@ jobs:
         extra-args: --clean-after-build
         token: ${{ github.token }}
         cache-key: win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}
-        revision: master
+        revision: 2023.08.09
     - name: pip3
       run: |
         python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
@@ -302,7 +302,7 @@ jobs:
         extra-args: --clean-after-build --overlay-triplets=${{ github.workspace }}/ws/src/tesseract_python/.github/workflows/vcpkg_triplets
         token: ${{ github.token }}
         cache-key: osx-x64-vcpkg
-        revision: master
+        revision: 2023.08.09
     - name: pip3
       run: |
         python3 -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool delocate
