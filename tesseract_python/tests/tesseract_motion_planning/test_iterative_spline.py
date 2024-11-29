@@ -37,9 +37,13 @@ def test_time_parameterization():
 
     program = create_straight_trajectory()
     traj = InstructionsTrajectory(program)
-    max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
-    max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
-    assert time_parameterization.compute(traj, max_velocity, max_acceleration)
+    max_velocity = np.array([[2.088, 2.082, 3.27, 3.6, 3.3, 3.078]],dtype=np.float64)
+    max_velocity = np.hstack((-max_velocity.T, max_velocity.T))
+    max_acceleration = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
+    max_acceleration = np.hstack((-max_acceleration.T, max_acceleration.T))
+    max_jerk = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
+    max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
+    assert time_parameterization.compute(traj, max_velocity, max_acceleration, max_jerk)
     res_instr1 = InstructionPoly_as_MoveInstructionPoly(program[-1])
     WaypointPoly_as_StateWaypointPoly(res_instr1.getWaypoint()).getTime() > 1.0
     res_instr2 = InstructionPoly_as_MoveInstructionPoly(program[-1])
@@ -51,9 +55,13 @@ def test_time_parameterization_vec():
 
     program = create_straight_trajectory()
     traj = InstructionsTrajectory(program)
-    max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
-    max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
-    assert time_parameterization.compute(traj, max_velocity, max_acceleration)
+    max_velocity = np.array([[2.088, 2.082, 3.27, 3.6, 3.3, 3.078]],dtype=np.float64)
+    max_velocity = np.hstack((-max_velocity.T, max_velocity.T))
+    max_acceleration = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
+    max_acceleration = np.hstack((-max_acceleration.T, max_acceleration.T))
+    max_jerk = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
+    max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
+    assert time_parameterization.compute(traj, max_velocity, max_acceleration, max_jerk)
     res_instr1 = InstructionPoly_as_MoveInstructionPoly(program[-1])
     WaypointPoly_as_StateWaypointPoly(res_instr1.getWaypoint()).getTime() > 1.0
     res_instr2 = InstructionPoly_as_MoveInstructionPoly(program[-1])

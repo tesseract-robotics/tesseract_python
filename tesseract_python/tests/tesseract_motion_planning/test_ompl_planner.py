@@ -16,7 +16,7 @@ from tesseract_robotics.tesseract_command_language import JointWaypoint, Cartesi
     MoveInstructionPoly_wrap_MoveInstruction
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
-    OMPLProblemGeneratorFn, OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
+    OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator

@@ -131,11 +131,12 @@ struct KinGroupIKInput;
 
 
 %init %{
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::REPInvKinFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::ROPInvKinFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::KDLFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::OPWFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::URFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+// TODO: fix anchors
+// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::REPInvKinFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::ROPInvKinFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::KDLFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::OPWFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
+// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_kinematics::URFactoriesAnchor(), "TESSERACT_KINEMATICS_PLUGINS");
 
 
 

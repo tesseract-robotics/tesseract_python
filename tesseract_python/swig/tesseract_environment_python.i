@@ -54,6 +54,15 @@
 #include <tesseract_state_solver/kdl/kdl_state_solver.h>
 #include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
+// tesseract_kinematics
+#include <tesseract_kinematics/core/joint_group.h>
+#include <tesseract_kinematics/core/kinematic_group.h>
+
+// tesseract_collision
+#include <tesseract_collision/core/types.h>
+#include <tesseract_collision/core/discrete_contact_manager.h>
+#include <tesseract_collision/core/continuous_contact_manager.h>
+
 // tesseract_environment
 #include <tesseract_environment/commands.h>
 #include <tesseract_environment/events.h>
@@ -161,6 +170,8 @@
 
 %shared_ptr(tesseract_environment::Environment)
 %wrap_unique_ptr(EnvironmentUPtr,tesseract_environment::Environment)
+
+%ignore tesseract_environment::Environment::Environment(std::unique_ptr<Implementation> impl);
 
 %include "tesseract_environment/environment.h"
 

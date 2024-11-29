@@ -162,7 +162,7 @@
 
 // task_composer_problem
 
-%include "tesseract_task_composer/core/task_composer_problem.h"
+// %include "tesseract_task_composer/core/task_composer_problem.h"
 
 // task_composer_context
 %s_u_ptr(TaskComposerContext)
@@ -229,7 +229,7 @@ enum class future_status {
 %include "tesseract_task_composer/core/task_composer_server.h"
 
 // planning_task_composer_problem
-%s_u_ptr(PlanningTaskComposerProblem)
+/*%s_u_ptr(PlanningTaskComposerProblem)
 %include "tesseract_task_composer/planning/planning_task_composer_problem.h"
 %unique_ptr_as_planning(PlanningTaskComposerProblem, TaskComposerProblem);
 
@@ -260,12 +260,7 @@ enum class future_status {
 %unique_ptr_constructor(tesseract_planning::PlanningTaskComposerProblem, %arg(tesseract_environment::Environment::ConstPtr env,
                               tesseract_planning::ProfileDictionary::ConstPtr profiles = nullptr,
                               std::string name = "unset"),
-                              %arg(env, profiles, name));
-
-// check_input_profile
-%shared_ptr(tesseract_planning::CheckInputProfile)
-%include "tesseract_task_composer/planning/profiles/check_input_profile.h"
-%tesseract_command_language_add_profile_type(CheckInputProfile);
+                              %arg(env, profiles, name));*/
 
 // contact_check_profile
 %shared_ptr(tesseract_planning::ContactCheckProfile)

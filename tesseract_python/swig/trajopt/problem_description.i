@@ -160,11 +160,12 @@ class TrajOptProb;
 struct ProblemConstructionInfo;
 struct TrajOptResult;
 
-enum TermType
+enum class TermType : char
 {
-  TT_COST = 0x1,      
-  TT_CNT = 0x2,       
-  TT_USE_TIME = 0x4,  
+  TT_INVALID = 0,     // 0000 0000
+  TT_COST = 0x1,      // 0000 0001
+  TT_CNT = 0x2,       // 0000 0010
+  TT_USE_TIME = 0x4,  // 0000 0100 
 };
 
 class TrajOptProb
@@ -182,8 +183,8 @@ public:
   // VarArray& GetVars();  
   int GetNumSteps();  
   int GetNumDOF();
-  tesseract_kinematics::JointGroup::ConstPtr GetKin();
-  tesseract_environment::Environment::ConstPtr GetEnv();
+  std::shared_ptr<const tesseract_kinematics::JointGroup> GetKin();
+  std::shared_ptr<const tesseract_environment::Environment> GetEnv();
   void SetInitTraj(const TrajArray& x);
   TrajArray GetInitTraj();  
   bool GetHasTime();  
@@ -214,12 +215,12 @@ struct BasicInfo
 
 struct InitInfo
 {  
-  enum Type
+  enum Type : std::uint8_t
   {
     STATIONARY,
     JOINT_INTERPOLATED,
     GIVEN_TRAJ,
-  };  
+  };
   Type type;  
   TrajArray data;  
   double dt;
@@ -234,13 +235,13 @@ public:
   using Ptr = std::shared_ptr<TermInfo>;
 
   std::string name;
-  int term_type;
-  int getSupportedTypes();
+  TermType term_type;
+  TermType getSupportedTypes();
   virtual void fromJson(ProblemConstructionInfo& pci, const Json::Value& v);
   virtual void hatch(TrajOptProb& prob);
 
   static TermInfo::Ptr fromName(const std::string& type);
-  typedef TermInfo::Ptr (*MakerFunc)(void);
+
   //static void RegisterMaker(const std::string& type, MakerFunc);
   virtual ~TermInfo();
 };
@@ -254,10 +255,10 @@ public:
   std::vector<TermInfo::Ptr> cnt_infos;
   InitInfo init_info;
 
-  tesseract_environment::Environment::ConstPtr env;
-  tesseract_kinematics::JointGroup::ConstPtr kin;
+  std::shared_ptr<const tesseract_environment::Environment> env;
+  std::shared_ptr<const tesseract_kinematics::JointGroup> kin;
 
-  ProblemConstructionInfo(tesseract_environment::Environment::ConstPtr env);
+  ProblemConstructionInfo(std::shared_ptr<const tesseract_environment::Environment> env);
   void fromJson(const Json::Value& v);
 };
 

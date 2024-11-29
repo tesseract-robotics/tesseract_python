@@ -40,7 +40,7 @@ find_package(tesseract_kinematics REQUIRED)
 # find_package(TinyXML2 REQUIRED)
 # find_package(opw_kinematics REQUIRED)
 
-find_package(tesseract_task_composer REQUIRED)
+find_package(tesseract_task_composer REQUIRED COMPONENTS core planning taskflow)
 
 if(NOT TinyXML2_INCLUDE_DIRS AND TARGET tinyxml2::tinyxml2)
 get_target_property(TinyXML2_INCLUDE_DIRS tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
@@ -48,6 +48,8 @@ message(STATUS "Found from target interface: TinyXML2_INCLUDE_DIRS=${TinyXML2_IN
 endif()
 
 tesseract_variables()
+
+find_bullet()
 
 include_directories(
   ${trajopt_INCLUDE_DIRS} 
@@ -87,19 +89,29 @@ message(STATUS "Building Python Version: " ${PYTHON_VERSION_MAJOR})
 
 # Find NumPy
 find_path(NUMPY_INCLUDE_NDARRAYOBJECT_DIR numpy/ndarrayobject.h PATHS ${PYTHON_INCLUDE_DIRS} NO_DEFAULT_PATH)
-if (NUMPY_INCLUDE_NDARRAYOBJECT_DIR)
-set(NUMPY_INCLUDE_DIR ${NUMPY_INCLUDE_NDARRAYOBJECT_DIR})
+if(NUMPY_INCLUDE_NDARRAYOBJECT_DIR)
+    set(NUMPY_INCLUDE_DIR ${NUMPY_INCLUDE_NDARRAYOBJECT_DIR})
 else()
-execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; import os; print(os.path.dirname(numpy.__file__) + '/core/include')" RESULT_VARIABLE FIND_NUMPY_RESULT OUTPUT_VARIABLE NUMPY_INCLUDE_DIR )
-string(STRIP "${NUMPY_INCLUDE_DIR}" NUMPY_INCLUDE_DIR)
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; import os; print(os.path.dirname(numpy.__file__))"
+                    RESULT_VARIABLE FIND_NUMPY_RESULT OUTPUT_VARIABLE NUMPY_INCLUDE_DIR1)
+    string(STRIP "${NUMPY_INCLUDE_DIR1}" NUMPY_INCLUDE_DIR1)
 
-if(${FIND_NUMPY_RESULT})
-message(FATAL_ERROR "Could not determine NumPy include directory")
-endif()
+    if(${FIND_NUMPY_RESULT})
+        message(FATAL_ERROR "Could not determine NumPy include directory")
+    endif()
+
+    if(EXISTS "${NUMPY_INCLUDE_DIR1}/core/include/numpy/ndarrayobject.h")
+        set(NUMPY_INCLUDE_DIR "${NUMPY_INCLUDE_DIR1}/core/include")
+    else()
+        if(EXISTS "${NUMPY_INCLUDE_DIR1}/_core/include/numpy/ndarrayobject.h")
+            set(NUMPY_INCLUDE_DIR "${NUMPY_INCLUDE_DIR1}/_core/include")
+        endif()
+    endif()
+
 endif()
 
-if (NOT EXISTS "${NUMPY_INCLUDE_DIR}/numpy/ndarrayobject.h")
-message(FATAL_ERROR "Could not find numpy/ndarrayobject.h include file")
+if(NOT EXISTS "${NUMPY_INCLUDE_DIR}/numpy/ndarrayobject.h")
+    message(FATAL_ERROR "Could not find numpy/ndarrayobject.h include file")
 endif()
 
 message(STATUS "NumPy Include Directory: ${NUMPY_INCLUDE_DIR}")
@@ -122,12 +134,12 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tesseract_python_module.cmake)
 
 tesseract_python_module(tesseract_common_python SWIG_SRCS swig/tesseract_common_python.i PACKAGE tesseract_common LIBS tesseract::tesseract_common )
 tesseract_python_module(tesseract_geometry_python SWIG_SRCS swig/tesseract_geometry_python.i PACKAGE tesseract_geometry LIBS tesseract::tesseract_geometry )
-tesseract_python_module(tesseract_collision_python SWIG_SRCS swig/tesseract_collision_python.i PACKAGE tesseract_collision LIBS tesseract::tesseract_collision_core tesseract::tesseract_collision_bullet_factories tesseract::tesseract_collision_fcl_factories )
+tesseract_python_module(tesseract_collision_python SWIG_SRCS swig/tesseract_collision_python.i PACKAGE tesseract_collision LIBS tesseract::tesseract_collision_core Bullet3::Bullet ) # tesseract::tesseract_collision_bullet_factories tesseract::tesseract_collision_fcl_factories )
 tesseract_python_module(tesseract_scene_graph_python SWIG_SRCS swig/tesseract_scene_graph_python.i PACKAGE tesseract_scene_graph LIBS tesseract::tesseract_scene_graph )
 tesseract_python_module(tesseract_srdf_python SWIG_SRCS swig/tesseract_srdf_python.i PACKAGE tesseract_srdf LIBS tesseract::tesseract_srdf )
 tesseract_python_module(tesseract_urdf_python SWIG_SRCS swig/tesseract_urdf_python.i PACKAGE tesseract_urdf LIBS tesseract::tesseract_urdf )
 tesseract_python_module(tesseract_state_solver_python SWIG_SRCS swig/tesseract_state_solver_python.i PACKAGE tesseract_state_solver LIBS tesseract::tesseract_state_solver_core tesseract::tesseract_state_solver_ofkt tesseract::tesseract_state_solver_kdl)
-tesseract_python_module(tesseract_kinematics_python SWIG_SRCS swig/tesseract_kinematics_python.i PACKAGE tesseract_kinematics LIBS tesseract::tesseract_kinematics_kdl_factories tesseract::tesseract_kinematics_ur_factory tesseract::tesseract_kinematics_opw_factory tesseract::tesseract_kinematics_core_factories tesseract::tesseract_kinematics_core )
+tesseract_python_module(tesseract_kinematics_python SWIG_SRCS swig/tesseract_kinematics_python.i PACKAGE tesseract_kinematics LIBS tesseract::tesseract_kinematics_core )#  tesseract::tesseract_kinematics_kdl_factories tesseract::tesseract_kinematics_ur_factory tesseract::tesseract_kinematics_opw_factory tesseract::tesseract_kinematics_core_factories )
 tesseract_python_module(tesseract_environment_python SWIG_SRCS swig/tesseract_environment_python.i PACKAGE tesseract_environment LIBS tesseract::tesseract_environment )
 tesseract_python_module(tesseract_visualization_python SWIG_SRCS swig/tesseract_visualization_python.i PACKAGE tesseract_visualization LIBS tesseract::tesseract_visualization)
 tesseract_python_module(tesseract_command_language_python SWIG_SRCS swig/tesseract_command_language_python.i PACKAGE tesseract_command_language LIBS tesseract::tesseract_command_language)
@@ -137,7 +149,7 @@ tesseract_python_module(tesseract_motion_planners_trajopt_python SWIG_SRCS swig/
 tesseract_python_module(tesseract_motion_planners_ompl_python SWIG_SRCS swig/tesseract_motion_planners_ompl_python.i PACKAGE tesseract_motion_planners_ompl LIBS tesseract::tesseract_motion_planners_ompl )
 tesseract_python_module(tesseract_motion_planners_descartes_python SWIG_SRCS swig/tesseract_motion_planners_descartes_python.i PACKAGE tesseract_motion_planners_descartes LIBS tesseract::tesseract_motion_planners_descartes )
 tesseract_python_module(tesseract_time_parameterization_python SWIG_SRCS swig/tesseract_time_parameterization_python.i PACKAGE tesseract_time_parameterization LIBS tesseract::tesseract_time_parameterization_core tesseract::tesseract_time_parameterization_isp tesseract::tesseract_time_parameterization_totg tesseract::tesseract_time_parameterization_ruckig)
-tesseract_python_module(tesseract_task_composer_python SWIG_SRCS swig/tesseract_task_composer_python.i PACKAGE tesseract_task_composer LIBS tesseract::tesseract_task_composer tesseract::tesseract_task_composer_nodes tesseract::tesseract_task_composer_taskflow tesseract::tesseract_task_composer_factories tesseract::tesseract_task_composer_planning_factories tesseract::tesseract_task_composer_planning tesseract::tesseract_task_composer_taskflow_factories )
+# tesseract_python_module(tesseract_task_composer_python SWIG_SRCS swig/tesseract_task_composer_python.i PACKAGE tesseract_task_composer LIBS tesseract::tesseract_task_composer tesseract::tesseract_task_composer_nodes tesseract::tesseract_task_composer_taskflow ) # tesseract::tesseract_task_composer_factories tesseract::tesseract_task_composer_planning_factories tesseract::tesseract_task_composer_planning tesseract::tesseract_task_composer_taskflow_factories )
 
 set(TESSERACT_PYTHON_MODULE_TARGETS 
   _tesseract_common_python

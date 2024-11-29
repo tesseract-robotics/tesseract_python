@@ -36,6 +36,9 @@
 
 %{
 
+// tesseract_common
+#include <tesseract_common/manipulator_info.h>
+
 // tesseract_command_language
 #include <tesseract_command_language/poly/waypoint_poly.h>
 #include <tesseract_command_language/poly/instruction_poly.h>
@@ -57,7 +60,7 @@
 #include <tesseract_command_language/state_waypoint.h>
 #include <tesseract_command_language/timer_instruction.h>
 #include <tesseract_command_language/utils.h>
-#include <tesseract_command_language/types.h>
+#include <tesseract_command_language/fwd.h>
 #include <tesseract_command_language/wait_instruction.h>
 
 
@@ -76,6 +79,10 @@
 #define TESSERACT_COMMAND_LANGUAGE_PUBLIC
 
 %include "tesseract_type_erasure_macros.i"
+
+#define TESSERACT_CARTESIAN_WAYPOINT_EXPORT_KEY(a,b)
+#define TESSERACT_STATE_WAYPOINT_EXPORT_KEY(a,b)
+#define TESSERACT_INSTRUCTION_EXPORT_KEY(a,b)
 
 %define %tesseract_erasure_ctor_planning(source_class_type,dest_class_type)
 %tesseract_erasure_ctor(source_class_type,tesseract_planning,dest_class_type,tesseract_planning);
@@ -132,7 +139,7 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %tesseract_std_function(flattenFilterFn,tesseract_planning,bool,const tesseract_planning::InstructionPoly&,a,const tesseract_planning::CompositeInstruction&,b,bool,c);
 %tesseract_std_function(locateFilterFn,tesseract_planning,bool,const tesseract_planning::InstructionPoly&,a,const tesseract_planning::CompositeInstruction&,b,bool,c);
 
-%include "tesseract_command_language/types.h"
+// %include "tesseract_command_language/fwd.h"
 
 %shared_ptr(tesseract_planning::ProfileDictionary)
 %include "tesseract_command_language/profile_dictionary.h"

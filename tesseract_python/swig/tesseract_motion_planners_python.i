@@ -50,6 +50,19 @@
 #include <tesseract_state_solver/kdl/kdl_state_solver.h>
 #include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
+// tesseract_kinematics
+#include <tesseract_kinematics/core/joint_group.h>
+#include <tesseract_kinematics/core/kinematic_group.h>
+
+// tesseract_environment
+#include <tesseract_environment/commands.h>
+#include <tesseract_environment/events.h>
+#include <tesseract_environment/environment.h>
+
+// tesseract_command_language
+#include <tesseract_command_language/fwd.h>
+#include <tesseract_command_language/move_instruction.h>
+
 #include "tesseract_environment_python_std_functions.h"
 
 %}
@@ -64,6 +77,7 @@
 %include "tesseract_motion_planners/core/types.h"
 
 %shared_ptr(tesseract_planning::MotionPlanner)
+%wrap_unique_ptr(MotionPlannerUPtr,tesseract_planning::MotionPlanner)
 %include "tesseract_motion_planners/core/planner.h"
 
 %include "tesseract_motion_planners/core/utils.h"

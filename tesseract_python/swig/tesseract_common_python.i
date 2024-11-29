@@ -49,6 +49,7 @@
 #include <tesseract_common/type_erasure.h>
 #include <console_bridge/console.h>
 #include <tesseract_common/any_poly.h>
+#include <tesseract_common/plugin_info.h>
 
 #include "tesseract_common_python_std_functions.h"
 
@@ -166,6 +167,8 @@ namespace std
 #define BOOST_SERIALIZATION_ASSUME_ABSTRACT(a)
 #define BOOST_CONCEPT_ASSERT(a)
 
+#define TESSERACT_ANY_EXPORT_KEY(a,b)
+
 #define EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 #define TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 #define TESSERACT_COMMON_IGNORE_WARNINGS_POP
@@ -204,6 +207,7 @@ namespace std
 %include "tesseract_common/allowed_collision_matrix.h"
 %include "tesseract_common/kinematic_limits.h"
 %include "tesseract_common/timer.h"
+%include "tesseract_common/filesystem.h"
 
 
 // TODO: ?
@@ -250,8 +254,8 @@ namespace std
   %}
 }
 
-%template(isWithinPositionLimits) tesseract_common::isWithinPositionLimits<double>;
-%template(satisfiesPositionLimits) tesseract_common::satisfiesPositionLimits<double>;
+%template(isWithinLimits) tesseract_common::isWithinLimits<double>;
+%template(satisfiesLimits) tesseract_common::satisfiesLimits<double>;
 //%template(enforcePositionLimits) tesseract_common::enforcePositionLimits<double>;
 
 %ignore tesseract_common::TypeErasureInterface::clone;

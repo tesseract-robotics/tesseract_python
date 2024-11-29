@@ -38,7 +38,7 @@ def test_tesseract_scene_graph():
     joint_2.parent_link_name = "link_2"
     joint_2.child_link_name = "link_3"
     joint_2.type = sg.JointType_PLANAR
-    joint_2.limits = sg.JointLimits(-1,1,1,1,1)
+    joint_2.limits = sg.JointLimits(-1,1,1,1,1,1)
     assert g.addJoint(joint_2)
 
     joint_3 = sg.Joint("joint_3")
@@ -53,7 +53,7 @@ def test_tesseract_scene_graph():
     joint_4.parent_link_name = "link_2"
     joint_4.child_link_name = "link_5"
     joint_4.type = sg.JointType_REVOLUTE
-    joint_4.limits = sg.JointLimits(-1,1,1,1,1)
+    joint_4.limits = sg.JointLimits(-1,1,1,1,1,1)
     assert g.addJoint(joint_4)
 
     adjacent_links = g.getAdjacentLinkNames("link_3")
@@ -165,7 +165,7 @@ def test_load_srdf_unit():
     joint_2.parent_link_name = "link_1"
     joint_2.child_link_name = "link_2"
     joint_2.type = sg.JointType_REVOLUTE
-    joint_2.limits = sg.JointLimits(-1,1,1,1,1)
+    joint_2.limits = sg.JointLimits(-1,1,1,1,1,1)
     assert g.addJoint(joint_2)
 
     joint_3 = sg.Joint("joint_a3")
@@ -173,7 +173,7 @@ def test_load_srdf_unit():
     joint_3.parent_link_name = "link_2"
     joint_3.child_link_name = "link_3"
     joint_3.type = sg.JointType_REVOLUTE
-    joint_3.limits = sg.JointLimits(-1,1,1,1,1)
+    joint_3.limits = sg.JointLimits(-1,1,1,1,1,1)
     assert g.addJoint(joint_3)
 
     joint_4 = sg.Joint("joint_a4")
@@ -181,7 +181,7 @@ def test_load_srdf_unit():
     joint_4.parent_link_name = "link_3"
     joint_4.child_link_name = "link_4"
     joint_4.type = sg.JointType_REVOLUTE
-    joint_4.limits = sg.JointLimits(-1,1,1,1,1)
+    joint_4.limits = sg.JointLimits(-1,1,1,1,1,1)
     assert g.addJoint(joint_4)
 
     joint_5 = sg.Joint("joint_a5")
@@ -189,7 +189,7 @@ def test_load_srdf_unit():
     joint_5.parent_link_name = "link_4"
     joint_5.child_link_name = "link_5"
     joint_5.type = sg.JointType_REVOLUTE
-    joint_5.limits = sg.JointLimits(-1,1,1,1,1)
+    joint_5.limits = sg.JointLimits(-1,1,1,1,1,1)
     assert g.addJoint(joint_5)
 
     joint_6 = sg.Joint("joint_a6")
@@ -197,7 +197,7 @@ def test_load_srdf_unit():
     joint_6.parent_link_name = "link_5"
     joint_6.child_link_name = "link_6"
     joint_6.type = sg.JointType_REVOLUTE
-    joint_6.limits = sg.JointLimits(-1,1,1,1,1)
+    joint_6.limits = sg.JointLimits(-1,1,1,1,1,1)
     assert g.addJoint(joint_6)
 
     joint_7 = sg.Joint("joint_a7")
@@ -205,7 +205,7 @@ def test_load_srdf_unit():
     joint_7.parent_link_name = "link_6"
     joint_7.child_link_name = "link_7"
     joint_7.type = sg.JointType_REVOLUTE
-    joint_7.limits = sg.JointLimits(-1,1,1,1,1)
+    joint_7.limits = sg.JointLimits(-1,1,1,1,1,1)
     assert g.addJoint(joint_7)
 
     joint_tool0 = sg.Joint("base_joint")
