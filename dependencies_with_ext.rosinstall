@@ -5,11 +5,11 @@
 - git:
     local-name: tesseract
     uri: https://github.com/tesseract-robotics/tesseract.git
-    version: 0.26.0
+    version: master
 - git:
     local-name: tesseract_planning
-    uri: https://github.com/tesseract-robotics/tesseract_planning.git
-    version: 0.26.1
+    uri: https://github.com/johnwason/tesseract_planning.git
+    version: dev/win_build_failure
 - git:
     local-name: trajopt
     uri: https://github.com/tesseract-robotics/trajopt.git
