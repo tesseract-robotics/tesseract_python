@@ -169,7 +169,7 @@ set(TESSERACT_PYTHON_MODULE_TARGETS
   _tesseract_motion_planners_ompl_python
   _tesseract_motion_planners_descartes_python
   _tesseract_time_parameterization_python
-  _tesseract_task_composer_python
+  # _tesseract_task_composer_python
 )
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
