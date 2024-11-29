@@ -47,11 +47,13 @@ class TesseractViewer():
 
     :param server_address: The address to bind the websocket server to. Defaults to ('127.0.0.1',8000)
     :type server_address: Tuple[str,int], optional
+    :param ssl_context: The SSL context to use for the server. Default is None.
+    :type ssl_context: ssl.SSLContext, optional
     """
-    def __init__(self, server_address = ('127.0.0.1',8000)):
+    def __init__(self, server_address = ('127.0.0.1',8000), ssl_context = None):
         
         self.server_address = server_address
-        self.aio_viewer = tesseract_viewer_aio.TesseractViewerAIO(self.server_address)
+        self.aio_viewer = tesseract_viewer_aio.TesseractViewerAIO(self.server_address, ssl_context)
 
         self.scene_json = None
         self.scene_glb = None
