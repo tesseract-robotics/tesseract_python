@@ -106,6 +106,8 @@
 %template(name) std::unordered_map<Key,Value,std::hash<Key>,std::equal_to<Key>,Eigen::aligned_allocator<std::pair<const Key, Value>>>;
 %enddef
 
+using VectorVector3d = std::vector<Eigen::Vector3d>;
+
 %tesseract_aligned_vector(VectorIsometry3d, Eigen::Isometry3d);
 %template(VectorVector3d) std::vector<Eigen::Vector3d>;
 %template(VectorVectorXd) std::vector<Eigen::VectorXd>;
