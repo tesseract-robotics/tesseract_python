@@ -374,7 +374,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: 'python-macos-win-${{matrix.config.python_version}}'
+        name: 'python-macos-${{ matrix.config.arch }}-python-${{matrix.config.python_version}}'
         path: ws/build/tesseract_python/python
     - name: archive logs
       if: failure()
