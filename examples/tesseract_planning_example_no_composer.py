@@ -11,11 +11,11 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
-    OMPLProblemGeneratorFn, OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
+    OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
 from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
     InstructionsTrajectory
 from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
-    TrajOptProblemGeneratorFn, TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
+    TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
     ProfileDictionary_addProfile_TrajOptCompositeProfile
 
 import os
@@ -167,9 +167,13 @@ trajopt_results_instruction =trajopt_response.results
 # output program since the input is modified.
 time_parameterization = TimeOptimalTrajectoryGeneration()
 instructions_trajectory = InstructionsTrajectory(trajopt_results_instruction)
-max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
-max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
-assert time_parameterization.computeTimeStamps(instructions_trajectory, max_velocity, max_acceleration)
+max_velocity = np.array([[2.088, 2.082, 3.27, 3.6, 3.3, 3.078]],dtype=np.float64)
+max_velocity = np.hstack((-max_velocity.T, max_velocity.T))
+max_acceleration = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
+max_acceleration = np.hstack((-max_acceleration.T, max_acceleration.T))
+max_jerk = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
+max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
+assert time_parameterization.compute(instructions_trajectory, max_velocity, max_acceleration, max_jerk)
 
 # Flatten the results into a single list of instructions
 trajopt_results = trajopt_results_instruction.flatten()

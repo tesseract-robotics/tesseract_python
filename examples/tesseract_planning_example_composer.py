@@ -5,7 +5,7 @@ import numpy as np
 import numpy.testing as nptest
 
 from tesseract_robotics.tesseract_common import GeneralResourceLocator
-from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_environment import Environment, AnyPoly_wrap_EnvironmentConst
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo, AnyPoly, AnyPoly_wrap_double
 from tesseract_robotics.tesseract_command_language import CartesianWaypoint, WaypointPoly, \
@@ -15,9 +15,10 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
         AnyPoly_wrap_CompositeInstruction, DEFAULT_PROFILE_KEY, JointWaypoint, JointWaypointPoly, \
         InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
         MoveInstructionPoly_wrap_MoveInstruction, StateWaypointPoly_wrap_StateWaypoint, \
-        CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint
+        CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint, \
+        AnyPoly_wrap_ProfileDictionary
 
-from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, PlanningTaskComposerProblem, \
+from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, \
     TaskComposerDataStorage, TaskComposerContext
 
 from tesseract_robotics_viewer import TesseractViewer
@@ -134,7 +135,8 @@ factory = TaskComposerPluginFactory(config_path)
 task = factory.createTaskComposerNode("FreespacePipeline")
 
 # Get the output keys for the task
-output_key = task.getOutputKeys()[0]
+output_key = task.getOutputKeys().get("program")
+input_key = task.getInputKeys().get("planning_input")
 
 # Create a profile dictionary. Profiles can be customized by adding to this dictionary and setting the profiles
 # in the instructions.
@@ -143,17 +145,25 @@ profiles = ProfileDictionary()
 # Create an AnyPoly containing the program. This explicit step is required because the Python bindings do not
 # support implicit conversion from the CompositeInstruction to the AnyPoly.
 program_anypoly = AnyPoly_wrap_CompositeInstruction(program)
+environment_anypoly = AnyPoly_wrap_EnvironmentConst(t_env)
+profiles_anypoly = AnyPoly_wrap_ProfileDictionary(profiles)
 
-# Create the task problem and input
-task_planning_problem = PlanningTaskComposerProblem(t_env, profiles)
-task_planning_problem.input = program_anypoly
+# Create the task data
+task_data = TaskComposerDataStorage()
+task_data.setData(input_key, program_anypoly)
+task_data.setData("environment", environment_anypoly)
+task_data.setData("profiles", profiles_anypoly)
 
 # Create an executor to run the task
 task_executor = factory.createTaskComposerExecutor("TaskflowExecutor")
 
 # Run the task and wait for completion
-future = task_executor.run(task.get(), task_planning_problem)
+future = task_executor.run(task.get(), task_data)
 future.wait()
+
+if not future.context.isSuccessful():
+    print("Planning task failed")
+    exit(1)
 
 # Retrieve the output, converting the AnyPoly back to a CompositeInstruction
 results = AnyPoly_as_CompositeInstruction(future.context.data_storage.getData(output_key))
