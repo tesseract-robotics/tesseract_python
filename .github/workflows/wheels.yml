@@ -204,7 +204,7 @@ jobs:
         python-version: '${{ matrix.config.python_version }}'
         architecture: ${{ matrix.config.arch }}
     - name: vcpkg build
-      uses: johnwason/vcpkg-action@v5
+      uses: johnwason/vcpkg-action@v6
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
@@ -212,6 +212,7 @@ jobs:
         extra-args: --clean-after-build
         token: ${{ github.token }}
         cache-key: win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}
+        github-binarycache: true
     - name: pip3
       run: |
         python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
@@ -299,7 +300,7 @@ jobs:
       run: |
         brew install libomp cmake automake autoconf libtool gcc ninja
     - name: vcpkg build
-      uses: johnwason/vcpkg-action@v5
+      uses: johnwason/vcpkg-action@v6
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
@@ -307,6 +308,7 @@ jobs:
         extra-args: --clean-after-build --overlay-triplets=${{ github.workspace }}/ws/src/tesseract_python/.github/workflows/vcpkg_triplets
         token: ${{ github.token }}
         cache-key: osx-x64-vcpkg
+        github-binarycache: true
     - name: pip3
       run: |
         python3 -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool delocate
