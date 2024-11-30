@@ -281,13 +281,28 @@ jobs:
         path: "**/*.log"
         retention-days: 2
   build-macos:
-    runs-on: macos-13
+    runs-on: ${{ matrix.config.runner }}
     strategy:
       fail-fast: false
       matrix:
         config:
-        - py_platform: macosx-10.9-x86_64
+        - py_platform: macosx-12.0-x86_64
           python_version: "3.12"
+          arch: x64
+          runner: macos-13
+        - py_platform: macosx-12.0-x86_64
+          python_version: "3.13"
+          arch: x64
+          runner: macos-13
+        - py_platform: macosx-12.0-arm64
+          python_version: "3.12"
+          arch: arm64
+          runner: macos-14
+        - py_platform: macosx-12.0-arm64
+          python_version: "3.13"
+          arch: arm64
+          runner: macos-14
+      
     steps:
     - uses: actions/checkout@v2
       with:
@@ -304,10 +319,10 @@ jobs:
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
-        triplet: x64-osx-dynamic-release
+        triplet: ${{ matrix.config.arch }}-osx-dynamic-release
         extra-args: --clean-after-build --overlay-triplets=${{ github.workspace }}/ws/src/tesseract_python/.github/workflows/vcpkg_triplets
         token: ${{ github.token }}
-        cache-key: osx-x64-vcpkg
+        cache-key: osx-${{ matrix.config.arch }}-vcpkg
         github-binarycache: true
     - name: pip3
       run: |
@@ -318,8 +333,8 @@ jobs:
     - name: colcon build
       working-directory: ws
       run: |
-        export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$GITHUB_WORKSPACE/vcpkg/installed/x64-osx-dynamic-release/lib:$GITHUB_WORKSPACE/ws/install/lib
-        export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/vcpkg/installed/x64-osx-dynamic-release
+        export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib:$GITHUB_WORKSPACE/ws/install/lib
+        export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release
 
         colcon build --merge-install \
             --packages-ignore tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd \
