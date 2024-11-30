@@ -5,7 +5,7 @@ import numpy as np
 import numpy.testing as nptest
 
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
-from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_environment import Environment, AnyPoly_wrap_EnvironmentConst
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo, AnyPoly, AnyPoly_wrap_double
 from tesseract_robotics.tesseract_command_language import CartesianWaypoint, WaypointPoly, \
@@ -15,7 +15,8 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
         AnyPoly_wrap_CompositeInstruction, DEFAULT_PROFILE_KEY, JointWaypoint, JointWaypointPoly, \
         InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
         MoveInstructionPoly_wrap_MoveInstruction, StateWaypointPoly_wrap_StateWaypoint, \
-        CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint
+        CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint, \
+        AnyPoly_wrap_ProfileDictionary
 
 # from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
 # from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
@@ -26,7 +27,7 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
 #     TrajOptProblemGeneratorFn, TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
 #     ProfileDictionary_addProfile_TrajOptCompositeProfile
 from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, \
-    TaskComposerDataStorage, TaskComposerContext, PlanningTaskComposerProblem
+    TaskComposerDataStorage, TaskComposerContext, TaskComposerDataStorageUPtr
 
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
@@ -90,22 +91,27 @@ def test_task_composer_trajopt_example():
     task = factory.createTaskComposerNode("TrajOptPipeline")
     print("trajopt task name: " + task.getName())
     
-    output_key = task.getOutputKeys()[0]
+    output_key = task.getOutputKeys().get("program")
+    input_key = task.getInputKeys().get("planning_input")
 
     profiles = ProfileDictionary()
 
     program = freespace_example_progam_iiwa(manip_info)
 
-    problem_input = AnyPoly_wrap_CompositeInstruction(program)
+    problem_anypoly = AnyPoly_wrap_CompositeInstruction(program)
+    environment_anypoly = AnyPoly_wrap_EnvironmentConst(env)
+    profiles_anypoly = AnyPoly_wrap_ProfileDictionary(profiles)
 
-    planning_task_problem = PlanningTaskComposerProblem(env, profiles)
-    planning_task_problem.input = problem_input
-
+    task_data = TaskComposerDataStorage()
+    task_data.setData(input_key, problem_anypoly)
+    task_data.setData("environment", environment_anypoly)
+    task_data.setData("profiles", profiles_anypoly)
+    
     task_executor = factory.createTaskComposerExecutor("TaskflowExecutor")
 
     output_program = None
     try:
-        future = task_executor.run(task.get(), planning_task_problem)
+        future = task_executor.run(task.get(), task_data)
         future.wait()
 
         output_program = AnyPoly_as_CompositeInstruction(future.context.data_storage.getData(output_key))
@@ -124,11 +130,15 @@ def test_task_composer_trajopt_example():
 
         print("Done")
     finally:
-
         # Cleanup memory to prevent segfault on exit
-        del planning_task_problem
-        del output_program
+        # del planning_task_problem
+        # del output_program
+        del task_data
+        del problem_anypoly
+        del environment_anypoly
+        del profiles_anypoly
         del future
         del task_executor
         del task
+        
     

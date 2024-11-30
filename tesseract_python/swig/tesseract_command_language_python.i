@@ -228,3 +228,5 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %enddef
 
 %include "tesseract_command_language/constants.h"
+
+%tesseract_any_poly_type_shared_ptr(ProfileDictionary,tesseract_planning);

@@ -38,6 +38,29 @@
 
 %{
 
+// tesseract_common
+#include <tesseract_common/plugin_loader.h>
+
+// tesseract_kinematics
+#include <tesseract_kinematics/core/joint_group.h>
+#include <tesseract_kinematics/core/kinematic_group.h>
+
+// tesseract_environment
+#include <tesseract_environment/commands.h>
+#include <tesseract_environment/events.h>
+#include <tesseract_environment/environment.h>
+
+// tesseract_collision
+#include <tesseract_collision/core/types.h>
+#include <tesseract_collision/core/discrete_contact_manager.h>
+#include <tesseract_collision/core/continuous_contact_manager.h>
+
+// tesseract_command_language
+#include <tesseract_command_language/fwd.h>
+#include <tesseract_command_language/move_instruction.h>
+#include <tesseract_command_language/composite_instruction.h>
+#include <tesseract_command_language/profile_dictionary.h>
+
 // tesseract_motion_planners_simple
 #include <tesseract_motion_planners/simple/profile/simple_planner_profile.h>
 #include <tesseract_motion_planners/simple/profile/simple_planner_lvs_plan_profile.h>
@@ -84,7 +107,7 @@
 // tesseract_task_composer
 #include <tesseract_task_composer/core/task_composer_node_info.h>
 #include <tesseract_task_composer/core/task_composer_data_storage.h>
-#include <tesseract_task_composer/core/task_composer_problem.h>
+//#include <tesseract_task_composer/core/task_composer_problem.h>
 #include <tesseract_task_composer/core/task_composer_node.h>
 #include <tesseract_task_composer/core/task_composer_graph.h>
 #include <tesseract_task_composer/core/task_composer_future.h>
@@ -92,8 +115,10 @@
 #include <tesseract_task_composer/core/task_composer_executor.h>
 #include <tesseract_task_composer/core/task_composer_plugin_factory.h>
 #include <tesseract_task_composer/core/task_composer_server.h>
+#include <tesseract_task_composer/core/task_composer_pipeline.h>
+#include <tesseract_task_composer/core/task_composer_context.h>
 
-#include <tesseract_task_composer/planning/planning_task_composer_problem.h>
+// #include <tesseract_task_composer/planning/planning_task_composer_problem.h>
 
 #include <tesseract_task_composer/taskflow/taskflow_task_composer_plugin_factories.h>
 #include <tesseract_task_composer/planning/planning_task_composer_plugin_factories.h>
@@ -104,7 +129,7 @@
 
 // tesseract_task_composer profiles
 
-#include <tesseract_task_composer/planning/profiles/check_input_profile.h>
+// #include <tesseract_task_composer/planning/profiles/check_input_profile.h>
 #include <tesseract_task_composer/planning/profiles/contact_check_profile.h>
 #include <tesseract_task_composer/planning/profiles/fix_state_bounds_profile.h>
 #include <tesseract_task_composer/planning/profiles/fix_state_collision_profile.h>
@@ -114,7 +139,6 @@
 #include <tesseract_task_composer/planning/profiles/ruckig_trajectory_smoothing_profile.h>
 #include <tesseract_task_composer/planning/profiles/time_optimal_parameterization_profile.h>
 #include <tesseract_task_composer/planning/profiles/upsample_trajectory_profile.h>
-
 
 
 #include <tesseract_geometry/geometries.h>
@@ -144,14 +168,22 @@
 %unique_ptr_as(source_class_type, tesseract_planning, dest_class_type, tesseract_planning)
 %enddef
 
+%include "tesseract_task_composer/core/fwd.h"
+
+// task_composer_keys
+%include "tesseract_task_composer/core/task_composer_keys.h"
+%template(get) tesseract_planning::TaskComposerKeys::get<std::string>;
+
 // task_composer_node_info
 
 %s_u_ptr(TaskComposerNodeInfo)
 %s_u_ptr(TaskComposerNodeInfoContainer)
-%s_u_ptr(TaskComposerProblem)
+// %s_u_ptr(TaskComposerProblem)
 // TODO: Handle maps containing unique_ptr
 // %template(MapUuidTaskComposerNodeInfoUPtr) std::map<boost::uuids::uuid, std::unique_ptr<tesseract_planning::TaskComposerNodeInfo> >;
 %ignore tesseract_planning::TaskComposerNodeInfoContainer::getInfoMap;
+%ignore tesseract_planning::TaskComposerNodeInfo::find;
+%ignore tesseract_planning::TaskComposerNodeInfoContainer::find;
 %include "tesseract_task_composer/core/task_composer_node_info.h"
 
 // task_composer_data_storage
@@ -159,6 +191,8 @@
 %s_u_ptr(TaskComposerDataStorage)
 // TODO: Handle tesseract_common::AnyPoly
 %include "tesseract_task_composer/core/task_composer_data_storage.h"
+
+%unique_ptr_constructor(tesseract_planning::TaskComposerDataStorage, %arg(), %arg());
 
 // task_composer_problem
 
@@ -222,6 +256,8 @@ enum class future_status {
 %shared_ptr(tesseract_planning::TaskComposerNodeFactory)
 %shared_ptr(tesseract_planning::TaskComposerExecutorFactory)
 
+%shared_ptr(tesseract_planning::TaskComposerPluginFactory)
+
 %include "tesseract_task_composer/core/task_composer_plugin_factory.h"
 
 // task_composer_server
@@ -263,9 +299,10 @@ enum class future_status {
                               %arg(env, profiles, name));*/
 
 // contact_check_profile
-%shared_ptr(tesseract_planning::ContactCheckProfile)
-%include "tesseract_task_composer/planning/profiles/contact_check_profile.h"
-%tesseract_command_language_add_profile_type(ContactCheckProfile);
+// TODO: Fix library linking
+// %shared_ptr(tesseract_planning::ContactCheckProfile)
+// %include "tesseract_task_composer/planning/profiles/contact_check_profile.h"
+// %tesseract_command_language_add_profile_type(ContactCheckProfile);
 
 // fix_state_bounds_profile
 %shared_ptr(tesseract_planning::FixStateBoundsProfile)
@@ -310,9 +347,10 @@ enum class future_status {
 %tesseract_command_language_add_profile_type(UpsampleTrajectoryProfile);
 
 %init %{
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerPlanningFactoriesAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskflowFactoriesAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskFactoryAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
+// TODO: fix anchors
+// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerPlanningFactoriesAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
+// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskflowFactoriesAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
+// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskFactoryAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
 
 %}
 

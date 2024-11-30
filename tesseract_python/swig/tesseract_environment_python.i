@@ -192,3 +192,5 @@
         return dynamic_cast<const tesseract_environment::CommandAppliedEvent&>(a);
     }
 }
+
+%tesseract_any_poly_type_shared_ptr(Environment, tesseract_environment)
