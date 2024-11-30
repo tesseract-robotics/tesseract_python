@@ -77,7 +77,6 @@ def freespace_example_progam_iiwa(manipulator_info, goal = None, composite_profi
 
 def test_task_composer_trajopt_example():
 
-    planning_task_problem = None
     output_program = None
     future = None
     task_executor = None

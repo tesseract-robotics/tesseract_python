@@ -145,7 +145,8 @@ $1 = is_array($input);
     tesseract_geometry::PolygonMesh,
     tesseract_geometry::Mesh,
     tesseract_geometry::SDFMesh,
-    tesseract_geometry::Sphere
+    tesseract_geometry::Sphere,
+    tesseract_geometry::CompoundMesh
 )
 
 
@@ -193,6 +194,9 @@ class OcTree {};
 
 %shared_ptr(tesseract_geometry::Sphere)
 %include <tesseract_geometry/impl/sphere.h>
+
+%shared_ptr(tesseract_geometry::CompoundMesh)
+%include <tesseract_geometry/impl/compound_mesh.h>
 
 %include "tesseract_geometry/geometries.h"
 %include "tesseract_geometry/utils.h"
