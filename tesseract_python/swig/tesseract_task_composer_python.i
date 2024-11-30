@@ -299,10 +299,9 @@ enum class future_status {
                               %arg(env, profiles, name));*/
 
 // contact_check_profile
-// TODO: Fix library linking
-// %shared_ptr(tesseract_planning::ContactCheckProfile)
-// %include "tesseract_task_composer/planning/profiles/contact_check_profile.h"
-// %tesseract_command_language_add_profile_type(ContactCheckProfile);
+%shared_ptr(tesseract_planning::ContactCheckProfile)
+%include "tesseract_task_composer/planning/profiles/contact_check_profile.h"
+%tesseract_command_language_add_profile_type(ContactCheckProfile);
 
 // fix_state_bounds_profile
 %shared_ptr(tesseract_planning::FixStateBoundsProfile)
@@ -348,9 +347,9 @@ enum class future_status {
 
 %init %{
 // TODO: fix anchors
-// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerPlanningFactoriesAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
-// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskflowFactoriesAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
-// tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskFactoryAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerPlanningFactoriesAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskflowFactoriesAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
+tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_planning::TaskComposerTaskFactoryAnchor(), "TESSERACT_TASK_COMPOSER_PLUGINS");
 
 %}
 
