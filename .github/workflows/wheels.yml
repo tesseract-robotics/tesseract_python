@@ -328,6 +328,7 @@ jobs:
         token: ${{ github.token }}
         cache-key: osx-${{ matrix.config.arch }}-vcpkg
         github-binarycache: true
+        revision: master
     - name: pip3
       run: |
         python3 -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool delocate
