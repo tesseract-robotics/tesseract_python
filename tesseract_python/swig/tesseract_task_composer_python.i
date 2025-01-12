@@ -76,27 +76,18 @@
 #include <tesseract_motion_planners/trajopt/profile/trajopt_profile.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_composite_profile.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_plan_profile.h>
-#include <tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h>
-#include <tesseract_motion_planners/trajopt/serialize.h>
-#include <tesseract_motion_planners/trajopt/deserialize.h>
 #include <tesseract_motion_planners/trajopt/trajopt_collision_config.h>
 
 // tesseract_motion_planners_ompl
 #include <tesseract_motion_planners/ompl/ompl_planner_configurator.h>
-#include <tesseract_motion_planners/ompl/ompl_problem.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_profile.h>
-#include <tesseract_motion_planners/ompl/profile/ompl_default_plan_profile.h>
+#include <tesseract_motion_planners/ompl/profile/ompl_real_vector_plan_profile.h>
 #include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
-#include <tesseract_motion_planners/ompl/serialize.h>
-#include <tesseract_motion_planners/ompl/deserialize.h>
 
 // tesseract_motion_planner_descartes
-#include <tesseract_motion_planners/descartes/descartes_problem.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_profile.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_default_plan_profile.h>
 #include <tesseract_motion_planners/descartes/descartes_motion_planner.h>
-#include <tesseract_motion_planners/descartes/serialize.h>
-#include <tesseract_motion_planners/descartes/deserialize.h>
 
 // tesseract_time_parameterization
 #include <tesseract_time_parameterization/isp/iterative_spline_parameterization.h>
@@ -153,7 +144,6 @@
 
 #include "tesseract_environment_python_std_functions.h"
 
-#include "tesseract_command_language_python_profile_dictionary_functions.h"
 
 %}
 
@@ -299,36 +289,44 @@ enum class future_status {
                               %arg(env, profiles, name));*/
 
 // contact_check_profile
+%pythondynamic tesseract_planning::ContactCheckProfile;
 %shared_ptr(tesseract_planning::ContactCheckProfile)
 %include "tesseract_task_composer/planning/profiles/contact_check_profile.h"
 %tesseract_command_language_add_profile_type(ContactCheckProfile);
 
 // fix_state_bounds_profile
+%pythondynamic tesseract_planning::FixStateBoundsProfile;
 %shared_ptr(tesseract_planning::FixStateBoundsProfile)
 %include "tesseract_task_composer/planning/profiles/fix_state_bounds_profile.h"
 %tesseract_command_language_add_profile_type(FixStateBoundsProfile);
 
 // fix_state_collision_profile
+%pythondynamic tesseract_planning::FixStateCollisionProfile;
 %shared_ptr(tesseract_planning::FixStateCollisionProfile)
 %include "tesseract_task_composer/planning/profiles/fix_state_collision_profile.h"
 %tesseract_command_language_add_profile_type(FixStateCollisionProfile);
 
 // iterative_spline_parameterization_profile
+%pythondynamic tesseract_planning::IterativeSplineParameterizationProfile;
 %shared_ptr(tesseract_planning::IterativeSplineParameterizationProfile)
 %include "tesseract_task_composer/planning/profiles/iterative_spline_parameterization_profile.h"
 %tesseract_command_language_add_profile_type(IterativeSplineParameterizationProfile);
 
 // min_length_profile
+%pythondynamic tesseract_planning::MinLengthProfile;
 %shared_ptr(tesseract_planning::MinLengthProfile)
 %include "tesseract_task_composer/planning/profiles/min_length_profile.h"
 %tesseract_command_language_add_profile_type(MinLengthProfile);
 
 // profile_switch_profile
+%pythondynamic tesseract_planning::ProfileSwitchProfile;
 %shared_ptr(tesseract_planning::ProfileSwitchProfile)
 %include "tesseract_task_composer/planning/profiles/profile_switch_profile.h"
 %tesseract_command_language_add_profile_type(ProfileSwitchProfile);
 
 // ruckig_trajectory_smoothing_profile
+%pythondynamic tesseract_planning::RuckigTrajectorySmoothingCompositeProfile;
+%pythondynamic tesseract_planning::RuckigTrajectorySmoothingMoveProfile;
 %shared_ptr(tesseract_planning::RuckigTrajectorySmoothingCompositeProfile)
 %shared_ptr(tesseract_planning::RuckigTrajectorySmoothingMoveProfile)
 %include "tesseract_task_composer/planning/profiles/ruckig_trajectory_smoothing_profile.h"
@@ -336,11 +334,13 @@ enum class future_status {
 %tesseract_command_language_add_profile_type(RuckigTrajectorySmoothingMoveProfile);
 
 //time_optimal_parameterization_profile
+%pythondynamic tesseract_planning::TimeOptimalParameterizationProfile;
 %shared_ptr(tesseract_planning::TimeOptimalParameterizationProfile)
 %include "tesseract_task_composer/planning/profiles/time_optimal_parameterization_profile.h"
 %tesseract_command_language_add_profile_type(TimeOptimalParameterizationProfile);
 
 // upsample_trajectory_profile
+%pythondynamic tesseract_planning::UpsampleTrajectoryProfile;
 %shared_ptr(tesseract_planning::UpsampleTrajectoryProfile)
 %include "tesseract_task_composer/planning/profiles/upsample_trajectory_profile.h"
 %tesseract_command_language_add_profile_type(UpsampleTrajectoryProfile);

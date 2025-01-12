@@ -40,11 +40,11 @@ struct MoveInstructionPoly
   void setPathProfile(const std::string& profile);
   const std::string& getPathProfile() const;
 
-  void setProfileOverrides(ProfileDictionary::ConstPtr profile_overrides);
-  ProfileDictionary::ConstPtr getProfileOverrides() const;
+  void setProfileOverrides(ProfileOverrides profile_overrides);
+  const ProfileOverrides getProfileOverrides() const;
 
-  void setPathProfileOverrides(ProfileDictionary::ConstPtr profile_overrides);
-  ProfileDictionary::ConstPtr getPathProfileOverrides() const;
+  void setPathProfileOverrides(ProfileOverrides profile_overrides);
+  const ProfileOverrides getPathProfileOverrides() const;
 
   void setMoveType(MoveInstructionType move_type);
   MoveInstructionType getMoveType() const;

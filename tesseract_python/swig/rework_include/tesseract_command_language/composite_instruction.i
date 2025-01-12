@@ -15,8 +15,8 @@ class CompositeInstruction
 public:
 
   CompositeInstruction(std::string profile = DEFAULT_PROFILE_KEY,
-                       CompositeInstructionOrder order = CompositeInstructionOrder::ORDERED,
-                       tesseract_common::ManipulatorInfo manipulator_info = tesseract_common::ManipulatorInfo());
+                       tesseract_common::ManipulatorInfo manipulator_info = tesseract_common::ManipulatorInfo(),
+                       CompositeInstructionOrder order = CompositeInstructionOrder::ORDERED);
 
   CompositeInstructionOrder getOrder() const;
 
@@ -33,8 +33,8 @@ public:
   const std::string& getProfile() const;
 
   /** @brief Dictionary of profiles that will override named profiles for a specific task*/
-  void setProfileOverrides(ProfileDictionary::ConstPtr profile_overrides);
-  ProfileDictionary::ConstPtr getProfileOverrides() const;
+  void setProfileOverrides(ProfileOverrides profile_overrides);
+  ProfileOverrides getProfileOverrides() const;
 
   void setManipulatorInfo(tesseract_common::ManipulatorInfo info);
   const tesseract_common::ManipulatorInfo& getManipulatorInfo() const;

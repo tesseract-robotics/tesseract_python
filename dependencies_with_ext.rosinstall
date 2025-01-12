@@ -5,15 +5,15 @@
 - git:
     local-name: tesseract
     uri: https://github.com/tesseract-robotics/tesseract.git
-    version: 0.27.1
+    version: c0162ef9a30507d0ef750d37aa96d098846a4e38
 - git:
     local-name: tesseract_planning
-    uri: https://github.com/johnwason/tesseract_planning.git
-    version: dev/win_build_failure
+    uri: https://github.com/tesseract-robotics/tesseract_planning.git
+    version: b8f02cc8382eb86b1a77a2369acccf01f646499a
 - git:
     local-name: trajopt
     uri: https://github.com/tesseract-robotics/trajopt.git
-    version: 0.27.0
+    version: 0840fc737e2fcc4441fa50d036467c5f17f6746b
 - git:
     local-name: descartes_light
     uri: https://github.com/swri-robotics/descartes_light.git

@@ -15,8 +15,8 @@ from tesseract_robotics.tesseract_command_language import JointWaypoint, Cartesi
     JointWaypointPoly_wrap_JointWaypoint, CartesianWaypointPoly_wrap_CartesianWaypoint, \
     MoveInstructionPoly_wrap_MoveInstruction
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
-from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
-    OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
+from tesseract_robotics.tesseract_motion_planners_ompl import RRTConnectConfigurator, \
+    OMPLMotionPlanner, OMPLRealVectorPlanProfile
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
@@ -46,8 +46,6 @@ def test_ompl_freespace_joint_cart():
     env, manip, joint_names = get_environment()
     kin_group = env.getKinematicGroup(manip.manipulator)
 
-    cur_state = env.getState()
-
     wp1 = JointWaypoint(joint_names, start_state)
 
     goal = kin_group.calcFwdKin(end_state)[manip.tcp_frame]
@@ -61,19 +59,16 @@ def test_ompl_freespace_joint_cart():
     program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
     program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
-    interpolated_program = generateInterpolatedProgram(program, cur_state, env, 3.14, 1.0, 3.14, 10)
+    interpolated_program = generateInterpolatedProgram(program, env, 3.14, 1.0, 3.14, 10)
 
-    plan_profile = OMPLDefaultPlanProfile()
-    plan_profile.planners.clear()
-    plan_profile.planners.append(RRTConnectConfigurator())
+    plan_profile = OMPLRealVectorPlanProfile()
 
     profiles = ProfileDictionary()
-    ProfileDictionary_addProfile_OMPLPlanProfile(profiles,OMPL_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
+    profiles.addProfile(OMPL_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
     
     request = PlannerRequest()
     request.instructions = interpolated_program
     request.env = env
-    request.env_state = cur_state
     request.profiles = profiles
     
 

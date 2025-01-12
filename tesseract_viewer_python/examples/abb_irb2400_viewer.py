@@ -9,13 +9,12 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
 
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
-from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
-    OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
+from tesseract_robotics.tesseract_motion_planners_ompl import RRTConnectConfigurator, \
+    OMPLMotionPlanner
 from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
     InstructionsTrajectory
 from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
-    TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
-    ProfileDictionary_addProfile_TrajOptCompositeProfile
+    TrajOptMotionPlanner
 
 import os
 import re
@@ -78,12 +77,9 @@ plan_profile.planners.append(RRTConnectConfigurator())
 profiles = ProfileDictionary()
 ProfileDictionary_addProfile_OMPLPlanProfile(profiles,OMPL_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
 
-cur_state = t_env.getState()
-
 request = PlannerRequest()
 request.instructions = program
 request.env = t_env
-request.env_state = cur_state
 request.profiles = profiles
 
 ompl_planner = OMPLMotionPlanner(OMPL_DEFAULT_NAMESPACE) 
@@ -92,7 +88,7 @@ response=ompl_planner.solve(request)
 assert response.successful
 results_instruction = response.results
 
-interpolated_results_instruction = generateInterpolatedProgram(results_instruction, cur_state, t_env, 3.14, 1.0, 3.14, 10)
+interpolated_results_instruction = generateInterpolatedProgram(results_instruction, t_env, 3.14, 1.0, 3.14, 10)
 
 trajopt_plan_profile = TrajOptDefaultPlanProfile()
 trajopt_composite_profile = TrajOptDefaultCompositeProfile()
@@ -106,7 +102,6 @@ trajopt_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
 trajopt_request = PlannerRequest()
 request.instructions = interpolated_results_instruction
 request.env = t_env
-request.env_state = cur_state
 request.profiles = trajopt_profiles
 
 trajopt_response = trajopt_planner.solve(request)

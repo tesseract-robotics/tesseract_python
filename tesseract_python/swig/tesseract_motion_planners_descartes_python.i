@@ -39,12 +39,9 @@
 
 %{
 // tesseract_motion_planner_descartes
-#include <tesseract_motion_planners/descartes/descartes_problem.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_profile.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_default_plan_profile.h>
 #include <tesseract_motion_planners/descartes/descartes_motion_planner.h>
-#include <tesseract_motion_planners/descartes/serialize.h>
-#include <tesseract_motion_planners/descartes/deserialize.h>
 
 
 #include <tesseract_geometry/geometries.h>
@@ -80,7 +77,6 @@
 #include <tesseract_visualization/visualization.h>
 
 #include "tesseract_command_language_python_std_functions.h"
-#include "tesseract_command_language_python_profile_dictionary_functions.h"
 
 #include "tesseract_environment_python_std_functions.h"
 %}
@@ -88,14 +84,15 @@
 // tesseract_motion_planner_descartes
 #define TESSERACT_MOTION_PLANNERS_DESCARTES_PUBLIC
 
+%ignore createWaypointSampler;
+%ignore createEdgeEvaluator;
+%ignore createStateEvaluator;
+
 %include "tesseract_motion_planners/descartes/descartes_utils.h"
 %tesseract_std_function_base(PoseSamplerFn,tesseract_planning,tesseract_common::VectorIsometry3d,const Eigen::Isometry3d&,a);
 %tesseract_std_function(PoseSamplerFn,tesseract_planning,tesseract_common::VectorIsometry3d,const Eigen::Isometry3d&,a);
-%shared_ptr(tesseract_planning::DescartesProblem<double>)
-%shared_ptr(DescartesProblemD)
-%include "tesseract_motion_planners/descartes/descartes_problem.h"
-%template(DescartesProblemD) tesseract_planning::DescartesProblem<double>;
 
+%pythondynamic tesseract_planning::DescartesPlanProfileD;
 %shared_ptr(tesseract_planning::DescartesPlanProfile<double>)
 %include "tesseract_motion_planners/descartes/profile/descartes_profile.h"
 %template(DescartesPlanProfileD) std::shared_ptr<tesseract_planning::DescartesPlanProfile<double> >;
@@ -103,6 +100,7 @@
 namespace tesseract_planning {using DescartesPlanProfileMapD = std::unordered_map<std::string, std::shared_ptr<const DescartesPlanProfile<double>>>;}
 %tesseract_command_language_add_profile_type2(DescartesPlanProfileD,DescartesPlanProfile<double>);
 
+%pythondynamic tesseract_planning::DescartesDefaultPlanProfileD;
 %shared_ptr(tesseract_planning::DescartesDefaultPlanProfile<double>)
 %ignore tesseract_planning::DescartesDefaultPlanProfile::edge_evaluator;
 %ignore tesseract_planning::DescartesDefaultPlanProfile::is_valid;
@@ -118,7 +116,7 @@ namespace tesseract_planning {using DescartesPlanProfileMapD = std::unordered_ma
 %template(DescartesMotionPlannerD) tesseract_planning::DescartesMotionPlanner<double>;
 
 %inline {
-    std::shared_ptr<tesseract_planning::DescartesPlanProfile<double>> cast_DescartesPlanProfileD(
+    std::shared_ptr<tesseract_planning::Profile> cast_DescartesPlanProfileD(
         const std::shared_ptr<tesseract_planning::DescartesDefaultPlanProfile<double>>& a
     )
     {

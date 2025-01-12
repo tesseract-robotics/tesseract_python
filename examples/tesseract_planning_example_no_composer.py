@@ -10,13 +10,12 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
 
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
-from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
-    OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
+from tesseract_robotics.tesseract_motion_planners_ompl import RRTConnectConfigurator, \
+    OMPLMotionPlanner
 from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
     InstructionsTrajectory
 from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
-    TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
-    ProfileDictionary_addProfile_TrajOptCompositeProfile
+    TrajOptMotionPlanner
 
 import os
 import re
@@ -118,13 +117,11 @@ plan_profile.planners.append(RRTConnectConfigurator())
 profiles = ProfileDictionary()
 ProfileDictionary_addProfile_OMPLPlanProfile(profiles,OMPL_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
 
-cur_state = t_env.getState()
 
 # Create the planning request and run the planner
 request = PlannerRequest()
 request.instructions = program
 request.env = t_env
-request.env_state = cur_state
 request.profiles = profiles
 
 ompl_planner = OMPLMotionPlanner(OMPL_DEFAULT_NAMESPACE) 
@@ -135,7 +132,7 @@ results_instruction = response.results
 
 # The OMPL program does not generate dense waypoints. This function will interpolate the results to generate
 # a dense set of waypoints.
-interpolated_results_instruction = generateInterpolatedProgram(results_instruction, cur_state, t_env, 3.14, 1.0, 3.14, 10)
+interpolated_results_instruction = generateInterpolatedProgram(results_instruction, t_env, 3.14, 1.0, 3.14, 10)
 
 # Create the TrajOpt planner profile configurations. TrajOpt is used to optimize the random program generated
 # by OMPL
@@ -153,7 +150,6 @@ trajopt_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
 trajopt_request = PlannerRequest()
 trajopt_request.instructions = interpolated_results_instruction
 trajopt_request.env = t_env
-trajopt_request.env_state = cur_state
 trajopt_request.profiles = trajopt_profiles
 
 trajopt_response = trajopt_planner.solve(trajopt_request)

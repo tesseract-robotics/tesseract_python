@@ -38,8 +38,8 @@ TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
 TESSERACT_TASK_COMPOSER_DIR = os.environ["TESSERACT_TASK_COMPOSER_DIR"]
 
 def get_environment():
-    locator = TesseractSupportResourceLocator()
     env = Environment()
+    locator = TesseractSupportResourceLocator()
     tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
     urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf"))
     srdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf"))
@@ -55,7 +55,7 @@ def freespace_example_progam_iiwa(manipulator_info, goal = None, composite_profi
                                 freespace_profile = DEFAULT_PROFILE_KEY):
     if goal is None:
         goal = Isometry3d.Identity() * Translation3d(0.2, 0.2, 1.0)
-    program = CompositeInstruction(DEFAULT_PROFILE_KEY, CompositeInstructionOrder_ORDERED, manipulator_info)
+    program = CompositeInstruction(DEFAULT_PROFILE_KEY, manipulator_info, CompositeInstructionOrder_ORDERED)
     joint_names = ["joint_a1", "joint_a2", "joint_a3", "joint_a4", "joint_a5", "joint_a6", "joint_a7"]
     joint_values = np.zeros((7,))
     wp1 = StateWaypointPoly_wrap_StateWaypoint(StateWaypoint(joint_names, joint_values))
@@ -85,7 +85,8 @@ def test_task_composer_trajopt_example():
     env, manip_info = get_environment()
 
     config_path = FilesystemPath(os.path.join(TESSERACT_TASK_COMPOSER_DIR, "config/task_composer_plugins_no_trajopt_ifopt.yaml"))
-    factory = TaskComposerPluginFactory(config_path)
+    p_locator = TesseractSupportResourceLocator()
+    factory = TaskComposerPluginFactory(config_path, p_locator)
 
     task = factory.createTaskComposerNode("TrajOptPipeline")
     print("trajopt task name: " + task.getName())

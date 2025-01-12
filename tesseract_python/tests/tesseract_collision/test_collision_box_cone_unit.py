@@ -4,6 +4,7 @@ from tesseract_robotics import tesseract_geometry
 from tesseract_robotics import tesseract_common
 from tesseract_robotics import tesseract_collision
 import os
+from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
 
@@ -123,16 +124,20 @@ def run_test(checker):
 
 def get_plugin_factory():
     collision_config = tesseract_common.FilesystemPath(TESSERACT_SUPPORT_DIR + "/urdf/" + "contact_manager_plugins.yaml")
-    return tesseract_collision.ContactManagersPluginFactory(collision_config)
+    locator = TesseractSupportResourceLocator()
+    return tesseract_collision.ContactManagersPluginFactory(collision_config, locator), locator
 
-def test_bullet_discrete_simple():    
-    checker = get_plugin_factory().createDiscreteContactManager("BulletDiscreteSimpleManager")
+def test_bullet_discrete_simple():
+    factory, locator =get_plugin_factory()    
+    checker= factory.createDiscreteContactManager("BulletDiscreteSimpleManager")
     run_test(checker)
 
 def test_bullet_discrete_bvh():
-     checker = get_plugin_factory().createDiscreteContactManager("BulletDiscreteBVHManager")
+     factory, locator = get_plugin_factory()
+     checker = factory.createDiscreteContactManager("BulletDiscreteBVHManager")
      run_test(checker)
 
 def __test_fcl_discrete_bvh():
-    checker = get_plugin_factory().createDiscreteContactManager("FCLDiscreteBVHManager")
+    factory, locator = get_plugin_factory()
+    checker = factory.createDiscreteContactManager("FCLDiscreteBVHManager")
     run_test(checker)
