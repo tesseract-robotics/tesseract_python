@@ -129,7 +129,7 @@ program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
 # Create the task composer plugin factory and load the plugins
 config_path = FilesystemPath(task_composer_filename)
-factory = TaskComposerPluginFactory(config_path)
+factory = TaskComposerPluginFactory(config_path, locator)
 
 # Create the task composer node. In this case the FreespacePipeline is used. Many other are available.
 task = factory.createTaskComposerNode("FreespacePipeline")

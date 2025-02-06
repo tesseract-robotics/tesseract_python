@@ -11,7 +11,7 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 from tesseract_robotics.tesseract_motion_planners_ompl import RRTConnectConfigurator, \
-    OMPLMotionPlanner
+    OMPLMotionPlanner, OMPLRealVectorPlanProfile
 from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
     InstructionsTrajectory
 from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
@@ -107,15 +107,13 @@ program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 # program.appendMoveInstruction(MoveInstructionPoly(plan_f2))
 
 # Initialize the OMPL planner for RRTConnect algorithm
-plan_profile = OMPLDefaultPlanProfile()
-plan_profile.planners.clear()
-plan_profile.planners.append(RRTConnectConfigurator())
+plan_profile = OMPLRealVectorPlanProfile()
 
 # Create the profile dictionary. Profiles can be used to customize the behavior of the planner. The module
 # level function `ProfileDictionary_addProfile_OMPLPlanProfile` is used to add a profile to the dictionary. All
 # profile types have associated profile dictionary functions.
 profiles = ProfileDictionary()
-ProfileDictionary_addProfile_OMPLPlanProfile(profiles,OMPL_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
+profiles.addProfile(OMPL_DEFAULT_NAMESPACE, "DEFAULT", plan_profile)
 
 
 # Create the planning request and run the planner
@@ -140,8 +138,8 @@ trajopt_plan_profile = TrajOptDefaultPlanProfile()
 trajopt_composite_profile = TrajOptDefaultCompositeProfile()
 
 trajopt_profiles = ProfileDictionary()
-ProfileDictionary_addProfile_TrajOptPlanProfile(trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_plan_profile)
-ProfileDictionary_addProfile_TrajOptCompositeProfile(trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_composite_profile)
+profiles.addProfile(TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_plan_profile)
+profiles.addProfile(TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_composite_profile)
 
 # Create the TrajOpt planner
 trajopt_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
