@@ -31,23 +31,9 @@ BytesResource Class
    :exclude-members: thisown
    :members:
 
-CalibrationInfo Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_common.CalibrationInfo
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
 CollisionMarginData Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.CollisionMarginData
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
-ContactManagersPluginInfo Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_common.ContactManagersPluginInfo
    :noindex:
    :exclude-members: thisown
    :members:
@@ -101,13 +87,6 @@ KinematicLimits Class
    :exclude-members: thisown
    :members:
 
-KinematicsPluginInfo Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_common.KinematicsPluginInfo
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
 ManipulatorInfo Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.ManipulatorInfo
@@ -125,20 +104,6 @@ OutputHandler Class
 PairHash Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.PairHash
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
-PluginInfo Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_common.PluginInfo
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
-PluginInfoContainer Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_common.PluginInfoContainer
    :noindex:
    :exclude-members: thisown
    :members:
@@ -185,13 +150,6 @@ SimpleResourceLocatorFnBase Class
    :exclude-members: thisown
    :members:
 
-TaskComposerPluginInfo Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_common.TaskComposerPluginInfo
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
 Timer Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.Timer
@@ -216,6 +174,13 @@ TypeErasureInterface Class
 Uuid Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_common.Uuid
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
+VectorFilesystemPath Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_common.VectorFilesystemPath
    :noindex:
    :exclude-members: thisown
    :members:
@@ -357,9 +322,9 @@ getLogLevel Function
 .. autofunction:: tesseract_robotics.tesseract_common.getLogLevel
    :noindex:
 
-isWithinPositionLimits Function
+isWithinLimits Function
 ===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_common.isWithinPositionLimits
+.. autofunction:: tesseract_robotics.tesseract_common.isWithinLimits
    :noindex:
 
 log Function
@@ -387,9 +352,9 @@ restorePreviousOutputHandler Function
 .. autofunction:: tesseract_robotics.tesseract_common.restorePreviousOutputHandler
    :noindex:
 
-satisfiesPositionLimits Function
+satisfiesLimits Function
 ===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_common.satisfiesPositionLimits
+.. autofunction:: tesseract_robotics.tesseract_common.satisfiesLimits
    :noindex:
 
 setLogLevel Function
@@ -417,6 +382,7 @@ Constants
 * ``CollisionMarginOverrideType_OVERRIDE_DEFAULT_MARGIN``
 * ``CollisionMarginOverrideType_OVERRIDE_PAIR_MARGIN``
 * ``CollisionMarginOverrideType_REPLACE``
+* ``PEDANTIC_WHITESPACE``
 * ``PRESERVE_WHITESPACE``
 * ``TINYXML2_MAJOR_VERSION``
 * ``TINYXML2_MAX_ELEMENT_DEPTH``

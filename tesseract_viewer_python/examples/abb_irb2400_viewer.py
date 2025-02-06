@@ -7,14 +7,14 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
     CompositeInstruction, MoveInstructionPoly, CartesianWaypointPoly, ProfileDictionary, \
     CartesianWaypointPoly_wrap_CartesianWaypoint, MoveInstructionPoly_wrap_MoveInstruction
 
-from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse, generateInterpolatedProgram
-from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
-    OMPLProblemGeneratorFn, OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
+from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
+from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
+from tesseract_robotics.tesseract_motion_planners_ompl import RRTConnectConfigurator, \
+    OMPLMotionPlanner, OMPLRealVectorPlanProfile
 from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
     InstructionsTrajectory
 from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
-    TrajOptProblemGeneratorFn, TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
-    ProfileDictionary_addProfile_TrajOptCompositeProfile
+    TrajOptMotionPlanner
 
 import os
 import re
@@ -70,19 +70,14 @@ program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_ins
 program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 # program.appendMoveInstruction(MoveInstructionPoly(plan_f2))
 
-plan_profile = OMPLDefaultPlanProfile()
-plan_profile.planners.clear()
-plan_profile.planners.append(RRTConnectConfigurator())
+plan_profile = OMPLRealVectorPlanProfile()
 
 profiles = ProfileDictionary()
-ProfileDictionary_addProfile_OMPLPlanProfile(profiles,OMPL_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
-
-cur_state = t_env.getState()
+profiles.addProfile(OMPL_DEFAULT_NAMESPACE, "DEFAULT", plan_profile)
 
 request = PlannerRequest()
 request.instructions = program
 request.env = t_env
-request.env_state = cur_state
 request.profiles = profiles
 
 ompl_planner = OMPLMotionPlanner(OMPL_DEFAULT_NAMESPACE) 
@@ -91,21 +86,20 @@ response=ompl_planner.solve(request)
 assert response.successful
 results_instruction = response.results
 
-interpolated_results_instruction = generateInterpolatedProgram(results_instruction, cur_state, t_env, 3.14, 1.0, 3.14, 10)
+interpolated_results_instruction = generateInterpolatedProgram(results_instruction, t_env, 3.14, 1.0, 3.14, 10)
 
 trajopt_plan_profile = TrajOptDefaultPlanProfile()
 trajopt_composite_profile = TrajOptDefaultCompositeProfile()
 
 trajopt_profiles = ProfileDictionary()
-ProfileDictionary_addProfile_TrajOptPlanProfile(trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_plan_profile)
-ProfileDictionary_addProfile_TrajOptCompositeProfile(trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_composite_profile)
+profiles.addProfile(TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_plan_profile)
+profiles.addProfile(TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_composite_profile)
 
 trajopt_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
 
 trajopt_request = PlannerRequest()
 request.instructions = interpolated_results_instruction
 request.env = t_env
-request.env_state = cur_state
 request.profiles = trajopt_profiles
 
 trajopt_response = trajopt_planner.solve(request)
@@ -115,9 +109,13 @@ trajopt_results_instruction = trajopt_response.results
 
 time_parameterization = TimeOptimalTrajectoryGeneration()
 instructions_trajectory = InstructionsTrajectory(trajopt_results_instruction)
-max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
-max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
-assert time_parameterization.computeTimeStamps(instructions_trajectory, max_velocity, max_acceleration)
+max_velocity = np.array([[2.088, 2.082, 3.27, 3.6, 3.3, 3.078]],dtype=np.float64)
+max_velocity = np.hstack((-max_velocity.T, max_velocity.T))
+max_acceleration = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
+max_acceleration = np.hstack((-max_acceleration.T, max_acceleration.T))
+max_jerk = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
+max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
+assert time_parameterization.compute(instructions_trajectory, max_velocity, max_acceleration, max_jerk)
 
 trajopt_results = trajopt_results_instruction.flatten()
 viewer.update_trajectory(trajopt_results)

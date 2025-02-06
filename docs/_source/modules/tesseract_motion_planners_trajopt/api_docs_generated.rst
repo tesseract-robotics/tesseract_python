@@ -143,6 +143,13 @@ TotalTimeTermInfo Class
    :exclude-members: thisown
    :members:
 
+TrajOptCartesianWaypointConfig Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_motion_planners_trajopt.TrajOptCartesianWaypointConfig
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
 TrajOptCompositeProfile Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_motion_planners_trajopt.TrajOptCompositeProfile
@@ -164,9 +171,9 @@ TrajOptDefaultPlanProfile Class
    :exclude-members: thisown
    :members:
 
-TrajOptDefaultSolverProfile Class
+TrajOptJointWaypointConfig Class
 ===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners_trajopt.TrajOptDefaultSolverProfile
+.. autoclass:: tesseract_robotics.tesseract_motion_planners_trajopt.TrajOptJointWaypointConfig
    :noindex:
    :exclude-members: thisown
    :members:
@@ -192,20 +199,6 @@ TrajOptProb Class
    :exclude-members: thisown
    :members:
 
-TrajOptProblemGeneratorFn Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners_trajopt.TrajOptProblemGeneratorFn
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
-TrajOptProblemGeneratorFnBase Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners_trajopt.TrajOptProblemGeneratorFnBase
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
 TrajOptResult Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_motion_planners_trajopt.TrajOptResult
@@ -216,6 +209,20 @@ TrajOptResult Class
 TrajOptSolverProfile Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_motion_planners_trajopt.TrajOptSolverProfile
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
+TrajOptTermInfos Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_motion_planners_trajopt.TrajOptTermInfos
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
+TrajOptWaypointInfo Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_motion_planners_trajopt.TrajOptWaypointInfo
    :noindex:
    :exclude-members: thisown
    :members:
@@ -232,111 +239,6 @@ ConstructProblem Function
 OptimizeProblem Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.OptimizeProblem
-   :noindex:
-
-ProfileDictionary_addProfile_TrajOptCompositeProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_addProfile_TrajOptCompositeProfile
-   :noindex:
-
-ProfileDictionary_addProfile_TrajOptPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_addProfile_TrajOptPlanProfile
-   :noindex:
-
-ProfileDictionary_addProfile_TrajOptSolverProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_addProfile_TrajOptSolverProfile
-   :noindex:
-
-ProfileDictionary_getProfileEntry_TrajOptCompositeProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_getProfileEntry_TrajOptCompositeProfile
-   :noindex:
-
-ProfileDictionary_getProfileEntry_TrajOptPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_getProfileEntry_TrajOptPlanProfile
-   :noindex:
-
-ProfileDictionary_getProfileEntry_TrajOptSolverProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_getProfileEntry_TrajOptSolverProfile
-   :noindex:
-
-ProfileDictionary_getProfile_TrajOptCompositeProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_getProfile_TrajOptCompositeProfile
-   :noindex:
-
-ProfileDictionary_getProfile_TrajOptPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_getProfile_TrajOptPlanProfile
-   :noindex:
-
-ProfileDictionary_getProfile_TrajOptSolverProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_getProfile_TrajOptSolverProfile
-   :noindex:
-
-ProfileDictionary_hasProfileEntry_TrajOptCompositeProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_hasProfileEntry_TrajOptCompositeProfile
-   :noindex:
-
-ProfileDictionary_hasProfileEntry_TrajOptPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_hasProfileEntry_TrajOptPlanProfile
-   :noindex:
-
-ProfileDictionary_hasProfileEntry_TrajOptSolverProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_hasProfileEntry_TrajOptSolverProfile
-   :noindex:
-
-ProfileDictionary_hasProfile_TrajOptCompositeProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_hasProfile_TrajOptCompositeProfile
-   :noindex:
-
-ProfileDictionary_hasProfile_TrajOptPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_hasProfile_TrajOptPlanProfile
-   :noindex:
-
-ProfileDictionary_hasProfile_TrajOptSolverProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_hasProfile_TrajOptSolverProfile
-   :noindex:
-
-ProfileDictionary_removeProfileEntry_TrajOptCompositeProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_removeProfileEntry_TrajOptCompositeProfile
-   :noindex:
-
-ProfileDictionary_removeProfileEntry_TrajOptPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_removeProfileEntry_TrajOptPlanProfile
-   :noindex:
-
-ProfileDictionary_removeProfileEntry_TrajOptSolverProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_removeProfileEntry_TrajOptSolverProfile
-   :noindex:
-
-ProfileDictionary_removeProfile_TrajOptCompositeProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_removeProfile_TrajOptCompositeProfile
-   :noindex:
-
-ProfileDictionary_removeProfile_TrajOptPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_removeProfile_TrajOptPlanProfile
-   :noindex:
-
-ProfileDictionary_removeProfile_TrajOptSolverProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.ProfileDictionary_removeProfile_TrajOptSolverProfile
    :noindex:
 
 createAvoidSingularityTermInfo Function
@@ -362,6 +264,11 @@ createDynamicCartesianWaypointTermInfo Function
 createJointWaypointTermInfo Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.createJointWaypointTermInfo
+   :noindex:
+
+createKinematicGroup Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.createKinematicGroup
    :noindex:
 
 createNearJointStateTermInfo Function
@@ -399,71 +306,6 @@ createUserDefinedTermInfo Function
 .. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.createUserDefinedTermInfo
    :noindex:
 
-toXMLDocument Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.toXMLDocument
-   :noindex:
-
-toXMLFile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.toXMLFile
-   :noindex:
-
-toXMLString Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.toXMLString
-   :noindex:
-
-trajOptCompositeFromXMLDocument Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.trajOptCompositeFromXMLDocument
-   :noindex:
-
-trajOptCompositeFromXMLElement Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.trajOptCompositeFromXMLElement
-   :noindex:
-
-trajOptCompositeFromXMLFile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.trajOptCompositeFromXMLFile
-   :noindex:
-
-trajOptCompositeFromXMLString Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.trajOptCompositeFromXMLString
-   :noindex:
-
-trajOptCompositeParser Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.trajOptCompositeParser
-   :noindex:
-
-trajOptPlanFromXMLDocument Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.trajOptPlanFromXMLDocument
-   :noindex:
-
-trajOptPlanFromXMLElement Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.trajOptPlanFromXMLElement
-   :noindex:
-
-trajOptPlanFromXMLFile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.trajOptPlanFromXMLFile
-   :noindex:
-
-trajOptPlanFromXMLString Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.trajOptPlanFromXMLString
-   :noindex:
-
-trajOptPlanParser Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_trajopt.trajOptPlanParser
-   :noindex:
-
 Constants
 *********
 
@@ -473,14 +315,8 @@ Constants
 * ``CollisionEvaluatorType_SINGLE_TIMESTEP``
 * ``GIVEN_TRAJ``
 * ``JOINT_INTERPOLATED``
-* ``TT_CNT``
-* ``TT_COST``
-* ``TT_USE_TIME``
-
-Container Templates
-*******************
-
-* ``TrajOptCompositeProfileMap`` -> ``std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptCompositeProfile>>``
-* ``TrajOptPlanProfileMap`` -> ``std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptPlanProfile>>``
-* ``TrajOptSolverProfileMap`` -> ``std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptSolverProfile>>``
+* ``TermType_TT_CNT``
+* ``TermType_TT_COST``
+* ``TermType_TT_INVALID``
+* ``TermType_TT_USE_TIME``
 

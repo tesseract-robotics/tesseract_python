@@ -41,12 +41,10 @@
 #include <tesseract_motion_planners/trajopt/trajopt_motion_planner.h>
 #include <tesseract_motion_planners/trajopt/trajopt_collision_config.h>
 #include <tesseract_motion_planners/trajopt/trajopt_utils.h>
+#include <tesseract_motion_planners/trajopt/trajopt_waypoint_config.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_profile.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_composite_profile.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_plan_profile.h>
-#include <tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h>
-#include <tesseract_motion_planners/trajopt/serialize.h>
-#include <tesseract_motion_planners/trajopt/deserialize.h>
 #include <tesseract_motion_planners/trajopt/trajopt_collision_config.h>
 
 
@@ -60,8 +58,29 @@
 #include <tesseract_state_solver/kdl/kdl_state_solver.h>
 #include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
+// tesseract_kinematics
+#include <tesseract_kinematics/core/joint_group.h>
+#include <tesseract_kinematics/core/kinematic_group.h>
+
+// tesseract_environment
+#include <tesseract_environment/commands.h>
+#include <tesseract_environment/events.h>
+#include <tesseract_environment/environment.h>
+
+// tesseract_command_language
+#include <tesseract_command_language/fwd.h>
+#include <tesseract_command_language/move_instruction.h>
+#include <tesseract_command_language/composite_instruction.h>
+#include <tesseract_command_language/profile_dictionary.h>
+
+// tesseract_motion_planners
+#include <tesseract_motion_planners/core/planner.h>
+#include <tesseract_motion_planners/core/types.h>
+
+// tesseract_visualization
+#include <tesseract_visualization/visualization.h>
+
 #include "tesseract_command_language_python_std_functions.h"
-#include "tesseract_command_language_python_profile_dictionary_functions.h"
 
 #include "tesseract_environment_python_std_functions.h"
 
@@ -69,34 +88,41 @@
 
 // trajopt
 
+%ignore createSolverConfig;
+%ignore createOptimizationParameters;
+%ignore createOptimizationCallbacks;
+
 // Including trajopt headers is too noisy, use *.i file instead
 %include "trajopt/problem_description.i"
 
-%tesseract_std_function_base(TrajOptProblemGeneratorFn,tesseract_planning,std::shared_ptr<trajopt::ProblemConstructionInfo>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::TrajOptPlanProfileMap&,c,const tesseract_planning::TrajOptCompositeProfileMap&,d,const tesseract_planning::TrajOptSolverProfileMap&,e);
-%tesseract_std_function(TrajOptProblemGeneratorFn,tesseract_planning,std::shared_ptr<trajopt::ProblemConstructionInfo>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::TrajOptPlanProfileMap&,c,const tesseract_planning::TrajOptCompositeProfileMap&,d,const tesseract_planning::TrajOptSolverProfileMap&,e);
+// %tesseract_std_function_base(TrajOptProblemGeneratorFn,tesseract_planning,std::shared_ptr<trajopt::ProblemConstructionInfo>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::TrajOptPlanProfileMap&,c,const tesseract_planning::TrajOptCompositeProfileMap&,d,const tesseract_planning::TrajOptSolverProfileMap&,e);
+// %tesseract_std_function(TrajOptProblemGeneratorFn,tesseract_planning,std::shared_ptr<trajopt::ProblemConstructionInfo>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::TrajOptPlanProfileMap&,c,const tesseract_planning::TrajOptCompositeProfileMap&,d,const tesseract_planning::TrajOptSolverProfileMap&,e);
 
 // tesseract_motion_planners_trajopt
 #define TESSERACT_MOTION_PLANNERS_TRAJOPT_PUBLIC
 
 %include "tesseract_motion_planners/trajopt/trajopt_collision_config.h"
+%include "tesseract_motion_planners/trajopt/trajopt_waypoint_config.h"
 
+%pythondynamic tesseract_planning::TrajOptPlanProfile;
+%pythondynamic tesseract_planning::TrajOptCompositeProfile;
+%pythondynamic tesseract_planning::TrajOptSolverProfile;
 %shared_ptr(tesseract_planning::TrajOptPlanProfile)
 %shared_ptr(tesseract_planning::TrajOptSolverProfile)
 %shared_ptr(tesseract_planning::TrajOptCompositeProfile)
 %include "tesseract_motion_planners/trajopt/profile/trajopt_profile.h"
-%template(TrajOptSolverProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptSolverProfile>>;
-%template(TrajOptCompositeProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptCompositeProfile>>;
-%template(TrajOptPlanProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptPlanProfile>>;
+// %template(TrajOptSolverProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptSolverProfile>>;
+// %template(TrajOptCompositeProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptCompositeProfile>>;
+// %template(TrajOptPlanProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptPlanProfile>>;
 %tesseract_command_language_add_profile_type(TrajOptSolverProfile);
 %tesseract_command_language_add_profile_type(TrajOptPlanProfile);
 %tesseract_command_language_add_profile_type(TrajOptCompositeProfile);
 
+%pythondynamic tesseract_planning::TrajOptDefaultPlanProfile;
 %shared_ptr(tesseract_planning::TrajOptDefaultPlanProfile)
 %include "tesseract_motion_planners/trajopt/profile/trajopt_default_plan_profile.h"
 
-%shared_ptr(tesseract_planning::TrajOptDefaultSolverProfile)
-%include "tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h"
-
+%pythondynamic tesseract_planning::TrajOptDefaultCompositeProfile;
 %shared_ptr(tesseract_planning::TrajOptDefaultCompositeProfile)
 %include "tesseract_motion_planners/trajopt/profile/trajopt_default_composite_profile.h"
 
@@ -106,9 +132,8 @@
 
 %pythondynamic tesseract_planning::TrajOptMotionPlanner;
 %shared_ptr(tesseract_planning::TrajOptMotionPlanner)
+%ignore tesseract_planning::TrajOptMotionPlanner::clone;
 %include "tesseract_motion_planners/trajopt/trajopt_motion_planner.h"
-%include "tesseract_motion_planners/trajopt/serialize.h"
-%include "tesseract_motion_planners/trajopt/deserialize.h"
 
 // TODO
 // %template(TrajOptIfoptCompositeProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::TrajOptIfoptCompositeProfile>>;

@@ -22,7 +22,8 @@ def get_scene_graph():
 def get_plugin_factory():
     support_dir = os.environ["TESSERACT_SUPPORT_DIR"]
     kin_config = tesseract_common.FilesystemPath(support_dir + "/urdf/" + "abb_irb2400_plugins.yaml")
-    return tesseract_kinematics.KinematicsPluginFactory(kin_config)
+    locator = TesseractSupportResourceLocator()
+    return tesseract_kinematics.KinematicsPluginFactory(kin_config, locator), locator
 
 
 def run_inv_kin_test(inv_kin, fwd_kin):
@@ -41,7 +42,7 @@ def run_inv_kin_test(inv_kin, fwd_kin):
      nptest.assert_almost_equal(pose,result["tool0"].matrix(),decimal=3)
 
 def test_opw_inverse_kinematic():
-    plugin_factory = get_plugin_factory()
+    plugin_factory, p_locator = get_plugin_factory()
     scene_graph = get_scene_graph()
     solver = tesseract_state_solver.KDLStateSolver(scene_graph)
     scene_state1 = solver.getState(np.zeros((6,)))

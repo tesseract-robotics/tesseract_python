@@ -45,6 +45,7 @@
 #include <boost/graph/breadth_first_search.hpp>
 
 #include <tesseract_geometry/geometries.h>
+#include <tesseract_scene_graph/graph.h>
 
 // tesseract_urdf
 #include <tesseract_urdf/urdf_parser.h>

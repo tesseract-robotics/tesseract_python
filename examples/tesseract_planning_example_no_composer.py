@@ -10,13 +10,12 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
 
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
-from tesseract_robotics.tesseract_motion_planners_ompl import OMPLDefaultPlanProfile, RRTConnectConfigurator, \
-    OMPLProblemGeneratorFn, OMPLMotionPlanner, ProfileDictionary_addProfile_OMPLPlanProfile
+from tesseract_robotics.tesseract_motion_planners_ompl import RRTConnectConfigurator, \
+    OMPLMotionPlanner, OMPLRealVectorPlanProfile
 from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
     InstructionsTrajectory
 from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
-    TrajOptProblemGeneratorFn, TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
-    ProfileDictionary_addProfile_TrajOptCompositeProfile
+    TrajOptMotionPlanner
 
 import os
 import re
@@ -108,23 +107,19 @@ program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 # program.appendMoveInstruction(MoveInstructionPoly(plan_f2))
 
 # Initialize the OMPL planner for RRTConnect algorithm
-plan_profile = OMPLDefaultPlanProfile()
-plan_profile.planners.clear()
-plan_profile.planners.append(RRTConnectConfigurator())
+plan_profile = OMPLRealVectorPlanProfile()
 
 # Create the profile dictionary. Profiles can be used to customize the behavior of the planner. The module
 # level function `ProfileDictionary_addProfile_OMPLPlanProfile` is used to add a profile to the dictionary. All
 # profile types have associated profile dictionary functions.
 profiles = ProfileDictionary()
-ProfileDictionary_addProfile_OMPLPlanProfile(profiles,OMPL_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
+profiles.addProfile(OMPL_DEFAULT_NAMESPACE, "DEFAULT", plan_profile)
 
-cur_state = t_env.getState()
 
 # Create the planning request and run the planner
 request = PlannerRequest()
 request.instructions = program
 request.env = t_env
-request.env_state = cur_state
 request.profiles = profiles
 
 ompl_planner = OMPLMotionPlanner(OMPL_DEFAULT_NAMESPACE) 
@@ -135,7 +130,7 @@ results_instruction = response.results
 
 # The OMPL program does not generate dense waypoints. This function will interpolate the results to generate
 # a dense set of waypoints.
-interpolated_results_instruction = generateInterpolatedProgram(results_instruction, cur_state, t_env, 3.14, 1.0, 3.14, 10)
+interpolated_results_instruction = generateInterpolatedProgram(results_instruction, t_env, 3.14, 1.0, 3.14, 10)
 
 # Create the TrajOpt planner profile configurations. TrajOpt is used to optimize the random program generated
 # by OMPL
@@ -143,8 +138,8 @@ trajopt_plan_profile = TrajOptDefaultPlanProfile()
 trajopt_composite_profile = TrajOptDefaultCompositeProfile()
 
 trajopt_profiles = ProfileDictionary()
-ProfileDictionary_addProfile_TrajOptPlanProfile(trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_plan_profile)
-ProfileDictionary_addProfile_TrajOptCompositeProfile(trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", trajopt_composite_profile)
+profiles.addProfile(TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_plan_profile)
+profiles.addProfile(TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_composite_profile)
 
 # Create the TrajOpt planner
 trajopt_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
@@ -153,7 +148,6 @@ trajopt_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
 trajopt_request = PlannerRequest()
 trajopt_request.instructions = interpolated_results_instruction
 trajopt_request.env = t_env
-trajopt_request.env_state = cur_state
 trajopt_request.profiles = trajopt_profiles
 
 trajopt_response = trajopt_planner.solve(trajopt_request)
@@ -167,9 +161,13 @@ trajopt_results_instruction =trajopt_response.results
 # output program since the input is modified.
 time_parameterization = TimeOptimalTrajectoryGeneration()
 instructions_trajectory = InstructionsTrajectory(trajopt_results_instruction)
-max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078],dtype=np.float64)
-max_acceleration = np.array([ 1, 1, 1, 1, 1, 1],dtype=np.float64)
-assert time_parameterization.computeTimeStamps(instructions_trajectory, max_velocity, max_acceleration)
+max_velocity = np.array([[2.088, 2.082, 3.27, 3.6, 3.3, 3.078]],dtype=np.float64)
+max_velocity = np.hstack((-max_velocity.T, max_velocity.T))
+max_acceleration = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
+max_acceleration = np.hstack((-max_acceleration.T, max_acceleration.T))
+max_jerk = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
+max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
+assert time_parameterization.compute(instructions_trajectory, max_velocity, max_acceleration, max_jerk)
 
 # Flatten the results into a single list of instructions
 trajopt_results = trajopt_results_instruction.flatten()

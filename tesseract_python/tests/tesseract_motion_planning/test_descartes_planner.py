@@ -14,8 +14,7 @@ from tesseract_robotics.tesseract_command_language import JointWaypoint, Cartesi
     CartesianWaypointPoly_wrap_CartesianWaypoint, MoveInstructionPoly_wrap_MoveInstruction
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_descartes import DescartesDefaultPlanProfileD, \
-    DescartesMotionPlannerD, DescartesPlanProfileD, \
-    ProfileDictionary_addProfile_DescartesPlanProfileD, cast_DescartesPlanProfileD
+    DescartesMotionPlannerD, DescartesPlanProfileD, cast_DescartesPlanProfileD
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
@@ -42,8 +41,6 @@ def test_descartes_freespace_fixed_poses():
     env, manip, joint_names = get_environment()
     kin_group = env.getKinematicGroup(manip.manipulator,manip.manipulator_ik_solver)
 
-    cur_state = env.getState()
-
     wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,-0.2,0.8) * Quaterniond(0,0,-1.0,0))
     wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.2,0.8) * Quaterniond(0,0,-1.0,0))
 
@@ -55,23 +52,21 @@ def test_descartes_freespace_fixed_poses():
     program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
     program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
-    interpolated_program = generateInterpolatedProgram(program, cur_state, env, 3.14, 1.0, 3.14, 10)
+    interpolated_program = generateInterpolatedProgram(program, env, 3.14, 1.0, 3.14, 10)
 
     plan_profile = DescartesDefaultPlanProfileD()
     # DescartesDefaultPlanProfileD is not upcasting automatically, use helper function
     plan_profile1 = cast_DescartesPlanProfileD(plan_profile)
 
     profiles = ProfileDictionary()
-    ProfileDictionary_addProfile_DescartesPlanProfileD(profiles,DESCARTES_DEFAULT_NAMESPACE,"TEST_PROFILE",plan_profile1)
+    profiles.addProfile(DESCARTES_DEFAULT_NAMESPACE,"TEST_PROFILE",plan_profile1)
     
     single_descartes_planner = DescartesMotionPlannerD(DESCARTES_DEFAULT_NAMESPACE)
-    plan_profile.num_threads = 1
     
 
     request = PlannerRequest()
     request.instructions = interpolated_program
     request.env = env
-    request.env_state = cur_state
     request.profiles = profiles
     
     response = single_descartes_planner.solve(request)

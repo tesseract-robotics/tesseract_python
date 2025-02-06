@@ -28,7 +28,7 @@ def test_kinematic_group():
 
     env, manip_info, joint_names = get_environment()
 
-    kin_group = env.getKinematicGroup(manip_info.manipulator).release()
+    kin_group = env.getKinematicGroup(manip_info.manipulator)
     
     joint_vals = np.ones((6,),dtype=np.float64)*0.1
     pose_map = kin_group.calcFwdKin(joint_vals)
@@ -57,7 +57,7 @@ def test_tesseract_redundant_solutions_tesseract_function():
     
     env, manip_info, joint_names = get_environment()
 
-    kin_group = env.getKinematicGroup(manip_info.manipulator).release()
+    kin_group = env.getKinematicGroup(manip_info.manipulator)
 
     limits = kin_group.getLimits()
     redundancy_indices = list(kin_group.getRedundancyCapableJointIndices())

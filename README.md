@@ -1,13 +1,11 @@
 # Tesseract Python
 
-[![Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://github.com/tesseract-robotics/tesseract_python)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://github.com/tesseract-robotics/tesseract_python)
 
 ![PyPI](https://img.shields.io/pypi/v/tesseract-robotics)
 
 Platform             | CI Status
 ---------------------|:---------
-Linux (Focal)        | [![Build Status](https://github.com/tesseract-robotics/tesseract_python/workflows/Focal-Build/badge.svg)](https://github.com/tesseract-robotics/tesseract_python/actions)
-Windows              | [![Build Status](https://github.com/tesseract-robotics/tesseract_python/workflows/Windows-Noetic-Build/badge.svg)](https://github.com/tesseract-robotics/tesseract_python/actions)
 Wheels               | [![Build Status](https://github.com/tesseract-robotics/tesseract_python/actions/workflows/wheels.yml/badge.svg)](https://github.com/tesseract-robotics/tesseract_python/actions)
 
 [![Github Issues](https://img.shields.io/github/issues/tesseract-robotics/tesseract_python.svg)](http://github.com/tesseract-robotics/tesseract_python/issues)
@@ -23,7 +21,7 @@ checking (Bullet, FCL), kinematics (KDL, OPW, UR), planning (OMPL, Descartes, Tr
 (tesseract_viewer_python)
 
 Standalone packages are provided on PyPi (pip install) for Windows and Linux, containing all the native dependencies 
-for Python 3.7+.
+for Python 3.8+.
 
 The Tesseract Python package is developed and maintained by Wason Technology, LLC.
 
@@ -39,18 +37,17 @@ See https://tesseract-robotics.github.io/tesseract_python/ for documentation.
 
 Standalone packages are provided on PyPi (pip install) for Windows and Linux, containing Tesseract, Tesseract
 Planning, andall the native dependencies 
-for Python 3.7+. These packages have been tested on Windows 10, Ubuntu 20.04, and Ubuntu 22.04, but should work
-on any relatively recent x64 Windows or Linux operating system. Packages are available for Python 3.7 - 3.11.
+for Python 3.8+. These packages have been tested on Windows 10, and Ubuntu 22.04, but should work
+on any relatively recent x64 Windows or Linux operating system. Packages are available for Python 3.8 - 3.13
 
 To install on Windows:
 ```
 python -m pip install tesseract-robotics tesseract-robotics-viewer
 ```
-To install on Ubuntu 20.04 and Ubuntu 22.04:
+To install on Ubuntu 24.04 and Ubuntu 22.04:
 
 ```
 sudo apt install python3-pip python3-numpy
-# The supplied version of pip on Ubuntu 20.04 is too old for manylinux_2_31, upgrade pip
 python3 -m pip install -U pip
 python3 -m pip install --user  tesseract_robotics tesseract_robotics_viewer
 ```
@@ -115,7 +112,7 @@ import numpy as np
 import numpy.testing as nptest
 
 from tesseract_robotics.tesseract_common import GeneralResourceLocator
-from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_environment import Environment, AnyPoly_wrap_EnvironmentConst
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo, AnyPoly, AnyPoly_wrap_double
 from tesseract_robotics.tesseract_command_language import CartesianWaypoint, WaypointPoly, \
@@ -125,9 +122,10 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
         AnyPoly_wrap_CompositeInstruction, DEFAULT_PROFILE_KEY, JointWaypoint, JointWaypointPoly, \
         InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
         MoveInstructionPoly_wrap_MoveInstruction, StateWaypointPoly_wrap_StateWaypoint, \
-        CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint
+        CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint, \
+        AnyPoly_wrap_ProfileDictionary
 
-from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, PlanningTaskComposerProblem, \
+from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, \
     TaskComposerDataStorage, TaskComposerContext
 
 from tesseract_robotics_viewer import TesseractViewer
@@ -194,13 +192,14 @@ program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
 # Create the task composer plugin factory and load the plugins
 config_path = FilesystemPath(task_composer_filename)
-factory = TaskComposerPluginFactory(config_path)
+factory = TaskComposerPluginFactory(config_path, locator)
 
 # Create the task composer node. In this case the FreespacePipeline is used. Many other are available.
 task = factory.createTaskComposerNode("FreespacePipeline")
 
 # Get the output keys for the task
-output_key = task.getOutputKeys()[0]
+output_key = task.getOutputKeys().get("program")
+input_key = task.getInputKeys().get("planning_input")
 
 # Create a profile dictionary. Profiles can be customized by adding to this dictionary and setting the profiles
 # in the instructions.
@@ -209,17 +208,25 @@ profiles = ProfileDictionary()
 # Create an AnyPoly containing the program. This explicit step is required because the Python bindings do not
 # support implicit conversion from the CompositeInstruction to the AnyPoly.
 program_anypoly = AnyPoly_wrap_CompositeInstruction(program)
+environment_anypoly = AnyPoly_wrap_EnvironmentConst(t_env)
+profiles_anypoly = AnyPoly_wrap_ProfileDictionary(profiles)
 
-# Create the task problem and input
-task_planning_problem = PlanningTaskComposerProblem(t_env, profiles)
-task_planning_problem.input = program_anypoly
+# Create the task data
+task_data = TaskComposerDataStorage()
+task_data.setData(input_key, program_anypoly)
+task_data.setData("environment", environment_anypoly)
+task_data.setData("profiles", profiles_anypoly)
 
 # Create an executor to run the task
 task_executor = factory.createTaskComposerExecutor("TaskflowExecutor")
 
 # Run the task and wait for completion
-future = task_executor.run(task.get(), task_planning_problem)
+future = task_executor.run(task.get(), task_data)
 future.wait()
+
+if not future.context.isSuccessful():
+    print("Planning task failed")
+    exit(1)
 
 # Retrieve the output, converting the AnyPoly back to a CompositeInstruction
 results = AnyPoly_as_CompositeInstruction(future.context.data_storage.getData(output_key))

@@ -164,7 +164,7 @@ def _append_link_recursive(gltf_dict, gltf_buf_io, link_map, joint_map, link_nam
     for visual in link.visual:
         visual_i += 1
         _, visual_ind = _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, shapes_mesh_inds)
-        child_inds.append(visual_ind)
+        child_inds.extend(visual_ind)
 
     child_joints = _find_child_joints(joint_map, link_name)
     for j in child_joints:
@@ -182,121 +182,100 @@ def _append_link_recursive(gltf_dict, gltf_buf_io, link_map, joint_map, link_nam
 
     return link_node, link_ind
 
-def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, shapes_mesh_inds):
-
-    visual_u_name = visual.name + str(visual_i)
-    visual_name = "link_" + link_name + "_visual_" + visual_u_name
-    visual_node, visual_ind = _append_node(gltf_dict, visual.origin, visual_name)
-
+def _convert_mesh(gltf_dict, gltf_buf_io, visual_node, visual_name, mesh):
     tf_material = None
-
-    visual_geom = visual.geometry
-    if (isinstance(visual_geom,tesseract_geometry.PolygonMesh)):
+    vertices = mesh.getVertices()
+    positions = np.zeros((len(vertices),3),dtype=np.float32)
+    for i in range(len(vertices)):
+        positions[i,:] = vertices[i].flatten()
     
-        mesh=visual_geom
-        vertices = mesh.getVertices()
-        positions = np.zeros((len(vertices),3),dtype=np.float32)
-        for i in range(len(vertices)):
-            positions[i,:] = vertices[i].flatten()
+    indices = mesh.getFaces().flatten().astype(np.uint32).reshape((-1,4))[:,1:4].flatten()
+    
+    _, positions_ind = _append_accessor(gltf_dict, gltf_buf_io, positions)
+    _, indices_ind = _append_accessor(gltf_dict, gltf_buf_io, indices)
+
+    normals_ind = None
+    normals = mesh.getNormals()
+    if normals is not None:
+        normals2 = np.zeros((len(normals),3),dtype=np.float32)
+        for i in range(len(normals)):
+            normals2[i,:] = normals[i].flatten()
+        _, normals_ind = _append_accessor(gltf_dict, gltf_buf_io, normals2)
+    
+    mesh_dict, mesh_ind = _append_dict_list(gltf_dict, "meshes", {
+        "primitives": [
+            {
+                "attributes": {
+                    "POSITION": positions_ind
+                },
+                "indices": indices_ind
+            }
+        ],
+        "name": visual_name + "_mesh"
+    })
+
+    # if normals_ind is not None:
+    #     mesh_dict["primitives"][0]["attributes"]["NORMAL"] = normals_ind
+
+    visual_node["scale"] = list(mesh.getScale().flatten())
+
+    if not mesh.getResource().getUrl().lower().endswith('.stl'):
+        mesh_material = mesh.getMaterial()
+        if mesh_material is not None:
         
-        indices = mesh.getFaces().flatten().astype(np.uint32).reshape((-1,4))[:,1:4].flatten()
+            tf_material = {
+                "name": "material_" + visual_name,
+                "alphaMode": "MASK",
+                "alphaCutoff": 0.4
+            }
         
-        _, positions_ind = _append_accessor(gltf_dict, gltf_buf_io, positions)
-        _, indices_ind = _append_accessor(gltf_dict, gltf_buf_io, indices)
-
-        normals_ind = None
-        normals = mesh.getNormals()
-        if normals is not None:
-            normals2 = np.zeros((len(normals),3),dtype=np.float32)
-            for i in range(len(normals)):
-                normals2[i,:] = normals[i].flatten()
-            _, normals_ind = _append_accessor(gltf_dict, gltf_buf_io, normals2)
-        
-        mesh_dict, mesh_ind = _append_dict_list(gltf_dict, "meshes", {
-            "primitives": [
-                {
-                    "attributes": {
-                        "POSITION": positions_ind
-                    },
-                    "indices": indices_ind
-                }
-            ],
-            "name": visual_name + "_mesh"
-        })
-
-        # if normals_ind is not None:
-        #     mesh_dict["primitives"][0]["attributes"]["NORMAL"] = normals_ind
-
-        visual_node["scale"] = list(mesh.getScale().flatten())
-
-        if not mesh.getResource().getUrl().lower().endswith('.stl'):
-            mesh_material = mesh.getMaterial()
-            if mesh_material is not None:
+            base_color_factor = mesh_material.getBaseColorFactor().flatten().tolist()
             
-                tf_material = {
-                    "name": "material_" + visual_name,
-                    "alphaMode": "MASK",
-                    "alphaCutoff": 0.4
+            tf_material["pbrMetallicRoughness"] = {
+                "baseColorFactor": base_color_factor,
+                "roughnessFactor": mesh_material.getRoughnessFactor(),
+                "metallicFactor": mesh_material.getMetallicFactor(),                    
+            }
+
+            mesh_textures = mesh.getTextures()
+            if mesh_textures is not None and len(mesh_textures) > 0:
+                mesh_tex = mesh_textures[0]
+                mesh_tex_image = mesh_tex.getTextureImage()
+                tex_name = mesh_tex_image.getUrl()
+                tex_mimetype = "image/jpg"
+                if tex_name.endswith('png'):
+                    tex_mimetype = "image/png"
+
+                mesh_tex_image_bytes = bytearray(mesh_tex_image.getResourceContents())
+                tex_img = cv2.imdecode(np.frombuffer(mesh_tex_image_bytes,dtype=np.uint8),flags=1)
+                img_h, img_w, _ = tex_img.shape
+                _, image_bufview_ind = _append_bufview(gltf_dict, gltf_buf_io, mesh_tex_image_bytes)
+                _, image_ind = _append_dict_list(gltf_dict, "images", {
+                    "mimeType": tex_mimetype,
+                    "bufferView": image_bufview_ind
+                })
+
+                _, tex_ind = _append_dict_list(gltf_dict, "textures", {
+                    "source": image_ind
+                })
+
+                tf_material["pbrMetallicRoughness"]["baseColorTexture"] = {
+                    "index": tex_ind,
+                    "texCoord": 0
                 }
-            
-                base_color_factor = mesh_material.getBaseColorFactor().flatten().tolist()
-                
-                tf_material["pbrMetallicRoughness"] = {
-                    "baseColorFactor": base_color_factor,
-                    "roughnessFactor": mesh_material.getRoughnessFactor(),
-                    "metallicFactor": mesh_material.getMetallicFactor(),                    
-                }
 
-                mesh_textures = mesh.getTextures()
-                if mesh_textures is not None and len(mesh_textures) > 0:
-                    mesh_tex = mesh_textures[0]
-                    mesh_tex_image = mesh_tex.getTextureImage()
-                    tex_name = mesh_tex_image.getUrl()
-                    tex_mimetype = "image/jpg"
-                    if tex_name.endswith('png'):
-                        tex_mimetype = "image/png"
+                mesh_uvs = mesh_tex.getUVs()
+                tf_uvs = np.zeros((len(mesh_uvs),2),dtype=np.float32)
+                for i in range(len(mesh_uvs)):
+                    tf_uvs1 = mesh_uvs[i].flatten()
+                    tf_uvs[i,:] = [tf_uvs1[0], 1.0-tf_uvs1[1]]
+                _, tex_ind = _append_accessor(gltf_dict, gltf_buf_io, tf_uvs)
 
-                    mesh_tex_image_bytes = bytearray(mesh_tex_image.getResourceContents())
-                    tex_img = cv2.imdecode(np.frombuffer(mesh_tex_image_bytes,dtype=np.uint8),flags=1)
-                    img_h, img_w, _ = tex_img.shape
-                    _, image_bufview_ind = _append_bufview(gltf_dict, gltf_buf_io, mesh_tex_image_bytes)
-                    _, image_ind = _append_dict_list(gltf_dict, "images", {
-                        "mimeType": tex_mimetype,
-                        "bufferView": image_bufview_ind
-                    })
+                mesh_dict["primitives"][0]["attributes"]["TEXCOORD_0"] = tex_ind
 
-                    _, tex_ind = _append_dict_list(gltf_dict, "textures", {
-                        "source": image_ind
-                    })
+    return mesh_dict, mesh_ind, tf_material
 
-                    tf_material["pbrMetallicRoughness"]["baseColorTexture"] = {
-                        "index": tex_ind,
-                        "texCoord": 0
-                    }
-
-                    mesh_uvs = mesh_tex.getUVs()
-                    tf_uvs = np.zeros((len(mesh_uvs),2),dtype=np.float32)
-                    for i in range(len(mesh_uvs)):
-                        tf_uvs1 = mesh_uvs[i].flatten()
-                        tf_uvs[i,:] = [tf_uvs1[0], 1.0-tf_uvs1[1]]
-                    _, tex_ind = _append_accessor(gltf_dict, gltf_buf_io, tf_uvs)
-
-                    mesh_dict["primitives"][0]["attributes"]["TEXCOORD_0"] = tex_ind
-
-    elif (isinstance(visual_geom,tesseract_geometry.Box)):
-        box=visual_geom
-        mesh_dict, mesh_ind = _append_shape_mesh(gltf_dict, gltf_buf_io, "cube_geometry", visual_name, shapes_mesh_inds)
-        visual_node["scale"] = [0.5*box.getX(), 0.5*box.getY(), 0.5*box.getZ()]
-
-    elif (isinstance(visual_geom,tesseract_geometry.Sphere)):
-        sphere=visual_geom
-        mesh_dict, mesh_ind = _append_shape_mesh(gltf_dict, gltf_buf_io, "sphere_geometry", visual_name, shapes_mesh_inds)
-        visual_node["scale"] = [sphere.getRadius(), sphere.getRadius(), sphere.getRadius()]
-
-    elif (isinstance(visual_geom,tesseract_geometry.Cylinder)):
-        cylinder=visual_geom
-        mesh_dict, mesh_ind = _append_shape_mesh(gltf_dict, gltf_buf_io, "cylinder_geometry", visual_name, shapes_mesh_inds)
-        visual_node["scale"] = [cylinder.getRadius(), cylinder.getRadius(), 0.5*cylinder.getLength()]
+def _apply_material(gltf_dict, gltf_buf_io, mesh_dict, visual_name, tf_material, visual_material):
 
     if tf_material is None:
         tf_material = {
@@ -305,7 +284,7 @@ def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, sha
             "alphaCutoff": 0.4
         }
 
-        material = visual.material
+        material = visual_material
 
         if material is None:
             tf_color = [0.5,0.5,0.5,1]
@@ -322,10 +301,63 @@ def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, sha
         
     mesh_dict["primitives"][0]["material"] = material_ind
 
+def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, shapes_mesh_inds):
+
+    visual_geom = visual.geometry
+
+    visual_u_name = visual.name + str(visual_i)
+    visual_name = "link_" + link_name + "_visual_" + visual_u_name
+
+    if (isinstance(visual_geom,tesseract_geometry.CompoundMesh)):
+        meshes = visual_geom.getMeshes()
+        mesh_count = 0
+        visual_nodes = []
+        visual_inds = []
+        for m in meshes:
+            visual_name1 = visual_name + "_mesh_" + str(mesh_count)
+            visual_node1, visual_ind1 = _append_node(gltf_dict, visual.origin, visual_name1)
+            mesh_dict1, mesh_ind1, tf_material1 = _convert_mesh(gltf_dict, gltf_buf_io, visual_node1, visual_name1, m)
+            _apply_material(gltf_dict, gltf_buf_io, mesh_dict1, visual_name1, tf_material1, visual.material)
+            visual_node1["mesh"] = mesh_ind1
+            visual_nodes.append(visual_node1)
+            visual_inds.append(visual_ind1)
+            print(mesh_dict1)
+            mesh_count += 1
+
+        return visual_nodes, visual_inds
+
+    visual_node, visual_ind = _append_node(gltf_dict, visual.origin, visual_name)
+
+    tf_material = None
+
+    if (isinstance(visual_geom,tesseract_geometry.PolygonMesh)):
+    
+        mesh=visual_geom
+
+        mesh_dict, mesh_ind, tf_material = _convert_mesh(gltf_dict, gltf_buf_io, visual_node, visual_name, mesh)
+        
+
+    elif (isinstance(visual_geom,tesseract_geometry.Box)):
+        box=visual_geom
+        mesh_dict, mesh_ind = _append_shape_mesh(gltf_dict, gltf_buf_io, "cube_geometry", visual_name, shapes_mesh_inds)
+        visual_node["scale"] = [0.5*box.getX(), 0.5*box.getY(), 0.5*box.getZ()]
+
+    elif (isinstance(visual_geom,tesseract_geometry.Sphere)):
+        sphere=visual_geom
+        mesh_dict, mesh_ind = _append_shape_mesh(gltf_dict, gltf_buf_io, "sphere_geometry", visual_name, shapes_mesh_inds)
+        visual_node["scale"] = [sphere.getRadius(), sphere.getRadius(), sphere.getRadius()]
+
+    elif (isinstance(visual_geom,tesseract_geometry.Cylinder)):
+        cylinder=visual_geom
+        mesh_dict, mesh_ind = _append_shape_mesh(gltf_dict, gltf_buf_io, "cylinder_geometry", visual_name, shapes_mesh_inds)
+        visual_node["scale"] = [cylinder.getRadius(), cylinder.getRadius(), 0.5*cylinder.getLength()]
+
+    _apply_material(gltf_dict, gltf_buf_io, mesh_dict, visual_name, tf_material, visual.material)
+
     visual_node["mesh"] = mesh_ind
 
 
-    return visual_node, visual_ind
+    return [visual_node], [visual_ind]
 
 _COMPONENT_TYPE_INT8 = 5120
 _COMPONENT_TYPE_UINT8 = 5121

@@ -62,3 +62,5 @@ def __str__(self):
 };
 }
 }
+
+%template(VectorFilesystemPath) std::vector<boost::filesystem::path>;

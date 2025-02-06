@@ -16,8 +16,7 @@ from tesseract_robotics.tesseract_command_language import  JointWaypoint, Cartes
     MoveInstructionPoly_wrap_MoveInstruction
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
-    TrajOptProblemGeneratorFn, TrajOptMotionPlanner, ProfileDictionary_addProfile_TrajOptPlanProfile, \
-    ProfileDictionary_addProfile_TrajOptCompositeProfile
+    TrajOptMotionPlanner
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
@@ -44,9 +43,6 @@ def test_trajopt_freespace_joint_cart():
 
     env, manip, joint_names = get_environment()
 
-
-    cur_state = env.getState()
-
     wp1 = JointWaypoint(joint_names, np.array([0,0,0,-1.57,0,0,0],dtype=np.float64))
     wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(-.2,.4,0.2) * Quaterniond(0,0,1.0,0))
 
@@ -58,14 +54,14 @@ def test_trajopt_freespace_joint_cart():
     program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
     program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
-    interpolated_program = generateInterpolatedProgram(program, cur_state, env, 3.14, 1.0, 3.14, 10)
+    interpolated_program = generateInterpolatedProgram(program, env, 3.14, 1.0, 3.14, 10)
 
     plan_profile = TrajOptDefaultPlanProfile()
     composite_profile = TrajOptDefaultCompositeProfile()
 
     profiles = ProfileDictionary()
-    ProfileDictionary_addProfile_TrajOptPlanProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
-    ProfileDictionary_addProfile_TrajOptCompositeProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", composite_profile)
+    profiles.addProfile(TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", plan_profile)
+    profiles.addProfile(TRAJOPT_DEFAULT_NAMESPACE, "TEST_PROFILE", composite_profile)
 
 
     test_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
@@ -74,7 +70,6 @@ def test_trajopt_freespace_joint_cart():
     request = PlannerRequest()
     request.instructions = interpolated_program
     request.env = env
-    request.env_state = cur_state
     request.profiles = profiles
     
     response = test_planner.solve(request)

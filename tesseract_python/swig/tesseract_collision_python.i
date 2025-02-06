@@ -93,12 +93,15 @@ class ContactResult;
 // %ignore ContactResultMap;
 // tesseract_collision
 #define TESSERACT_COLLISION_CORE_PUBLIC
+%ignore tesseract_collision::ContactTrajectoryResults::trajectoryCollisionResultsTable;
+%ignore tesseract_collision::ContactTrajectoryResults::collisionFrequencyPerLink;
 %include "tesseract_collision/core/types.h"
 %include "tesseract_collision/core/discrete_contact_manager.h"
 %include "tesseract_collision/core/continuous_contact_manager.h"
 %include "tesseract_collision/core/contact_managers_plugin_factory.h"
 
 %init %{
+// TODO: fix anchors
 tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_collision::tesseract_collision_bullet::BulletFactoriesAnchor(), "TESSERACT_CONTACT_MANAGERS_PLUGINS");
 tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_collision::tesseract_collision_fcl::FCLFactoriesAnchor(), "TESSERACT_CONTACT_MANAGERS_PLUGINS");
 %}

@@ -24,13 +24,6 @@ DescartesPlanProfileD Class
    :exclude-members: thisown
    :members:
 
-DescartesProblemD Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners_descartes.DescartesProblemD
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
 PoseSamplerFn Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_motion_planners_descartes.PoseSamplerFn
@@ -48,41 +41,6 @@ PoseSamplerFnBase Class
 
 Functions
 *********
-
-ProfileDictionary_addProfile_DescartesPlanProfileD Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_descartes.ProfileDictionary_addProfile_DescartesPlanProfileD
-   :noindex:
-
-ProfileDictionary_getProfileEntry_DescartesPlanProfileD Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_descartes.ProfileDictionary_getProfileEntry_DescartesPlanProfileD
-   :noindex:
-
-ProfileDictionary_getProfile_DescartesPlanProfileD Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_descartes.ProfileDictionary_getProfile_DescartesPlanProfileD
-   :noindex:
-
-ProfileDictionary_hasProfileEntry_DescartesPlanProfileD Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_descartes.ProfileDictionary_hasProfileEntry_DescartesPlanProfileD
-   :noindex:
-
-ProfileDictionary_hasProfile_DescartesPlanProfileD Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_descartes.ProfileDictionary_hasProfile_DescartesPlanProfileD
-   :noindex:
-
-ProfileDictionary_removeProfileEntry_DescartesPlanProfileD Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_descartes.ProfileDictionary_removeProfileEntry_DescartesPlanProfileD
-   :noindex:
-
-ProfileDictionary_removeProfile_DescartesPlanProfileD Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_descartes.ProfileDictionary_removeProfile_DescartesPlanProfileD
-   :noindex:
 
 cast_DescartesPlanProfileD Function
 ===================================================================================================

@@ -49,6 +49,7 @@
 #include <tesseract_scene_graph/graph.h>
 #include <tesseract_common/utils.h>
 #include <tesseract_common/yaml_utils.h>
+#include <tesseract_common/yaml_extenstions.h>
 
 %}
 

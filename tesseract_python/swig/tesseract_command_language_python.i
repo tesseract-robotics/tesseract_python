@@ -36,6 +36,11 @@
 
 %{
 
+#include <tinyxml2.h>
+
+// tesseract_common
+#include <tesseract_common/manipulator_info.h>
+
 // tesseract_command_language
 #include <tesseract_command_language/poly/waypoint_poly.h>
 #include <tesseract_command_language/poly/instruction_poly.h>
@@ -57,7 +62,7 @@
 #include <tesseract_command_language/state_waypoint.h>
 #include <tesseract_command_language/timer_instruction.h>
 #include <tesseract_command_language/utils.h>
-#include <tesseract_command_language/types.h>
+#include <tesseract_command_language/fwd.h>
 #include <tesseract_command_language/wait_instruction.h>
 
 
@@ -65,7 +70,6 @@
 #include <tesseract_common/resource_locator.h>
 
 #include "tesseract_command_language_python_std_functions.h"
-#include "tesseract_command_language_python_profile_dictionary_functions.h"
 
 #include <tesseract_common/type_erasure.h>
 %}
@@ -76,6 +80,10 @@
 #define TESSERACT_COMMAND_LANGUAGE_PUBLIC
 
 %include "tesseract_type_erasure_macros.i"
+
+#define TESSERACT_CARTESIAN_WAYPOINT_EXPORT_KEY(a,b)
+#define TESSERACT_STATE_WAYPOINT_EXPORT_KEY(a,b)
+#define TESSERACT_INSTRUCTION_EXPORT_KEY(a,b)
 
 %define %tesseract_erasure_ctor_planning(source_class_type,dest_class_type)
 %tesseract_erasure_ctor(source_class_type,tesseract_planning,dest_class_type,tesseract_planning);
@@ -132,11 +140,16 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %tesseract_std_function(flattenFilterFn,tesseract_planning,bool,const tesseract_planning::InstructionPoly&,a,const tesseract_planning::CompositeInstruction&,b,bool,c);
 %tesseract_std_function(locateFilterFn,tesseract_planning,bool,const tesseract_planning::InstructionPoly&,a,const tesseract_planning::CompositeInstruction&,b,bool,c);
 
+// %include "tesseract_command_language/fwd.h"
+
 %include "tesseract_command_language/types.h"
+
+%pythondynamic tesseract_planning::WaypointPoly;
+%shared_ptr(tesseract_planning::Profile)
+%include "tesseract_command_language/profile.h"
 
 %shared_ptr(tesseract_planning::ProfileDictionary)
 %include "tesseract_command_language/profile_dictionary.h"
-%include "tesseract_command_language_python_profile_dictionary_functions.h"
 
 %pythondynamic tesseract_planning::InstructionPoly;
 %pythondynamic tesseract_planning::WaypointPoly;
@@ -201,23 +214,25 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %include "tesseract_command_language/utils.h"
 
 %define %tesseract_command_language_add_profile_type( TYPE )
-%template(ProfileDictionary_hasProfileEntry_##TYPE) tesseract_planning::ProfileDictionary_hasProfileEntry<tesseract_planning::TYPE>;
-%template(ProfileDictionary_removeProfileEntry_##TYPE) tesseract_planning::ProfileDictionary_removeProfileEntry<tesseract_planning::TYPE>;
-%template(ProfileDictionary_getProfileEntry_##TYPE) tesseract_planning::ProfileDictionary_getProfileEntry<tesseract_planning::TYPE>;
-%template(ProfileDictionary_addProfile_##TYPE) tesseract_planning::ProfileDictionary_addProfile<tesseract_planning::TYPE>;
-%template(ProfileDictionary_getProfile_##TYPE) tesseract_planning::ProfileDictionary_getProfile<tesseract_planning::TYPE>;
-%template(ProfileDictionary_hasProfile_##TYPE) tesseract_planning::ProfileDictionary_hasProfile<tesseract_planning::TYPE>;
-%template(ProfileDictionary_removeProfile_##TYPE) tesseract_planning::ProfileDictionary_removeProfile<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_hasProfileEntry_##TYPE) tesseract_planning::ProfileDictionary_hasProfileEntry<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_removeProfileEntry_##TYPE) tesseract_planning::ProfileDictionary_removeProfileEntry<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_getProfileEntry_##TYPE) tesseract_planning::ProfileDictionary_getProfileEntry<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_addProfile_##TYPE) tesseract_planning::ProfileDictionary_addProfile<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_getProfile_##TYPE) tesseract_planning::ProfileDictionary_getProfile<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_hasProfile_##TYPE) tesseract_planning::ProfileDictionary_hasProfile<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_removeProfile_##TYPE) tesseract_planning::ProfileDictionary_removeProfile<tesseract_planning::TYPE>;
 %enddef
 
 %define %tesseract_command_language_add_profile_type2(NAME, TYPE )
-%template(ProfileDictionary_hasProfileEntry_##NAME) tesseract_planning::ProfileDictionary_hasProfileEntry<tesseract_planning::TYPE>;
-%template(ProfileDictionary_removeProfileEntry_##NAME) tesseract_planning::ProfileDictionary_removeProfileEntry<tesseract_planning::TYPE>;
-%template(ProfileDictionary_getProfileEntry_##NAME) tesseract_planning::ProfileDictionary_getProfileEntry<tesseract_planning::TYPE>;
-%template(ProfileDictionary_addProfile_##NAME) tesseract_planning::ProfileDictionary_addProfile<tesseract_planning::TYPE>;
-%template(ProfileDictionary_getProfile_##NAME) tesseract_planning::ProfileDictionary_getProfile<tesseract_planning::TYPE>;
-%template(ProfileDictionary_hasProfile_##NAME) tesseract_planning::ProfileDictionary_hasProfile<tesseract_planning::TYPE>;
-%template(ProfileDictionary_removeProfile_##NAME) tesseract_planning::ProfileDictionary_removeProfile<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_hasProfileEntry_##NAME) tesseract_planning::ProfileDictionary_hasProfileEntry<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_removeProfileEntry_##NAME) tesseract_planning::ProfileDictionary_removeProfileEntry<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_getProfileEntry_##NAME) tesseract_planning::ProfileDictionary_getProfileEntry<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_addProfile_##NAME) tesseract_planning::ProfileDictionary_addProfile<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_getProfile_##NAME) tesseract_planning::ProfileDictionary_getProfile<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_hasProfile_##NAME) tesseract_planning::ProfileDictionary_hasProfile<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_removeProfile_##NAME) tesseract_planning::ProfileDictionary_removeProfile<tesseract_planning::TYPE>;
 %enddef
 
 %include "tesseract_command_language/constants.h"
+
+%tesseract_any_poly_type_shared_ptr(ProfileDictionary,tesseract_planning);

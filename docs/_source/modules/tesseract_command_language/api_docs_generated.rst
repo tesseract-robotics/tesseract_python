@@ -59,6 +59,13 @@ MoveInstructionPoly Class
    :exclude-members: thisown
    :members:
 
+Profile Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_command_language.Profile
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
 ProfileDictionary Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_command_language.ProfileDictionary
@@ -182,6 +189,16 @@ AnyPoly_as_MoveInstructionPoly Function
 .. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_MoveInstructionPoly
    :noindex:
 
+AnyPoly_as_ProfileDictionary Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_ProfileDictionary
+   :noindex:
+
+AnyPoly_as_ProfileDictionaryConst Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_ProfileDictionaryConst
+   :noindex:
+
 AnyPoly_as_SetAnalogInstruction Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_as_SetAnalogInstruction
@@ -247,6 +264,16 @@ AnyPoly_is_MoveInstructionPoly Function
 .. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_MoveInstructionPoly
    :noindex:
 
+AnyPoly_is_ProfileDictionary Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_ProfileDictionary
+   :noindex:
+
+AnyPoly_is_ProfileDictionaryConst Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_ProfileDictionaryConst
+   :noindex:
+
 AnyPoly_is_SetAnalogInstruction Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_is_SetAnalogInstruction
@@ -310,6 +337,16 @@ AnyPoly_wrap_MoveInstruction Function
 AnyPoly_wrap_MoveInstructionPoly Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_MoveInstructionPoly
+   :noindex:
+
+AnyPoly_wrap_ProfileDictionary Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_ProfileDictionary
+   :noindex:
+
+AnyPoly_wrap_ProfileDictionaryConst Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_command_language.AnyPoly_wrap_ProfileDictionaryConst
    :noindex:
 
 AnyPoly_wrap_SetAnalogInstruction Function

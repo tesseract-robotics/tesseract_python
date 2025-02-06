@@ -54,6 +54,15 @@
 #include <tesseract_state_solver/kdl/kdl_state_solver.h>
 #include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
 
+// tesseract_kinematics
+#include <tesseract_kinematics/core/joint_group.h>
+#include <tesseract_kinematics/core/kinematic_group.h>
+
+// tesseract_collision
+#include <tesseract_collision/core/types.h>
+#include <tesseract_collision/core/discrete_contact_manager.h>
+#include <tesseract_collision/core/continuous_contact_manager.h>
+
 // tesseract_environment
 #include <tesseract_environment/commands.h>
 #include <tesseract_environment/events.h>
@@ -68,8 +77,8 @@
 %unique_ptr_value_wrapper(tesseract_collision::ContinuousContactManager);
 %unique_ptr_value_wrapper(tesseract_collision::DiscreteContactManager);
 %unique_ptr_value_wrapper(tesseract_scene_graph::StateSolver);
-%unique_ptr_value_wrapper(tesseract_kinematics::KinematicGroup)
-%unique_ptr_value_wrapper(tesseract_kinematics::JointGroup)
+// %unique_ptr_value_wrapper(tesseract_kinematics::KinematicGroup)
+// %unique_ptr_value_wrapper(tesseract_kinematics::JointGroup)
 
 %tesseract_std_function(FindTCPOffsetCallbackFn,tesseract,Eigen::Isometry3d,const tesseract_common::ManipulatorInfo&,a);
 %tesseract_std_function(EventCallbackFn,tesseract_environment,void,const tesseract_environment::Event&,a);
@@ -162,6 +171,8 @@
 %shared_ptr(tesseract_environment::Environment)
 %wrap_unique_ptr(EnvironmentUPtr,tesseract_environment::Environment)
 
+%ignore tesseract_environment::Environment::Environment(std::unique_ptr<Implementation> impl);
+
 %include "tesseract_environment/environment.h"
 
 %inline {
@@ -181,3 +192,5 @@
         return dynamic_cast<const tesseract_environment::CommandAppliedEvent&>(a);
     }
 }
+
+%tesseract_any_poly_type_shared_ptr(Environment, tesseract_environment)

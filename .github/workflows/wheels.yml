@@ -14,6 +14,8 @@ env:
   VCPKG_PKGS: >- 
     boost-dll boost-program-options
     boost-serialization boost-filesystem
+    boost-stacktrace boost-algorithm
+    boost-format
     tinyxml2 console-bridge assimp
     urdfdom octomap orocos-kdl pcl
     gtest benchmark flann jsoncpp
@@ -30,46 +32,46 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - os: ubuntu-20.04
-          runs_on: ubuntu-20.04
-          container: ubuntu:20.04
-          py_platform: manylinux_2_31_x86_64
-          python_version: "3.7"
-          docs: false
-          docs_cmake: OFF
-        - os: ubuntu-20.04
-          runs_on: ubuntu-20.04
-          container: ubuntu:20.04
-          py_platform: manylinux_2_31_x86_64
+        - os: ubuntu-22.04
+          runs_on: ubuntu-22.04
+          container: ubuntu:22.04
+          py_platform: manylinux_2_35_x86_64
           python_version: "3.8"
           docs: true
           docs_cmake: ON
-        - os: ubuntu-20.04
-          runs_on: ubuntu-20.04
-          container: ubuntu:20.04
-          py_platform: manylinux_2_31_x86_64
+        - os: ubuntu-22.04
+          runs_on: ubuntu-22.04
+          container: ubuntu:22.04
+          py_platform: manylinux_2_35_x86_64
           python_version: "3.9"
           docs: true
           docs_cmake: ON
-        - os: ubuntu-20.04
-          runs_on: ubuntu-20.04
-          container: ubuntu:20.04
-          py_platform: manylinux_2_31_x86_64
+        - os: ubuntu-22.04
+          runs_on: ubuntu-22.04
+          container: ubuntu:22.04
+          py_platform: manylinux_2_35_x86_64
           python_version: "3.10"
           docs: true
           docs_cmake: ON
-        - os: ubuntu-20.04
-          runs_on: ubuntu-20.04
-          container: ubuntu:20.04
-          py_platform: manylinux_2_31_x86_64
+        - os: ubuntu-22.04
+          runs_on: ubuntu-22.04
+          container: ubuntu:22.04
+          py_platform: manylinux_2_35_x86_64
           python_version: "3.11.0"
           docs: true
           docs_cmake: ON
-        - os: ubuntu-20.04
-          runs_on: ubuntu-20.04
-          container: ubuntu:20.04
-          py_platform: manylinux_2_31_x86_64
+        - os: ubuntu-22.04
+          runs_on: ubuntu-22.04
+          container: ubuntu:22.04
+          py_platform: manylinux_2_35_x86_64
           python_version: "3.12.0"
+          docs: true
+          docs_cmake: ON
+        - os: ubuntu-22.04
+          runs_on: ubuntu-22.04
+          container: ubuntu:22.04
+          py_platform: manylinux_2_35_x86_64
+          python_version: "3.13.0"
           docs: true
           docs_cmake: ON
     env:
@@ -93,7 +95,7 @@ jobs:
         liburdfdom-dev liboctomap-dev liborocos-kdl-dev libpcl-dev
         libflann-dev libjsoncpp-dev libyaml-cpp-dev git cmake ninja-build
         build-essential autoconf automake libtool bison libpcre2-dev libpcre3-dev
-        lcov libbullet-dev libbullet-extras-dev python3-venv curl -y -qq
+        lcov libbullet-dev libbullet-extras-dev python3-venv curl libfcl-dev -y -qq
     - name: build-swig
       uses: johnwason/swig-build-action@v1
       with:
@@ -149,17 +151,17 @@ jobs:
         export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GITHUB_WORKSPACE/ws/install/lib
         cmake --build . --config Release --target tesseract_python_doc
     - name: archive wheels
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: 'python-wheels-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
         path: ws/build/tesseract_python/python/*
     - name: archive docs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: 'python-docs-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
         path: ws/build/tesseract_python/docs/*
   build-win:
-    runs-on: windows-2019
+    runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
@@ -188,6 +190,10 @@ jobs:
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
             python_version: "3.12.0"
+          - arch: x64
+            vcpkg_triplet: x64-windows-release
+            cmake_arch: x64
+            python_version: "3.13.0"
     steps:
     - uses: actions/checkout@v2
       with:
@@ -198,7 +204,7 @@ jobs:
         python-version: '${{ matrix.config.python_version }}'
         architecture: ${{ matrix.config.arch }}
     - name: vcpkg build
-      uses: johnwason/vcpkg-action@v5
+      uses: johnwason/vcpkg-action@v6
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
@@ -206,7 +212,7 @@ jobs:
         extra-args: --clean-after-build
         token: ${{ github.token }}
         cache-key: win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}
-        revision: master
+        github-binarycache: true
     - name: pip3
       run: |
         python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
@@ -220,7 +226,7 @@ jobs:
       working-directory: ws
       shell: cmd
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
         set CXXFLAGS=%CXXFLAGS% -DEIGEN_DONT_ALIGN=1 -DEIGEN_DONT_VECTORIZE=1
         set CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}
         set PATH=%PATH%;%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}\bin
@@ -263,25 +269,44 @@ jobs:
         if %errorlevel% neq 0 exit /b %errorlevel%
     - name: archive wheels
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: 'python-wheels-win-${{matrix.config.python_version}}'
         path: ws/build/tesseract_python/python
     - name: archive logs
       if: failure()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: 'build-logs-win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}'
         path: "**/*.log"
         retention-days: 2
   build-macos:
-    runs-on: macos-latest
+    runs-on: ${{ matrix.config.runner }}
     strategy:
       fail-fast: false
       matrix:
         config:
-        - py_platform: macosx-10.9-x86_64
+        - py_platform: macosx-12.0-x86_64
           python_version: "3.12"
+          arch: x64
+          runner: macos-13
+          brew_prefix: /usr/local
+        - py_platform: macosx-12.0-x86_64
+          python_version: "3.13"
+          arch: x64
+          runner: macos-13
+          brew_prefix: /usr/local
+        - py_platform: macosx-12.0-arm64
+          python_version: "3.12"
+          arch: arm64
+          runner: macos-14
+          brew_prefix: /opt/homebrew
+        - py_platform: macosx-12.0-arm64
+          python_version: "3.13"
+          arch: arm64
+          runner: macos-14
+          brew_prefix: /opt/homebrew
+      
     steps:
     - uses: actions/checkout@v2
       with:
@@ -292,16 +317,17 @@ jobs:
         python-version: '${{ matrix.config.python_version }}'
     - name: brew
       run: |
-        brew install libomp cmake automake autoconf libtool gcc ninja
+        brew install libomp cmake automake autoconf libtool gcc ninja swig
     - name: vcpkg build
-      uses: johnwason/vcpkg-action@v5
+      uses: johnwason/vcpkg-action@v6
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
-        triplet: x64-osx-dynamic-release
+        triplet: ${{ matrix.config.arch }}-osx-dynamic-release
         extra-args: --clean-after-build --overlay-triplets=${{ github.workspace }}/ws/src/tesseract_python/.github/workflows/vcpkg_triplets
         token: ${{ github.token }}
-        cache-key: osx-x64-vcpkg
+        cache-key: osx-${{ matrix.config.arch }}-vcpkg
+        github-binarycache: true
         revision: master
     - name: pip3
       run: |
@@ -312,8 +338,8 @@ jobs:
     - name: colcon build
       working-directory: ws
       run: |
-        export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$GITHUB_WORKSPACE/vcpkg/installed/x64-osx-dynamic-release/lib:$GITHUB_WORKSPACE/ws/install/lib
-        export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/vcpkg/installed/x64-osx-dynamic-release
+        export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib:$GITHUB_WORKSPACE/ws/install/lib
+        export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release
 
         colcon build --merge-install \
             --packages-ignore tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd \
@@ -324,12 +350,12 @@ jobs:
             -DBUILD_SHARED_LIBS=ON -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF \
             -DVCPKG_APPLOCAL_DEPS=OFF -DTESSERACT_ENABLE_TESTING=ON \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
-            -DOpenMP_CXX_INCLUDE_DIR=/usr/local/opt/libomp/include \
-            -DOpenMP_C_INCLUDE_DIR=/usr/local/opt/libomp/include \
+            -DOpenMP_CXX_INCLUDE_DIR=${{ matrix.config.brew_prefix }}/opt/libomp/include \
+            -DOpenMP_C_INCLUDE_DIR=${{ matrix.config.brew_prefix }}/opt/libomp/include \
             -DOpenMP_CXX_LIB_NAMES=libomp -DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp" \
             -DOpenMP_C_LIB_NAMES=libomp -DOpenMP_C_FLAGS="-Xpreprocessor -fopenmp" \
-            -DOpenMP_libomp_LIBRARY=/usr/local/opt/libomp/lib/libomp.dylib \
-            -Dtcmalloc_minimal_LIBRARY=${{ github.workspace }}/vcpkg/installed/x64-osx-dynamic-release/lib/libtcmalloc_minimal.dylib \
+            -DOpenMP_libomp_LIBRARY=${{ matrix.config.brew_prefix }}/opt/libomp/lib/libomp.dylib \
+            -Dtcmalloc_minimal_LIBRARY=${{ github.workspace }}/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib/libtcmalloc_minimal.dylib \
             -DPYTHON_EXECUTABLE="${{ steps.setup-python.outputs.python-path }}" \
             -DTESSERACT_PYTHON_WHEEL_PLATFORM=${{ matrix.config.py_platform }} \
             -DTESSERACT_PYTHON_BUILD_WHEEL=ON
@@ -347,13 +373,13 @@ jobs:
         pytest -s    
     - name: archive wheels
       if: always()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
-        name: 'python-macos-win-${{matrix.config.python_version}}'
+        name: 'python-macos-${{ matrix.config.arch }}-python-${{matrix.config.python_version}}'
         path: ws/build/tesseract_python/python
     - name: archive logs
       if: failure()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: 'build-logs-macos-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}'
         path: "**/*.log"
@@ -363,17 +389,17 @@ jobs:
       - build-win
       - build-ubuntu
       - build-macos
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v2
       with:
         path: robotraconteur
     - name: Download CI artifacts
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         path: artifacts/main
     - name: archive wheels
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: 'python-wheels-all'
         path: artifacts/**/wheelhouse/*.whl
