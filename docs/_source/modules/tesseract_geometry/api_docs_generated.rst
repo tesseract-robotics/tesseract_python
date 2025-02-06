@@ -17,6 +17,13 @@ Capsule Class
    :exclude-members: thisown
    :members:
 
+CompoundMesh Class
+===================================================================================================
+.. autoclass:: tesseract_robotics.tesseract_geometry.CompoundMesh
+   :noindex:
+   :exclude-members: thisown
+   :members:
+
 Cone Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_geometry.Cone
@@ -165,11 +172,22 @@ isIdentical Function
 Constants
 *********
 
-* ``CONVEX_MESH``
-* ``POLYGON_MESH``
-* ``SDF_MESH``
-* ``SPHERE_INSIDE``
-* ``SPHERE_OUTSIDE``
+* ``GeometryType_BOX``
+* ``GeometryType_CAPSULE``
+* ``GeometryType_COMPOUND_MESH``
+* ``GeometryType_CONE``
+* ``GeometryType_CONVEX_MESH``
+* ``GeometryType_CYLINDER``
+* ``GeometryType_MESH``
+* ``GeometryType_OCTREE``
+* ``GeometryType_PLANE``
+* ``GeometryType_POLYGON_MESH``
+* ``GeometryType_SDF_MESH``
+* ``GeometryType_SPHERE``
+* ``GeometryType_UNINITIALIZED``
+* ``OctreeSubType_BOX``
+* ``OctreeSubType_SPHERE_INSIDE``
+* ``OctreeSubType_SPHERE_OUTSIDE``
 
 Container Templates
 *******************

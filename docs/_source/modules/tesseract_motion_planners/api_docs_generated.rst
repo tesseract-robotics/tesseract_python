@@ -10,9 +10,9 @@ MotionPlanner Class
    :exclude-members: thisown
    :members:
 
-PlannerProfileRemappingUPtr Class
+MotionPlannerUPtr Class
 ===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners.PlannerProfileRemappingUPtr
+.. autoclass:: tesseract_robotics.tesseract_motion_planners.MotionPlannerUPtr
    :noindex:
    :exclude-members: thisown
    :members:

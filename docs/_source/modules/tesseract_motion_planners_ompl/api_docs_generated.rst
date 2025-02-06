@@ -45,13 +45,6 @@ LazyPRMstarConfigurator Class
    :exclude-members: thisown
    :members:
 
-OMPLDefaultPlanProfile Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners_ompl.OMPLDefaultPlanProfile
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
 OMPLMotionPlanner Class
 ===================================================================================================
 .. autoclass:: tesseract_robotics.tesseract_motion_planners_ompl.OMPLMotionPlanner
@@ -73,30 +66,9 @@ OMPLPlannerConfigurator Class
    :exclude-members: thisown
    :members:
 
-OMPLProblem Class
+OMPLRealVectorPlanProfile Class
 ===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners_ompl.OMPLProblem
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
-OMPLProblemConfig Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners_ompl.OMPLProblemConfig
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
-OMPLProblemGeneratorFn Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners_ompl.OMPLProblemGeneratorFn
-   :noindex:
-   :exclude-members: thisown
-   :members:
-
-OMPLProblemGeneratorFnBase Class
-===================================================================================================
-.. autoclass:: tesseract_robotics.tesseract_motion_planners_ompl.OMPLProblemGeneratorFnBase
+.. autoclass:: tesseract_robotics.tesseract_motion_planners_ompl.OMPLRealVectorPlanProfile
    :noindex:
    :exclude-members: thisown
    :members:
@@ -158,84 +130,6 @@ TRRTConfigurator Class
    :members:
 
 
-Functions
-*********
-
-ProfileDictionary_addProfile_OMPLPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.ProfileDictionary_addProfile_OMPLPlanProfile
-   :noindex:
-
-ProfileDictionary_getProfileEntry_OMPLPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.ProfileDictionary_getProfileEntry_OMPLPlanProfile
-   :noindex:
-
-ProfileDictionary_getProfile_OMPLPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.ProfileDictionary_getProfile_OMPLPlanProfile
-   :noindex:
-
-ProfileDictionary_hasProfileEntry_OMPLPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.ProfileDictionary_hasProfileEntry_OMPLPlanProfile
-   :noindex:
-
-ProfileDictionary_hasProfile_OMPLPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.ProfileDictionary_hasProfile_OMPLPlanProfile
-   :noindex:
-
-ProfileDictionary_removeProfileEntry_OMPLPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.ProfileDictionary_removeProfileEntry_OMPLPlanProfile
-   :noindex:
-
-ProfileDictionary_removeProfile_OMPLPlanProfile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.ProfileDictionary_removeProfile_OMPLPlanProfile
-   :noindex:
-
-omplPlanFromXMLDocument Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.omplPlanFromXMLDocument
-   :noindex:
-
-omplPlanFromXMLElement Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.omplPlanFromXMLElement
-   :noindex:
-
-omplPlanFromXMLFile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.omplPlanFromXMLFile
-   :noindex:
-
-omplPlanFromXMLString Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.omplPlanFromXMLString
-   :noindex:
-
-omplPlanParser Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.omplPlanParser
-   :noindex:
-
-toXMLDocument Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.toXMLDocument
-   :noindex:
-
-toXMLFile Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.toXMLFile
-   :noindex:
-
-toXMLString Function
-===================================================================================================
-.. autofunction:: tesseract_robotics.tesseract_motion_planners_ompl.toXMLString
-   :noindex:
-
 Constants
 *********
 
@@ -253,14 +147,9 @@ Constants
 * ``OMPLPlannerType_SBL``
 * ``OMPLPlannerType_SPARS``
 * ``OMPLPlannerType_TRRT``
-* ``OMPLProblemStateSpace_REAL_CONSTRAINTED_STATE_SPACE``
-* ``OMPLProblemStateSpace_REAL_STATE_SPACE``
-* ``OMPLProblemStateSpace_SE3_STATE_SPACE``
 
 Container Templates
 *******************
 
-* ``OMPLPlanProfileMap`` -> ``std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::OMPLPlanProfile>>``
 * ``OMPLPlanners`` -> ``std::vector<tesseract_planning::OMPLPlannerConfigurator::ConstPtr>``
-* ``OMPLProblems`` -> ``std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>``
 

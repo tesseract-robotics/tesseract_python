@@ -231,6 +231,36 @@ SetActiveDiscreteContactManagerCommand Class
 Functions
 *********
 
+AnyPoly_as_Environment Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_environment.AnyPoly_as_Environment
+   :noindex:
+
+AnyPoly_as_EnvironmentConst Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_environment.AnyPoly_as_EnvironmentConst
+   :noindex:
+
+AnyPoly_is_Environment Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_environment.AnyPoly_is_Environment
+   :noindex:
+
+AnyPoly_is_EnvironmentConst Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_environment.AnyPoly_is_EnvironmentConst
+   :noindex:
+
+AnyPoly_wrap_Environment Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_environment.AnyPoly_wrap_Environment
+   :noindex:
+
+AnyPoly_wrap_EnvironmentConst Function
+===================================================================================================
+.. autofunction:: tesseract_robotics.tesseract_environment.AnyPoly_wrap_EnvironmentConst
+   :noindex:
+
 cast_CommandAppliedEvent Function
 ===================================================================================================
 .. autofunction:: tesseract_robotics.tesseract_environment.cast_CommandAppliedEvent
