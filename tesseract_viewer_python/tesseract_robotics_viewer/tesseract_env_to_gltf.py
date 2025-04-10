@@ -321,7 +321,6 @@ def _append_link_visual(gltf_dict, gltf_buf_io, link_name, visual, visual_i, sha
             visual_node1["mesh"] = mesh_ind1
             visual_nodes.append(visual_node1)
             visual_inds.append(visual_ind1)
-            print(mesh_dict1)
             mesh_count += 1
 
         return visual_nodes, visual_inds
@@ -551,8 +550,6 @@ def _append_trajectory_animation(gltf_dict, gltf_buf_io, tesseract_trajectory):
 
     _append_dict_list(gltf_dict, "animations", animation)
 
-        
-    print(animation)
 
 def _append_shapes_mesh_accessors(gltf_dict, gltf_buf_io, name):
     o = _geometry_shapes[name]
