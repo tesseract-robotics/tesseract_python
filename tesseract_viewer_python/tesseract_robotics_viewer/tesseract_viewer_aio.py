@@ -45,7 +45,7 @@ class _TesseractViewerAIOServer:
             data = data.encode("utf8")
         return hashlib.sha256(data).hexdigest()
 
-    async def start(self, host="127.0.0.1", port=8000):
+    async def start(self, host="127.0.0.1", port=8000, ssl_context = None):
         try:
             self._app = aiohttp_web.Application()
             self._app.add_routes([aiohttp_web.get("/", self.index), aiohttp_web.get("/index.html", self.index)])
@@ -62,7 +62,7 @@ class _TesseractViewerAIOServer:
 
             self._runner = aiohttp_web.AppRunner(self._app)
             await self._runner.setup()
-            self._site = aiohttp_web.TCPSite(self._runner, host, port)
+            self._site = aiohttp_web.TCPSite(self._runner, host, port, ssl_context = ssl_context)
             await self._site.start()
 
         except:
@@ -293,9 +293,12 @@ class TesseractViewerAIO:
 
     :param server_address: The address to listen on. Default is localhost:8000.
     :type server_address: tuple
+    :param ssl_context: The SSL context to use for the server. Default is None.
+    :type ssl_context: ssl.SSLContext
     """
-    def __init__(self, server_address = ("localhost", 8080)):
+    def __init__(self, server_address = ("localhost", 8080), ssl_context = None):
         self.server_address = server_address
+        self.ssl_context = ssl_context
         self.server = _TesseractViewerAIOServer()
         self._lock = asyncio.Lock()
         self.server_task = None
@@ -367,7 +370,7 @@ class TesseractViewerAIO:
         close() is called.
         """
         async with self._lock:
-            self.server_task = asyncio.create_task(self.server.start(self.server_address[0], self.server_address[1]))
+            self.server_task = asyncio.create_task(self.server.start(self.server_address[0], self.server_address[1], self.ssl_context))
 
     async def close(self):
         """

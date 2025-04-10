@@ -6,6 +6,7 @@ import { VRButton } from 'https://unpkg.com/three@0.153.0/examples/jsm/webxr/VRB
 import { LineMaterial } from 'https://unpkg.com/three@0.153.0/examples/jsm/lines/LineMaterial.js'
 import { Line2 } from 'https://unpkg.com/three@0.153.0/examples/jsm/lines/Line2.js'
 import { LineGeometry } from 'https://unpkg.com/three@0.153.0/examples/jsm/lines/LineGeometry.js'
+import { XRControllerModelFactory } from 'https://unpkg.com/three@0.153.0/examples/jsm/webxr/XRControllerModelFactory.js';
 import 'https://cdn.jsdelivr.net/npm/robust-websocket@1.0.0/robust-websocket.min.js';
 
 class TesseractViewer {
@@ -31,6 +32,17 @@ class TesseractViewer {
         this._update_trajectory_timer = null;
         this._update_markers_timer = null;
         this._update_scene_timer = null;
+        this._xr_dolly = null;
+        this._xr_controller1_grip = null;
+        this._xr_controller2_grip = null;
+        this._xr_controller1_model = null;
+        this._xr_controller2_model = null;
+        this._xr_gamepad1 = null;
+        this._xr_gamepad2 = null;
+        this._controls = null;
+        this._xr_drag_controller_start = null;
+        this._xr_drag_controller_orientation = null;
+        this._xr_drag_dolly_start = null;
 
     }
 
@@ -39,9 +51,7 @@ class TesseractViewer {
         this._clock = new THREE.Clock();
 
         const camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
-        camera.position.x = 3;
-        camera.position.y = 3;
-        camera.position.z = -1.5;
+        camera.position.set(3, 3, -1.5)
         this._camera = camera;
 
         const renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -71,7 +81,9 @@ class TesseractViewer {
 
         document.body.appendChild( renderer.domElement );
 
-        const controls = new OrbitControls( camera, renderer.domElement );
+        this._controls = new OrbitControls( camera, renderer.domElement );
+
+        let _this = this;
         
         // Only add VR button if it is supported
         if ( 'xr' in navigator )
@@ -79,6 +91,10 @@ class TesseractViewer {
             if (await navigator.xr.isSessionSupported( 'immersive-vr' ))
             {
                 document.body.appendChild( VRButton.createButton( renderer ) );
+
+                renderer.xr.addEventListener('sessionstart', function() {
+                    _this.enterXR();
+                });
             }
         }
 
@@ -101,7 +117,6 @@ class TesseractViewer {
 
         await this.updateScene();
 
-        let _this = this;
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         let do_update = true;
@@ -119,7 +134,19 @@ class TesseractViewer {
 
     createWebSocket() {
         // Create a new WebSocket instance
-        const socket = new RobustWebSocket('ws://localhost:8000/websocket', null, {
+        
+        // Get host and port from current URL
+        const host = window.location.hostname;
+        const port = window.location.port;
+        let ws_protocol = "ws";
+
+        if (window.location.protocol === "https:") {
+            ws_protocol = "wss";
+        }
+
+        const ws_url = ws_protocol + "://" + host + ":" + port + "/websocket";
+
+        const socket = new RobustWebSocket(ws_url, null, {
             shouldReconnect: (event,ws) => { return 1000; }
         });
 
@@ -157,7 +184,9 @@ class TesseractViewer {
 
         var delta = this._clock.getDelta();
         if ( this._animation_mixer ) this._animation_mixer.update( delta );
-    };
+
+        this.xrLocomotion();
+    }
 
     async fetchIfModified(url, etag) {
         let fetch_res;
@@ -704,7 +733,146 @@ class TesseractViewer {
             tf.parent.remove(tf);
         });
     }
+
+    initXRControllers(dolly) {
+        const controller1 = this._renderer.xr.getController(0);
+        const controller2 = this._renderer.xr.getController(1);
+
+        dolly.add(controller1);
+        dolly.add(controller2);
+
+        const controllerModelFactory = new XRControllerModelFactory();
+
+        const controllerGrip1 = this._renderer.xr.getControllerGrip(0);
+        this._xr_controller1_grip = controllerGrip1;
+        this._xr_controller1_model = controllerModelFactory.createControllerModel(controllerGrip1);
+        controllerGrip1.add(this._xr_controller1_model);
+        dolly.add(controllerGrip1);
+
+        const controllerGrip2 = this._renderer.xr.getControllerGrip(1);
+        this._xr_controller2_grip = controllerGrip2;
+        this._xr_controller2_model = controllerModelFactory.createControllerModel(controllerGrip2);
+        controllerGrip2.add(this._xr_controller2_model);
+        dolly.add(controllerGrip2);
+
+        let _this = this;
+
+        controllerGrip1.addEventListener("connected", (e)=> {
+            _this._xr_gamepad1 = e.data.gamepad;
+        })
+
+        controllerGrip2.addEventListener("connected", (e)=> {
+            _this._xr_gamepad2 = e.data.gamepad;
+        })
+    }
+
+    enterXR() {
+        this._controls.saveState();
+        this._xr_dolly = new THREE.Object3D();
+        this.initXRControllers(this._xr_dolly)
+        this._xr_dolly.add(this._camera);
+        this._camera.position.set(0, 0, 0);
+        this._camera.rotation.set(0, 0, 0);
+        this._scene.add(this._xr_dolly);
+        this._xr_dolly.position.set(2.5,0,0);
+        this._xr_dolly.rotateY(Math.PI / 2.0);
+
+        this._renderer.xr.getSession().addEventListener('end', () => {
+            this._scene.add(this._camera);
+            this._scene.remove(this._xr_dolly);
+            this._xr_dolly.remove(this._camera);
+            this._xr_dolly = null;
+            this._xr_controller1_grip.remove(this._xr_controller1_model);
+            this._xr_controller2_grip.remove(this._xr_controller2_model);
+            this._xr_controller1_grip = null;
+            this._xr_controller2_grip = null;
+            this._xr_controller1_model = null;
+            this._xr_controller2_model = null;
+            this._controls.reset();
+            this._controls.update();
+        });
+
+
+    }
+    
+    xrLocomotion()
+    {
+        if (this._xr_dolly && this._xr_gamepad2) {
+            try
+            {
+            
+            if (this._xr_gamepad2.buttons[5].pressed)
+            {
+                if (!this._xr_drag_controller_start)
+                {
+                    this._xr_drag_controller_start = this._xr_controller2_grip.position.clone();
+                    let world_quat = new THREE.Quaternion();
+                    this._xr_drag_controller_orientation = this._camera.getWorldQuaternion(world_quat);
+                    
+                    this._xr_drag_dolly_start = this._xr_dolly.position.clone();
+                }
+
+                let controller_diff = this._xr_controller2_grip.position.clone().sub(this._xr_drag_controller_start);
+                controller_diff.applyQuaternion(this._xr_drag_controller_orientation.clone());
+                let y_diff = controller_diff.y;
+                y_diff = Math.floor(y_diff / 0.1);
+                if (y_diff < 0) {
+                    y_diff = y_diff + 1;
+                }
+                controller_diff.y = y_diff * 0.1;
+                let dolly_pos = this._xr_drag_dolly_start.clone().sub(controller_diff);
+                this._xr_dolly.position.copy(dolly_pos);
+            }
+            else
+            {
+                if (this._xr_drag_controller_start)
+                {
+                    this._xr_drag_controller_start = null;
+                    this._xr_drag_dolly_start = null;
+                }
+            }
+
+            }
+            catch (e)
+            {
+                console.log(e);
+            }
+
+            if (this._xr_gamepad2.axes.length == 4) {
+                let axis_2 = this._xr_gamepad2.axes[2];
+                if (axis_2 > 0.2)
+                {
+                    let scale = -(axis_2 - 0.2)/0.8;
+                    this._xr_dolly.rotateY(0.01 * scale);
+                }
+                if (axis_2 < -0.2)
+                {
+                    let scale = -(axis_2 + 0.2)/0.8;
+                    this._xr_dolly.rotateY(0.01 * scale);
+                }
+                
+                let axis_3 = this._xr_gamepad2.axes[3];
+                let dolly_world_quat = new THREE.Quaternion();
+                this._xr_dolly.getWorldQuaternion(dolly_world_quat);
+                let dolly_forward = new THREE.Vector3(0,0,-1);
+                dolly_forward.applyQuaternion(dolly_world_quat);
+
+                if (axis_3 > 0.2)
+                {
+                    let scale = -(axis_3 - 0.2)/0.8;
+                    this._xr_dolly.position.add(dolly_forward.clone().multiplyScalar(0.01 * scale));
+                }
+                if (axis_3 < -0.2)
+                {
+                    let scale = -(axis_3 + 0.2)/0.8;
+                    this._xr_dolly.position.add(dolly_forward.clone().multiplyScalar(0.01 * scale));
+                }
+            }
+        }
+    };
 }
+
+
 
 window.addEventListener("DOMContentLoaded", async function () {
     let viewer = new TesseractViewer();
