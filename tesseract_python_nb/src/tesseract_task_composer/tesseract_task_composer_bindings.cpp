@@ -132,25 +132,27 @@ NB_MODULE(_tesseract_task_composer, m) {
         .def("getWorkerCount", &tp::TaskflowTaskComposerExecutor::getWorkerCount)
         .def("getTaskCount", &tp::TaskflowTaskComposerExecutor::getTaskCount);
 
-    // TaskComposerPluginFactory and TaskComposerServer have non-copyable members
-    // (unordered_map with unique_ptr) which makes them non-copyable. Since
-    // nanobind currently doesn't have a simple way to handle non-copyable types
-    // without significant boilerplate, we provide factory functions instead.
+    // ========== TaskComposerPluginFactory ==========
+    // Move-only class (deleted copy, has move). Use unique_ptr internally to handle moves.
+    nb::class_<tp::TaskComposerPluginFactory>(m, "TaskComposerPluginFactory")
+        .def(nb::init<const tc::fs::path&, const tc::ResourceLocator&>(), "config"_a, "locator"_a,
+             "Create from config file path and resource locator")
+        .def("createTaskComposerExecutor", [](tp::TaskComposerPluginFactory& self, const std::string& name) {
+            return self.createTaskComposerExecutor(name);
+        }, "name"_a, nb::rv_policy::move,
+           "Create a task composer executor by name")
+        .def("createTaskComposerNode", [](tp::TaskComposerPluginFactory& self, const std::string& name) {
+            return self.createTaskComposerNode(name);
+        }, "name"_a, nb::rv_policy::move,
+           "Create a task composer node by name")
+        .def("hasTaskComposerExecutorPlugins", &tp::TaskComposerPluginFactory::hasTaskComposerExecutorPlugins)
+        .def("hasTaskComposerNodePlugins", &tp::TaskComposerPluginFactory::hasTaskComposerNodePlugins)
+        .def("getDefaultTaskComposerExecutorPlugin", &tp::TaskComposerPluginFactory::getDefaultTaskComposerExecutorPlugin)
+        .def("getDefaultTaskComposerNodePlugin", &tp::TaskComposerPluginFactory::getDefaultTaskComposerNodePlugin);
 
-    // Factory function to create TaskComposerPluginFactory
+    // Keep factory functions for backwards compatibility
     m.def("createTaskComposerPluginFactory", [](const tc::fs::path& config, const tc::ResourceLocator& locator) {
-        auto factory = std::make_shared<tp::TaskComposerPluginFactory>(config, locator);
-        return factory;
+        return std::make_unique<tp::TaskComposerPluginFactory>(config, locator);
     }, "config"_a, "locator"_a,
     "Create a TaskComposerPluginFactory from a config file and resource locator");
-
-    // Wrapper class to expose key PluginFactory methods via shared_ptr
-    // This works around the non-copyable issue by storing as shared_ptr
-    m.def("createExecutorFromFactory", [](std::shared_ptr<tp::TaskComposerPluginFactory> factory, const std::string& name) {
-        return factory->createTaskComposerExecutor(name);
-    }, "factory"_a, "name"_a);
-
-    m.def("createNodeFromFactory", [](std::shared_ptr<tp::TaskComposerPluginFactory> factory, const std::string& name) {
-        return factory->createTaskComposerNode(name);
-    }, "factory"_a, "name"_a);
 }

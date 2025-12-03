@@ -10,8 +10,7 @@ __all__ = [
     "TaskComposerFuture",
     "TaskComposerExecutor",
     "TaskflowTaskComposerExecutor",
-    # Factory functions (TaskComposerPluginFactory is non-copyable)
+    "TaskComposerPluginFactory",
+    # Factory function (backwards compat)
     "createTaskComposerPluginFactory",
-    "createExecutorFromFactory",
-    "createNodeFromFactory",
 ]

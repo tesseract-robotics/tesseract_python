@@ -358,9 +358,9 @@ colcon build --merge-install --packages-skip trajopt trajopt_common trajopt_sco 
 ```
 
 ### Expansion (Remaining Modules)
-- [ ] tesseract_motion_planners_trajopt - blocked on ws rebuild (OSQP 1.0 API)
+- [ ] tesseract_motion_planners_trajopt - blocked on OSQP 1.0 API incompatibility
 - [x] tesseract_task_composer - core + taskflow (no planning component - requires trajopt)
-- [ ] tesseract_process_managers - for process management
+- ~~tesseract_process_managers~~ - deprecated, replaced by tesseract_task_composer
 
 ### Reusable Patterns
 Create helper headers:
