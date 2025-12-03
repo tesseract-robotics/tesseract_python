@@ -5,6 +5,9 @@ import tesseract_robotics.tesseract_geometry  # noqa: F401
 
 from tesseract_robotics.tesseract_scene_graph._tesseract_scene_graph import *
 
+# Re-export SceneState from state_solver for convenience
+from tesseract_robotics.tesseract_state_solver import SceneState
+
 __all__ = [
     # Joint enums
     "JointType",
@@ -31,4 +34,7 @@ __all__ = [
     # Graph
     "ShortestPath",
     "SceneGraph",
+
+    # SceneState (from state_solver)
+    "SceneState",
 ]

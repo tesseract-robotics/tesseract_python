@@ -157,6 +157,53 @@ add_tesseract_nanobind_extension(
   tesseract::tesseract_common
 )
 
+# Find motion planners
+find_package(tesseract_motion_planners REQUIRED COMPONENTS core simple ompl)
+
+# Add tesseract_motion_planners module
+add_tesseract_nanobind_extension(
+  tesseract_motion_planners
+  src/tesseract_motion_planners/tesseract_motion_planners_bindings.cpp
+  tesseract::tesseract_motion_planners_core
+  tesseract::tesseract_environment
+  tesseract::tesseract_command_language
+  tesseract::tesseract_common
+)
+
+# Add tesseract_motion_planners_simple module
+add_tesseract_nanobind_extension(
+  tesseract_motion_planners_simple
+  src/tesseract_motion_planners_simple/tesseract_motion_planners_simple_bindings.cpp
+  tesseract::tesseract_motion_planners_simple
+  tesseract::tesseract_motion_planners_core
+  tesseract::tesseract_environment
+  tesseract::tesseract_command_language
+  tesseract::tesseract_common
+)
+
+# Add tesseract_motion_planners_ompl module
+add_tesseract_nanobind_extension(
+  tesseract_motion_planners_ompl
+  src/tesseract_motion_planners_ompl/tesseract_motion_planners_ompl_bindings.cpp
+  tesseract::tesseract_motion_planners_ompl
+  tesseract::tesseract_motion_planners_core
+  tesseract::tesseract_environment
+  tesseract::tesseract_command_language
+  tesseract::tesseract_common
+)
+
+# Find and add tesseract_time_parameterization
+find_package(tesseract_time_parameterization REQUIRED)
+
+add_tesseract_nanobind_extension(
+  tesseract_time_parameterization
+  src/tesseract_time_parameterization/tesseract_time_parameterization_bindings.cpp
+  tesseract::tesseract_time_parameterization_totg
+  tesseract::tesseract_time_parameterization_core
+  tesseract::tesseract_command_language
+  tesseract::tesseract_common
+)
+
 message(STATUS "============= Build Configuration =============")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "C++ Standard: C++${CMAKE_CXX_STANDARD}")

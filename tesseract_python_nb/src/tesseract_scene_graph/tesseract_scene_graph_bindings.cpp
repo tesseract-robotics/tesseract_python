@@ -309,13 +309,7 @@ NB_MODULE(_tesseract_scene_graph, m) {
             return "SceneGraph('" + self.getName() + "')";
         });
 
-    // ==================== SceneState ====================
-    nb::class_<tsg::SceneState>(m, "SceneState")
-        .def(nb::init<>())
-        .def_rw("joints", &tsg::SceneState::joints)
-        .def_rw("link_transforms", &tsg::SceneState::link_transforms)
-        .def_rw("joint_transforms", &tsg::SceneState::joint_transforms)
-        .def("getJointValues", &tsg::SceneState::getJointValues, "joint_names"_a)
-        .def("__eq__", &tsg::SceneState::operator==)
-        .def("__ne__", &tsg::SceneState::operator!=);
+    // Note: SceneState is bound in tesseract_state_solver module with proper
+    // AlignedMap to std::map conversion for link_transforms and joint_transforms.
+    // Import from tesseract_robotics.tesseract_state_solver.
 }

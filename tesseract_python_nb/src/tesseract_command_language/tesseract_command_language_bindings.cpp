@@ -7,12 +7,24 @@
 #include <nanobind/stl/map.h>
 #include <nanobind/stl/unique_ptr.h>
 #include <nanobind/stl/set.h>
+#include <nanobind/stl/function.h>
 
-// tesseract_command_language - only concrete types, avoid Poly wrappers for now
+// tesseract_command_language - concrete types
 #include <tesseract_command_language/joint_waypoint.h>
 #include <tesseract_command_language/cartesian_waypoint.h>
 #include <tesseract_command_language/state_waypoint.h>
+#include <tesseract_command_language/move_instruction.h>
+#include <tesseract_command_language/composite_instruction.h>
+#include <tesseract_command_language/profile_dictionary.h>
 #include <tesseract_command_language/constants.h>
+
+// tesseract_command_language - Poly types
+#include <tesseract_command_language/poly/waypoint_poly.h>
+#include <tesseract_command_language/poly/cartesian_waypoint_poly.h>
+#include <tesseract_command_language/poly/joint_waypoint_poly.h>
+#include <tesseract_command_language/poly/state_waypoint_poly.h>
+#include <tesseract_command_language/poly/move_instruction_poly.h>
+#include <tesseract_command_language/poly/instruction_poly.h>
 
 // tesseract_common
 #include <tesseract_common/manipulator_info.h>
@@ -86,4 +98,223 @@ NB_MODULE(_tesseract_command_language, m) {
 
     // ========== Constants ==========
     m.attr("DEFAULT_PROFILE_KEY") = std::string(tp::DEFAULT_PROFILE_KEY);
+
+    // ========== MoveInstructionType enum ==========
+    nb::enum_<tp::MoveInstructionType>(m, "MoveInstructionType")
+        .value("LINEAR", tp::MoveInstructionType::LINEAR)
+        .value("FREESPACE", tp::MoveInstructionType::FREESPACE)
+        .value("CIRCULAR", tp::MoveInstructionType::CIRCULAR);
+
+    // For SWIG compatibility
+    m.attr("MoveInstructionType_LINEAR") = tp::MoveInstructionType::LINEAR;
+    m.attr("MoveInstructionType_FREESPACE") = tp::MoveInstructionType::FREESPACE;
+    m.attr("MoveInstructionType_CIRCULAR") = tp::MoveInstructionType::CIRCULAR;
+
+    // ========== CompositeInstructionOrder enum ==========
+    nb::enum_<tp::CompositeInstructionOrder>(m, "CompositeInstructionOrder")
+        .value("ORDERED", tp::CompositeInstructionOrder::ORDERED)
+        .value("UNORDERED", tp::CompositeInstructionOrder::UNORDERED)
+        .value("ORDERED_AND_REVERABLE", tp::CompositeInstructionOrder::ORDERED_AND_REVERABLE);
+
+    // ========== WaypointPoly ==========
+    nb::class_<tp::WaypointPoly>(m, "WaypointPoly")
+        .def(nb::init<>())
+        .def("setName", &tp::WaypointPoly::setName, "name"_a)
+        .def("getName", &tp::WaypointPoly::getName)
+        .def("print", &tp::WaypointPoly::print, "prefix"_a = "")
+        .def("isCartesianWaypoint", &tp::WaypointPoly::isCartesianWaypoint)
+        .def("isJointWaypoint", &tp::WaypointPoly::isJointWaypoint)
+        .def("isStateWaypoint", &tp::WaypointPoly::isStateWaypoint)
+        .def("isNull", &tp::WaypointPoly::isNull);
+
+    // ========== CartesianWaypointPoly ==========
+    // Note: Not binding as subclass of WaypointPoly due to nanobind limitations
+    nb::class_<tp::CartesianWaypointPoly>(m, "CartesianWaypointPoly")
+        .def(nb::init<>())
+        .def(nb::init<tp::CartesianWaypoint>(), "waypoint"_a)
+        .def("getTransform", [](const tp::CartesianWaypointPoly& self) -> Eigen::Isometry3d {
+            return self.getTransform();
+        })
+        .def("setTransform", &tp::CartesianWaypointPoly::setTransform, "transform"_a)
+        .def("hasSeed", &tp::CartesianWaypointPoly::hasSeed)
+        .def("clearSeed", &tp::CartesianWaypointPoly::clearSeed)
+        // Re-expose WaypointPoly methods
+        .def("setName", &tp::CartesianWaypointPoly::setName, "name"_a)
+        .def("getName", &tp::CartesianWaypointPoly::getName)
+        .def("print", &tp::CartesianWaypointPoly::print, "prefix"_a = "")
+        .def("isNull", &tp::CartesianWaypointPoly::isNull);
+
+    // ========== JointWaypointPoly ==========
+    nb::class_<tp::JointWaypointPoly>(m, "JointWaypointPoly")
+        .def(nb::init<>())
+        .def(nb::init<tp::JointWaypoint>(), "waypoint"_a)
+        .def("getNames", [](const tp::JointWaypointPoly& self) { return self.getNames(); })
+        .def("setNames", &tp::JointWaypointPoly::setNames, "names"_a)
+        .def("getPosition", [](const tp::JointWaypointPoly& self) -> Eigen::VectorXd {
+            return self.getPosition();
+        })
+        .def("setPosition", &tp::JointWaypointPoly::setPosition, "position"_a)
+        .def("isConstrained", &tp::JointWaypointPoly::isConstrained)
+        .def("setIsConstrained", &tp::JointWaypointPoly::setIsConstrained, "value"_a)
+        // Re-expose WaypointPoly methods
+        .def("setName", &tp::JointWaypointPoly::setName, "name"_a)
+        .def("getName", &tp::JointWaypointPoly::getName)
+        .def("print", &tp::JointWaypointPoly::print, "prefix"_a = "")
+        .def("isNull", &tp::JointWaypointPoly::isNull);
+
+    // ========== StateWaypointPoly ==========
+    nb::class_<tp::StateWaypointPoly>(m, "StateWaypointPoly")
+        .def(nb::init<>())
+        .def(nb::init<tp::StateWaypoint>(), "waypoint"_a)
+        .def("getNames", [](const tp::StateWaypointPoly& self) { return self.getNames(); })
+        .def("setNames", &tp::StateWaypointPoly::setNames, "names"_a)
+        .def("getPosition", [](const tp::StateWaypointPoly& self) -> Eigen::VectorXd {
+            return self.getPosition();
+        })
+        .def("setPosition", &tp::StateWaypointPoly::setPosition, "position"_a)
+        .def("getVelocity", [](const tp::StateWaypointPoly& self) -> Eigen::VectorXd {
+            return self.getVelocity();
+        })
+        .def("setVelocity", &tp::StateWaypointPoly::setVelocity, "velocity"_a)
+        .def("getAcceleration", [](const tp::StateWaypointPoly& self) -> Eigen::VectorXd {
+            return self.getAcceleration();
+        })
+        .def("setAcceleration", &tp::StateWaypointPoly::setAcceleration, "acceleration"_a)
+        .def("getTime", &tp::StateWaypointPoly::getTime)
+        .def("setTime", &tp::StateWaypointPoly::setTime, "time"_a)
+        // Re-expose WaypointPoly methods
+        .def("setName", &tp::StateWaypointPoly::setName, "name"_a)
+        .def("getName", &tp::StateWaypointPoly::getName)
+        .def("print", &tp::StateWaypointPoly::print, "prefix"_a = "")
+        .def("isNull", &tp::StateWaypointPoly::isNull);
+
+    // ========== Helper functions for Poly wrapping (SWIG compatibility) ==========
+    m.def("CartesianWaypointPoly_wrap_CartesianWaypoint", [](const tp::CartesianWaypoint& wp) {
+        return tp::CartesianWaypointPoly(wp);
+    }, "waypoint"_a);
+
+    m.def("JointWaypointPoly_wrap_JointWaypoint", [](const tp::JointWaypoint& wp) {
+        return tp::JointWaypointPoly(wp);
+    }, "waypoint"_a);
+
+    m.def("StateWaypointPoly_wrap_StateWaypoint", [](const tp::StateWaypoint& wp) {
+        return tp::StateWaypointPoly(wp);
+    }, "waypoint"_a);
+
+    // ========== InstructionPoly ==========
+    nb::class_<tp::InstructionPoly>(m, "InstructionPoly")
+        .def(nb::init<>())
+        .def("getDescription", &tp::InstructionPoly::getDescription)
+        .def("setDescription", &tp::InstructionPoly::setDescription, "description"_a)
+        .def("print", &tp::InstructionPoly::print, "prefix"_a = "")
+        .def("isCompositeInstruction", &tp::InstructionPoly::isCompositeInstruction)
+        .def("isMoveInstruction", &tp::InstructionPoly::isMoveInstruction)
+        .def("isNull", &tp::InstructionPoly::isNull);
+
+    // ========== MoveInstructionPoly ==========
+    // Note: Not binding as subclass due to nanobind cross-module limitations
+    nb::class_<tp::MoveInstructionPoly>(m, "MoveInstructionPoly")
+        .def(nb::init<>())
+        .def("getWaypoint", [](tp::MoveInstructionPoly& self) -> tp::WaypointPoly& {
+            return self.getWaypoint();
+        }, nb::rv_policy::reference_internal)
+        .def("assignCartesianWaypoint", &tp::MoveInstructionPoly::assignCartesianWaypoint, "waypoint"_a)
+        .def("assignJointWaypoint", &tp::MoveInstructionPoly::assignJointWaypoint, "waypoint"_a)
+        .def("assignStateWaypoint", &tp::MoveInstructionPoly::assignStateWaypoint, "waypoint"_a)
+        .def("getMoveType", &tp::MoveInstructionPoly::getMoveType)
+        .def("setMoveType", &tp::MoveInstructionPoly::setMoveType, "move_type"_a)
+        .def("getProfile", &tp::MoveInstructionPoly::getProfile, "ns"_a = "")
+        .def("setProfile", &tp::MoveInstructionPoly::setProfile, "profile"_a)
+        .def("getPathProfile", &tp::MoveInstructionPoly::getPathProfile, "ns"_a = "")
+        .def("setPathProfile", &tp::MoveInstructionPoly::setPathProfile, "profile"_a)
+        .def("getManipulatorInfo", [](const tp::MoveInstructionPoly& self) {
+            return self.getManipulatorInfo();
+        })
+        .def("setManipulatorInfo", &tp::MoveInstructionPoly::setManipulatorInfo, "info"_a)
+        // Re-expose InstructionPoly-like methods
+        .def("getDescription", &tp::MoveInstructionPoly::getDescription)
+        .def("setDescription", &tp::MoveInstructionPoly::setDescription, "description"_a)
+        .def("print", &tp::MoveInstructionPoly::print, "prefix"_a = "")
+        .def("isNull", &tp::MoveInstructionPoly::isNull);
+
+    // Helper for SWIG compatibility
+    m.def("MoveInstructionPoly_wrap_MoveInstruction", [](const tp::MoveInstruction& mi) {
+        return tp::MoveInstructionPoly(mi);
+    }, "instruction"_a);
+
+    m.def("InstructionPoly_as_MoveInstructionPoly", [](tp::InstructionPoly& ip) -> tp::MoveInstructionPoly& {
+        return ip.as<tp::MoveInstructionPoly>();
+    }, "instruction"_a, nb::rv_policy::reference);
+
+    m.def("WaypointPoly_as_StateWaypointPoly", [](tp::WaypointPoly& wp) -> tp::StateWaypointPoly& {
+        return wp.as<tp::StateWaypointPoly>();
+    }, "waypoint"_a, nb::rv_policy::reference);
+
+    m.def("WaypointPoly_as_CartesianWaypointPoly", [](tp::WaypointPoly& wp) -> tp::CartesianWaypointPoly& {
+        return wp.as<tp::CartesianWaypointPoly>();
+    }, "waypoint"_a, nb::rv_policy::reference);
+
+    m.def("WaypointPoly_as_JointWaypointPoly", [](tp::WaypointPoly& wp) -> tp::JointWaypointPoly& {
+        return wp.as<tp::JointWaypointPoly>();
+    }, "waypoint"_a, nb::rv_policy::reference);
+
+    // ========== MoveInstruction ==========
+    nb::class_<tp::MoveInstruction>(m, "MoveInstruction")
+        .def(nb::init<tp::CartesianWaypointPoly, tp::MoveInstructionType>(),
+             "waypoint"_a, "type"_a)
+        .def(nb::init<tp::JointWaypointPoly, tp::MoveInstructionType>(),
+             "waypoint"_a, "type"_a)
+        .def(nb::init<tp::StateWaypointPoly, tp::MoveInstructionType>(),
+             "waypoint"_a, "type"_a)
+        .def("getWaypoint", [](tp::MoveInstruction& self) -> tp::WaypointPoly& {
+            return self.getWaypoint();
+        }, nb::rv_policy::reference_internal)
+        .def("assignCartesianWaypoint", &tp::MoveInstruction::assignCartesianWaypoint, "waypoint"_a)
+        .def("assignJointWaypoint", &tp::MoveInstruction::assignJointWaypoint, "waypoint"_a)
+        .def("assignStateWaypoint", &tp::MoveInstruction::assignStateWaypoint, "waypoint"_a)
+        .def("getMoveType", &tp::MoveInstruction::getMoveType)
+        .def("setMoveType", &tp::MoveInstruction::setMoveType, "move_type"_a)
+        .def("getProfile", &tp::MoveInstruction::getProfile, "ns"_a = "")
+        .def("setProfile", &tp::MoveInstruction::setProfile, "profile"_a)
+        .def("getPathProfile", &tp::MoveInstruction::getPathProfile, "ns"_a = "")
+        .def("setPathProfile", &tp::MoveInstruction::setPathProfile, "profile"_a)
+        .def("getManipulatorInfo", [](const tp::MoveInstruction& self) {
+            return self.getManipulatorInfo();
+        })
+        .def("setManipulatorInfo", &tp::MoveInstruction::setManipulatorInfo, "info"_a)
+        .def("print", &tp::MoveInstruction::print, "prefix"_a = "");
+
+    // ========== CompositeInstruction ==========
+    nb::class_<tp::CompositeInstruction>(m, "CompositeInstruction")
+        .def(nb::init<>())
+        .def("getOrder", &tp::CompositeInstruction::getOrder)
+        .def("getDescription", &tp::CompositeInstruction::getDescription)
+        .def("setDescription", &tp::CompositeInstruction::setDescription, "description"_a)
+        .def("print", &tp::CompositeInstruction::print, "prefix"_a = "")
+        .def("getProfile", &tp::CompositeInstruction::getProfile, "ns"_a = "")
+        .def("setProfile", &tp::CompositeInstruction::setProfile, "profile"_a)
+        .def("getManipulatorInfo", [](const tp::CompositeInstruction& self) {
+            return self.getManipulatorInfo();
+        })
+        .def("setManipulatorInfo", &tp::CompositeInstruction::setManipulatorInfo, "info"_a)
+        .def("getInstructions", [](tp::CompositeInstruction& self) -> std::vector<tp::InstructionPoly>& {
+            return self.getInstructions();
+        }, nb::rv_policy::reference_internal)
+        .def("setInstructions", &tp::CompositeInstruction::setInstructions, "instructions"_a)
+        .def("appendMoveInstruction", nb::overload_cast<const tp::MoveInstructionPoly&>(&tp::CompositeInstruction::appendMoveInstruction), "mi"_a)
+        .def("size", &tp::CompositeInstruction::size)
+        .def("empty", &tp::CompositeInstruction::empty)
+        .def("clear", &tp::CompositeInstruction::clear)
+        .def("__len__", &tp::CompositeInstruction::size)
+        .def("__getitem__", [](tp::CompositeInstruction& self, std::size_t i) -> tp::InstructionPoly& {
+            if (i >= self.size()) throw std::out_of_range("Index out of range");
+            return self[i];
+        }, nb::rv_policy::reference_internal)
+        .def("__iter__", [](tp::CompositeInstruction& self) {
+            return nb::make_iterator(nb::type<tp::CompositeInstruction>(), "iterator", self.begin(), self.end());
+        }, nb::keep_alive<0, 1>());
+
+    // ========== ProfileDictionary ==========
+    nb::class_<tp::ProfileDictionary>(m, "ProfileDictionary")
+        .def(nb::init<>());
 }

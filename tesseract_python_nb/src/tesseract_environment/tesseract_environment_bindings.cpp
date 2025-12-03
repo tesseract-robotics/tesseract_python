@@ -13,6 +13,7 @@
 #include <tesseract_environment/events.h>
 #include <tesseract_environment/command.h>
 #include <tesseract_environment/commands/remove_joint_command.h>
+#include <tesseract_environment/commands/add_link_command.h>
 
 // tesseract_scene_graph
 #include <tesseract_scene_graph/graph.h>
@@ -35,6 +36,9 @@
 // tesseract_collision
 #include <tesseract_collision/core/discrete_contact_manager.h>
 #include <tesseract_collision/core/continuous_contact_manager.h>
+
+// tesseract_state_solver - need full definition for getStateSolver return type
+#include <tesseract_state_solver/state_solver.h>
 
 namespace te = tesseract_environment;
 namespace tsg = tesseract_scene_graph;
@@ -96,6 +100,15 @@ NB_MODULE(_tesseract_environment, m) {
     nb::class_<te::RemoveJointCommand, te::Command>(m, "RemoveJointCommand")
         .def(nb::init<std::string>(), "joint_name"_a)
         .def("getJointName", &te::RemoveJointCommand::getJointName);
+
+    // ========== AddLinkCommand ==========
+    nb::class_<te::AddLinkCommand, te::Command>(m, "AddLinkCommand")
+        .def(nb::init<const tsg::Link&, bool>(), "link"_a, "replace_allowed"_a = false)
+        .def(nb::init<const tsg::Link&, const tsg::Joint&, bool>(),
+             "link"_a, "joint"_a, "replace_allowed"_a = false)
+        .def("getLink", &te::AddLinkCommand::getLink)
+        .def("getJoint", &te::AddLinkCommand::getJoint)
+        .def("replaceAllowed", &te::AddLinkCommand::replaceAllowed);
 
     // ========== Environment ==========
     nb::class_<te::Environment>(m, "Environment")
@@ -172,11 +185,25 @@ NB_MODULE(_tesseract_environment, m) {
         }, "hash"_a, "fn"_a)
         .def("removeEventCallback", &te::Environment::removeEventCallback, "hash"_a)
         .def("clearEventCallbacks", &te::Environment::clearEventCallbacks)
-        // Commands - RemoveJointCommand specifically
+        // Commands - RemoveJointCommand
         .def("applyCommand", [](te::Environment& self, const te::RemoveJointCommand& cmd) {
             auto cmd_ptr = std::make_shared<te::RemoveJointCommand>(cmd.getJointName());
             return self.applyCommand(cmd_ptr);
         }, "command"_a)
+        // Commands - AddLinkCommand
+        .def("applyCommand", [](te::Environment& self, const te::AddLinkCommand& cmd) {
+            std::shared_ptr<te::Command> cmd_ptr;
+            if (cmd.getJoint() != nullptr) {
+                cmd_ptr = std::make_shared<te::AddLinkCommand>(*cmd.getLink(), *cmd.getJoint(), cmd.replaceAllowed());
+            } else {
+                cmd_ptr = std::make_shared<te::AddLinkCommand>(*cmd.getLink(), cmd.replaceAllowed());
+            }
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // State solver
+        .def("getStateSolver", [](const te::Environment& self) {
+            return self.getStateSolver();
+        })
         // Joint/Link info
         .def("getJointNames", &te::Environment::getJointNames)
         .def("getActiveJointNames", &te::Environment::getActiveJointNames)
@@ -205,13 +232,17 @@ NB_MODULE(_tesseract_environment, m) {
         // Groups
         .def("getGroupNames", &te::Environment::getGroupNames)
         .def("getGroupJointNames", &te::Environment::getGroupJointNames, "group_name"_a)
-        .def("getJointGroup", [](const te::Environment& self, const std::string& group_name) {
-            return self.getJointGroup(group_name);
-        }, "group_name"_a)
+        .def("getJointGroup", [](const te::Environment& self, const std::string& group_name) -> const tk::JointGroup& {
+            auto ptr = self.getJointGroup(group_name);
+            if (!ptr) throw std::runtime_error("Failed to get joint group: " + group_name);
+            return *ptr;
+        }, "group_name"_a, nb::rv_policy::reference_internal)
         .def("getKinematicGroup", [](const te::Environment& self, const std::string& group_name,
-                                      const std::string& ik_solver_name) {
-            return self.getKinematicGroup(group_name, ik_solver_name);
-        }, "group_name"_a, "ik_solver_name"_a = "")
+                                      const std::string& ik_solver_name) -> const tk::KinematicGroup& {
+            auto ptr = self.getKinematicGroup(group_name, ik_solver_name);
+            if (!ptr) throw std::runtime_error("Failed to get kinematic group: " + group_name);
+            return *ptr;
+        }, "group_name"_a, "ik_solver_name"_a = "", nb::rv_policy::reference_internal)
         // TCP
         .def("findTCPOffset", &te::Environment::findTCPOffset, "manip_info"_a)
         // Contact managers

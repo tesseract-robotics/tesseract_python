@@ -55,6 +55,7 @@ NB_MODULE(_tesseract_common, m) {
             new (self) Eigen::Isometry3d();
             self->matrix() = mat;
         }, "matrix"_a)
+        .def_static("Identity", []() { return Eigen::Isometry3d::Identity(); })
         .def("matrix", [](const Eigen::Isometry3d& self) -> Eigen::Matrix4d {
             return self.matrix();
         })
@@ -73,6 +74,11 @@ NB_MODULE(_tesseract_common, m) {
         .def("__mul__", [](const Eigen::Isometry3d& self, const Eigen::Translation3d& t) {
             return Eigen::Isometry3d(self * t);
         })
+        .def("__mul__", [](const Eigen::Isometry3d& self, const Eigen::Quaterniond& q) {
+            Eigen::Isometry3d result = self;
+            result.rotate(q);
+            return result;
+        })
         .def("__mul__", [](const Eigen::Isometry3d& self, const Eigen::Vector3d& v) {
             return self * v;
         });
@@ -87,11 +93,18 @@ NB_MODULE(_tesseract_common, m) {
         });
 
     nb::class_<Eigen::Quaterniond>(m, "Quaterniond")
-        .def(nb::init<double, double, double, double>())
+        .def(nb::init<double, double, double, double>())  // w, x, y, z
+        // Constructor from rotation matrix
+        .def("__init__", [](Eigen::Quaterniond* self, const Eigen::Matrix3d& rot) {
+            new (self) Eigen::Quaterniond(rot);
+        }, "rotation_matrix"_a)
         .def("w", [](const Eigen::Quaterniond& q) { return q.w(); })
         .def("x", [](const Eigen::Quaterniond& q) { return q.x(); })
         .def("y", [](const Eigen::Quaterniond& q) { return q.y(); })
-        .def("z", [](const Eigen::Quaterniond& q) { return q.z(); });
+        .def("z", [](const Eigen::Quaterniond& q) { return q.z(); })
+        .def("toRotationMatrix", [](const Eigen::Quaterniond& q) -> Eigen::Matrix3d {
+            return q.toRotationMatrix();
+        });
 
     nb::class_<Eigen::AngleAxisd>(m, "AngleAxisd")
         .def(nb::init<double, const Eigen::Vector3d&>())

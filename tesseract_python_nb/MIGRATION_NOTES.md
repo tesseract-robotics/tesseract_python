@@ -132,15 +132,61 @@ BytesResource uses `nb::bytes` for Python bytes objects:
 1. **Variant types** - required custom property implementation
 2. **Console bridge** - needed trampoline for virtual methods
 3. **Binary data** - nb::bytes slightly different from SWIG buffer protocol
+4. **Cross-module inheritance** - nanobind can't inherit from classes in different modules
+
+#### Cross-Module Inheritance Issue
+
+When a class inherits from a base class that's bound in a different module, nanobind throws a critical error at import time. For example, `SimpleMotionPlanner` inherits from `MotionPlanner`, but if they're in different .so files:
+
+```cpp
+// This FAILS at runtime:
+nb::class_<SimpleMotionPlanner, MotionPlanner>(m, "SimpleMotionPlanner")
+
+// Solution: Don't specify inheritance, manually re-expose base methods:
+nb::class_<SimpleMotionPlanner>(m, "SimpleMotionPlanner")
+    .def("getName", &SimpleMotionPlanner::getName)
+    .def("solve", &SimpleMotionPlanner::solve, "request"_a)
+    .def("terminate", &SimpleMotionPlanner::terminate)
+    .def("clear", &SimpleMotionPlanner::clear);
+```
+
+Also ensure all types used in method signatures are complete (not forward-declared) by including the proper headers:
+```cpp
+#include <tesseract_motion_planners/core/types.h>  // For PlannerRequest/Response
+```
+
+This is a fundamental difference from pybind11 which supports cross-module inheritance via `pybind11::module_::import()`.
 
 All challenges resolved with clean solutions!
 
 ## Next Steps
 
-### Immediate
-1. Build tesseract C++ libraries
-2. Test prototype: `pytest tests/`
-3. Validate API compatibility
+### Current: Refactoring SWIG Examples
+
+Porting examples from original SWIG tesseract_python to nanobind version.
+
+**Build/Run Setup (conda env: tesseract_nb at /opt/miniconda3/envs/tesseract_nb):**
+
+```bash
+conda activate tesseract_nb
+export CMAKE_PREFIX_PATH="/Users/jelle/Code/CADCAM/tesseract_python_nanobind/ws/install:$CONDA_PREFIX"
+export DYLD_LIBRARY_PATH=/Users/jelle/Code/CADCAM/tesseract_python_nanobind/ws/install/lib:$DYLD_LIBRARY_PATH
+export TESSERACT_RESOURCE_PATH="/Users/jelle/Code/CADCAM/tesseract_python_nanobind/ws/src/tesseract/"
+pip install -e .
+```
+
+**Examples Status:**
+
+- [x] tesseract_collision_example.py - working
+- [x] tesseract_kinematics_example.py - working
+- [ ] tesseract_planning_example_composer.py - needs: tesseract_task_composer
+- [ ] tesseract_planning_example_no_composer.py - needs: tesseract_motion_planners_trajopt (not built in ws)
+
+**Modules Bound:**
+- tesseract_motion_planners (PlannerRequest, PlannerResponse, MotionPlanner)
+- tesseract_motion_planners_simple (generateInterpolatedProgram, SimpleMotionPlanner)
+- tesseract_motion_planners_ompl (OMPLMotionPlanner, RRTConnectConfigurator, OMPLRealVectorPlanProfile)
+- tesseract_time_parameterization (TimeOptimalTrajectoryGeneration, InstructionsTrajectory)
 
 ### Expansion (Modules 2-17)
 1. tesseract_geometry - test shared_ptr factory pattern

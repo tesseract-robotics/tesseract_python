@@ -5,6 +5,7 @@ from tesseract_robotics.tesseract_scene_graph import Joint, Link, Visual, Collis
 from tesseract_robotics.tesseract_geometry import Sphere
 from tesseract_robotics.tesseract_collision import ContactResultMap, ContactTestType_ALL, \
     ContactRequest, ContactResultVector
+from tesseract_robotics.tesseract_state_solver import OFKTStateSolver
 import numpy as np
 
 # Initialize Environment with a robot from URDF file
@@ -42,10 +43,10 @@ robot_joint_pos = np.zeros(6)
 sphere_link = Link("sphere_link")
 sphere_link_visual = Visual()
 sphere_link_visual.geometry = Sphere(0.1)
-sphere_link.visual.push_back(sphere_link_visual)
+sphere_link.visual.append(sphere_link_visual)
 sphere_link_collision = Collision()
 sphere_link_collision.geometry = Sphere(0.1)
-sphere_link.collision.push_back(sphere_link_collision)
+sphere_link.collision.append(sphere_link_collision)
 sphere_joint = Joint("sphere_joint")
 sphere_joint.parent_link_name = "base_link"
 sphere_joint.child_link_name = sphere_link.getName()
@@ -55,8 +56,10 @@ sphere_joint.parent_to_joint_origin_transform = sphere_link_joint_transform
 add_sphere_command = AddLinkCommand(sphere_link, sphere_joint)
 env.applyCommand(add_sphere_command)
 
-# Get the state solver. This must be called again after environment is updated
-solver = env.getStateSolver()
+# Get the state solver from the scene graph
+# Note: Using OFKTStateSolver directly since getStateSolver() returns type from different module
+scene_graph = env.getSceneGraph()
+solver = OFKTStateSolver(scene_graph)
 
 # Get the discrete contact manager. This must be called again after the environment is updated
 manager = env.getDiscreteContactManager()
@@ -72,7 +75,7 @@ for i in range(-5, 5):
     print("Contact check at robot position: " + str(robot_joint_pos))
     
     # Set the transform of the active collision objects from SceneState
-    solver.setState(robot_joint_names, robot_joint_pos)
+    solver.setStateByNamesAndValues(robot_joint_names, robot_joint_pos)
     scene_state = solver.getState()
     manager.setCollisionObjectsTransform(scene_state.link_transforms)
 

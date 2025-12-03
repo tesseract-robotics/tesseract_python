@@ -4,6 +4,7 @@
  */
 
 #include "tesseract_nb.h"
+#include <nanobind/stl/map.h>
 
 // tesseract_collision core
 #include <tesseract_collision/core/types.h>
@@ -194,6 +195,15 @@ NB_MODULE(_tesseract_collision, m) {
         .def("setCollisionObjectsTransform",
              [](tc::DiscreteContactManager& self, const tcommon::TransformMap& transforms) {
                  self.setCollisionObjectsTransform(transforms);
+             }, "transforms"_a)
+        // Overload accepting std::map (from Python dict / link_transforms property)
+        .def("setCollisionObjectsTransform",
+             [](tc::DiscreteContactManager& self, const std::map<std::string, Eigen::Isometry3d>& transforms) {
+                 tcommon::TransformMap tm;
+                 for (const auto& p : transforms) {
+                     tm[p.first] = p.second;
+                 }
+                 self.setCollisionObjectsTransform(tm);
              }, "transforms"_a)
         .def("getCollisionObjects", &tc::DiscreteContactManager::getCollisionObjects)
         .def("setActiveCollisionObjects", &tc::DiscreteContactManager::setActiveCollisionObjects, "names"_a)
