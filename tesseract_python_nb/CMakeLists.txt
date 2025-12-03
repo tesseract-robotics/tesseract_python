@@ -27,6 +27,7 @@ endif()
 # Find tesseract C++ libraries
 find_package(tesseract_common REQUIRED)
 find_package(tesseract_geometry REQUIRED)
+find_package(tesseract_scene_graph REQUIRED)
 find_package(console_bridge REQUIRED)
 
 # Define reusable function for nanobind extensions
@@ -67,6 +68,15 @@ add_tesseract_nanobind_extension(
 add_tesseract_nanobind_extension(
   tesseract_geometry
   src/tesseract_geometry/tesseract_geometry_bindings.cpp
+  tesseract::tesseract_geometry
+  tesseract::tesseract_common
+)
+
+# Add tesseract_scene_graph module
+add_tesseract_nanobind_extension(
+  tesseract_scene_graph
+  src/tesseract_scene_graph/tesseract_scene_graph_bindings.cpp
+  tesseract::tesseract_scene_graph
   tesseract::tesseract_geometry
   tesseract::tesseract_common
 )
