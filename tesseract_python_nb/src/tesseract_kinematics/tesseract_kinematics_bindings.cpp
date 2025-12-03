@@ -18,6 +18,7 @@
 #include <tesseract_kinematics/core/kinematic_group.h>
 #include <tesseract_kinematics/core/types.h>
 #include <tesseract_kinematics/core/kinematics_plugin_factory.h>
+#include <tesseract_kinematics/core/utils.h>
 
 // tesseract_scene_graph
 #include <tesseract_scene_graph/graph.h>
@@ -25,9 +26,15 @@
 
 // tesseract_common
 #include <tesseract_common/kinematic_limits.h>
+#include <tesseract_common/resource_locator.h>
+#include <tesseract_common/filesystem.h>
 
 namespace tk = tesseract_kinematics;
+namespace tcommon = tesseract_common;
 namespace tsg = tesseract_scene_graph;
+
+// Make KinGroupIKInputs opaque so we can bind it as a class
+NB_MAKE_OPAQUE(tk::KinGroupIKInputs)
 
 NB_MODULE(_tesseract_kinematics, m) {
     m.doc() = "tesseract_kinematics Python bindings";
@@ -60,6 +67,17 @@ NB_MODULE(_tesseract_kinematics, m) {
         .def_rw("pose", &tk::KinGroupIKInput::pose)
         .def_rw("working_frame", &tk::KinGroupIKInput::working_frame)
         .def_rw("tip_link_name", &tk::KinGroupIKInput::tip_link_name);
+
+    // ========== KinGroupIKInputs (vector of KinGroupIKInput) ==========
+    nb::class_<tk::KinGroupIKInputs>(m, "KinGroupIKInputs")
+        .def(nb::init<>())
+        .def("__len__", [](const tk::KinGroupIKInputs& self) { return self.size(); })
+        .def("__getitem__", [](const tk::KinGroupIKInputs& self, size_t i) -> tk::KinGroupIKInput {
+            if (i >= self.size()) throw std::out_of_range("index out of range");
+            return self[i];
+        })
+        .def("append", [](tk::KinGroupIKInputs& self, const tk::KinGroupIKInput& v) { self.push_back(v); })
+        .def("clear", [](tk::KinGroupIKInputs& self) { self.clear(); });
 
     // ========== ForwardKinematics (abstract) ==========
     nb::class_<tk::ForwardKinematics>(m, "ForwardKinematics")
@@ -139,11 +157,19 @@ NB_MODULE(_tesseract_kinematics, m) {
 
     // ========== KinematicGroup (extends JointGroup) ==========
     nb::class_<tk::KinematicGroup, tk::JointGroup>(m, "KinematicGroup")
+        // calcInvKin with single input
         .def("calcInvKin", [](const tk::KinematicGroup& self,
                               const tk::KinGroupIKInput& tip_link_pose,
                               const Eigen::Ref<const Eigen::VectorXd>& seed) {
             return self.calcInvKin(tip_link_pose, seed);
         }, "tip_link_pose"_a, "seed"_a)
+        // calcInvKin with KinGroupIKInputs (SWIG compatibility)
+        .def("calcInvKin", [](const tk::KinematicGroup& self,
+                              const tk::KinGroupIKInputs& tip_link_poses,
+                              const Eigen::Ref<const Eigen::VectorXd>& seed) {
+            return self.calcInvKin(tip_link_poses, seed);
+        }, "tip_link_poses"_a, "seed"_a)
+        // calcInvKin with vector (python list compatibility)
         .def("calcInvKinMultiple", [](const tk::KinematicGroup& self,
                                        const std::vector<tk::KinGroupIKInput>& tip_link_poses,
                                        const Eigen::Ref<const Eigen::VectorXd>& seed) {
@@ -161,10 +187,45 @@ NB_MODULE(_tesseract_kinematics, m) {
     // ========== KinematicsPluginFactory ==========
     nb::class_<tk::KinematicsPluginFactory>(m, "KinematicsPluginFactory")
         .def(nb::init<>())
+        // Constructor with fs::path and locator
+        .def("__init__", [](tk::KinematicsPluginFactory* self,
+                            const tcommon::fs::path& config_path,
+                            const tcommon::ResourceLocator& locator) {
+            new (self) tk::KinematicsPluginFactory(config_path, locator);
+        }, "config_path"_a, "locator"_a)
+        // Constructor with string and locator
+        .def("__init__", [](tk::KinematicsPluginFactory* self,
+                            const std::string& config,
+                            const tcommon::ResourceLocator& locator) {
+            new (self) tk::KinematicsPluginFactory(config, locator);
+        }, "config"_a, "locator"_a)
         .def("addSearchPath", &tk::KinematicsPluginFactory::addSearchPath, "path"_a)
         .def("getSearchPaths", &tk::KinematicsPluginFactory::getSearchPaths)
         .def("addSearchLibrary", &tk::KinematicsPluginFactory::addSearchLibrary, "library_name"_a)
         .def("getSearchLibraries", &tk::KinematicsPluginFactory::getSearchLibraries)
         .def("getDefaultFwdKinPlugin", &tk::KinematicsPluginFactory::getDefaultFwdKinPlugin, "group_name"_a)
-        .def("getDefaultInvKinPlugin", &tk::KinematicsPluginFactory::getDefaultInvKinPlugin, "group_name"_a);
+        .def("getDefaultInvKinPlugin", &tk::KinematicsPluginFactory::getDefaultInvKinPlugin, "group_name"_a)
+        // Create kinematics solvers
+        .def("createFwdKin", [](const tk::KinematicsPluginFactory& self,
+                                const std::string& group_name,
+                                const std::string& solver_name,
+                                const tsg::SceneGraph& scene_graph,
+                                const tsg::SceneState& scene_state) {
+            return self.createFwdKin(group_name, solver_name, scene_graph, scene_state);
+        }, "group_name"_a, "solver_name"_a, "scene_graph"_a, "scene_state"_a)
+        .def("createInvKin", [](const tk::KinematicsPluginFactory& self,
+                                const std::string& group_name,
+                                const std::string& solver_name,
+                                const tsg::SceneGraph& scene_graph,
+                                const tsg::SceneState& scene_state) {
+            return self.createInvKin(group_name, solver_name, scene_graph, scene_state);
+        }, "group_name"_a, "solver_name"_a, "scene_graph"_a, "scene_state"_a);
+
+    // ========== Utility functions ==========
+    m.def("getRedundantSolutions", [](const Eigen::Ref<const Eigen::VectorXd>& sol,
+                                       const Eigen::Ref<const Eigen::MatrixX2d>& limits,
+                                       const std::vector<Eigen::Index>& redundancy_capable_joints) {
+        return tk::getRedundantSolutions<double>(sol, limits, redundancy_capable_joints);
+    }, "sol"_a, "limits"_a, "redundancy_capable_joints"_a,
+    "Get redundant solutions for a joint configuration by adding +/- 2*pi to redundancy capable joints");
 }

@@ -65,21 +65,21 @@ NB_MODULE(_tesseract_state_solver, m) {
 
     // ========== StateSolver (abstract base) ==========
     nb::class_<tsg::StateSolver>(m, "StateSolver")
-        // getState methods
+        // getState methods - multiple overloads with same name for Python compatibility
         .def("getState", [](const tsg::StateSolver& self) {
             return self.getState();
         })
-        .def("getStateByValues", [](const tsg::StateSolver& self,
-                                    const Eigen::Ref<const Eigen::VectorXd>& joint_values) {
+        .def("getState", [](const tsg::StateSolver& self,
+                            const Eigen::Ref<const Eigen::VectorXd>& joint_values) {
             return self.getState(joint_values);
         }, "joint_values"_a)
-        .def("getStateByMap", [](const tsg::StateSolver& self,
-                                  const std::unordered_map<std::string, double>& joint_values) {
+        .def("getState", [](const tsg::StateSolver& self,
+                            const std::unordered_map<std::string, double>& joint_values) {
             return self.getState(joint_values);
         }, "joint_values"_a)
-        .def("getStateByNamesAndValues", [](const tsg::StateSolver& self,
-                                             const std::vector<std::string>& joint_names,
-                                             const Eigen::Ref<const Eigen::VectorXd>& joint_values) {
+        .def("getState", [](const tsg::StateSolver& self,
+                            const std::vector<std::string>& joint_names,
+                            const Eigen::Ref<const Eigen::VectorXd>& joint_values) {
             return self.getState(joint_names, joint_values);
         }, "joint_names"_a, "joint_values"_a)
         .def("getRandomState", &tsg::StateSolver::getRandomState)

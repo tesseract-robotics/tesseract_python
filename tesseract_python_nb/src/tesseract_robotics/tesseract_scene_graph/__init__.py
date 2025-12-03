@@ -1,5 +1,8 @@
 """tesseract_scene_graph Python bindings (nanobind)"""
 
+# Import tesseract_geometry first to ensure cross-module type resolution works
+import tesseract_robotics.tesseract_geometry  # noqa: F401
+
 from tesseract_robotics.tesseract_scene_graph._tesseract_scene_graph import *
 
 __all__ = [

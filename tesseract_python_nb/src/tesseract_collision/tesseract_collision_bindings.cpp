@@ -14,8 +14,19 @@
 // tesseract_common for types
 #include <tesseract_common/allowed_collision_matrix.h>
 #include <tesseract_common/collision_margin_data.h>
+#include <tesseract_common/resource_locator.h>
+#include <tesseract_common/filesystem.h>
+#include <tesseract_common/types.h>
+
+// tesseract_geometry for collision objects
+#include <tesseract_geometry/geometry.h>
 
 namespace tc = tesseract_collision;
+namespace tcommon = tesseract_common;
+namespace tg = tesseract_geometry;
+
+// Disable type caster for ContactResultVector so we can bind it as a class
+NB_MAKE_OPAQUE(tc::ContactResultVector);
 
 NB_MODULE(_tesseract_collision, m) {
     m.doc() = "tesseract_collision Python bindings";
@@ -32,6 +43,12 @@ NB_MODULE(_tesseract_collision, m) {
         .value("CLOSEST", tc::ContactTestType::CLOSEST)
         .value("ALL", tc::ContactTestType::ALL)
         .value("LIMITED", tc::ContactTestType::LIMITED);
+
+    // SWIG-compatible module-level constants
+    m.attr("ContactTestType_FIRST") = tc::ContactTestType::FIRST;
+    m.attr("ContactTestType_CLOSEST") = tc::ContactTestType::CLOSEST;
+    m.attr("ContactTestType_ALL") = tc::ContactTestType::ALL;
+    m.attr("ContactTestType_LIMITED") = tc::ContactTestType::LIMITED;
 
     nb::enum_<tc::CollisionEvaluatorType>(m, "CollisionEvaluatorType")
         .value("NONE", tc::CollisionEvaluatorType::NONE)
@@ -103,6 +120,20 @@ NB_MODULE(_tesseract_collision, m) {
         .def_rw("single_contact_point", &tc::ContactResult::single_contact_point)
         .def("clear", &tc::ContactResult::clear);
 
+    // ========== ContactResultVector ==========
+    // ContactResultVector uses Eigen aligned_allocator, so we need to bind manually
+    nb::class_<tc::ContactResultVector>(m, "ContactResultVector")
+        .def(nb::init<>())
+        .def("__len__", [](const tc::ContactResultVector& v) { return v.size(); })
+        .def("__getitem__", [](const tc::ContactResultVector& v, size_t i) -> const tc::ContactResult& {
+            if (i >= v.size()) throw nb::index_error();
+            return v[i];
+        }, nb::rv_policy::reference_internal)
+        .def("append", [](tc::ContactResultVector& v, const tc::ContactResult& item) {
+            v.push_back(item);
+        })
+        .def("clear", [](tc::ContactResultVector& v) { v.clear(); });
+
     // ========== ContactResultMap ==========
     nb::class_<tc::ContactResultMap>(m, "ContactResultMap")
         .def(nb::init<>())
@@ -117,6 +148,9 @@ NB_MODULE(_tesseract_collision, m) {
             self.flattenCopyResults(v);
             return v;
         })
+        .def("flattenMoveResults", [](tc::ContactResultMap& self, tc::ContactResultVector& v) {
+            self.flattenMoveResults(v);
+        }, "results"_a)
         .def("__len__", &tc::ContactResultMap::size);
 
     // ========== ContactRequest ==========
@@ -157,6 +191,10 @@ NB_MODULE(_tesseract_collision, m) {
              [](tc::DiscreteContactManager& self, const std::string& name, const Eigen::Isometry3d& pose) {
                  self.setCollisionObjectsTransform(name, pose);
              }, "name"_a, "pose"_a)
+        .def("setCollisionObjectsTransform",
+             [](tc::DiscreteContactManager& self, const tcommon::TransformMap& transforms) {
+                 self.setCollisionObjectsTransform(transforms);
+             }, "transforms"_a)
         .def("getCollisionObjects", &tc::DiscreteContactManager::getCollisionObjects)
         .def("setActiveCollisionObjects", &tc::DiscreteContactManager::setActiveCollisionObjects, "names"_a)
         .def("getActiveCollisionObjects", &tc::DiscreteContactManager::getActiveCollisionObjects)
@@ -164,6 +202,19 @@ NB_MODULE(_tesseract_collision, m) {
              "default_collision_margin"_a)
         .def("setPairCollisionMarginData", &tc::DiscreteContactManager::setPairCollisionMarginData,
              "name1"_a, "name2"_a, "collision_margin"_a)
+        .def("setCollisionMarginData", [](tc::DiscreteContactManager& self,
+                                          const tcommon::CollisionMarginData& margin_data) {
+            self.setCollisionMarginData(margin_data, tcommon::CollisionMarginOverrideType::REPLACE);
+        }, "collision_margin_data"_a)
+        .def("getCollisionMarginData", &tc::DiscreteContactManager::getCollisionMarginData)
+        .def("addCollisionObject",
+             [](tc::DiscreteContactManager& self, const std::string& name, int mask_id,
+                const std::vector<std::shared_ptr<const tg::Geometry>>& shapes,
+                const tcommon::VectorIsometry3d& shape_poses, bool enabled) {
+                 return self.addCollisionObject(name, mask_id, shapes, shape_poses, enabled);
+             }, "name"_a, "mask_id"_a, "shapes"_a, "shape_poses"_a, "enabled"_a = true)
+        .def("getCollisionObjectGeometries", &tc::DiscreteContactManager::getCollisionObjectGeometries, "name"_a)
+        .def("getCollisionObjectGeometriesTransforms", &tc::DiscreteContactManager::getCollisionObjectGeometriesTransforms, "name"_a)
         .def("contactTest", &tc::DiscreteContactManager::contactTest, "collisions"_a, "request"_a);
 
     // ========== ContinuousContactManager (abstract, expose key methods) ==========
@@ -195,6 +246,16 @@ NB_MODULE(_tesseract_collision, m) {
     // ========== ContactManagersPluginFactory ==========
     nb::class_<tc::ContactManagersPluginFactory>(m, "ContactManagersPluginFactory")
         .def(nb::init<>())
+        .def("__init__", [](tc::ContactManagersPluginFactory* self,
+                            const tcommon::fs::path& config_path,
+                            const tcommon::ResourceLocator& locator) {
+            new (self) tc::ContactManagersPluginFactory(config_path, locator);
+        }, "config_path"_a, "locator"_a)
+        .def("__init__", [](tc::ContactManagersPluginFactory* self,
+                            const std::string& config,
+                            const tcommon::ResourceLocator& locator) {
+            new (self) tc::ContactManagersPluginFactory(config, locator);
+        }, "config"_a, "locator"_a)
         .def("addSearchPath", &tc::ContactManagersPluginFactory::addSearchPath, "path"_a)
         .def("getSearchPaths", &tc::ContactManagersPluginFactory::getSearchPaths)
         .def("addSearchLibrary", &tc::ContactManagersPluginFactory::addSearchLibrary, "library_name"_a)

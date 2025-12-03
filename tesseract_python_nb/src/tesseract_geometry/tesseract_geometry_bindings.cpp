@@ -15,8 +15,23 @@
 #include <tesseract_geometry/impl/cone.h>
 #include <tesseract_geometry/impl/plane.h>
 #include <tesseract_geometry/impl/polygon_mesh.h>
+#include <tesseract_geometry/impl/mesh.h>
+#include <tesseract_geometry/impl/convex_mesh.h>
+#include <tesseract_geometry/impl/sdf_mesh.h>
+#include <tesseract_geometry/impl/compound_mesh.h>
+#include <tesseract_geometry/impl/mesh_material.h>
+#include <tesseract_geometry/mesh_parser.h>
+
+// tesseract_common
+#include <tesseract_common/types.h>
+#include <tesseract_common/eigen_types.h>
+#include <tesseract_common/resource_locator.h>
 
 namespace tg = tesseract_geometry;
+namespace tc = tesseract_common;
+
+// Disable type caster for this specific vector type so we can bind it as a class
+NB_MAKE_OPAQUE(std::vector<std::shared_ptr<const tg::Geometry>>);
 
 NB_MODULE(_tesseract_geometry, m) {
     m.doc() = "tesseract_geometry Python bindings";
@@ -43,6 +58,20 @@ NB_MODULE(_tesseract_geometry, m) {
         .def("clone", &tg::Geometry::clone, "Create a copy of this geometry")
         .def("__eq__", &tg::Geometry::operator==)
         .def("__ne__", &tg::Geometry::operator!=);
+
+    // GeometriesConst - vector of const geometry shared_ptr
+    using GeometriesConst = std::vector<std::shared_ptr<const tg::Geometry>>;
+    nb::class_<GeometriesConst>(m, "GeometriesConst")
+        .def(nb::init<>())
+        .def("__len__", [](const GeometriesConst& v) { return v.size(); })
+        .def("__getitem__", [](const GeometriesConst& v, size_t i) {
+            if (i >= v.size()) throw nb::index_error();
+            return v[i];
+        }, nb::rv_policy::reference_internal)
+        .def("append", [](GeometriesConst& v, std::shared_ptr<const tg::Geometry> item) {
+            v.push_back(item);
+        })
+        .def("clear", [](GeometriesConst& v) { v.clear(); });
 
     // Box
     nb::class_<tg::Box, tg::Geometry>(m, "Box")
@@ -131,11 +160,112 @@ NB_MODULE(_tesseract_geometry, m) {
                    std::to_string(self.getD()) + ")";
         });
 
-    // PolygonMesh (base for Mesh, ConvexMesh, SDFMesh)
-    // Note: Mesh types with vertices/faces require special handling due to
-    // shared_ptr<vector<Eigen>> type conversion issues. Keeping simple for now.
+    // MeshMaterial - PBR material properties
+    nb::class_<tg::MeshMaterial>(m, "MeshMaterial")
+        .def(nb::init<>())
+        .def(nb::init<const Eigen::Vector4d&, double, double, const Eigen::Vector4d&>(),
+             "base_color_factor"_a, "metallic_factor"_a, "roughness_factor"_a, "emissive_factor"_a)
+        .def("getBaseColorFactor", &tg::MeshMaterial::getBaseColorFactor, "Get base color (RGBA)")
+        .def("getMetallicFactor", &tg::MeshMaterial::getMetallicFactor, "Get metallic factor (0-1)")
+        .def("getRoughnessFactor", &tg::MeshMaterial::getRoughnessFactor, "Get roughness factor (0-1)")
+        .def("getEmissiveFactor", &tg::MeshMaterial::getEmissiveFactor, "Get emissive factor (RGBA)");
+
+    // MeshTexture - texture with UV coordinates
+    nb::class_<tg::MeshTexture>(m, "MeshTexture")
+        .def("getTextureImage", &tg::MeshTexture::getTextureImage, "Get the texture image resource")
+        .def("getUVs", [](tg::MeshTexture& self) {
+            auto uvs = self.getUVs();
+            if (!uvs) return tc::VectorVector2d();
+            return *uvs;
+        }, "Get UV coordinates");
+
+    // PolygonMesh (base for Mesh, ConvexMesh, SDFMesh) - inherits shared_ptr holder from Geometry
     nb::class_<tg::PolygonMesh, tg::Geometry>(m, "PolygonMesh")
         .def("getVertexCount", &tg::PolygonMesh::getVertexCount, "Get number of vertices")
         .def("getFaceCount", &tg::PolygonMesh::getFaceCount, "Get number of faces")
-        .def("getScale", &tg::PolygonMesh::getScale, "Get mesh scale");
+        .def("getScale", &tg::PolygonMesh::getScale, "Get mesh scale")
+        .def("getVertices", [](const tg::PolygonMesh& self) {
+            auto verts = self.getVertices();
+            if (!verts) return tc::VectorVector3d();
+            return *verts;
+        })
+        .def("getFaces", [](const tg::PolygonMesh& self) -> Eigen::VectorXi {
+            auto faces = self.getFaces();
+            if (!faces) return Eigen::VectorXi();
+            return *faces;
+        })
+        .def("getNormals", [](const tg::PolygonMesh& self) -> std::optional<tc::VectorVector3d> {
+            auto normals = self.getNormals();
+            if (!normals) return std::nullopt;
+            return *normals;
+        }, "Get vertex normals (optional)")
+        .def("getVertexColors", [](const tg::PolygonMesh& self) -> std::optional<tc::VectorVector4d> {
+            auto colors = self.getVertexColors();
+            if (!colors) return std::nullopt;
+            return *colors;
+        }, "Get vertex colors (optional)")
+        .def("getMaterial", &tg::PolygonMesh::getMaterial, "Get mesh material (optional)")
+        .def("getTextures", [](const tg::PolygonMesh& self) -> std::optional<std::vector<std::shared_ptr<tg::MeshTexture>>> {
+            auto textures = self.getTextures();
+            if (!textures) return std::nullopt;
+            return *textures;
+        }, "Get mesh textures (optional)")
+        .def("getResource", &tg::PolygonMesh::getResource, "Get mesh resource");
+
+    // Mesh
+    nb::class_<tg::Mesh, tg::PolygonMesh>(m, "Mesh")
+        .def("__init__", [](tg::Mesh* self, const tc::VectorVector3d& vertices, const Eigen::VectorXi& faces) {
+            auto verts = std::make_shared<const tc::VectorVector3d>(vertices);
+            auto face_data = std::make_shared<const Eigen::VectorXi>(faces);
+            new (self) tg::Mesh(verts, face_data);
+        }, "vertices"_a, "faces"_a);
+
+    // ConvexMesh
+    nb::class_<tg::ConvexMesh, tg::PolygonMesh>(m, "ConvexMesh")
+        .def("__init__", [](tg::ConvexMesh* self, const tc::VectorVector3d& vertices, const Eigen::VectorXi& faces) {
+            auto verts = std::make_shared<const tc::VectorVector3d>(vertices);
+            auto face_data = std::make_shared<const Eigen::VectorXi>(faces);
+            new (self) tg::ConvexMesh(verts, face_data);
+        }, "vertices"_a, "faces"_a);
+
+    // SDFMesh
+    nb::class_<tg::SDFMesh, tg::PolygonMesh>(m, "SDFMesh")
+        .def("__init__", [](tg::SDFMesh* self, const tc::VectorVector3d& vertices, const Eigen::VectorXi& faces) {
+            auto verts = std::make_shared<const tc::VectorVector3d>(vertices);
+            auto face_data = std::make_shared<const Eigen::VectorXi>(faces);
+            new (self) tg::SDFMesh(verts, face_data);
+        }, "vertices"_a, "faces"_a);
+
+    // CompoundMesh - container for multiple meshes from a single resource (e.g., .dae file)
+    nb::class_<tg::CompoundMesh, tg::Geometry>(m, "CompoundMesh")
+        .def(nb::init<std::vector<std::shared_ptr<tg::PolygonMesh>>>(), "meshes"_a)
+        .def("getMeshes", &tg::CompoundMesh::getMeshes, nb::rv_policy::reference_internal,
+             "Get the vector of meshes")
+        .def("getResource", &tg::CompoundMesh::getResource, "Get the resource used to create this mesh")
+        .def("getScale", &tg::CompoundMesh::getScale, "Get the scale applied to the mesh");
+
+    // Mesh loading functions
+    m.def("createMeshFromPath", [](const std::string& path,
+                                   const Eigen::Vector3d& scale,
+                                   bool triangulate,
+                                   bool flatten) {
+        return tg::createMeshFromPath<tg::Mesh>(path, scale, triangulate, flatten);
+    }, "path"_a, "scale"_a = Eigen::Vector3d::Ones(), "triangulate"_a = true, "flatten"_a = false,
+    "Load mesh from file and return vector of Mesh geometries");
+
+    m.def("createConvexMeshFromPath", [](const std::string& path,
+                                         const Eigen::Vector3d& scale,
+                                         bool triangulate,
+                                         bool flatten) {
+        return tg::createMeshFromPath<tg::ConvexMesh>(path, scale, triangulate, flatten);
+    }, "path"_a, "scale"_a = Eigen::Vector3d::Ones(), "triangulate"_a = true, "flatten"_a = false,
+    "Load mesh from file and return vector of ConvexMesh geometries");
+
+    m.def("createSDFMeshFromPath", [](const std::string& path,
+                                      const Eigen::Vector3d& scale,
+                                      bool triangulate,
+                                      bool flatten) {
+        return tg::createMeshFromPath<tg::SDFMesh>(path, scale, triangulate, flatten);
+    }, "path"_a, "scale"_a = Eigen::Vector3d::Ones(), "triangulate"_a = true, "flatten"_a = false,
+    "Load mesh from file and return vector of SDFMesh geometries");
 }

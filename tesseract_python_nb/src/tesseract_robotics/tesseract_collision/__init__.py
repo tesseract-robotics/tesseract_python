@@ -10,8 +10,15 @@ __all__ = [
     "CollisionCheckProgramType",
     "ACMOverrideType",
 
+    # SWIG-compatible enum constants
+    "ContactTestType_FIRST",
+    "ContactTestType_CLOSEST",
+    "ContactTestType_ALL",
+    "ContactTestType_LIMITED",
+
     # Contact results
     "ContactResult",
+    "ContactResultVector",
     "ContactResultMap",
     "ContactRequest",
 

@@ -14,6 +14,7 @@ __all__ = [
 
     # IK Input
     "KinGroupIKInput",
+    "KinGroupIKInputs",
 
     # Kinematics classes
     "ForwardKinematics",
@@ -23,4 +24,7 @@ __all__ = [
 
     # Plugin factory
     "KinematicsPluginFactory",
+
+    # Utility functions
+    "getRedundantSolutions",
 ]

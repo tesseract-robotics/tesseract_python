@@ -1,7 +1,14 @@
 #include "tesseract_nb.h"
 
-// tesseract_common headers
+// tesseract_common headers (need eigen_types.h before opaque declarations)
+#include <tesseract_common/eigen_types.h>
 #include <tesseract_common/types.h>
+
+// Opaque declarations for vector types we want to bind as classes
+using VectorVector3d = tesseract_common::VectorVector3d;  // std::vector<Eigen::Vector3d>
+using VectorIsometry3d = tesseract_common::VectorIsometry3d;  // std::vector<Eigen::Isometry3d>
+NB_MAKE_OPAQUE(VectorVector3d)
+NB_MAKE_OPAQUE(VectorIsometry3d)
 #include <tesseract_common/resource_locator.h>
 #include <tesseract_common/manipulator_info.h>
 #include <tesseract_common/joint_state.h>
@@ -9,6 +16,7 @@
 #include <tesseract_common/allowed_collision_matrix.h>
 #include <tesseract_common/kinematic_limits.h>
 #include <tesseract_common/plugin_info.h>
+#include <tesseract_common/filesystem.h>
 
 // console_bridge
 #include <console_bridge/console.h>
@@ -38,13 +46,44 @@ NB_MODULE(_tesseract_common, m) {
 
     // ========== Eigen Type Aliases ==========
     // Note: Vector3d, VectorXd, MatrixXd are handled automatically by nanobind/eigen/dense.h
-    // Isometry3d has a custom type caster in tesseract_nb.h (converts to/from 4x4 numpy arrays)
-    // Only bind geometric types that need explicit bindings
+    // Isometry3d needs explicit binding for SWIG compatibility (tests expect .matrix() method)
+
+    // Isometry3d class binding for SWIG API compatibility
+    nb::class_<Eigen::Isometry3d>(m, "Isometry3d")
+        .def(nb::init<>())  // Identity transform
+        .def("__init__", [](Eigen::Isometry3d* self, const Eigen::Matrix4d& mat) {
+            new (self) Eigen::Isometry3d();
+            self->matrix() = mat;
+        }, "matrix"_a)
+        .def("matrix", [](const Eigen::Isometry3d& self) -> Eigen::Matrix4d {
+            return self.matrix();
+        })
+        .def("translation", [](const Eigen::Isometry3d& self) -> Eigen::Vector3d {
+            return self.translation();
+        })
+        .def("rotation", [](const Eigen::Isometry3d& self) -> Eigen::Matrix3d {
+            return self.rotation();
+        })
+        .def("inverse", [](const Eigen::Isometry3d& self) {
+            return self.inverse();
+        })
+        .def("__mul__", [](const Eigen::Isometry3d& self, const Eigen::Isometry3d& other) {
+            return self * other;
+        })
+        .def("__mul__", [](const Eigen::Isometry3d& self, const Eigen::Translation3d& t) {
+            return Eigen::Isometry3d(self * t);
+        })
+        .def("__mul__", [](const Eigen::Isometry3d& self, const Eigen::Vector3d& v) {
+            return self * v;
+        });
 
     nb::class_<Eigen::Translation3d>(m, "Translation3d")
         .def(nb::init<double, double, double>())
         .def("__mul__", [](const Eigen::Translation3d& self, const Eigen::Isometry3d& other) {
-            return self * other;
+            return Eigen::Isometry3d(self * other);
+        })
+        .def("__mul__", [](const Eigen::Translation3d& self, const Eigen::Translation3d& other) {
+            return Eigen::Translation3d(self.x() + other.x(), self.y() + other.y(), self.z() + other.z());
         });
 
     nb::class_<Eigen::Quaterniond>(m, "Quaterniond")
@@ -55,7 +94,24 @@ NB_MODULE(_tesseract_common, m) {
         .def("z", [](const Eigen::Quaterniond& q) { return q.z(); });
 
     nb::class_<Eigen::AngleAxisd>(m, "AngleAxisd")
-        .def(nb::init<double, const Eigen::Vector3d&>());
+        .def(nb::init<double, const Eigen::Vector3d&>())
+        .def("toRotationMatrix", [](const Eigen::AngleAxisd& self) -> Eigen::Matrix3d {
+            return self.toRotationMatrix();
+        });
+
+    // ========== FilesystemPath ==========
+    // Wrapper for std::filesystem::path (SWIG compatibility)
+    nb::class_<tesseract_common::fs::path>(m, "FilesystemPath")
+        .def(nb::init<>())
+        .def(nb::init<const std::string&>(), "path"_a)
+        .def("string", [](const tesseract_common::fs::path& p) { return p.string(); })
+        .def("__str__", [](const tesseract_common::fs::path& p) { return p.string(); })
+        .def("__repr__", [](const tesseract_common::fs::path& p) {
+            return "FilesystemPath('" + p.string() + "')";
+        });
+
+    // Note: TransformMap (std::map<string, Isometry3d>) is handled automatically by nanobind's
+    // stl/map type caster - Python dict with Isometry3d values will convert automatically
 
     // ========== Resource Types ==========
     // Note: In nanobind 2.x, shared_ptr holder is automatic - don't specify it
@@ -77,7 +133,10 @@ NB_MODULE(_tesseract_common, m) {
             new (self) tesseract_common::BytesResource(url, vec);
         });
 
-    nb::class_<tesseract_common::SimpleLocatedResource, tesseract_common::Resource>(m, "SimpleLocatedResource");
+    nb::class_<tesseract_common::SimpleLocatedResource, tesseract_common::Resource>(m, "SimpleLocatedResource")
+        .def(nb::init<const std::string&, const std::string&>(), "url"_a, "filename"_a)
+        .def(nb::init<const std::string&, const std::string&, std::shared_ptr<tesseract_common::ResourceLocator>>(),
+             "url"_a, "filename"_a, "parent"_a);
 
     // ========== ResourceLocator Hierarchy ==========
     nb::class_<tesseract_common::ResourceLocator, PyResourceLocator>(m, "ResourceLocator")
@@ -190,12 +249,39 @@ NB_MODULE(_tesseract_common, m) {
 
     m.def("setLogLevel", &console_bridge::setLogLevel, "level"_a);
     m.def("getLogLevel", &console_bridge::getLogLevel);
-    // Note: console_bridge::log is variadic and can't be bound directly
-    // Use OutputHandler subclass for custom logging
+    // Wrapper for console_bridge::log (variadic function)
+    m.def("log", [](const std::string& filename, int line, console_bridge::LogLevel level, const std::string& msg) {
+        console_bridge::log(filename.c_str(), line, level, "%s", msg.c_str());
+    }, "filename"_a, "line"_a, "level"_a, "msg"_a);
     m.def("useOutputHandler", &console_bridge::useOutputHandler, "handler"_a);
     m.def("restorePreviousOutputHandler", &console_bridge::restorePreviousOutputHandler);
 
     // ========== STL Container Bindings ==========
-    // Note: std::vector and std::map are automatically handled by nanobind/stl includes
-    // No explicit bind_vector/bind_map needed when type casters are enabled
+    // VectorVector3d - explicit binding for aligned Eigen vectors (NB_MAKE_OPAQUE at top)
+    nb::class_<VectorVector3d>(m, "VectorVector3d")
+        .def(nb::init<>())
+        .def("__len__", [](const VectorVector3d& self) { return self.size(); })
+        .def("__getitem__", [](const VectorVector3d& self, size_t i) -> Eigen::Vector3d {
+            if (i >= self.size()) throw std::out_of_range("index out of range");
+            return self[i];
+        })
+        .def("__setitem__", [](VectorVector3d& self, size_t i, const Eigen::Vector3d& v) {
+            if (i >= self.size()) throw std::out_of_range("index out of range");
+            self[i] = v;
+        })
+        .def("append", [](VectorVector3d& self, const Eigen::Vector3d& v) { self.push_back(v); })
+        .def("clear", [](VectorVector3d& self) { self.clear(); });
+
+    // VectorIsometry3d - for transform arrays (NB_MAKE_OPAQUE at top)
+    nb::class_<VectorIsometry3d>(m, "VectorIsometry3d")
+        .def(nb::init<>())
+        .def("__len__", [](const VectorIsometry3d& self) { return self.size(); })
+        .def("__getitem__", [](const VectorIsometry3d& self, size_t i) {
+            if (i >= self.size()) throw std::out_of_range("index out of range");
+            return self[i];
+        })
+        .def("append", [](VectorIsometry3d& self, const Eigen::Isometry3d& v) { self.push_back(v); })
+        .def("clear", [](VectorIsometry3d& self) { self.clear(); });
+
+    // Note: VectorLong and Eigen::VectorXi use numpy arrays (automatic conversion)
 }

@@ -10,6 +10,9 @@
 
 // tesseract_environment
 #include <tesseract_environment/environment.h>
+#include <tesseract_environment/events.h>
+#include <tesseract_environment/command.h>
+#include <tesseract_environment/commands/remove_joint_command.h>
 
 // tesseract_scene_graph
 #include <tesseract_scene_graph/graph.h>
@@ -20,6 +23,7 @@
 // tesseract_common
 #include <tesseract_common/resource_locator.h>
 #include <tesseract_common/manipulator_info.h>
+#include <tesseract_common/filesystem.h>
 
 // tesseract_srdf
 #include <tesseract_srdf/srdf_model.h>
@@ -37,8 +41,61 @@ namespace tsg = tesseract_scene_graph;
 namespace tc = tesseract_common;
 namespace tk = tesseract_kinematics;
 
+// Wrapper for Python event callbacks
+struct PyEventCallbackFn {
+    nb::callable callback;
+    void operator()(const te::Event& evt) const {
+        callback(nb::cast(evt, nb::rv_policy::reference));
+    }
+};
+
 NB_MODULE(_tesseract_environment, m) {
     m.doc() = "tesseract_environment Python bindings";
+
+    // ========== Events enum ==========
+    nb::enum_<te::Events>(m, "Events")
+        .value("COMMAND_APPLIED", te::Events::COMMAND_APPLIED)
+        .value("SCENE_STATE_CHANGED", te::Events::SCENE_STATE_CHANGED);
+
+    // Export enum values with SWIG-compatible naming
+    m.attr("Events_COMMAND_APPLIED") = te::Events::COMMAND_APPLIED;
+    m.attr("Events_SCENE_STATE_CHANGED") = te::Events::SCENE_STATE_CHANGED;
+
+    // ========== Event base class ==========
+    nb::class_<te::Event>(m, "Event")
+        .def_ro("type", &te::Event::type);
+
+    // ========== CommandAppliedEvent ==========
+    nb::class_<te::CommandAppliedEvent, te::Event>(m, "CommandAppliedEvent")
+        .def_ro("revision", &te::CommandAppliedEvent::revision);
+
+    // ========== SceneStateChangedEvent ==========
+    nb::class_<te::SceneStateChangedEvent, te::Event>(m, "SceneStateChangedEvent")
+        .def_prop_ro("state", [](const te::SceneStateChangedEvent& self) -> const tsg::SceneState& {
+            return self.state;
+        });
+
+    // ========== Event cast functions (for Python to downcast Event to specific type) ==========
+    m.def("cast_CommandAppliedEvent", [](const te::Event& evt) -> const te::CommandAppliedEvent& {
+        return static_cast<const te::CommandAppliedEvent&>(evt);
+    }, nb::rv_policy::reference, "Cast Event to CommandAppliedEvent");
+
+    m.def("cast_SceneStateChangedEvent", [](const te::Event& evt) -> const te::SceneStateChangedEvent& {
+        return static_cast<const te::SceneStateChangedEvent&>(evt);
+    }, nb::rv_policy::reference, "Cast Event to SceneStateChangedEvent");
+
+    // EventCallbackFn wrapper for Python callbacks
+    nb::class_<PyEventCallbackFn>(m, "EventCallbackFn")
+        .def(nb::init<nb::callable>(), "callback"_a);
+
+    // ========== Command base class ==========
+    nb::class_<te::Command>(m, "Command")
+        .def("getType", &te::Command::getType);
+
+    // ========== RemoveJointCommand ==========
+    nb::class_<te::RemoveJointCommand, te::Command>(m, "RemoveJointCommand")
+        .def(nb::init<std::string>(), "joint_name"_a)
+        .def("getJointName", &te::RemoveJointCommand::getJointName);
 
     // ========== Environment ==========
     nb::class_<te::Environment>(m, "Environment")
@@ -47,6 +104,12 @@ NB_MODULE(_tesseract_environment, m) {
         .def("init", [](te::Environment& self, const tsg::SceneGraph& scene_graph) {
             return self.init(scene_graph);
         }, "scene_graph"_a)
+        // Init with scene_graph + srdf (makes a copy of srdf into shared_ptr)
+        .def("init", [](te::Environment& self, const tsg::SceneGraph& scene_graph,
+                        const tesseract_srdf::SRDFModel& srdf) {
+            auto srdf_ptr = std::make_shared<const tesseract_srdf::SRDFModel>(srdf);
+            return self.init(scene_graph, srdf_ptr);
+        }, "scene_graph"_a, "srdf"_a)
         .def("initFromUrdf", [](te::Environment& self, const std::string& urdf_string,
                                  const std::shared_ptr<const tc::ResourceLocator>& locator) {
             return self.init(urdf_string, locator);
@@ -56,6 +119,16 @@ NB_MODULE(_tesseract_environment, m) {
                                      const std::shared_ptr<const tc::ResourceLocator>& locator) {
             return self.init(urdf_string, srdf_string, locator);
         }, "urdf_string"_a, "srdf_string"_a, "locator"_a)
+        // Init from paths (SWIG compatibility - accepts FilesystemPath or string)
+        .def("init", [](te::Environment& self, const std::string& urdf_path,
+                        const std::string& srdf_path,
+                        const std::shared_ptr<const tc::ResourceLocator>& locator) {
+            return self.init(tc::fs::path(urdf_path), tc::fs::path(srdf_path), locator);
+        }, "urdf_path"_a, "srdf_path"_a, "locator"_a)
+        .def("init", [](te::Environment& self, const std::string& urdf_path,
+                        const std::shared_ptr<const tc::ResourceLocator>& locator) {
+            return self.init(tc::fs::path(urdf_path), locator);
+        }, "urdf_path"_a, "locator"_a)
         // State methods
         .def("isInitialized", &te::Environment::isInitialized)
         .def("reset", &te::Environment::reset)
@@ -87,6 +160,23 @@ NB_MODULE(_tesseract_environment, m) {
                                              const Eigen::Ref<const Eigen::VectorXd>& joint_values) {
             self.setState(joint_names, joint_values);
         }, "joint_names"_a, "joint_values"_a)
+        // setState with (names, values) - SWIG compatibility
+        .def("setState", [](te::Environment& self,
+                            const std::vector<std::string>& joint_names,
+                            const Eigen::Ref<const Eigen::VectorXd>& joint_values) {
+            self.setState(joint_names, joint_values);
+        }, "joint_names"_a, "joint_values"_a)
+        // Event callbacks
+        .def("addEventCallback", [](te::Environment& self, std::size_t hash, const PyEventCallbackFn& fn) {
+            self.addEventCallback(hash, fn);
+        }, "hash"_a, "fn"_a)
+        .def("removeEventCallback", &te::Environment::removeEventCallback, "hash"_a)
+        .def("clearEventCallbacks", &te::Environment::clearEventCallbacks)
+        // Commands - RemoveJointCommand specifically
+        .def("applyCommand", [](te::Environment& self, const te::RemoveJointCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::RemoveJointCommand>(cmd.getJointName());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
         // Joint/Link info
         .def("getJointNames", &te::Environment::getJointNames)
         .def("getActiveJointNames", &te::Environment::getActiveJointNames)

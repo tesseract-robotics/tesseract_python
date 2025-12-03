@@ -7,6 +7,7 @@
 
 #include <tesseract_srdf/srdf_model.h>
 #include <tesseract_srdf/kinematics_information.h>
+#include <tesseract_srdf/utils.h>
 #include <tesseract_scene_graph/graph.h>
 #include <tesseract_common/resource_locator.h>
 #include <tesseract_common/allowed_collision_matrix.h>
@@ -74,4 +75,9 @@ NB_MODULE(_tesseract_srdf, m) {
         .def("__repr__", [](const ts::SRDFModel& self) {
             return "SRDFModel('" + self.name + "')";
         });
+
+    // Utility functions
+    m.def("processSRDFAllowedCollisions", &ts::processSRDFAllowedCollisions,
+          "scene_graph"_a, "srdf_model"_a,
+          "Process SRDF allowed collisions and add to scene graph ACM");
 }

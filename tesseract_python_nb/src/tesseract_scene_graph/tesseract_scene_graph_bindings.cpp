@@ -9,9 +9,13 @@
 #include <tesseract_scene_graph/joint.h>
 #include <tesseract_scene_graph/link.h>
 #include <tesseract_scene_graph/graph.h>
+#include <tesseract_scene_graph/scene_state.h>
 
 // tesseract_geometry for Visual/Collision geometry pointer
 #include <tesseract_geometry/geometry.h>
+
+// tesseract_common for AllowedCollisionMatrix
+#include <tesseract_common/allowed_collision_matrix.h>
 
 namespace tsg = tesseract_scene_graph;
 namespace tg = tesseract_geometry;
@@ -30,6 +34,15 @@ NB_MODULE(_tesseract_scene_graph, m) {
         .value("FLOATING", tsg::JointType::FLOATING)
         .value("PLANAR", tsg::JointType::PLANAR)
         .value("FIXED", tsg::JointType::FIXED);
+
+    // Export enum values with SWIG-compatible naming (JointType_*)
+    m.attr("JointType_UNKNOWN") = tsg::JointType::UNKNOWN;
+    m.attr("JointType_REVOLUTE") = tsg::JointType::REVOLUTE;
+    m.attr("JointType_CONTINUOUS") = tsg::JointType::CONTINUOUS;
+    m.attr("JointType_PRISMATIC") = tsg::JointType::PRISMATIC;
+    m.attr("JointType_FLOATING") = tsg::JointType::FLOATING;
+    m.attr("JointType_PLANAR") = tsg::JointType::PLANAR;
+    m.attr("JointType_FIXED") = tsg::JointType::FIXED;
 
     // JointDynamics
     nb::class_<tsg::JointDynamics>(m, "JointDynamics")
@@ -158,7 +171,11 @@ NB_MODULE(_tesseract_scene_graph, m) {
     nb::class_<tsg::Visual>(m, "Visual")
         .def(nb::init<>())
         .def_rw("origin", &tsg::Visual::origin)
-        .def_rw("geometry", &tsg::Visual::geometry)
+        .def_prop_rw("geometry",
+            [](const tsg::Visual& self) -> std::shared_ptr<tg::Geometry> {
+                return std::const_pointer_cast<tg::Geometry>(self.geometry);
+            },
+            [](tsg::Visual& self, std::shared_ptr<const tg::Geometry> g) { self.geometry = g; })
         .def_rw("material", &tsg::Visual::material)
         .def_rw("name", &tsg::Visual::name)
         .def("clear", &tsg::Visual::clear)
@@ -169,7 +186,11 @@ NB_MODULE(_tesseract_scene_graph, m) {
     nb::class_<tsg::Collision>(m, "Collision")
         .def(nb::init<>())
         .def_rw("origin", &tsg::Collision::origin)
-        .def_rw("geometry", &tsg::Collision::geometry)
+        .def_prop_rw("geometry",
+            [](const tsg::Collision& self) -> std::shared_ptr<tg::Geometry> {
+                return std::const_pointer_cast<tg::Geometry>(self.geometry);
+            },
+            [](tsg::Collision& self, std::shared_ptr<const tg::Geometry> g) { self.geometry = g; })
         .def_rw("name", &tsg::Collision::name)
         .def("clear", &tsg::Collision::clear)
         .def("__eq__", &tsg::Collision::operator==)
@@ -253,6 +274,9 @@ NB_MODULE(_tesseract_scene_graph, m) {
              "link_name"_a)
         .def("clearAllowedCollisions", &tsg::SceneGraph::clearAllowedCollisions)
         .def("isCollisionAllowed", &tsg::SceneGraph::isCollisionAllowed, "link_name1"_a, "link_name2"_a)
+        .def("getAllowedCollisionMatrix",
+             nb::overload_cast<>(&tsg::SceneGraph::getAllowedCollisionMatrix),
+             "Get the allowed collision matrix")
 
         // Graph queries
         .def("getSourceLink", &tsg::SceneGraph::getSourceLink, "joint_name"_a)
@@ -284,4 +308,14 @@ NB_MODULE(_tesseract_scene_graph, m) {
         .def("__repr__", [](const tsg::SceneGraph& self) {
             return "SceneGraph('" + self.getName() + "')";
         });
+
+    // ==================== SceneState ====================
+    nb::class_<tsg::SceneState>(m, "SceneState")
+        .def(nb::init<>())
+        .def_rw("joints", &tsg::SceneState::joints)
+        .def_rw("link_transforms", &tsg::SceneState::link_transforms)
+        .def_rw("joint_transforms", &tsg::SceneState::joint_transforms)
+        .def("getJointValues", &tsg::SceneState::getJointValues, "joint_names"_a)
+        .def("__eq__", &tsg::SceneState::operator==)
+        .def("__ne__", &tsg::SceneState::operator!=);
 }

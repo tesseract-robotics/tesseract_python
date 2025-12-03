@@ -9,6 +9,9 @@ __all__ = [
     # Base class
     "Geometry",
 
+    # Vector types
+    "GeometriesConst",
+
     # Primitive geometries
     "Box",
     "Sphere",
@@ -17,6 +20,21 @@ __all__ = [
     "Cone",
     "Plane",
 
+    # Material/Texture
+    "MeshMaterial",
+    "MeshTexture",
+
     # Mesh base
     "PolygonMesh",
+
+    # Mesh types
+    "Mesh",
+    "ConvexMesh",
+    "SDFMesh",
+    "CompoundMesh",
+
+    # Mesh loading functions
+    "createMeshFromPath",
+    "createConvexMeshFromPath",
+    "createSDFMeshFromPath",
 ]
