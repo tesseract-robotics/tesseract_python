@@ -38,21 +38,8 @@ NB_MODULE(_tesseract_common, m) {
 
     // ========== Eigen Type Aliases ==========
     // Note: Vector3d, VectorXd, MatrixXd are handled automatically by nanobind/eigen/dense.h
+    // Isometry3d has a custom type caster in tesseract_nb.h (converts to/from 4x4 numpy arrays)
     // Only bind geometric types that need explicit bindings
-
-    nb::class_<Eigen::Isometry3d>(m, "Isometry3d")
-        .def(nb::init<>())
-        .def("matrix", [](const Eigen::Isometry3d& self) { return self.matrix(); })
-        .def("translation", [](const Eigen::Isometry3d& self) -> Eigen::Vector3d { return self.translation(); })
-        .def("linear", [](const Eigen::Isometry3d& self) { return self.linear(); })
-        .def("__mul__", [](const Eigen::Isometry3d& self, const Eigen::Isometry3d& other) {
-            return self * other;
-        })
-        .def("__repr__", [](const Eigen::Isometry3d& self) {
-            std::ostringstream oss;
-            oss << "Isometry3d(\n" << self.matrix() << "\n)";
-            return oss.str();
-        });
 
     nb::class_<Eigen::Translation3d>(m, "Translation3d")
         .def(nb::init<double, double, double>())

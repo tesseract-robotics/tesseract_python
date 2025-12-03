@@ -37,8 +37,8 @@ __all__ = [
     "CONSOLE_BRIDGE_LOG_ERROR",
     "CONSOLE_BRIDGE_LOG_NONE",
 
-    # Eigen types
-    "Isometry3d",
+    # Eigen helper types
+    # Note: Eigen::Isometry3d auto-converts to/from numpy 4x4 arrays (use np.eye(4))
     "Translation3d",
     "Quaterniond",
     "AngleAxisd",
