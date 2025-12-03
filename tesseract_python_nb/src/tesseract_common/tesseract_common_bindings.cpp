@@ -18,7 +18,7 @@ class PyResourceLocator : public tesseract_common::ResourceLocator {
 public:
     NB_TRAMPOLINE(tesseract_common::ResourceLocator, 1);
 
-    std::shared_ptr<tesseract_common::Resource> locateResource(const std::string& url) override {
+    std::shared_ptr<tesseract_common::Resource> locateResource(const std::string& url) const override {
         NB_OVERRIDE_PURE(locateResource, url);
     }
 };
@@ -37,10 +37,13 @@ NB_MODULE(_tesseract_common, m) {
     m.doc() = "tesseract_common Python bindings (nanobind)";
 
     // ========== Eigen Type Aliases ==========
+    // Note: Vector3d, VectorXd, MatrixXd are handled automatically by nanobind/eigen/dense.h
+    // Only bind geometric types that need explicit bindings
+
     nb::class_<Eigen::Isometry3d>(m, "Isometry3d")
         .def(nb::init<>())
         .def("matrix", [](const Eigen::Isometry3d& self) { return self.matrix(); })
-        .def("translation", [](const Eigen::Isometry3d& self) { return self.translation(); })
+        .def("translation", [](const Eigen::Isometry3d& self) -> Eigen::Vector3d { return self.translation(); })
         .def("linear", [](const Eigen::Isometry3d& self) { return self.linear(); })
         .def("__mul__", [](const Eigen::Isometry3d& self, const Eigen::Isometry3d& other) {
             return self * other;
@@ -59,22 +62,17 @@ NB_MODULE(_tesseract_common, m) {
 
     nb::class_<Eigen::Quaterniond>(m, "Quaterniond")
         .def(nb::init<double, double, double, double>())
-        .def("w", &Eigen::Quaterniond::w)
-        .def("x", &Eigen::Quaterniond::x)
-        .def("y", &Eigen::Quaterniond::y)
-        .def("z", &Eigen::Quaterniond::z);
+        .def("w", [](const Eigen::Quaterniond& q) { return q.w(); })
+        .def("x", [](const Eigen::Quaterniond& q) { return q.x(); })
+        .def("y", [](const Eigen::Quaterniond& q) { return q.y(); })
+        .def("z", [](const Eigen::Quaterniond& q) { return q.z(); });
 
     nb::class_<Eigen::AngleAxisd>(m, "AngleAxisd")
         .def(nb::init<double, const Eigen::Vector3d&>());
 
-    // Vector and Matrix types are automatically handled by nanobind/eigen
-    // But we can add explicit bindings for documentation
-    auto vector3d = nb::class_<Eigen::Vector3d>(m, "Vector3d");
-    auto vectorxd = nb::class_<Eigen::VectorXd>(m, "VectorXd");
-    auto matrixxd = nb::class_<Eigen::MatrixXd>(m, "MatrixXd");
-
     // ========== Resource Types ==========
-    nb::class_<tesseract_common::Resource, std::shared_ptr<tesseract_common::Resource>>(m, "Resource")
+    // Note: In nanobind 2.x, shared_ptr holder is automatic - don't specify it
+    nb::class_<tesseract_common::Resource>(m, "Resource")
         .def("isFile", &tesseract_common::Resource::isFile)
         .def("getUrl", &tesseract_common::Resource::getUrl)
         .def("getFilePath", &tesseract_common::Resource::getFilePath)
@@ -84,45 +82,32 @@ NB_MODULE(_tesseract_common, m) {
         })
         .def("getResourceContentStream", &tesseract_common::Resource::getResourceContentStream);
 
-    nb::class_<tesseract_common::BytesResource,
-               tesseract_common::Resource,
-               std::shared_ptr<tesseract_common::BytesResource>>(m, "BytesResource")
+    nb::class_<tesseract_common::BytesResource, tesseract_common::Resource>(m, "BytesResource")
         .def(nb::init<const std::string&, const std::vector<uint8_t>&>())
-        .def(nb::init([](const std::string& url, nb::bytes data) {
+        .def("__init__", [](tesseract_common::BytesResource* self, const std::string& url, nb::bytes data) {
             std::vector<uint8_t> vec(data.size());
             std::memcpy(vec.data(), data.c_str(), data.size());
-            return std::make_shared<tesseract_common::BytesResource>(url, vec);
-        }));
+            new (self) tesseract_common::BytesResource(url, vec);
+        });
 
-    nb::class_<tesseract_common::SimpleLocatedResource,
-               tesseract_common::Resource,
-               std::shared_ptr<tesseract_common::SimpleLocatedResource>>(m, "SimpleLocatedResource");
+    nb::class_<tesseract_common::SimpleLocatedResource, tesseract_common::Resource>(m, "SimpleLocatedResource");
 
     // ========== ResourceLocator Hierarchy ==========
-    nb::class_<tesseract_common::ResourceLocator,
-               PyResourceLocator,
-               std::shared_ptr<tesseract_common::ResourceLocator>>(m, "ResourceLocator")
+    nb::class_<tesseract_common::ResourceLocator, PyResourceLocator>(m, "ResourceLocator")
         .def(nb::init<>())
         .def("locateResource", &tesseract_common::ResourceLocator::locateResource);
 
-    nb::class_<tesseract_common::SimpleResourceLocator,
-               tesseract_common::ResourceLocator,
-               std::shared_ptr<tesseract_common::SimpleResourceLocator>>(m, "SimpleResourceLocator")
-        .def(nb::init<std::function<std::string(const std::string&)>>());
-
-    nb::class_<tesseract_common::GeneralResourceLocator,
-               tesseract_common::ResourceLocator,
-               std::shared_ptr<tesseract_common::GeneralResourceLocator>>(m, "GeneralResourceLocator")
+    nb::class_<tesseract_common::GeneralResourceLocator, tesseract_common::ResourceLocator>(m, "GeneralResourceLocator")
         .def(nb::init<>());
 
     // ========== ManipulatorInfo ==========
-    nb::class_<tesseract_common::ManipulatorInfo, std::shared_ptr<tesseract_common::ManipulatorInfo>>(m, "ManipulatorInfo")
+    nb::class_<tesseract_common::ManipulatorInfo>(m, "ManipulatorInfo")
         .def(nb::init<>())
         .def_rw("manipulator", &tesseract_common::ManipulatorInfo::manipulator)
         .def_rw("manipulator_ik_solver", &tesseract_common::ManipulatorInfo::manipulator_ik_solver)
         .def_rw("working_frame", &tesseract_common::ManipulatorInfo::working_frame)
         .def_rw("tcp_frame", &tesseract_common::ManipulatorInfo::tcp_frame)
-        .def_property("tcp_offset",
+        .def_prop_rw("tcp_offset",
             [](const tesseract_common::ManipulatorInfo& self) -> nb::object {
                 if (self.tcp_offset.index() == 0) {
                     return nb::cast(std::get<std::string>(self.tcp_offset));
@@ -153,7 +138,7 @@ NB_MODULE(_tesseract_common, m) {
         .def_rw("time", &tesseract_common::JointState::time);
 
     // ========== AllowedCollisionMatrix ==========
-    nb::class_<tesseract_common::AllowedCollisionMatrix, std::shared_ptr<tesseract_common::AllowedCollisionMatrix>>(m, "AllowedCollisionMatrix")
+    nb::class_<tesseract_common::AllowedCollisionMatrix>(m, "AllowedCollisionMatrix")
         .def(nb::init<>())
         .def("addAllowedCollision",
              nb::overload_cast<const std::string&, const std::string&, const std::string&>(
@@ -169,6 +154,8 @@ NB_MODULE(_tesseract_common, m) {
     // ========== CollisionMarginData ==========
     nb::enum_<tesseract_common::CollisionMarginOverrideType>(m, "CollisionMarginOverrideType")
         .value("NONE", tesseract_common::CollisionMarginOverrideType::NONE)
+        .value("REPLACE", tesseract_common::CollisionMarginOverrideType::REPLACE)
+        .value("MODIFY", tesseract_common::CollisionMarginOverrideType::MODIFY)
         .value("OVERRIDE_DEFAULT_MARGIN", tesseract_common::CollisionMarginOverrideType::OVERRIDE_DEFAULT_MARGIN)
         .value("OVERRIDE_PAIR_MARGIN", tesseract_common::CollisionMarginOverrideType::OVERRIDE_PAIR_MARGIN)
         .value("MODIFY_PAIR_MARGIN", tesseract_common::CollisionMarginOverrideType::MODIFY_PAIR_MARGIN);
@@ -176,9 +163,8 @@ NB_MODULE(_tesseract_common, m) {
     nb::class_<tesseract_common::CollisionMarginData>(m, "CollisionMarginData")
         .def(nb::init<>())
         .def(nb::init<double>())
-        .def_rw("default_collision_margin", &tesseract_common::CollisionMarginData::default_collision_margin)
-        .def_rw("max_collision_margin", &tesseract_common::CollisionMarginData::max_collision_margin)
-        .def_rw("pair_collision_margins", &tesseract_common::CollisionMarginData::pair_collision_margins)
+        .def("getDefaultCollisionMargin", &tesseract_common::CollisionMarginData::getDefaultCollisionMargin)
+        .def("setDefaultCollisionMargin", &tesseract_common::CollisionMarginData::setDefaultCollisionMargin)
         .def("getPairCollisionMargin", &tesseract_common::CollisionMarginData::getPairCollisionMargin)
         .def("setPairCollisionMargin", &tesseract_common::CollisionMarginData::setPairCollisionMargin)
         .def("getMaxCollisionMargin", &tesseract_common::CollisionMarginData::getMaxCollisionMargin);
@@ -211,19 +197,18 @@ NB_MODULE(_tesseract_common, m) {
     m.attr("CONSOLE_BRIDGE_LOG_ERROR") = console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_ERROR;
     m.attr("CONSOLE_BRIDGE_LOG_NONE") = console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_NONE;
 
-    nb::class_<console_bridge::OutputHandler,
-               PyOutputHandler,
-               std::shared_ptr<console_bridge::OutputHandler>>(m, "OutputHandler")
+    nb::class_<console_bridge::OutputHandler, PyOutputHandler>(m, "OutputHandler")
         .def(nb::init<>())
         .def("log", &console_bridge::OutputHandler::log);
 
     m.def("setLogLevel", &console_bridge::setLogLevel, "level"_a);
     m.def("getLogLevel", &console_bridge::getLogLevel);
-    m.def("log", &console_bridge::log, "filename"_a, "line"_a, "level"_a, "message"_a);
+    // Note: console_bridge::log is variadic and can't be bound directly
+    // Use OutputHandler subclass for custom logging
     m.def("useOutputHandler", &console_bridge::useOutputHandler, "handler"_a);
     m.def("restorePreviousOutputHandler", &console_bridge::restorePreviousOutputHandler);
 
     // ========== STL Container Bindings ==========
-    nb::bind_vector<tesseract_common::AlignedVector<Eigen::Isometry3d>>(m, "VectorIsometry3d");
-    nb::bind_map<tesseract_common::TransformMap>(m, "TransformMap");
+    // Note: std::vector and std::map are automatically handled by nanobind/stl includes
+    // No explicit bind_vector/bind_map needed when type casters are enabled
 }

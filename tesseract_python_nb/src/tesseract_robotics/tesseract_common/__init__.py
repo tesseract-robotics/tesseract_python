@@ -6,7 +6,6 @@ __all__ = [
     # Core types
     "ResourceLocator",
     "Resource",
-    "SimpleResourceLocator",
     "GeneralResourceLocator",
     "SimpleLocatedResource",
     "BytesResource",
@@ -25,9 +24,9 @@ __all__ = [
 
     # Console bridge
     "OutputHandler",
+    "LogLevel",
     "setLogLevel",
     "getLogLevel",
-    "log",
     "useOutputHandler",
     "restorePreviousOutputHandler",
 
@@ -43,9 +42,6 @@ __all__ = [
     "Translation3d",
     "Quaterniond",
     "AngleAxisd",
-    "Vector3d",
-    "VectorXd",
-    "MatrixXd",
 
     # Plugin
     "PluginInfo",

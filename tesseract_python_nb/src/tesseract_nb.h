@@ -20,6 +20,7 @@
 
 // nanobind core
 #include <nanobind/nanobind.h>
+#include <nanobind/trampoline.h>
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/vector.h>
 #include <nanobind/stl/map.h>

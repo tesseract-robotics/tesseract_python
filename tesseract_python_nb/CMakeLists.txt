@@ -11,6 +11,19 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Python 3.9 REQUIRED COMPONENTS Interpreter Development.Module Development.SABIModule)
 find_package(nanobind CONFIG REQUIRED)
 
+# Add tesseract install path to CMAKE_PREFIX_PATH
+# Use absolute path derived from project source dir
+get_filename_component(TESSERACT_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../ws/install" ABSOLUTE)
+list(APPEND CMAKE_PREFIX_PATH "${TESSERACT_INSTALL_DIR}")
+message(STATUS "Added tesseract install dir: ${TESSERACT_INSTALL_DIR}")
+
+# Add conda prefix for dependencies (tinyxml2, console_bridge, etc.)
+if(DEFINED ENV{CONDA_PREFIX})
+  list(APPEND CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
+  link_directories("$ENV{CONDA_PREFIX}/lib")
+  message(STATUS "Added conda prefix: $ENV{CONDA_PREFIX}")
+endif()
+
 # Find tesseract C++ libraries
 find_package(tesseract_common REQUIRED)
 find_package(console_bridge REQUIRED)
