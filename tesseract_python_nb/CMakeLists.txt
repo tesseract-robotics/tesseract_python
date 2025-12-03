@@ -21,6 +21,8 @@ message(STATUS "Added tesseract install dir: ${TESSERACT_INSTALL_DIR}")
 if(DEFINED ENV{CONDA_PREFIX})
   list(APPEND CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
   link_directories("$ENV{CONDA_PREFIX}/lib")
+  # Qt6 requires QT_HOST_PATH on macOS with conda
+  set(QT_HOST_PATH "$ENV{CONDA_PREFIX}" CACHE PATH "Qt host path for cross-compilation")
   message(STATUS "Added conda prefix: $ENV{CONDA_PREFIX}")
 endif()
 
@@ -28,6 +30,8 @@ endif()
 find_package(tesseract_common REQUIRED)
 find_package(tesseract_geometry REQUIRED)
 find_package(tesseract_scene_graph REQUIRED)
+find_package(tesseract_srdf REQUIRED)
+find_package(tesseract_urdf REQUIRED)
 find_package(console_bridge REQUIRED)
 
 # Define reusable function for nanobind extensions
@@ -78,6 +82,24 @@ add_tesseract_nanobind_extension(
   src/tesseract_scene_graph/tesseract_scene_graph_bindings.cpp
   tesseract::tesseract_scene_graph
   tesseract::tesseract_geometry
+  tesseract::tesseract_common
+)
+
+# Add tesseract_srdf module
+add_tesseract_nanobind_extension(
+  tesseract_srdf
+  src/tesseract_srdf/tesseract_srdf_bindings.cpp
+  tesseract::tesseract_srdf
+  tesseract::tesseract_scene_graph
+  tesseract::tesseract_common
+)
+
+# Add tesseract_urdf module
+add_tesseract_nanobind_extension(
+  tesseract_urdf
+  src/tesseract_urdf/tesseract_urdf_bindings.cpp
+  tesseract::tesseract_urdf
+  tesseract::tesseract_scene_graph
   tesseract::tesseract_common
 )
 
