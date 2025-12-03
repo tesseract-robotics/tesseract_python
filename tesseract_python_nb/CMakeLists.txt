@@ -204,6 +204,17 @@ add_tesseract_nanobind_extension(
   tesseract::tesseract_common
 )
 
+# Find and add tesseract_task_composer (core and taskflow components only, planning requires trajopt)
+find_package(tesseract_task_composer REQUIRED COMPONENTS core taskflow)
+
+add_tesseract_nanobind_extension(
+  tesseract_task_composer
+  src/tesseract_task_composer/tesseract_task_composer_bindings.cpp
+  tesseract::tesseract_task_composer
+  tesseract::tesseract_task_composer_taskflow
+  tesseract::tesseract_common
+)
+
 message(STATUS "============= Build Configuration =============")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "C++ Standard: C++${CMAKE_CXX_STANDARD}")
