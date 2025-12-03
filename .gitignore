@@ -1,0 +1,21 @@
+# Build artifacts
+ws/
+build.log
+build.pid
+setup.log
+
+# IDE
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+*.so
+
+# OS
+.DS_Store
