@@ -188,32 +188,178 @@ pip install -e .
 - tesseract_motion_planners_simple (generateInterpolatedProgram, SimpleMotionPlanner)
 - tesseract_motion_planners_ompl (OMPLMotionPlanner, RRTConnectConfigurator, OMPLRealVectorPlanProfile)
 - tesseract_time_parameterization (TimeOptimalTrajectoryGeneration, InstructionsTrajectory)
+- tesseract_task_composer (TaskComposerKeys, TaskComposerDataStorage, TaskComposerContext, TaskComposerNode, TaskComposerFuture, TaskComposerExecutor, TaskflowTaskComposerExecutor, factory functions)
 
 ### TrajOpt Build Issues
 
 Building `tesseract_motion_planners_trajopt` requires rebuilding the workspace due to:
 
-1. **yaml-cpp target mismatch**: tesseract_kinematics was built linking to `yaml-cpp` but conda's yaml-cpp exports `yaml-cpp::yaml-cpp` target
-2. **Qt6 cross-compilation detection**: VTK/PCL pulls in Qt6 which incorrectly detects cross-compilation. Fix: `-DQT_HOST_PATH=$CONDA_PREFIX`
+1. **yaml-cpp target mismatch**: tesseract expects `yaml-cpp` target but conda exports `yaml-cpp::yaml-cpp`
+2. **Qt6 cross-compilation detection**: VTK/PCL pulls in Qt6 which incorrectly detects cross-compilation
 3. **CMake policy warnings**: Old packages need `-DCMAKE_POLICY_VERSION_MINIMUM=3.5`
 
-**To rebuild workspace with trajopt support:**
+#### yaml-cpp Target Mismatch Fix (Comprehensive Guide)
+
+**The Problem:**
+
+yaml-cpp has historically exported just `yaml-cpp` as the target name, but conda-forge's yaml-cpp now exports `yaml-cpp::yaml-cpp` (following modern CMake namespace conventions). Tesseract codebase uses the old-style `yaml-cpp` target name throughout.
+
+**Error:**
+```text
+ld: library 'yaml-cpp' not found
+clang++: error: linker command failed with exit code 1 (use -v to see invocation)
+```
+
+**Why ALIAS Doesn't Work:**
+
+You might think this would fix it:
+```cmake
+find_package(yaml-cpp REQUIRED)
+if(NOT TARGET yaml-cpp AND TARGET yaml-cpp::yaml-cpp)
+  add_library(yaml-cpp ALIAS yaml-cpp::yaml-cpp)
+endif()
+```
+
+This is in tesseract_srdf/CMakeLists.txt already. **BUT it fails because:**
+
+1. With colcon's `--merge-install`, packages are built in isolated build directories
+2. When package B depends on package A, it uses the *installed* CMake config from A
+3. The ALIAS is only defined during A's build phase, not exported to the install
+4. When B runs `find_package(A)`, the ALIAS doesn't exist
+5. B fails with `yaml-cpp` not found
+
+**The Correct Fix:**
+
+Replace `yaml-cpp` with `yaml-cpp::yaml-cpp` **only in `target_link_libraries()` calls**, not in:
+- `configure_component()` DEPENDENCIES (expects package name for `find_dependency()`)
+- `configure_package()` DEPENDENCIES (same reason)
+- `cpack_component()` DEPENDS lists (package names for system packages)
+
+**All Files Requiring Patches:**
+
+tesseract repository:
+```
+ws/src/tesseract/tesseract_collision/core/CMakeLists.txt    (line 20)
+ws/src/tesseract/tesseract_srdf/CMakeLists.txt               (line 63)
+ws/src/tesseract/tesseract_kinematics/core/CMakeLists.txt    (line 18)
+```
+
+tesseract_planning repository:
+```
+ws/src/tesseract_planning/tesseract_task_composer/core/CMakeLists.txt      (lines 27, 66)
+ws/src/tesseract_planning/tesseract_task_composer/taskflow/CMakeLists.txt  (line 12)
+ws/src/tesseract_planning/tesseract_task_composer/planning/CMakeLists.txt  (line 55)
+```
+
+**Patch Script:**
+```bash
+# tesseract repository
+cd ws/src/tesseract
+sed -i '' 's/^         yaml-cpp)$/         yaml-cpp::yaml-cpp)/' tesseract_collision/core/CMakeLists.txt
+sed -i '' 's/^         yaml-cpp)$/         yaml-cpp::yaml-cpp)/' tesseract_srdf/CMakeLists.txt
+sed -i '' 's/^         yaml-cpp)$/         yaml-cpp::yaml-cpp)/' tesseract_kinematics/core/CMakeLists.txt
+
+# tesseract_planning repository
+cd ../tesseract_planning/tesseract_task_composer
+sed -i '' 's/^         yaml-cpp)$/         yaml-cpp::yaml-cpp)/' core/CMakeLists.txt
+sed -i '' 's/^         yaml-cpp)$/         yaml-cpp::yaml-cpp)/' taskflow/CMakeLists.txt
+sed -i '' 's/    yaml-cpp)$/    yaml-cpp::yaml-cpp)/' planning/CMakeLists.txt
+```
+
+**Why This Keeps Recurring:**
+
+The workspace was built incrementally. If you run a clean build or rebuild affected packages, the cached cmake files are used which still reference `yaml-cpp`. To fully fix:
+
 ```bash
 cd ws
-rm -rf build install
-colcon build --merge-install --cmake-args \
+rm -rf build/tesseract_collision build/tesseract_srdf build/tesseract_kinematics build/tesseract_task_composer
+rm -rf install/lib/cmake/tesseract_collision install/lib/cmake/tesseract_srdf install/lib/cmake/tesseract_kinematics
+colcon build --merge-install ...
+```
+
+**Upstream Fix Recommendation:**
+
+The correct upstream fix is to use generator expressions in tesseract's CMakeLists:
+```cmake
+target_link_libraries(${PROJECT_NAME} PUBLIC
+    $<IF:$<TARGET_EXISTS:yaml-cpp::yaml-cpp>,yaml-cpp::yaml-cpp,yaml-cpp>
+)
+```
+This automatically uses `yaml-cpp::yaml-cpp` if available, falling back to `yaml-cpp` for older yaml-cpp versions.
+
+#### Qt6 Cross-Compilation Detection Issue
+
+On macOS with conda-forge's Qt6, the Qt6Config.cmake incorrectly detects "implicit cross-compilation" when the host arch doesn't match the build arch. Error:
+
+```text
+CMake Error at .../Qt6/QtPublicDependencyHelpers.cmake:288 (message):
+  To use a cross-compiled Qt, please set the QT_HOST_PATH cache variable to
+  the location of your host Qt installation.
+```
+
+This occurs because:
+1. PCL depends on VTK
+2. VTK depends on Qt6
+3. Qt6 auto-detects cross-compilation via `CMAKE_OSX_ARCHITECTURES` comparison
+4. Conda-forge Qt6 was built with different arch detection logic
+
+**Solution:** Set QT_HOST_PATH as cache variable via CMAKE_PROJECT_INCLUDE:
+
+```bash
+# Create cmake_args.cmake in ws directory:
+cat > ws/cmake_args.cmake << 'EOF'
+set(QT_HOST_PATH "$ENV{CONDA_PREFIX}" CACHE PATH "Qt6 host path" FORCE)
+EOF
+
+# Add to colcon build:
+colcon build --cmake-args "-DCMAKE_PROJECT_INCLUDE=$PWD/cmake_args.cmake" ...
+```
+
+#### OSQP 1.0 API Incompatibility
+
+The trajopt repository (trajopt_sco, osqp_eigen in ws/src) uses the old OSQP 0.6.x API, but conda-forge has OSQP 1.0.0 with breaking API changes:
+
+- Old API: `#include <constants.h>`, types `c_int`, `c_float`, `csc`
+- New API: `#include <osqp/osqp_api_constants.h>`, different type names
+
+**Options:**
+1. Skip OSQP packages and use qpOASES only (add `--packages-skip osqp osqp_eigen`)
+2. Port trajopt to OSQP 1.0 API (significant work)
+3. Install osqp 0.6.x from source
+
+#### vhacd Compilation Issues (macOS)
+
+The vhacd package in trajopt_ext has macOS compatibility issues:
+- Missing `#include <cassert>` for assert macro
+- Uses `PTHREAD_MUTEX_RECURSIVE_NP` (Linux-specific, macOS uses `PTHREAD_MUTEX_RECURSIVE`)
+- Uses `clCreateCommandQueueWithProperties` (requires OpenCL 2.0)
+
+**Current Status:** TrajOpt planner blocked by OSQP 1.0 API incompatibility. Requires porting trajopt_sco and tesseract_motion_planners/trajopt to OSQP 1.0 API (significant work - type changes from `c_int`/`c_float`/`csc` to `OSQPInt`/`OSQPFloat`/`OSQPCscMatrix`, settings field name changes).
+
+**Working planners:** SimpleMotionPlanner, OMPLMotionPlanner, TimeOptimalTrajectoryGeneration.
+
+**To rebuild workspace WITHOUT trajopt:**
+
+```bash
+cd ws
+
+# Create cmake args file for Qt6 workaround
+cat > cmake_args.cmake << 'EOF'
+set(QT_HOST_PATH "$ENV{CONDA_PREFIX}" CACHE PATH "Qt6 host path" FORCE)
+EOF
+
+rm -rf build install log
+colcon build --merge-install --packages-skip trajopt trajopt_common trajopt_sco trajopt_ifopt vhacd osqp osqp_eigen --cmake-args \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_STANDARD=17 \
-  -DQT_HOST_PATH=$CONDA_PREFIX \
+  "-DCMAKE_PROJECT_INCLUDE=/path/to/ws/cmake_args.cmake" \
   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-  -DTESSERACT_BUILD_TRAJOPT=ON \
-  -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF \
   -DTESSERACT_ENABLE_TESTING=OFF
 ```
 
 ### Expansion (Remaining Modules)
-- [ ] tesseract_motion_planners_trajopt - blocked on ws rebuild
-- [ ] tesseract_task_composer - for composer-based planning
+- [ ] tesseract_motion_planners_trajopt - blocked on ws rebuild (OSQP 1.0 API)
+- [x] tesseract_task_composer - core + taskflow (no planning component - requires trajopt)
 - [ ] tesseract_process_managers - for process management
 
 ### Reusable Patterns
