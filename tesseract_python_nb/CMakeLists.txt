@@ -26,6 +26,7 @@ endif()
 
 # Find tesseract C++ libraries
 find_package(tesseract_common REQUIRED)
+find_package(tesseract_geometry REQUIRED)
 find_package(console_bridge REQUIRED)
 
 # Define reusable function for nanobind extensions
@@ -60,6 +61,14 @@ add_tesseract_nanobind_extension(
   src/tesseract_common/tesseract_common_bindings.cpp
   tesseract::tesseract_common
   console_bridge::console_bridge
+)
+
+# Add tesseract_geometry module
+add_tesseract_nanobind_extension(
+  tesseract_geometry
+  src/tesseract_geometry/tesseract_geometry_bindings.cpp
+  tesseract::tesseract_geometry
+  tesseract::tesseract_common
 )
 
 message(STATUS "============= Build Configuration =============")
