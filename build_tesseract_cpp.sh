@@ -164,7 +164,7 @@ echo ""
 
 colcon build \
     --merge-install \
-    --packages-ignore tesseract_examples tesseract_python trajopt_ifopt trajopt_sqp ifopt vhacd osqp qpoases osqp_eigen \
+    --packages-ignore tesseract_examples tesseract_python trajopt_ifopt trajopt_sqp ifopt vhacd osqp qpoases osqp_eigen tesseract_task_composer \
     --event-handlers console_cohesion+ \
     --cmake-force-configure \
     --cmake-args \
@@ -178,12 +178,14 @@ colcon build \
         -DBUILD_SHARED_LIBS=ON \
         -DTESSERACT_ENABLE_EXAMPLES=OFF \
         -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF \
+        -DTESSERACT_BUILD_TRAJOPT=OFF \
         -DVCPKG_APPLOCAL_DEPS=OFF \
         -DTESSERACT_ENABLE_TESTING=OFF \
         -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
         -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" \
         -DCMAKE_LIBRARY_PATH="$CONDA_PREFIX/lib" \
         -DQT_HOST_PATH="$CONDA_PREFIX" \
+        -DCMAKE_DISABLE_FIND_PACKAGE_osqp=ON \
         "${OPENMP_CMAKE_ARGS[@]}"
 
 echo ""
