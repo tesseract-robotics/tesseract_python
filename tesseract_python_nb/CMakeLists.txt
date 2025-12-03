@@ -33,6 +33,7 @@ find_package(tesseract_scene_graph REQUIRED)
 find_package(tesseract_srdf REQUIRED)
 find_package(tesseract_urdf REQUIRED)
 find_package(tesseract_collision REQUIRED)
+find_package(tesseract_state_solver REQUIRED)
 find_package(console_bridge REQUIRED)
 
 # Define reusable function for nanobind extensions
@@ -110,6 +111,16 @@ add_tesseract_nanobind_extension(
   src/tesseract_collision/tesseract_collision_bindings.cpp
   tesseract::tesseract_collision_core
   tesseract::tesseract_geometry
+  tesseract::tesseract_common
+)
+
+# Add tesseract_state_solver module
+add_tesseract_nanobind_extension(
+  tesseract_state_solver
+  src/tesseract_state_solver/tesseract_state_solver_bindings.cpp
+  tesseract::tesseract_state_solver_kdl
+  tesseract::tesseract_state_solver_ofkt
+  tesseract::tesseract_scene_graph
   tesseract::tesseract_common
 )
 
