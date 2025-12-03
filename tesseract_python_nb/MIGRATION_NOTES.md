@@ -1,5 +1,29 @@
 # SWIG to nanobind Migration Notes
 
+## Quick Start (Resume Session)
+
+```bash
+# Activate environment
+conda activate tesseract_nb
+
+# Set environment variables
+export CMAKE_PREFIX_PATH="/Users/jelle/Code/CADCAM/tesseract_python_nanobind/ws/install:$CONDA_PREFIX"
+export DYLD_LIBRARY_PATH=/Users/jelle/Code/CADCAM/tesseract_python_nanobind/ws/install/lib:$DYLD_LIBRARY_PATH
+export TESSERACT_RESOURCE_PATH="/Users/jelle/Code/CADCAM/tesseract_python_nanobind/ws/src/tesseract/"
+
+# Install package (editable)
+cd /Users/jelle/Code/CADCAM/tesseract_python_nanobind/tesseract_python_nb
+pip install -e .
+
+# Run tests
+pytest tests/ -v
+
+# Run examples
+cd /Users/jelle/Code/CADCAM/tesseract_python_nanobind
+python examples/tesseract_collision_example.py
+python examples/tesseract_kinematics_example.py
+```
+
 ## Progress Log
 
 ### 2025-12-04
