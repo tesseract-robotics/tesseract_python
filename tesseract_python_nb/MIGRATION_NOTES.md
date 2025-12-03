@@ -1,5 +1,21 @@
 # SWIG to nanobind Migration Notes
 
+## Progress Log
+
+### 2025-12-04
+- Added tesseract_task_composer bindings (core + taskflow, no planning)
+- TaskComposerPluginFactory direct class binding with createTaskComposerNode/Executor
+- Documented yaml-cpp target mismatch fix comprehensively
+- Confirmed tesseract_process_managers deprecated (replaced by task_composer)
+- Tests: 24 passed, 3 skipped
+
+### Previous
+- tesseract_common, geometry, scene_graph, srdf, urdf, collision
+- tesseract_state_solver, kinematics, environment
+- tesseract_command_language, motion_planners (core, simple, ompl)
+- tesseract_time_parameterization
+- Ported SWIG tests to nanobind
+
 ## Implementation Summary
 
 Successfully created tesseract_common prototype with nanobind bindings.
