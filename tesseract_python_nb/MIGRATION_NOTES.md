@@ -180,18 +180,41 @@ pip install -e .
 - [x] tesseract_collision_example.py - working
 - [x] tesseract_kinematics_example.py - working
 - [ ] tesseract_planning_example_composer.py - needs: tesseract_task_composer
-- [ ] tesseract_planning_example_no_composer.py - needs: tesseract_motion_planners_trajopt (not built in ws)
+- [ ] tesseract_planning_example_no_composer.py - needs: tesseract_motion_planners_trajopt (blocked, see below)
 
 **Modules Bound:**
-- tesseract_motion_planners (PlannerRequest, PlannerResponse, MotionPlanner)
+- tesseract_command_language (JointWaypoint, CartesianWaypoint, StateWaypoint, *Poly types, MoveInstruction, CompositeInstruction, ProfileDictionary)
+- tesseract_motion_planners (PlannerRequest, PlannerResponse)
 - tesseract_motion_planners_simple (generateInterpolatedProgram, SimpleMotionPlanner)
 - tesseract_motion_planners_ompl (OMPLMotionPlanner, RRTConnectConfigurator, OMPLRealVectorPlanProfile)
 - tesseract_time_parameterization (TimeOptimalTrajectoryGeneration, InstructionsTrajectory)
 
-### Expansion (Modules 2-17)
-1. tesseract_geometry - test shared_ptr factory pattern
-2. tesseract_scene_graph - test cross-module dependencies
-3. Continue through remaining modules
+### TrajOpt Build Issues
+
+Building `tesseract_motion_planners_trajopt` requires rebuilding the workspace due to:
+
+1. **yaml-cpp target mismatch**: tesseract_kinematics was built linking to `yaml-cpp` but conda's yaml-cpp exports `yaml-cpp::yaml-cpp` target
+2. **Qt6 cross-compilation detection**: VTK/PCL pulls in Qt6 which incorrectly detects cross-compilation. Fix: `-DQT_HOST_PATH=$CONDA_PREFIX`
+3. **CMake policy warnings**: Old packages need `-DCMAKE_POLICY_VERSION_MINIMUM=3.5`
+
+**To rebuild workspace with trajopt support:**
+```bash
+cd ws
+rm -rf build install
+colcon build --merge-install --cmake-args \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CXX_STANDARD=17 \
+  -DQT_HOST_PATH=$CONDA_PREFIX \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DTESSERACT_BUILD_TRAJOPT=ON \
+  -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF \
+  -DTESSERACT_ENABLE_TESTING=OFF
+```
+
+### Expansion (Remaining Modules)
+- [ ] tesseract_motion_planners_trajopt - blocked on ws rebuild
+- [ ] tesseract_task_composer - for composer-based planning
+- [ ] tesseract_process_managers - for process management
 
 ### Reusable Patterns
 Create helper headers:
