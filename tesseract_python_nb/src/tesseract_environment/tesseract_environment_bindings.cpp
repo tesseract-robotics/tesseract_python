@@ -5,6 +5,7 @@
 
 #include "tesseract_nb.h"
 #include <nanobind/stl/map.h>
+#include <nanobind/stl/pair.h>
 #include <nanobind/stl/unique_ptr.h>
 #include <nanobind/stl/set.h>
 
@@ -12,8 +13,23 @@
 #include <tesseract_environment/environment.h>
 #include <tesseract_environment/events.h>
 #include <tesseract_environment/command.h>
-#include <tesseract_environment/commands/remove_joint_command.h>
 #include <tesseract_environment/commands/add_link_command.h>
+#include <tesseract_environment/commands/add_scene_graph_command.h>
+#include <tesseract_environment/commands/change_collision_margins_command.h>
+#include <tesseract_environment/commands/change_joint_acceleration_limits_command.h>
+#include <tesseract_environment/commands/change_joint_origin_command.h>
+#include <tesseract_environment/commands/change_joint_position_limits_command.h>
+#include <tesseract_environment/commands/change_joint_velocity_limits_command.h>
+#include <tesseract_environment/commands/change_link_collision_enabled_command.h>
+#include <tesseract_environment/commands/change_link_origin_command.h>
+#include <tesseract_environment/commands/change_link_visibility_command.h>
+#include <tesseract_environment/commands/modify_allowed_collisions_command.h>
+#include <tesseract_environment/commands/move_joint_command.h>
+#include <tesseract_environment/commands/move_link_command.h>
+#include <tesseract_environment/commands/remove_allowed_collision_link_command.h>
+#include <tesseract_environment/commands/remove_joint_command.h>
+#include <tesseract_environment/commands/remove_link_command.h>
+#include <tesseract_environment/commands/replace_joint_command.h>
 
 // tesseract_scene_graph
 #include <tesseract_scene_graph/graph.h>
@@ -109,6 +125,110 @@ NB_MODULE(_tesseract_environment, m) {
         .def("getLink", &te::AddLinkCommand::getLink)
         .def("getJoint", &te::AddLinkCommand::getJoint)
         .def("replaceAllowed", &te::AddLinkCommand::replaceAllowed);
+
+    // ========== RemoveLinkCommand ==========
+    nb::class_<te::RemoveLinkCommand, te::Command>(m, "RemoveLinkCommand")
+        .def(nb::init<std::string>(), "link_name"_a)
+        .def("getLinkName", &te::RemoveLinkCommand::getLinkName);
+
+    // ========== AddSceneGraphCommand ==========
+    nb::class_<te::AddSceneGraphCommand, te::Command>(m, "AddSceneGraphCommand")
+        .def(nb::init<const tsg::SceneGraph&, std::string>(), "scene_graph"_a, "prefix"_a = "")
+        .def(nb::init<const tsg::SceneGraph&, const tsg::Joint&, std::string>(),
+             "scene_graph"_a, "joint"_a, "prefix"_a = "")
+        .def("getSceneGraph", &te::AddSceneGraphCommand::getSceneGraph)
+        .def("getJoint", &te::AddSceneGraphCommand::getJoint)
+        .def("getPrefix", &te::AddSceneGraphCommand::getPrefix);
+
+    // ========== ModifyAllowedCollisionsType enum ==========
+    nb::enum_<te::ModifyAllowedCollisionsType>(m, "ModifyAllowedCollisionsType")
+        .value("ADD", te::ModifyAllowedCollisionsType::ADD)
+        .value("REMOVE", te::ModifyAllowedCollisionsType::REMOVE)
+        .value("REPLACE", te::ModifyAllowedCollisionsType::REPLACE);
+
+    // SWIG-compatible enum values
+    m.attr("ModifyAllowedCollisionsType_ADD") = te::ModifyAllowedCollisionsType::ADD;
+    m.attr("ModifyAllowedCollisionsType_REMOVE") = te::ModifyAllowedCollisionsType::REMOVE;
+    m.attr("ModifyAllowedCollisionsType_REPLACE") = te::ModifyAllowedCollisionsType::REPLACE;
+
+    // ========== ModifyAllowedCollisionsCommand ==========
+    nb::class_<te::ModifyAllowedCollisionsCommand, te::Command>(m, "ModifyAllowedCollisionsCommand")
+        .def(nb::init<tc::AllowedCollisionMatrix, te::ModifyAllowedCollisionsType>(),
+             "acm"_a, "type"_a)
+        .def("getModifyType", &te::ModifyAllowedCollisionsCommand::getModifyType)
+        .def("getAllowedCollisionMatrix", &te::ModifyAllowedCollisionsCommand::getAllowedCollisionMatrix);
+
+    // ========== RemoveAllowedCollisionLinkCommand ==========
+    nb::class_<te::RemoveAllowedCollisionLinkCommand, te::Command>(m, "RemoveAllowedCollisionLinkCommand")
+        .def(nb::init<std::string>(), "link_name"_a)
+        .def("getLinkName", &te::RemoveAllowedCollisionLinkCommand::getLinkName);
+
+    // ========== ChangeJointPositionLimitsCommand ==========
+    nb::class_<te::ChangeJointPositionLimitsCommand, te::Command>(m, "ChangeJointPositionLimitsCommand")
+        .def(nb::init<std::string, double, double>(), "joint_name"_a, "lower"_a, "upper"_a)
+        .def(nb::init<std::unordered_map<std::string, std::pair<double, double>>>(), "limits"_a)
+        .def("getLimits", &te::ChangeJointPositionLimitsCommand::getLimits);
+
+    // ========== ChangeJointVelocityLimitsCommand ==========
+    nb::class_<te::ChangeJointVelocityLimitsCommand, te::Command>(m, "ChangeJointVelocityLimitsCommand")
+        .def(nb::init<std::string, double>(), "joint_name"_a, "limit"_a)
+        .def(nb::init<std::unordered_map<std::string, double>>(), "limits"_a)
+        .def("getLimits", &te::ChangeJointVelocityLimitsCommand::getLimits);
+
+    // ========== ChangeJointAccelerationLimitsCommand ==========
+    nb::class_<te::ChangeJointAccelerationLimitsCommand, te::Command>(m, "ChangeJointAccelerationLimitsCommand")
+        .def(nb::init<std::string, double>(), "joint_name"_a, "limit"_a)
+        .def(nb::init<std::unordered_map<std::string, double>>(), "limits"_a)
+        .def("getLimits", &te::ChangeJointAccelerationLimitsCommand::getLimits);
+
+    // ========== ChangeCollisionMarginsCommand ==========
+    nb::class_<te::ChangeCollisionMarginsCommand, te::Command>(m, "ChangeCollisionMarginsCommand")
+        .def(nb::init<double, tc::CollisionMarginOverrideType>(),
+             "default_margin"_a, "override_type"_a = tc::CollisionMarginOverrideType::OVERRIDE_DEFAULT_MARGIN)
+        .def(nb::init<tc::CollisionMarginData, tc::CollisionMarginOverrideType>(),
+             "collision_margin_data"_a, "override_type"_a = tc::CollisionMarginOverrideType::REPLACE)
+        .def("getCollisionMarginData", &te::ChangeCollisionMarginsCommand::getCollisionMarginData)
+        .def("getCollisionMarginOverrideType", &te::ChangeCollisionMarginsCommand::getCollisionMarginOverrideType);
+
+    // ========== ChangeLinkCollisionEnabledCommand ==========
+    nb::class_<te::ChangeLinkCollisionEnabledCommand, te::Command>(m, "ChangeLinkCollisionEnabledCommand")
+        .def(nb::init<std::string, bool>(), "link_name"_a, "enabled"_a)
+        .def("getLinkName", &te::ChangeLinkCollisionEnabledCommand::getLinkName)
+        .def("getEnabled", &te::ChangeLinkCollisionEnabledCommand::getEnabled);
+
+    // ========== ChangeLinkVisibilityCommand ==========
+    nb::class_<te::ChangeLinkVisibilityCommand, te::Command>(m, "ChangeLinkVisibilityCommand")
+        .def(nb::init<std::string, bool>(), "link_name"_a, "visible"_a)
+        .def("getLinkName", &te::ChangeLinkVisibilityCommand::getLinkName)
+        .def("getEnabled", &te::ChangeLinkVisibilityCommand::getEnabled);
+
+    // ========== ChangeJointOriginCommand ==========
+    nb::class_<te::ChangeJointOriginCommand, te::Command>(m, "ChangeJointOriginCommand")
+        .def(nb::init<std::string, const Eigen::Isometry3d&>(), "joint_name"_a, "origin"_a)
+        .def("getJointName", &te::ChangeJointOriginCommand::getJointName)
+        .def("getOrigin", &te::ChangeJointOriginCommand::getOrigin);
+
+    // ========== ChangeLinkOriginCommand ==========
+    nb::class_<te::ChangeLinkOriginCommand, te::Command>(m, "ChangeLinkOriginCommand")
+        .def(nb::init<std::string, const Eigen::Isometry3d&>(), "link_name"_a, "origin"_a)
+        .def("getLinkName", &te::ChangeLinkOriginCommand::getLinkName)
+        .def("getOrigin", &te::ChangeLinkOriginCommand::getOrigin);
+
+    // ========== MoveJointCommand ==========
+    nb::class_<te::MoveJointCommand, te::Command>(m, "MoveJointCommand")
+        .def(nb::init<std::string, std::string>(), "joint_name"_a, "parent_link"_a)
+        .def("getJointName", &te::MoveJointCommand::getJointName)
+        .def("getParentLink", &te::MoveJointCommand::getParentLink);
+
+    // ========== MoveLinkCommand ==========
+    nb::class_<te::MoveLinkCommand, te::Command>(m, "MoveLinkCommand")
+        .def(nb::init<const tsg::Joint&>(), "joint"_a)
+        .def("getJoint", &te::MoveLinkCommand::getJoint);
+
+    // ========== ReplaceJointCommand ==========
+    nb::class_<te::ReplaceJointCommand, te::Command>(m, "ReplaceJointCommand")
+        .def(nb::init<const tsg::Joint&>(), "joint"_a)
+        .def("getJoint", &te::ReplaceJointCommand::getJoint);
 
     // ========== Environment ==========
     nb::class_<te::Environment>(m, "Environment")
@@ -206,6 +326,86 @@ NB_MODULE(_tesseract_environment, m) {
             } else {
                 cmd_ptr = std::make_shared<te::AddLinkCommand>(*cmd.getLink(), cmd.replaceAllowed());
             }
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - RemoveLinkCommand
+        .def("applyCommand", [](te::Environment& self, const te::RemoveLinkCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::RemoveLinkCommand>(cmd.getLinkName());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - AddSceneGraphCommand
+        .def("applyCommand", [](te::Environment& self, const te::AddSceneGraphCommand& cmd) {
+            std::shared_ptr<te::Command> cmd_ptr;
+            if (cmd.getJoint() != nullptr) {
+                cmd_ptr = std::make_shared<te::AddSceneGraphCommand>(*cmd.getSceneGraph(), *cmd.getJoint(), cmd.getPrefix());
+            } else {
+                cmd_ptr = std::make_shared<te::AddSceneGraphCommand>(*cmd.getSceneGraph(), cmd.getPrefix());
+            }
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - ModifyAllowedCollisionsCommand
+        .def("applyCommand", [](te::Environment& self, const te::ModifyAllowedCollisionsCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::ModifyAllowedCollisionsCommand>(cmd.getAllowedCollisionMatrix(), cmd.getModifyType());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - RemoveAllowedCollisionLinkCommand
+        .def("applyCommand", [](te::Environment& self, const te::RemoveAllowedCollisionLinkCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::RemoveAllowedCollisionLinkCommand>(cmd.getLinkName());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - ChangeJointPositionLimitsCommand
+        .def("applyCommand", [](te::Environment& self, const te::ChangeJointPositionLimitsCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::ChangeJointPositionLimitsCommand>(cmd.getLimits());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - ChangeJointVelocityLimitsCommand
+        .def("applyCommand", [](te::Environment& self, const te::ChangeJointVelocityLimitsCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::ChangeJointVelocityLimitsCommand>(cmd.getLimits());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - ChangeJointAccelerationLimitsCommand
+        .def("applyCommand", [](te::Environment& self, const te::ChangeJointAccelerationLimitsCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::ChangeJointAccelerationLimitsCommand>(cmd.getLimits());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - ChangeCollisionMarginsCommand
+        .def("applyCommand", [](te::Environment& self, const te::ChangeCollisionMarginsCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::ChangeCollisionMarginsCommand>(cmd.getCollisionMarginData(), cmd.getCollisionMarginOverrideType());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - ChangeLinkCollisionEnabledCommand
+        .def("applyCommand", [](te::Environment& self, const te::ChangeLinkCollisionEnabledCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::ChangeLinkCollisionEnabledCommand>(cmd.getLinkName(), cmd.getEnabled());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - ChangeLinkVisibilityCommand
+        .def("applyCommand", [](te::Environment& self, const te::ChangeLinkVisibilityCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::ChangeLinkVisibilityCommand>(cmd.getLinkName(), cmd.getEnabled());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - ChangeJointOriginCommand
+        .def("applyCommand", [](te::Environment& self, const te::ChangeJointOriginCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::ChangeJointOriginCommand>(cmd.getJointName(), cmd.getOrigin());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - ChangeLinkOriginCommand
+        .def("applyCommand", [](te::Environment& self, const te::ChangeLinkOriginCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::ChangeLinkOriginCommand>(cmd.getLinkName(), cmd.getOrigin());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - MoveJointCommand
+        .def("applyCommand", [](te::Environment& self, const te::MoveJointCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::MoveJointCommand>(cmd.getJointName(), cmd.getParentLink());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - MoveLinkCommand
+        .def("applyCommand", [](te::Environment& self, const te::MoveLinkCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::MoveLinkCommand>(*cmd.getJoint());
+            return self.applyCommand(cmd_ptr);
+        }, "command"_a)
+        // Commands - ReplaceJointCommand
+        .def("applyCommand", [](te::Environment& self, const te::ReplaceJointCommand& cmd) {
+            auto cmd_ptr = std::make_shared<te::ReplaceJointCommand>(*cmd.getJoint());
             return self.applyCommand(cmd_ptr);
         }, "command"_a)
         // State solver
