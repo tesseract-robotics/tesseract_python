@@ -204,6 +204,25 @@ add_tesseract_nanobind_extension(
   tesseract::tesseract_common
 )
 
+# Add tesseract_motion_planners_trajopt module (optional - only if trajopt component was built)
+find_package(tesseract_motion_planners QUIET COMPONENTS trajopt)
+find_package(trajopt QUIET)
+if(tesseract_motion_planners_trajopt_FOUND AND trajopt_FOUND)
+  message(STATUS "tesseract_motion_planners trajopt component found - building bindings")
+  add_tesseract_nanobind_extension(
+    tesseract_motion_planners_trajopt
+    src/tesseract_motion_planners_trajopt/tesseract_motion_planners_trajopt_bindings.cpp
+    tesseract::tesseract_motion_planners_trajopt
+    tesseract::tesseract_motion_planners_core
+    tesseract::tesseract_environment
+    tesseract::tesseract_command_language
+    tesseract::tesseract_common
+    trajopt::trajopt
+  )
+else()
+  message(STATUS "tesseract_motion_planners trajopt component not found - skipping bindings")
+endif()
+
 # Find and add tesseract_time_parameterization
 find_package(tesseract_time_parameterization REQUIRED)
 

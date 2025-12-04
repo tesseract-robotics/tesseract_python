@@ -4,8 +4,8 @@ ABB IRB2400 motion planning example with viewer.
 This example demonstrates:
 - Loading robot from URDF/SRDF
 - OMPL motion planning
-- TrajOpt trajectory optimization (TODO: requires tesseract_motion_planners_trajopt bindings)
-- Time parameterization with TOTG
+- TrajOpt trajectory optimization (optional, used if available)
+- Time parameterization with TOTG (disabled - see note in code)
 - Trajectory visualization
 """
 
@@ -26,10 +26,18 @@ from tesseract_robotics.tesseract_motion_planners_ompl import OMPLMotionPlanner,
 # from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
 #     InstructionsTrajectory
 
-# TODO: tesseract_motion_planners_trajopt bindings not yet available
-# Once implemented, uncomment this import:
-# from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, \
-#     TrajOptDefaultCompositeProfile, TrajOptMotionPlanner
+# TrajOpt imports - optional, skip if not available
+try:
+    from tesseract_robotics.tesseract_motion_planners_trajopt import (
+        TrajOptDefaultPlanProfile,
+        TrajOptDefaultCompositeProfile,
+        TrajOptMotionPlanner,
+        ProfileDictionary_addTrajOptPlanProfile,
+        ProfileDictionary_addTrajOptCompositeProfile,
+    )
+    TRAJOPT_AVAILABLE = True
+except ImportError:
+    TRAJOPT_AVAILABLE = False
 
 from tesseract_robotics_viewer import TesseractViewer
 import numpy as np
@@ -99,32 +107,41 @@ def main():
 
     interpolated_results_instruction = generateInterpolatedProgram(results_instruction, t_env, 3.14, 1.0, 3.14, 10)
 
-    # -----------------------------------------------------------------------------
-    # TODO: TrajOpt trajectory optimization - requires tesseract_motion_planners_trajopt bindings
-    # This is the key feature for smooth trajectory generation. Once bindings are available,
-    # uncomment the following code:
-    #
-    # trajopt_plan_profile = TrajOptDefaultPlanProfile()
-    # trajopt_composite_profile = TrajOptDefaultCompositeProfile()
-    #
-    # trajopt_profiles = ProfileDictionary()
-    # trajopt_profiles.addProfile(TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_plan_profile)
-    # trajopt_profiles.addProfile(TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_composite_profile)
-    #
-    # trajopt_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
-    #
-    # trajopt_request = PlannerRequest()
-    # trajopt_request.instructions = interpolated_results_instruction
-    # trajopt_request.env = t_env
-    # trajopt_request.profiles = trajopt_profiles
-    #
-    # trajopt_response = trajopt_planner.solve(trajopt_request)
-    # assert trajopt_response.successful
-    # trajopt_results_instruction = trajopt_response.results
-    # -----------------------------------------------------------------------------
+    # TrajOpt trajectory optimization for smooth trajectories
+    trajopt_success = False
+    if TRAJOPT_AVAILABLE:
+        print("TrajOpt available - running trajectory optimization...")
+        trajopt_plan_profile = TrajOptDefaultPlanProfile()
+        trajopt_composite_profile = TrajOptDefaultCompositeProfile()
 
-    # For now, use OMPL interpolated results directly (without TrajOpt optimization)
-    final_results_instruction = interpolated_results_instruction
+        trajopt_profiles = ProfileDictionary()
+        # Use helper functions for cross-module profile registration
+        ProfileDictionary_addTrajOptPlanProfile(
+            trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_plan_profile
+        )
+        ProfileDictionary_addTrajOptCompositeProfile(
+            trajopt_profiles, TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_composite_profile
+        )
+
+        trajopt_planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
+
+        trajopt_request = PlannerRequest()
+        trajopt_request.instructions = interpolated_results_instruction
+        trajopt_request.env = t_env
+        trajopt_request.profiles = trajopt_profiles
+
+        trajopt_response = trajopt_planner.solve(trajopt_request)
+        if trajopt_response.successful:
+            print("TrajOpt optimization successful!")
+            final_results_instruction = trajopt_response.results
+            trajopt_success = True
+        else:
+            print(f"TrajOpt optimization failed: {trajopt_response.message}")
+            print("Falling back to interpolated OMPL results")
+            final_results_instruction = interpolated_results_instruction
+    else:
+        print("TrajOpt not available - using interpolated OMPL results")
+        final_results_instruction = interpolated_results_instruction
 
     # TODO: Time parameterization currently disabled due to C++ API limitation
     # InstructionsTrajectory requires StateWaypointPoly, but OMPL returns JointWaypointPoly.
@@ -144,7 +161,8 @@ def main():
     viewer.update_trajectory(final_results_instruction)
     viewer.plot_trajectory(final_results_instruction, manip_info, axes_length=0.05)
 
-    print("OMPL planning completed successfully!")
+    planner_type = "OMPL + TrajOpt" if trajopt_success else "OMPL"
+    print(f"{planner_type} planning completed successfully!")
     print(f"Number of waypoints: {final_results_instruction.size()}")
     if not HEADLESS:
         input("Press Enter to exit...")
