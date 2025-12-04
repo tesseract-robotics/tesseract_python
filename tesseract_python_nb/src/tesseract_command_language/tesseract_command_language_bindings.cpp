@@ -15,6 +15,7 @@
 #include <tesseract_command_language/state_waypoint.h>
 #include <tesseract_command_language/move_instruction.h>
 #include <tesseract_command_language/composite_instruction.h>
+#include <tesseract_command_language/profile.h>
 #include <tesseract_command_language/profile_dictionary.h>
 #include <tesseract_command_language/constants.h>
 
@@ -266,6 +267,13 @@ NB_MODULE(_tesseract_command_language, m) {
              "waypoint"_a, "type"_a)
         .def(nb::init<tp::StateWaypointPoly, tp::MoveInstructionType>(),
              "waypoint"_a, "type"_a)
+        // SWIG-compatible constructors with profile parameter
+        .def(nb::init<tp::CartesianWaypointPoly, tp::MoveInstructionType, std::string>(),
+             "waypoint"_a, "type"_a, "profile"_a)
+        .def(nb::init<tp::JointWaypointPoly, tp::MoveInstructionType, std::string>(),
+             "waypoint"_a, "type"_a, "profile"_a)
+        .def(nb::init<tp::StateWaypointPoly, tp::MoveInstructionType, std::string>(),
+             "waypoint"_a, "type"_a, "profile"_a)
         .def("getWaypoint", [](tp::MoveInstruction& self) -> tp::WaypointPoly& {
             return self.getWaypoint();
         }, nb::rv_policy::reference_internal)
@@ -287,6 +295,7 @@ NB_MODULE(_tesseract_command_language, m) {
     // ========== CompositeInstruction ==========
     nb::class_<tp::CompositeInstruction>(m, "CompositeInstruction")
         .def(nb::init<>())
+        .def(nb::init<std::string>(), "profile"_a)  // SWIG-compatible constructor
         .def("getOrder", &tp::CompositeInstruction::getOrder)
         .def("getDescription", &tp::CompositeInstruction::getDescription)
         .def("setDescription", &tp::CompositeInstruction::setDescription, "description"_a)
@@ -314,7 +323,21 @@ NB_MODULE(_tesseract_command_language, m) {
             return nb::make_iterator(nb::type<tp::CompositeInstruction>(), "iterator", self.begin(), self.end());
         }, nb::keep_alive<0, 1>());
 
+    // ========== Profile (base class) ==========
+    nb::class_<tp::Profile>(m, "Profile")
+        .def(nb::init<>())
+        .def(nb::init<std::size_t>(), "key"_a)
+        .def("getKey", &tp::Profile::getKey);
+
     // ========== ProfileDictionary ==========
     nb::class_<tp::ProfileDictionary>(m, "ProfileDictionary")
-        .def(nb::init<>());
+        .def(nb::init<>())
+        .def("addProfile", nb::overload_cast<const std::string&, const std::string&, const tp::Profile::ConstPtr&>(
+            &tp::ProfileDictionary::addProfile), "ns"_a, "profile_name"_a, "profile"_a)
+        .def("hasProfile", &tp::ProfileDictionary::hasProfile, "key"_a, "ns"_a, "profile_name"_a)
+        .def("getProfile", &tp::ProfileDictionary::getProfile, "key"_a, "ns"_a, "profile_name"_a)
+        .def("removeProfile", &tp::ProfileDictionary::removeProfile, "key"_a, "ns"_a, "profile_name"_a)
+        .def("hasProfileEntry", &tp::ProfileDictionary::hasProfileEntry, "key"_a, "ns"_a)
+        .def("removeProfileEntry", &tp::ProfileDictionary::removeProfileEntry, "key"_a, "ns"_a)
+        .def("clear", &tp::ProfileDictionary::clear);
 }

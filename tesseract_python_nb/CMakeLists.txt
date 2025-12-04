@@ -17,6 +17,18 @@ get_filename_component(TESSERACT_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../ws/
 list(APPEND CMAKE_PREFIX_PATH "${TESSERACT_INSTALL_DIR}")
 message(STATUS "Added tesseract install dir: ${TESSERACT_INSTALL_DIR}")
 
+# Set RPATH to find tesseract libraries at runtime
+# This embeds the full path to ws/install/lib in the built .so files
+set(CMAKE_INSTALL_RPATH "${TESSERACT_INSTALL_DIR}/lib")
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+if(APPLE)
+  set(CMAKE_MACOSX_RPATH ON)
+  # Also add conda lib for dependencies like boost, tinyxml2
+  if(DEFINED ENV{CONDA_PREFIX})
+    list(APPEND CMAKE_INSTALL_RPATH "$ENV{CONDA_PREFIX}/lib")
+  endif()
+endif()
+
 # Add conda prefix for dependencies (tinyxml2, console_bridge, etc.)
 if(DEFINED ENV{CONDA_PREFIX})
   list(APPEND CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")

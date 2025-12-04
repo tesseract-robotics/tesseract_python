@@ -8,6 +8,9 @@
 // tesseract_motion_planners core (for PlannerRequest/Response)
 #include <tesseract_motion_planners/core/types.h>
 
+// tesseract_command_language (for Profile base class)
+#include <tesseract_command_language/profile.h>
+
 // tesseract_motion_planners OMPL
 #include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
 #include <tesseract_motion_planners/ompl/ompl_planner_configurator.h>
@@ -57,11 +60,20 @@ NB_MODULE(_tesseract_motion_planners_ompl, m) {
         .def_rw("range", &tp::SBLConfigurator::range);
 
     // ========== OMPLPlanProfile (base) ==========
-    nb::class_<tp::OMPLPlanProfile>(m, "OMPLPlanProfile");
+    // Note: We don't bind Profile base class inheritance since it's in another module.
+    // Instead we expose the key methods directly for use with ProfileDictionary.
+    nb::class_<tp::OMPLPlanProfile>(m, "OMPLPlanProfile")
+        .def("getKey", &tp::OMPLPlanProfile::getKey)
+        .def_static("getStaticKey", &tp::OMPLPlanProfile::getStaticKey);
 
     // ========== OMPLRealVectorPlanProfile ==========
     nb::class_<tp::OMPLRealVectorPlanProfile, tp::OMPLPlanProfile>(m, "OMPLRealVectorPlanProfile")
         .def(nb::init<>());
+
+    // Helper to convert OMPLPlanProfile to Profile::ConstPtr for ProfileDictionary
+    m.def("OMPLPlanProfile_as_ProfileConstPtr", [](std::shared_ptr<tp::OMPLPlanProfile> profile) {
+        return std::static_pointer_cast<const tp::Profile>(profile);
+    }, "profile"_a, "Convert OMPLPlanProfile to Profile::ConstPtr for use with ProfileDictionary.addProfile");
 
     // ========== OMPLMotionPlanner ==========
     // Note: Not binding inheritance from MotionPlanner to avoid cross-module issues

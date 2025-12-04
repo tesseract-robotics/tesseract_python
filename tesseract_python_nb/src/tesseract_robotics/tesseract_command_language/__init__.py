@@ -42,6 +42,7 @@ __all__ = [
     "CompositeInstructionOrder",
 
     # Profile
+    "Profile",
     "ProfileDictionary",
 
     # Constants
