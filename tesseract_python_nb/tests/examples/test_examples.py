@@ -120,3 +120,12 @@ def test_pick_and_place_example():
     module = _load_module("pick_and_place_example", os.path.join(CORE_EXAMPLES, "pick_and_place_example.py"))
     # Note: This example may fail planning (return False) but should not segfault
     module.main()
+
+
+@pytest.mark.planning
+def test_car_seat_example():
+    """Test car seat example - demonstrates dynamic mesh loading and convex hulls."""
+    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
+        pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
+    module = _load_module("car_seat_example", os.path.join(CORE_EXAMPLES, "car_seat_example.py"))
+    module.main()

@@ -268,4 +268,29 @@ NB_MODULE(_tesseract_geometry, m) {
         return tg::createMeshFromPath<tg::SDFMesh>(path, scale, triangulate, flatten);
     }, "path"_a, "scale"_a = Eigen::Vector3d::Ones(), "triangulate"_a = true, "flatten"_a = false,
     "Load mesh from file and return vector of SDFMesh geometries");
+
+    // Mesh loading from Resource (for package:// URLs)
+    m.def("createMeshFromResource", [](tc::Resource::Ptr resource,
+                                       const Eigen::Vector3d& scale,
+                                       bool triangulate,
+                                       bool flatten) {
+        return tg::createMeshFromResource<tg::Mesh>(resource, scale, triangulate, flatten);
+    }, "resource"_a, "scale"_a = Eigen::Vector3d::Ones(), "triangulate"_a = true, "flatten"_a = false,
+    "Load Mesh from resource (e.g., package:// URL)");
+
+    m.def("createConvexMeshFromResource", [](tc::Resource::Ptr resource,
+                                              const Eigen::Vector3d& scale,
+                                              bool triangulate,
+                                              bool flatten) {
+        return tg::createMeshFromResource<tg::ConvexMesh>(resource, scale, triangulate, flatten);
+    }, "resource"_a, "scale"_a = Eigen::Vector3d::Ones(), "triangulate"_a = true, "flatten"_a = false,
+    "Load ConvexMesh from resource (e.g., package:// URL)");
+
+    m.def("createSDFMeshFromResource", [](tc::Resource::Ptr resource,
+                                          const Eigen::Vector3d& scale,
+                                          bool triangulate,
+                                          bool flatten) {
+        return tg::createMeshFromResource<tg::SDFMesh>(resource, scale, triangulate, flatten);
+    }, "resource"_a, "scale"_a = Eigen::Vector3d::Ones(), "triangulate"_a = true, "flatten"_a = false,
+    "Load SDFMesh from resource (e.g., package:// URL)");
 }

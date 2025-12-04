@@ -21,6 +21,11 @@
 
 // tesseract_geometry for collision objects
 #include <tesseract_geometry/geometry.h>
+#include <tesseract_geometry/impl/mesh.h>
+#include <tesseract_geometry/impl/convex_mesh.h>
+
+// bullet convex hull utils
+#include <tesseract_collision/bullet/convex_hull_utils.h>
 
 namespace tc = tesseract_collision;
 namespace tcommon = tesseract_common;
@@ -282,4 +287,8 @@ NB_MODULE(_tesseract_collision, m) {
              [](const tc::ContactManagersPluginFactory& self, const std::string& name) {
                  return self.createContinuousContactManager(name);
              }, "name"_a);
+
+    // Convex hull utilities
+    m.def("makeConvexMesh", &tc::makeConvexMesh, "mesh"_a,
+          "Create a ConvexMesh from a Mesh using bullet's convex hull algorithm");
 }

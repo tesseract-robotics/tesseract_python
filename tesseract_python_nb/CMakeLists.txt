@@ -125,6 +125,7 @@ add_tesseract_nanobind_extension(
   tesseract_collision
   src/tesseract_collision/tesseract_collision_bindings.cpp
   tesseract::tesseract_collision_core
+  tesseract::tesseract_collision_bullet
   tesseract::tesseract_geometry
   tesseract::tesseract_common
 )
