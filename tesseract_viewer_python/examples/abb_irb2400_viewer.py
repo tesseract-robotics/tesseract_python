@@ -126,19 +126,19 @@ def main():
     # For now, use OMPL interpolated results directly (without TrajOpt optimization)
     final_results_instruction = interpolated_results_instruction
 
-    # TODO: Time parameterization currently disabled due to type mismatch issue
-    # OMPL returns JointWaypointPoly but InstructionsTrajectory expects StateWaypointPoly
-    # See MIGRATION_NOTES.md for details
+    # TODO: Time parameterization currently disabled due to C++ API limitation
+    # InstructionsTrajectory requires StateWaypointPoly, but OMPL returns JointWaypointPoly.
+    # This is a tesseract C++ limitation, not a bindings issue.
+    # When using StateWaypoints, limits should be (n_joints, 2) with [min, max] columns:
     #
+    # from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, InstructionsTrajectory
     # time_parameterization = TimeOptimalTrajectoryGeneration()
     # instructions_trajectory = InstructionsTrajectory(final_results_instruction)
-    # max_velocity = np.array([[2.088, 2.082, 3.27, 3.6, 3.3, 3.078]], dtype=np.float64)
-    # max_velocity = np.hstack((-max_velocity.T, max_velocity.T))
-    # max_acceleration = np.array([[1, 1, 1, 1, 1, 1]], dtype=np.float64)
-    # max_acceleration = np.hstack((-max_acceleration.T, max_acceleration.T))
-    # max_jerk = np.array([[1, 1, 1, 1, 1, 1]], dtype=np.float64)
-    # max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
-    # assert time_parameterization.compute(instructions_trajectory, max_velocity, max_acceleration, max_jerk)
+    # max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078])
+    # vel_limits = np.column_stack((-max_velocity, max_velocity))
+    # acc_limits = np.column_stack((-np.ones(6), np.ones(6)))
+    # jerk_limits = np.column_stack((-np.ones(6), np.ones(6)))
+    # assert time_parameterization.compute(instructions_trajectory, vel_limits, acc_limits, jerk_limits)
 
     # Trajectory visualization - util.py now supports both StateWaypointPoly and JointWaypointPoly
     viewer.update_trajectory(final_results_instruction)
