@@ -23,7 +23,8 @@ export TESSERACT_RESOURCE_PATH="$SCRIPT_DIR/ws/src/tesseract/"
 export TESSERACT_TASK_COMPOSER_CONFIG_FILE="$SCRIPT_DIR/ws/src/tesseract_planning/tesseract_task_composer/config/task_composer_plugins.yaml"
 
 # For headless testing (set to 1 to skip server startup in viewer examples)
-export TESSERACT_HEADLESS=1
+# Default to 0 (interactive) - run_tests.sh overrides to 1
+export TESSERACT_HEADLESS=${TESSERACT_HEADLESS:-0}
 
 echo "Environment set up:"
 echo "  DYLD_LIBRARY_PATH includes: $SCRIPT_DIR/ws/install/lib"
@@ -31,9 +32,10 @@ echo "  TESSERACT_SUPPORT_DIR: $TESSERACT_SUPPORT_DIR"
 echo "  TESSERACT_RESOURCE_PATH: $TESSERACT_RESOURCE_PATH"
 echo "  TESSERACT_HEADLESS: $TESSERACT_HEADLESS"
 echo ""
-echo "Run pytest:"
-echo "  cd tesseract_python_nb && pytest"
-echo ""
 echo "Run examples:"
-echo "  cd tesseract_viewer_python/examples && python shapes_viewer.py"
+echo "  python $SCRIPT_DIR/examples/puzzle_piece_auxillary_axes_example.py"
+echo "  python $SCRIPT_DIR/examples/freespace_ompl_example.py"
+echo ""
+echo "Run tests:"
+echo "  ./run_tests.sh"
 
