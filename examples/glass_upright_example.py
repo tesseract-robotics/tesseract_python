@@ -16,6 +16,8 @@ Required environment variables:
 """
 
 import os
+import sys
+import gc
 import numpy as np
 
 from tesseract_robotics.tesseract_common import (
@@ -57,10 +59,10 @@ from tesseract_robotics.tesseract_task_composer import (
     TaskComposerDataStorage,
 )
 
-# Optional: viewer for visualization
+# Optional: viewer for visualization (disabled in pytest/headless mode)
 try:
     from tesseract_robotics_viewer import TesseractViewer
-    HAS_VIEWER = True
+    HAS_VIEWER = os.environ.get("TESSERACT_HEADLESS", "0") != "1" and "pytest" not in sys.modules
 except ImportError:
     HAS_VIEWER = False
 
@@ -228,6 +230,15 @@ def main():
         viewer.update_trajectory(results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
+
+    # Explicit cleanup to prevent segfault at interpreter shutdown
+    # TaskComposer objects must be destroyed in proper order
+    del future
+    del task_data
+    del task
+    del executor
+    del factory
+    gc.collect()
 
     return True
 

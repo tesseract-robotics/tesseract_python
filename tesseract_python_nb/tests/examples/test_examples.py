@@ -66,7 +66,6 @@ def test_freespace_ompl_example():
     module.main()
 
 
-@pytest.mark.skip(reason="TaskComposer planning segfaults - requires investigation")
 def test_basic_cartesian_example():
     """Test basic cartesian example."""
     if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
@@ -75,7 +74,6 @@ def test_basic_cartesian_example():
     module.main()
 
 
-@pytest.mark.skip(reason="TaskComposer planning segfaults - requires investigation")
 def test_glass_upright_example():
     """Test glass upright example."""
     if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
@@ -84,7 +82,7 @@ def test_glass_upright_example():
     module.main()
 
 
-@pytest.mark.skip(reason="TaskComposer planning segfaults - requires investigation")
+@pytest.mark.skip(reason="TrajOpt planning fails: Unsupported waypoint type for CartesianWaypoint")
 def test_puzzle_piece_example():
     """Test puzzle piece example."""
     if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
