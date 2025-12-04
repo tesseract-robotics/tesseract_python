@@ -49,3 +49,45 @@ def test_kinematics_example():
     """Test kinematics example."""
     module = _load_module("tesseract_kinematics_example", os.path.join(CORE_EXAMPLES, "tesseract_kinematics_example.py"))
     module.main()
+
+
+def test_scene_graph_example():
+    """Test scene graph example."""
+    module = _load_module("scene_graph_example", os.path.join(CORE_EXAMPLES, "scene_graph_example.py"))
+    module.main()
+
+
+def test_freespace_ompl_example():
+    """Test freespace OMPL example."""
+    import pytest
+    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
+        pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
+    module = _load_module("freespace_ompl_example", os.path.join(CORE_EXAMPLES, "freespace_ompl_example.py"))
+    module.main()
+
+
+def test_basic_cartesian_example():
+    """Test basic cartesian example."""
+    import pytest
+    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
+        pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
+    module = _load_module("basic_cartesian_example", os.path.join(CORE_EXAMPLES, "basic_cartesian_example.py"))
+    module.main()
+
+
+def test_glass_upright_example():
+    """Test glass upright example."""
+    import pytest
+    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
+        pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
+    module = _load_module("glass_upright_example", os.path.join(CORE_EXAMPLES, "glass_upright_example.py"))
+    module.main()
+
+
+def test_puzzle_piece_example():
+    """Test puzzle piece example."""
+    import pytest
+    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
+        pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
+    module = _load_module("puzzle_piece_example", os.path.join(CORE_EXAMPLES, "puzzle_piece_example.py"))
+    module.main()
