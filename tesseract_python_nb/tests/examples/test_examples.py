@@ -2,6 +2,17 @@
 
 These tests import and run each example's main() function in headless mode.
 The goal is to verify all API methods can be invoked without error.
+
+Markers:
+  - @pytest.mark.viewer: Viewer/visualization examples
+  - @pytest.mark.planning: Motion planning examples (require TESSERACT_TASK_COMPOSER_CONFIG_FILE)
+  - @pytest.mark.basic: Basic examples (collision, kinematics, scene_graph)
+
+Usage:
+  pytest -m viewer              # Run only viewer examples
+  pytest -m planning            # Run only planning examples
+  pytest -m basic               # Run only basic examples
+  pytest -m "not planning"      # Run all except planning examples
 """
 import os
 import importlib.util
@@ -22,42 +33,50 @@ def _load_module(name, path):
     return module
 
 
+@pytest.mark.viewer
 def test_shapes_viewer():
     """Test shapes_viewer example runs without error."""
     module = _load_module("shapes_viewer", os.path.join(VIEWER_EXAMPLES, "shapes_viewer.py"))
     module.main()
 
 
+@pytest.mark.viewer
 def test_material_mesh_viewer():
     """Test material mesh viewer example."""
     module = _load_module("tesseract_material_mesh_viewer", os.path.join(VIEWER_EXAMPLES, "tesseract_material_mesh_viewer.py"))
     module.main()
 
 
+@pytest.mark.viewer
+@pytest.mark.planning
 def test_abb_irb2400_viewer():
     """Test ABB IRB2400 OMPL planning example."""
     module = _load_module("abb_irb2400_viewer", os.path.join(VIEWER_EXAMPLES, "abb_irb2400_viewer.py"))
     module.main()
 
 
+@pytest.mark.basic
 def test_collision_example():
     """Test collision checking example."""
     module = _load_module("tesseract_collision_example", os.path.join(CORE_EXAMPLES, "tesseract_collision_example.py"))
     module.main()
 
 
+@pytest.mark.basic
 def test_kinematics_example():
     """Test kinematics example."""
     module = _load_module("tesseract_kinematics_example", os.path.join(CORE_EXAMPLES, "tesseract_kinematics_example.py"))
     module.main()
 
 
+@pytest.mark.basic
 def test_scene_graph_example():
     """Test scene graph example."""
     module = _load_module("scene_graph_example", os.path.join(CORE_EXAMPLES, "scene_graph_example.py"))
     module.main()
 
 
+@pytest.mark.planning
 def test_freespace_ompl_example():
     """Test freespace OMPL example."""
     if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
@@ -66,6 +85,7 @@ def test_freespace_ompl_example():
     module.main()
 
 
+@pytest.mark.planning
 def test_basic_cartesian_example():
     """Test basic cartesian example."""
     if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
@@ -74,6 +94,7 @@ def test_basic_cartesian_example():
     module.main()
 
 
+@pytest.mark.planning
 def test_glass_upright_example():
     """Test glass upright example."""
     if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
@@ -82,9 +103,20 @@ def test_glass_upright_example():
     module.main()
 
 
+@pytest.mark.planning
 def test_puzzle_piece_example():
     """Test puzzle piece example."""
     if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
         pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
     module = _load_module("puzzle_piece_example", os.path.join(CORE_EXAMPLES, "puzzle_piece_example.py"))
+    module.main()
+
+
+@pytest.mark.planning
+def test_pick_and_place_example():
+    """Test pick and place example."""
+    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
+        pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
+    module = _load_module("pick_and_place_example", os.path.join(CORE_EXAMPLES, "pick_and_place_example.py"))
+    # Note: This example may fail planning (return False) but should not segfault
     module.main()
