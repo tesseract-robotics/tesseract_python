@@ -173,8 +173,9 @@ def main():
     # Create executor
     executor = factory.createTaskComposerExecutor("TaskflowExecutor")
 
-    # Create task (OMPL pipeline)
-    task = factory.createTaskComposerNode("OMPLPipeline")
+    # Create task (FreespacePipeline = OMPL + TrajOpt refinement)
+    # Note: FreespacePipeline uses "planning_input" port, same as TrajOptPipeline
+    task = factory.createTaskComposerNode("FreespacePipeline")
     output_key = task.getOutputKeys().get("program")
     input_key = task.getInputKeys().get("planning_input")
 
@@ -189,8 +190,8 @@ def main():
 
     print("\nRunning OMPL planner...")
 
-    # Run the task
-    future = executor.run(task.get(), task_data)
+    # Run the task (nanobind returns the node directly, no .get() needed)
+    future = executor.run(task, task_data)
     future.wait()
 
     if not future.context.isSuccessful():

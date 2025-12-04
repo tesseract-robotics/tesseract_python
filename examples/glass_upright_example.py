@@ -196,8 +196,8 @@ def main():
 
     print("\nRunning TrajOpt planner with upright constraint...")
 
-    # Run the task
-    future = executor.run(task.get(), task_data)
+    # Run the task (nanobind returns the node directly, no .get() needed)
+    future = executor.run(task, task_data)
     future.wait()
 
     if not future.context.isSuccessful():

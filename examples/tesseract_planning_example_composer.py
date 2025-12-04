@@ -156,8 +156,8 @@ task_data.setData("profiles", profiles_anypoly)
 # Create an executor to run the task
 task_executor = factory.createTaskComposerExecutor("TaskflowExecutor")
 
-# Run the task and wait for completion
-future = task_executor.run(task.get(), task_data)
+# Run the task and wait for completion (nanobind returns node directly, no .get() needed)
+future = task_executor.run(task, task_data)
 future.wait()
 
 if not future.context.isSuccessful():

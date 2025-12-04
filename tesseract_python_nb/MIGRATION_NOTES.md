@@ -202,3 +202,95 @@ response = planner.solve(request)
 ### Time Parameterization
 
 TrajOpt output uses `StateWaypointPoly`, which is compatible with time parameterization (unlike OMPL which returns `JointWaypointPoly`).
+
+## C++ Build Issues
+
+### Qt6 Cross-Compile Error - RESOLVED
+
+When building tesseract_task_composer with planning components, CMake may fail with:
+```
+CMake Error: To use a cross-compiled Qt, please set the QT_HOST_PATH cache variable...
+```
+
+This happens because PCL/VTK pulls in Qt6 as a dependency, and the conda Qt6 package is misconfigured on macOS.
+
+**Solution:** Set `QT_HOST_PATH` to point to the conda environment:
+
+```bash
+colcon build --merge-install --cmake-args \
+    -DTESSERACT_BUILD_TASK_COMPOSER_PLANNING=ON \
+    -DQT_HOST_PATH=/opt/miniconda3/envs/tesseract_nb
+```
+
+Or add to env.sh:
+```bash
+export QT_HOST_PATH=$CONDA_PREFIX
+```
+
+### Missing libode - RESOLVED
+
+If build fails with `library 'ode' not found`, install the Open Dynamics Engine:
+
+```bash
+conda install -c conda-forge libode
+```
+
+### Task Composer Planning Component
+
+By default, `TESSERACT_BUILD_TASK_COMPOSER_PLANNING` is OFF. To enable planning pipelines (FreespacePipeline, TrajOptPipeline, etc.):
+
+```bash
+colcon build --merge-install --cmake-args \
+    -DTESSERACT_BUILD_TASK_COMPOSER_PLANNING=ON \
+    -DQT_HOST_PATH=$CONDA_PREFIX
+```
+
+This builds `libtesseract_task_composer_planning_factories.dylib` which is required for:
+- ProcessPlanningInputTaskFactory
+- OMPLPipeline
+- TrajOptPipeline
+- FreespacePipeline
+
+## Task Composer API Differences
+
+### unique_ptr Returns - No .get() Needed
+
+In nanobind, `createTaskComposerNode()` returns the `TaskComposerNode` directly (not a unique_ptr). Don't call `.get()` on the result:
+
+```python
+# nanobind (correct)
+task = factory.createTaskComposerNode("TrajOptPipeline")
+future = executor.run(task, task_data)
+
+# SWIG (old style - don't use with nanobind)
+# future = executor.run(task.get(), task_data)  # Wrong!
+```
+
+### Pipeline Input Keys
+
+Different pipelines have different input key names:
+
+```python
+# TrajOptPipeline, FreespacePipeline
+input_key = task.getInputKeys().get("planning_input")
+
+# OMPLPipeline (direct, without TrajOpt refinement)
+input_key = task.getInputKeys().get("program")
+```
+
+## Known Issues
+
+### Task Composer Planning Segfaults
+
+Running TaskComposer planning pipelines (FreespacePipeline, TrajOptPipeline, OMPLPipeline) currently causes segmentation faults. This appears to be related to:
+- Reference counting issues between nanobind modules
+- RTTI type mismatch across shared library boundaries
+- Taskflow executor thread interactions with Python GIL
+
+**Status:** Under investigation. The planning examples are marked as skipped in the test suite.
+
+**Workaround:** For planning functionality, consider using the SWIG-based tesseract_robotics_python package until this is resolved.
+
+### Reference Leaks at Exit
+
+nanobind reference leak warnings may appear at program exit. These don't affect functionality but indicate cleanup issues with cross-module type references.

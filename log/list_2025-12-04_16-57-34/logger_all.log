@@ -1,0 +1,1459 @@
+[0.107s] DEBUG:colcon:Command line arguments: ['/opt/miniconda3/envs/tesseract_nb/bin/colcon', 'list', '--packages-select', 'tesseract_task_composer']
+[0.107s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='list', build_base='build', ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['tesseract_task_composer'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, topological_order=False, names_only=False, paths_only=False, topological_graph=False, topological_graph_dot=False, topological_graph_density=False, topological_graph_legend=False, topological_graph_dot_cluster=False, topological_graph_dot_include_skipped=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x103137200>, verb_extension=<colcon_package_information.verb.list.ListVerb object at 0x103136750>, main=<bound method ListVerb.main of <colcon_package_information.verb.list.ListVerb object at 0x103136750>>)
+[0.160s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.160s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.160s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.160s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.160s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.160s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.160s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/Users/jelle/Code/CADCAM/tesseract_python_nanobind'
+[0.160s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.160s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.160s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.160s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.160s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.160s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.160s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.160s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.160s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extensions ['ignore', 'ignore_ament_install']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extension 'ignore'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extension 'ignore_ament_install'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extensions ['colcon_pkg']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extension 'colcon_pkg'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extensions ['colcon_meta']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extension 'colcon_meta'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extensions ['ros']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extension 'ros'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extensions ['cmake', 'python']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extension 'cmake'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extension 'python'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extensions ['python_setup_py']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci) by extension 'python_setup_py'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extensions ['ignore', 'ignore_ament_install']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extension 'ignore'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extension 'ignore_ament_install'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extensions ['colcon_pkg']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extension 'colcon_pkg'
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extensions ['colcon_meta']
+[0.184s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extension 'colcon_meta'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extensions ['ros']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extension 'ros'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extensions ['cmake', 'python']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extension 'cmake'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extension 'python'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extensions ['python_setup_py']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(ci/vcpkg_triplets) by extension 'python_setup_py'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['ignore', 'ignore_ament_install']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'ignore'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'ignore_ament_install'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['colcon_pkg']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'colcon_pkg'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['colcon_meta']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'colcon_meta'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['ros']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'ros'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['cmake', 'python']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'cmake'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'python'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['python_setup_py']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'python_setup_py'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extensions ['ignore', 'ignore_ament_install']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extension 'ignore'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extension 'ignore_ament_install'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extensions ['colcon_pkg']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extension 'colcon_pkg'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extensions ['colcon_meta']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extension 'colcon_meta'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extensions ['ros']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extension 'ros'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extensions ['cmake', 'python']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extension 'cmake'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extension 'python'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extensions ['python_setup_py']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source) by extension 'python_setup_py'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extensions ['ignore', 'ignore_ament_install']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extension 'ignore'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extension 'ignore_ament_install'
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extensions ['colcon_pkg']
+[0.185s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extension 'colcon_pkg'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extensions ['colcon_meta']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extension 'colcon_meta'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extensions ['ros']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extension 'ros'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extensions ['cmake', 'python']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extension 'cmake'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extension 'python'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extensions ['python_setup_py']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/examples) by extension 'python_setup_py'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extensions ['ignore', 'ignore_ament_install']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extension 'ignore'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extension 'ignore_ament_install'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extensions ['colcon_pkg']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extension 'colcon_pkg'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extensions ['colcon_meta']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extension 'colcon_meta'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extensions ['ros']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extension 'ros'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extensions ['cmake', 'python']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extension 'cmake'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extension 'python'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extensions ['python_setup_py']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules) by extension 'python_setup_py'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extensions ['ignore', 'ignore_ament_install']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extension 'ignore'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extension 'ignore_ament_install'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extensions ['colcon_pkg']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extension 'colcon_pkg'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extensions ['colcon_meta']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extension 'colcon_meta'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extensions ['ros']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extension 'ros'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extensions ['cmake', 'python']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extension 'cmake'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extension 'python'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extensions ['python_setup_py']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_collision) by extension 'python_setup_py'
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extensions ['ignore', 'ignore_ament_install']
+[0.186s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extension 'ignore'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extension 'ignore_ament_install'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extensions ['colcon_pkg']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extension 'colcon_pkg'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extensions ['colcon_meta']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extension 'colcon_meta'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extensions ['ros']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extension 'ros'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extensions ['cmake', 'python']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extension 'cmake'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extension 'python'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extensions ['python_setup_py']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_command_language) by extension 'python_setup_py'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extensions ['ignore', 'ignore_ament_install']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extension 'ignore'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extension 'ignore_ament_install'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extensions ['colcon_pkg']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extension 'colcon_pkg'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extensions ['colcon_meta']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extension 'colcon_meta'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extensions ['ros']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extension 'ros'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extensions ['cmake', 'python']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extension 'cmake'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extension 'python'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extensions ['python_setup_py']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_common) by extension 'python_setup_py'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extensions ['ignore', 'ignore_ament_install']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extension 'ignore'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extension 'ignore_ament_install'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extensions ['colcon_pkg']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extension 'colcon_pkg'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extensions ['colcon_meta']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extension 'colcon_meta'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extensions ['ros']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extension 'ros'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extensions ['cmake', 'python']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extension 'cmake'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extension 'python'
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extensions ['python_setup_py']
+[0.187s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_environment) by extension 'python_setup_py'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extensions ['ignore', 'ignore_ament_install']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extension 'ignore'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extension 'ignore_ament_install'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extensions ['colcon_pkg']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extension 'colcon_pkg'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extensions ['colcon_meta']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extension 'colcon_meta'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extensions ['ros']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extension 'ros'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extensions ['cmake', 'python']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extension 'cmake'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extension 'python'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extensions ['python_setup_py']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_geometry) by extension 'python_setup_py'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extensions ['ignore', 'ignore_ament_install']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extension 'ignore'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extension 'ignore_ament_install'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extensions ['colcon_pkg']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extension 'colcon_pkg'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extensions ['colcon_meta']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extension 'colcon_meta'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extensions ['ros']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extension 'ros'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extensions ['cmake', 'python']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extension 'cmake'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extension 'python'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extensions ['python_setup_py']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_kinematics) by extension 'python_setup_py'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extensions ['ignore', 'ignore_ament_install']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extension 'ignore'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extension 'ignore_ament_install'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extensions ['colcon_pkg']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extension 'colcon_pkg'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extensions ['colcon_meta']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extension 'colcon_meta'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extensions ['ros']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extension 'ros'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extensions ['cmake', 'python']
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extension 'cmake'
+[0.188s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extension 'python'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extensions ['python_setup_py']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners) by extension 'python_setup_py'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extensions ['ignore', 'ignore_ament_install']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extension 'ignore'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extension 'ignore_ament_install'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extensions ['colcon_pkg']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extension 'colcon_pkg'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extensions ['colcon_meta']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extension 'colcon_meta'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extensions ['ros']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extension 'ros'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extensions ['cmake', 'python']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extension 'cmake'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extension 'python'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extensions ['python_setup_py']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_descartes) by extension 'python_setup_py'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extensions ['ignore', 'ignore_ament_install']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extension 'ignore'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extension 'ignore_ament_install'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extensions ['colcon_pkg']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extension 'colcon_pkg'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extensions ['colcon_meta']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extension 'colcon_meta'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extensions ['ros']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extension 'ros'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extensions ['cmake', 'python']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extension 'cmake'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extension 'python'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extensions ['python_setup_py']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_ompl) by extension 'python_setup_py'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extensions ['ignore', 'ignore_ament_install']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extension 'ignore'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extension 'ignore_ament_install'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extensions ['colcon_pkg']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extension 'colcon_pkg'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extensions ['colcon_meta']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extension 'colcon_meta'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extensions ['ros']
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extension 'ros'
+[0.189s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extensions ['cmake', 'python']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extension 'cmake'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extension 'python'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extensions ['python_setup_py']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_simple) by extension 'python_setup_py'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extensions ['ignore', 'ignore_ament_install']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extension 'ignore'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extension 'ignore_ament_install'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extensions ['colcon_pkg']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extension 'colcon_pkg'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extensions ['colcon_meta']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extension 'colcon_meta'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extensions ['ros']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extension 'ros'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extensions ['cmake', 'python']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extension 'cmake'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extension 'python'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extensions ['python_setup_py']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_motion_planners_trajopt) by extension 'python_setup_py'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extensions ['ignore', 'ignore_ament_install']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extension 'ignore'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extension 'ignore_ament_install'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extensions ['colcon_pkg']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extension 'colcon_pkg'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extensions ['colcon_meta']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extension 'colcon_meta'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extensions ['ros']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extension 'ros'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extensions ['cmake', 'python']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extension 'cmake'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extension 'python'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extensions ['python_setup_py']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_robotics_viewer) by extension 'python_setup_py'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extensions ['ignore', 'ignore_ament_install']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extension 'ignore'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extension 'ignore_ament_install'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extensions ['colcon_pkg']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extension 'colcon_pkg'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extensions ['colcon_meta']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extension 'colcon_meta'
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extensions ['ros']
+[0.190s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extension 'ros'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extensions ['cmake', 'python']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extension 'cmake'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extension 'python'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extensions ['python_setup_py']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_scene_graph) by extension 'python_setup_py'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extensions ['ignore', 'ignore_ament_install']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extension 'ignore'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extension 'ignore_ament_install'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extensions ['colcon_pkg']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extension 'colcon_pkg'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extensions ['colcon_meta']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extension 'colcon_meta'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extensions ['ros']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extension 'ros'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extensions ['cmake', 'python']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extension 'cmake'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extension 'python'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extensions ['python_setup_py']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_srdf) by extension 'python_setup_py'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extensions ['ignore', 'ignore_ament_install']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extension 'ignore'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extension 'ignore_ament_install'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extensions ['colcon_pkg']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extension 'colcon_pkg'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extensions ['colcon_meta']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extension 'colcon_meta'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extensions ['ros']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extension 'ros'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extensions ['cmake', 'python']
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extension 'cmake'
+[0.191s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extension 'python'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extensions ['python_setup_py']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_state_solver) by extension 'python_setup_py'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extensions ['ignore', 'ignore_ament_install']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extension 'ignore'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extension 'ignore_ament_install'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extensions ['colcon_pkg']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extension 'colcon_pkg'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extensions ['colcon_meta']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extension 'colcon_meta'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extensions ['ros']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extension 'ros'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extensions ['cmake', 'python']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extension 'cmake'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extension 'python'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extensions ['python_setup_py']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_task_composer) by extension 'python_setup_py'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extensions ['ignore', 'ignore_ament_install']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extension 'ignore'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extension 'ignore_ament_install'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extensions ['colcon_pkg']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extension 'colcon_pkg'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extensions ['colcon_meta']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extension 'colcon_meta'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extensions ['ros']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extension 'ros'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extensions ['cmake', 'python']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extension 'cmake'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extension 'python'
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extensions ['python_setup_py']
+[0.192s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_time_parameterization) by extension 'python_setup_py'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extensions ['ignore', 'ignore_ament_install']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extension 'ignore'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extension 'ignore_ament_install'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extensions ['colcon_pkg']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extension 'colcon_pkg'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extensions ['colcon_meta']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extension 'colcon_meta'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extensions ['ros']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extension 'ros'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extensions ['cmake', 'python']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extension 'cmake'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extension 'python'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extensions ['python_setup_py']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_urdf) by extension 'python_setup_py'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extensions ['ignore', 'ignore_ament_install']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extension 'ignore'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extension 'ignore_ament_install'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extensions ['colcon_pkg']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extension 'colcon_pkg'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extensions ['colcon_meta']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extension 'colcon_meta'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extensions ['ros']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extension 'ros'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extensions ['cmake', 'python']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extension 'cmake'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extension 'python'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extensions ['python_setup_py']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_source/modules/tesseract_visualization) by extension 'python_setup_py'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extensions ['ignore', 'ignore_ament_install']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extension 'ignore'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extension 'ignore_ament_install'
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extensions ['colcon_pkg']
+[0.193s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extension 'colcon_pkg'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extensions ['colcon_meta']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extension 'colcon_meta'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extensions ['ros']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extension 'ros'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extensions ['cmake', 'python']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extension 'cmake'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extension 'python'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extensions ['python_setup_py']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_static) by extension 'python_setup_py'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extensions ['ignore', 'ignore_ament_install']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extension 'ignore'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extension 'ignore_ament_install'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extensions ['colcon_pkg']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extension 'colcon_pkg'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extensions ['colcon_meta']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extension 'colcon_meta'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extensions ['ros']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extension 'ros'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extensions ['cmake', 'python']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extension 'cmake'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extension 'python'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extensions ['python_setup_py']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_templates) by extension 'python_setup_py'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extensions ['ignore', 'ignore_ament_install']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extension 'ignore'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extension 'ignore_ament_install'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extensions ['colcon_pkg']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extension 'colcon_pkg'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extensions ['colcon_meta']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extension 'colcon_meta'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extensions ['ros']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extension 'ros'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extensions ['cmake', 'python']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extension 'cmake'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extension 'python'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extensions ['python_setup_py']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes) by extension 'python_setup_py'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extensions ['ignore', 'ignore_ament_install']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extension 'ignore'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extension 'ignore_ament_install'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extensions ['colcon_pkg']
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extension 'colcon_pkg'
+[0.194s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extensions ['colcon_meta']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extension 'colcon_meta'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extensions ['ros']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extension 'ros'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extensions ['cmake', 'python']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extension 'cmake'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extension 'python'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extensions ['python_setup_py']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme) by extension 'python_setup_py'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extensions ['ignore', 'ignore_ament_install']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extension 'ignore'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extension 'ignore_ament_install'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extensions ['colcon_pkg']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extension 'colcon_pkg'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extensions ['colcon_meta']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extension 'colcon_meta'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extensions ['ros']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extension 'ros'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extensions ['cmake', 'python']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extension 'cmake'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extension 'python'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extensions ['python_setup_py']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static) by extension 'python_setup_py'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extensions ['ignore', 'ignore_ament_install']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extension 'ignore'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extension 'ignore_ament_install'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extensions ['colcon_pkg']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extension 'colcon_pkg'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extensions ['colcon_meta']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extension 'colcon_meta'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extensions ['ros']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extension 'ros'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extensions ['cmake', 'python']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extension 'cmake'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extension 'python'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extensions ['python_setup_py']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/css) by extension 'python_setup_py'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extensions ['ignore', 'ignore_ament_install']
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extension 'ignore'
+[0.195s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extension 'ignore_ament_install'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extensions ['colcon_pkg']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extension 'colcon_pkg'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extensions ['colcon_meta']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extension 'colcon_meta'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extensions ['ros']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extension 'ros'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extensions ['cmake', 'python']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extension 'cmake'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extension 'python'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extensions ['python_setup_py']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/fonts) by extension 'python_setup_py'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extensions ['ignore', 'ignore_ament_install']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extension 'ignore'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extension 'ignore_ament_install'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extensions ['colcon_pkg']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extension 'colcon_pkg'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extensions ['colcon_meta']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extension 'colcon_meta'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extensions ['ros']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extension 'ros'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extensions ['cmake', 'python']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extension 'cmake'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extension 'python'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extensions ['python_setup_py']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(docs/_themes/sphinx_rtd_theme/static/js) by extension 'python_setup_py'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extensions ['ignore', 'ignore_ament_install']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extension 'ignore'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extension 'ignore_ament_install'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extensions ['colcon_pkg']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extension 'colcon_pkg'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extensions ['colcon_meta']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extension 'colcon_meta'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extensions ['ros']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extension 'ros'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extensions ['cmake', 'python']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extension 'cmake'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extension 'python'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extensions ['python_setup_py']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples) by extension 'python_setup_py'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extensions ['ignore', 'ignore_ament_install']
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extension 'ignore'
+[0.196s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extension 'ignore_ament_install'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extensions ['colcon_pkg']
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extension 'colcon_pkg'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extensions ['colcon_meta']
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extension 'colcon_meta'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extensions ['ros']
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extension 'ros'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extensions ['cmake', 'python']
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extension 'cmake'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extension 'python'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extensions ['python_setup_py']
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(examples/__pycache__) by extension 'python_setup_py'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python) by extensions ['ignore', 'ignore_ament_install']
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python) by extension 'ignore'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python) by extension 'ignore_ament_install'
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python) by extensions ['colcon_pkg']
+[0.197s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python) by extension 'colcon_pkg'
+[0.198s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python) by extensions ['colcon_meta']
+[0.198s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python) by extension 'colcon_meta'
+[0.198s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python) by extensions ['ros']
+[0.198s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python) by extension 'ros'
+[0.206s] DEBUG:colcon.colcon_core.package_identification:Package 'tesseract_python' with type 'ros.cmake' and name 'tesseract_python'
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extensions ['ignore', 'ignore_ament_install']
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extension 'ignore'
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extension 'ignore_ament_install'
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extensions ['colcon_pkg']
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extension 'colcon_pkg'
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extensions ['colcon_meta']
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extension 'colcon_meta'
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extensions ['ros']
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extension 'ros'
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extensions ['cmake', 'python']
+[0.206s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extension 'cmake'
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_python_nb) by extension 'python'
+[0.213s] DEBUG:colcon.colcon_core.package_identification:Package 'tesseract_python_nb' with type 'cmake' and name 'tesseract_python_nb'
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_viewer_python) by extensions ['ignore', 'ignore_ament_install']
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_viewer_python) by extension 'ignore'
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_viewer_python) by extension 'ignore_ament_install'
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_viewer_python) by extensions ['colcon_pkg']
+[0.213s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_viewer_python) by extension 'colcon_pkg'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_viewer_python) by extensions ['colcon_meta']
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_viewer_python) by extension 'colcon_meta'
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_viewer_python) by extensions ['ros']
+[0.214s] Level 1:colcon.colcon_core.package_identification:_identify(tesseract_viewer_python) by extension 'ros'
+[0.216s] DEBUG:colcon.colcon_core.package_identification:Package 'tesseract_viewer_python' with type 'ros.cmake' and name 'tesseract_viewer_python'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extensions ['ignore', 'ignore_ament_install']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extension 'ignore'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extension 'ignore_ament_install'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extensions ['colcon_pkg']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extension 'colcon_pkg'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extensions ['colcon_meta']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extension 'colcon_meta'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extensions ['ros']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extension 'ros'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extensions ['cmake', 'python']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extension 'cmake'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extension 'python'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extensions ['python_setup_py']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools) by extension 'python_setup_py'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extensions ['ignore', 'ignore_ament_install']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extension 'ignore'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extension 'ignore_ament_install'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extensions ['colcon_pkg']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extension 'colcon_pkg'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extensions ['colcon_meta']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extension 'colcon_meta'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extensions ['ros']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extension 'ros'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extensions ['cmake', 'python']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extension 'cmake'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extension 'python'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extensions ['python_setup_py']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(tools/extract_docs) by extension 'python_setup_py'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extensions ['ignore', 'ignore_ament_install']
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extension 'ignore'
+[0.217s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extension 'ignore_ament_install'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extensions ['colcon_pkg']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extension 'colcon_pkg'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extensions ['colcon_meta']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extension 'colcon_meta'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extensions ['ros']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extension 'ros'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extensions ['cmake', 'python']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extension 'cmake'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extension 'python'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extensions ['python_setup_py']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws) by extension 'python_setup_py'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extensions ['ignore', 'ignore_ament_install']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extension 'ignore'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extension 'ignore_ament_install'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extensions ['colcon_pkg']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extension 'colcon_pkg'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extensions ['colcon_meta']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extension 'colcon_meta'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extensions ['ros']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extension 'ros'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extensions ['cmake', 'python']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extension 'cmake'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extension 'python'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extensions ['python_setup_py']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/CMakeFiles) by extension 'python_setup_py'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/build) by extensions ['ignore', 'ignore_ament_install']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/build) by extension 'ignore'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/build) ignored
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/install) by extensions ['ignore', 'ignore_ament_install']
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/install) by extension 'ignore'
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/install) ignored
+[0.218s] Level 1:colcon.colcon_core.package_identification:_identify(ws/log) by extensions ['ignore', 'ignore_ament_install']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/log) by extension 'ignore'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/log) ignored
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extensions ['ignore', 'ignore_ament_install']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extension 'ignore'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extension 'ignore_ament_install'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extensions ['colcon_pkg']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extension 'colcon_pkg'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extensions ['colcon_meta']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extension 'colcon_meta'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extensions ['ros']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extension 'ros'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extensions ['cmake', 'python']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extension 'cmake'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extension 'python'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extensions ['python_setup_py']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src) by extension 'python_setup_py'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extensions ['ignore', 'ignore_ament_install']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extension 'ignore'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extension 'ignore_ament_install'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extensions ['colcon_pkg']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extension 'colcon_pkg'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extensions ['colcon_meta']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extension 'colcon_meta'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extensions ['ros']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extension 'ros'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extensions ['cmake', 'python']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extension 'cmake'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extension 'python'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extensions ['python_setup_py']
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light) by extension 'python_setup_py'
+[0.219s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extensions ['ignore', 'ignore_ament_install']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extension 'ignore'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extension 'ignore_ament_install'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extensions ['colcon_pkg']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extension 'colcon_pkg'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extensions ['colcon_meta']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extension 'colcon_meta'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extensions ['ros']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extension 'ros'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extensions ['cmake', 'python']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extension 'cmake'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extension 'python'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extensions ['python_setup_py']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/ci) by extension 'python_setup_py'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/descartes_light) by extensions ['ignore', 'ignore_ament_install']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/descartes_light) by extension 'ignore'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/descartes_light) by extension 'ignore_ament_install'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/descartes_light) by extensions ['colcon_pkg']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/descartes_light) by extension 'colcon_pkg'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/descartes_light) by extensions ['colcon_meta']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/descartes_light) by extension 'colcon_meta'
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/descartes_light) by extensions ['ros']
+[0.220s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/descartes_light/descartes_light) by extension 'ros'
+[0.221s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/descartes_light/descartes_light' with type 'ros.cmake' and name 'descartes_light'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ifopt) by extensions ['ignore', 'ignore_ament_install']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ifopt) by extension 'ignore'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ifopt) by extension 'ignore_ament_install'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ifopt) by extensions ['colcon_pkg']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ifopt) by extension 'colcon_pkg'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ifopt) by extensions ['colcon_meta']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ifopt) by extension 'colcon_meta'
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ifopt) by extensions ['ros']
+[0.221s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ifopt) by extension 'ros'
+[0.222s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/ifopt' with type 'ros.cmake' and name 'ifopt'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/log) by extensions ['ignore', 'ignore_ament_install']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/log) by extension 'ignore'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/log) ignored
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/opw_kinematics) by extensions ['ignore', 'ignore_ament_install']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/opw_kinematics) by extension 'ignore'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/opw_kinematics) by extension 'ignore_ament_install'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/opw_kinematics) by extensions ['colcon_pkg']
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/opw_kinematics) by extension 'colcon_pkg'
+[0.222s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/opw_kinematics) by extensions ['colcon_meta']
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/opw_kinematics) by extension 'colcon_meta'
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/opw_kinematics) by extensions ['ros']
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/opw_kinematics) by extension 'ros'
+[0.223s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/opw_kinematics' with type 'ros.cmake' and name 'opw_kinematics'
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ros_industrial_cmake_boilerplate) by extensions ['ignore', 'ignore_ament_install']
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ros_industrial_cmake_boilerplate) by extension 'ignore'
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ros_industrial_cmake_boilerplate) by extension 'ignore_ament_install'
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ros_industrial_cmake_boilerplate) by extensions ['colcon_pkg']
+[0.223s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ros_industrial_cmake_boilerplate) by extension 'colcon_pkg'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ros_industrial_cmake_boilerplate) by extensions ['colcon_meta']
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ros_industrial_cmake_boilerplate) by extension 'colcon_meta'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ros_industrial_cmake_boilerplate) by extensions ['ros']
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ros_industrial_cmake_boilerplate) by extension 'ros'
+[0.224s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/ros_industrial_cmake_boilerplate' with type 'ros.cmake' and name 'ros_industrial_cmake_boilerplate'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ruckig) by extensions ['ignore', 'ignore_ament_install']
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ruckig) by extension 'ignore'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ruckig) by extension 'ignore_ament_install'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ruckig) by extensions ['colcon_pkg']
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ruckig) by extension 'colcon_pkg'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ruckig) by extensions ['colcon_meta']
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ruckig) by extension 'colcon_meta'
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ruckig) by extensions ['ros']
+[0.224s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/ruckig) by extension 'ros'
+[0.225s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/ruckig' with type 'ros.cmake' and name 'ruckig'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extensions ['ignore', 'ignore_ament_install']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extension 'ignore'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extension 'ignore_ament_install'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extensions ['colcon_pkg']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extension 'colcon_pkg'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extensions ['colcon_meta']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extension 'colcon_meta'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extensions ['ros']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extension 'ros'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extensions ['cmake', 'python']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extension 'cmake'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extension 'python'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extensions ['python_setup_py']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract) by extension 'python_setup_py'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extensions ['ignore', 'ignore_ament_install']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extension 'ignore'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extension 'ignore_ament_install'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extensions ['colcon_pkg']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extension 'colcon_pkg'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extensions ['colcon_meta']
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extension 'colcon_meta'
+[0.225s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extensions ['ros']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extension 'ros'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extensions ['cmake', 'python']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extension 'cmake'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extension 'python'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extensions ['python_setup_py']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci) by extension 'python_setup_py'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extensions ['ignore', 'ignore_ament_install']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extension 'ignore'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extension 'ignore_ament_install'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extensions ['colcon_pkg']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extension 'colcon_pkg'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extensions ['colcon_meta']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extension 'colcon_meta'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extensions ['ros']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extension 'ros'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extensions ['cmake', 'python']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extension 'cmake'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extension 'python'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extensions ['python_setup_py']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda) by extension 'python_setup_py'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extensions ['ignore', 'ignore_ament_install']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extension 'ignore'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extension 'ignore_ament_install'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extensions ['colcon_pkg']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extension 'colcon_pkg'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extensions ['colcon_meta']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extension 'colcon_meta'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extensions ['ros']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extension 'ros'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extensions ['cmake', 'python']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extension 'cmake'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extension 'python'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extensions ['python_setup_py']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/conda/recipe) by extension 'python_setup_py'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extensions ['ignore', 'ignore_ament_install']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extension 'ignore'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extension 'ignore_ament_install'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extensions ['colcon_pkg']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extension 'colcon_pkg'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extensions ['colcon_meta']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extension 'colcon_meta'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extensions ['ros']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extension 'ros'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extensions ['cmake', 'python']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extension 'cmake'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extension 'python'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extensions ['python_setup_py']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/ci/vcpkg_triplets) by extension 'python_setup_py'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extensions ['ignore', 'ignore_ament_install']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extension 'ignore'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extension 'ignore_ament_install'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extensions ['colcon_pkg']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extension 'colcon_pkg'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extensions ['colcon_meta']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extension 'colcon_meta'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extensions ['ros']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extension 'ros'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extensions ['cmake', 'python']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extension 'cmake'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extension 'python'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extensions ['python_setup_py']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docker) by extension 'python_setup_py'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extensions ['ignore', 'ignore_ament_install']
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extension 'ignore'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extension 'ignore_ament_install'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extensions ['colcon_pkg']
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extension 'colcon_pkg'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extensions ['colcon_meta']
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extension 'colcon_meta'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extensions ['ros']
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extension 'ros'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extensions ['cmake', 'python']
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extension 'cmake'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extension 'python'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extensions ['python_setup_py']
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/docs) by extension 'python_setup_py'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_collision) by extensions ['ignore', 'ignore_ament_install']
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_collision) by extension 'ignore'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_collision) by extension 'ignore_ament_install'
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_collision) by extensions ['colcon_pkg']
+[0.228s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_collision) by extension 'colcon_pkg'
+[0.229s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_collision) by extensions ['colcon_meta']
+[0.229s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_collision) by extension 'colcon_meta'
+[0.229s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_collision) by extensions ['ros']
+[0.229s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_collision) by extension 'ros'
+[0.230s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_collision' with type 'ros.cmake' and name 'tesseract_collision'
+[0.230s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_common) by extensions ['ignore', 'ignore_ament_install']
+[0.230s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_common) by extension 'ignore'
+[0.230s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_common) by extension 'ignore_ament_install'
+[0.230s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_common) by extensions ['colcon_pkg']
+[0.230s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_common) by extension 'colcon_pkg'
+[0.230s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_common) by extensions ['colcon_meta']
+[0.230s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_common) by extension 'colcon_meta'
+[0.231s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_common) by extensions ['ros']
+[0.231s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_common) by extension 'ros'
+[0.231s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_common' with type 'ros.cmake' and name 'tesseract_common'
+[0.231s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_environment) by extensions ['ignore', 'ignore_ament_install']
+[0.231s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_environment) by extension 'ignore'
+[0.231s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_environment) by extension 'ignore_ament_install'
+[0.231s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_environment) by extensions ['colcon_pkg']
+[0.231s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_environment) by extension 'colcon_pkg'
+[0.232s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_environment) by extensions ['colcon_meta']
+[0.232s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_environment) by extension 'colcon_meta'
+[0.232s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_environment) by extensions ['ros']
+[0.232s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_environment) by extension 'ros'
+[0.233s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_environment' with type 'ros.cmake' and name 'tesseract_environment'
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_geometry) by extensions ['ignore', 'ignore_ament_install']
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_geometry) by extension 'ignore'
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_geometry) by extension 'ignore_ament_install'
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_geometry) by extensions ['colcon_pkg']
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_geometry) by extension 'colcon_pkg'
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_geometry) by extensions ['colcon_meta']
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_geometry) by extension 'colcon_meta'
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_geometry) by extensions ['ros']
+[0.233s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_geometry) by extension 'ros'
+[0.234s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_geometry' with type 'ros.cmake' and name 'tesseract_geometry'
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_kinematics) by extensions ['ignore', 'ignore_ament_install']
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_kinematics) by extension 'ignore'
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_kinematics) by extension 'ignore_ament_install'
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_kinematics) by extensions ['colcon_pkg']
+[0.234s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_kinematics) by extension 'colcon_pkg'
+[0.235s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_kinematics) by extensions ['colcon_meta']
+[0.235s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_kinematics) by extension 'colcon_meta'
+[0.235s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_kinematics) by extensions ['ros']
+[0.235s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_kinematics) by extension 'ros'
+[0.235s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_kinematics' with type 'ros.cmake' and name 'tesseract_kinematics'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_scene_graph) by extensions ['ignore', 'ignore_ament_install']
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_scene_graph) by extension 'ignore'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_scene_graph) by extension 'ignore_ament_install'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_scene_graph) by extensions ['colcon_pkg']
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_scene_graph) by extension 'colcon_pkg'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_scene_graph) by extensions ['colcon_meta']
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_scene_graph) by extension 'colcon_meta'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_scene_graph) by extensions ['ros']
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_scene_graph) by extension 'ros'
+[0.237s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_scene_graph' with type 'ros.cmake' and name 'tesseract_scene_graph'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_srdf) by extensions ['ignore', 'ignore_ament_install']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_srdf) by extension 'ignore'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_srdf) by extension 'ignore_ament_install'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_srdf) by extensions ['colcon_pkg']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_srdf) by extension 'colcon_pkg'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_srdf) by extensions ['colcon_meta']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_srdf) by extension 'colcon_meta'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_srdf) by extensions ['ros']
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_srdf) by extension 'ros'
+[0.238s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_srdf' with type 'ros.cmake' and name 'tesseract_srdf'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_state_solver) by extensions ['ignore', 'ignore_ament_install']
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_state_solver) by extension 'ignore'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_state_solver) by extension 'ignore_ament_install'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_state_solver) by extensions ['colcon_pkg']
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_state_solver) by extension 'colcon_pkg'
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_state_solver) by extensions ['colcon_meta']
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_state_solver) by extension 'colcon_meta'
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_state_solver) by extensions ['ros']
+[0.239s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_state_solver) by extension 'ros'
+[0.239s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_state_solver' with type 'ros.cmake' and name 'tesseract_state_solver'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_support) by extensions ['ignore', 'ignore_ament_install']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_support) by extension 'ignore'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_support) by extension 'ignore_ament_install'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_support) by extensions ['colcon_pkg']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_support) by extension 'colcon_pkg'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_support) by extensions ['colcon_meta']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_support) by extension 'colcon_meta'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_support) by extensions ['ros']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_support) by extension 'ros'
+[0.240s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_support' with type 'ros.cmake' and name 'tesseract_support'
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_urdf) by extensions ['ignore', 'ignore_ament_install']
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_urdf) by extension 'ignore'
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_urdf) by extension 'ignore_ament_install'
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_urdf) by extensions ['colcon_pkg']
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_urdf) by extension 'colcon_pkg'
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_urdf) by extensions ['colcon_meta']
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_urdf) by extension 'colcon_meta'
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_urdf) by extensions ['ros']
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_urdf) by extension 'ros'
+[0.242s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_urdf' with type 'ros.cmake' and name 'tesseract_urdf'
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_visualization) by extensions ['ignore', 'ignore_ament_install']
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_visualization) by extension 'ignore'
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_visualization) by extension 'ignore_ament_install'
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_visualization) by extensions ['colcon_pkg']
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_visualization) by extension 'colcon_pkg'
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_visualization) by extensions ['colcon_meta']
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_visualization) by extension 'colcon_meta'
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_visualization) by extensions ['ros']
+[0.242s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract/tesseract_visualization) by extension 'ros'
+[0.243s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract/tesseract_visualization' with type 'ros.cmake' and name 'tesseract_visualization'
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extensions ['ignore', 'ignore_ament_install']
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extension 'ignore'
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extension 'ignore_ament_install'
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extensions ['colcon_pkg']
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extension 'colcon_pkg'
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extensions ['colcon_meta']
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extension 'colcon_meta'
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extensions ['ros']
+[0.243s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extension 'ros'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extensions ['cmake', 'python']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extension 'cmake'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extension 'python'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extensions ['python_setup_py']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning) by extension 'python_setup_py'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extensions ['ignore', 'ignore_ament_install']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extension 'ignore'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extension 'ignore_ament_install'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extensions ['colcon_pkg']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extension 'colcon_pkg'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extensions ['colcon_meta']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extension 'colcon_meta'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extensions ['ros']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extension 'ros'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extensions ['cmake', 'python']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extension 'cmake'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extension 'python'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extensions ['python_setup_py']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci) by extension 'python_setup_py'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extensions ['ignore', 'ignore_ament_install']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extension 'ignore'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extension 'ignore_ament_install'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extensions ['colcon_pkg']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extension 'colcon_pkg'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extensions ['colcon_meta']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extension 'colcon_meta'
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extensions ['ros']
+[0.244s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extension 'ros'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extensions ['cmake', 'python']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extension 'cmake'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extension 'python'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extensions ['python_setup_py']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/ci/vcpkg_triplets) by extension 'python_setup_py'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extensions ['ignore', 'ignore_ament_install']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extension 'ignore'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extension 'ignore_ament_install'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extensions ['colcon_pkg']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extension 'colcon_pkg'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extensions ['colcon_meta']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extension 'colcon_meta'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extensions ['ros']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extension 'ros'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extensions ['cmake', 'python']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extension 'cmake'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extension 'python'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extensions ['python_setup_py']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docker) by extension 'python_setup_py'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extensions ['ignore', 'ignore_ament_install']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extension 'ignore'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extension 'ignore_ament_install'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extensions ['colcon_pkg']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extension 'colcon_pkg'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extensions ['colcon_meta']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extension 'colcon_meta'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extensions ['ros']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extension 'ros'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extensions ['cmake', 'python']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extension 'cmake'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extension 'python'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extensions ['python_setup_py']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/docs) by extension 'python_setup_py'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_command_language) by extensions ['ignore', 'ignore_ament_install']
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_command_language) by extension 'ignore'
+[0.245s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_command_language) by extension 'ignore_ament_install'
+[0.246s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_command_language) by extensions ['colcon_pkg']
+[0.246s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_command_language) by extension 'colcon_pkg'
+[0.246s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_command_language) by extensions ['colcon_meta']
+[0.246s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_command_language) by extension 'colcon_meta'
+[0.246s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_command_language) by extensions ['ros']
+[0.246s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_command_language) by extension 'ros'
+[0.246s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract_planning/tesseract_command_language' with type 'ros.cmake' and name 'tesseract_command_language'
+[0.247s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_examples) by extensions ['ignore', 'ignore_ament_install']
+[0.247s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_examples) by extension 'ignore'
+[0.247s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_examples) by extension 'ignore_ament_install'
+[0.247s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_examples) by extensions ['colcon_pkg']
+[0.247s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_examples) by extension 'colcon_pkg'
+[0.247s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_examples) by extensions ['colcon_meta']
+[0.247s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_examples) by extension 'colcon_meta'
+[0.247s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_examples) by extensions ['ros']
+[0.247s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_examples) by extension 'ros'
+[0.248s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract_planning/tesseract_examples' with type 'ros.cmake' and name 'tesseract_examples'
+[0.248s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_motion_planners) by extensions ['ignore', 'ignore_ament_install']
+[0.248s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_motion_planners) by extension 'ignore'
+[0.248s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_motion_planners) by extension 'ignore_ament_install'
+[0.248s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_motion_planners) by extensions ['colcon_pkg']
+[0.248s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_motion_planners) by extension 'colcon_pkg'
+[0.249s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_motion_planners) by extensions ['colcon_meta']
+[0.249s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_motion_planners) by extension 'colcon_meta'
+[0.249s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_motion_planners) by extensions ['ros']
+[0.249s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_motion_planners) by extension 'ros'
+[0.250s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract_planning/tesseract_motion_planners' with type 'ros.cmake' and name 'tesseract_motion_planners'
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_task_composer) by extensions ['ignore', 'ignore_ament_install']
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_task_composer) by extension 'ignore'
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_task_composer) by extension 'ignore_ament_install'
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_task_composer) by extensions ['colcon_pkg']
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_task_composer) by extension 'colcon_pkg'
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_task_composer) by extensions ['colcon_meta']
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_task_composer) by extension 'colcon_meta'
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_task_composer) by extensions ['ros']
+[0.250s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_task_composer) by extension 'ros'
+[0.251s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract_planning/tesseract_task_composer' with type 'ros.cmake' and name 'tesseract_task_composer'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_time_parameterization) by extensions ['ignore', 'ignore_ament_install']
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_time_parameterization) by extension 'ignore'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_time_parameterization) by extension 'ignore_ament_install'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_time_parameterization) by extensions ['colcon_pkg']
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_time_parameterization) by extension 'colcon_pkg'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_time_parameterization) by extensions ['colcon_meta']
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_time_parameterization) by extension 'colcon_meta'
+[0.251s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_time_parameterization) by extensions ['ros']
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_planning/tesseract_time_parameterization) by extension 'ros'
+[0.252s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract_planning/tesseract_time_parameterization' with type 'ros.cmake' and name 'tesseract_time_parameterization'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_python) by extensions ['ignore', 'ignore_ament_install']
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_python) by extension 'ignore'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_python) by extension 'ignore_ament_install'
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_python) by extensions ['colcon_pkg']
+[0.252s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_python) by extension 'colcon_pkg'
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_python) by extensions ['colcon_meta']
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_python) by extension 'colcon_meta'
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_python) by extensions ['ros']
+[0.253s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/tesseract_python) by extension 'ros'
+[0.256s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/tesseract_python' with type 'ros.cmake' and name 'tesseract_python'
+[0.256s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extensions ['ignore', 'ignore_ament_install']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extension 'ignore'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extension 'ignore_ament_install'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extensions ['colcon_pkg']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extension 'colcon_pkg'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extensions ['colcon_meta']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extension 'colcon_meta'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extensions ['ros']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extension 'ros'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extensions ['cmake', 'python']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extension 'cmake'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extension 'python'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extensions ['python_setup_py']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt) by extension 'python_setup_py'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extensions ['ignore', 'ignore_ament_install']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extension 'ignore'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extension 'ignore_ament_install'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extensions ['colcon_pkg']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extension 'colcon_pkg'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extensions ['colcon_meta']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extension 'colcon_meta'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extensions ['ros']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extension 'ros'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extensions ['cmake', 'python']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extension 'cmake'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extension 'python'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extensions ['python_setup_py']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci) by extension 'python_setup_py'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extensions ['ignore', 'ignore_ament_install']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extension 'ignore'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extension 'ignore_ament_install'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extensions ['colcon_pkg']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extension 'colcon_pkg'
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extensions ['colcon_meta']
+[0.257s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extension 'colcon_meta'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extensions ['ros']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extension 'ros'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extensions ['cmake', 'python']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extension 'cmake'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extension 'python'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extensions ['python_setup_py']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda) by extension 'python_setup_py'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extensions ['ignore', 'ignore_ament_install']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extension 'ignore'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extension 'ignore_ament_install'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extensions ['colcon_pkg']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extension 'colcon_pkg'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extensions ['colcon_meta']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extension 'colcon_meta'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extensions ['ros']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extension 'ros'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extensions ['cmake', 'python']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extension 'cmake'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extension 'python'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extensions ['python_setup_py']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/conda/recipe) by extension 'python_setup_py'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extensions ['ignore', 'ignore_ament_install']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extension 'ignore'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extension 'ignore_ament_install'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extensions ['colcon_pkg']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extension 'colcon_pkg'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extensions ['colcon_meta']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extension 'colcon_meta'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extensions ['ros']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extension 'ros'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extensions ['cmake', 'python']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extension 'cmake'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extension 'python'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extensions ['python_setup_py']
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/ci/vcpkg_triplets) by extension 'python_setup_py'
+[0.258s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extensions ['ignore', 'ignore_ament_install']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extension 'ignore'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extension 'ignore_ament_install'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extensions ['colcon_pkg']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extension 'colcon_pkg'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extensions ['colcon_meta']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extension 'colcon_meta'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extensions ['ros']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extension 'ros'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extensions ['cmake', 'python']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extension 'cmake'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extension 'python'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extensions ['python_setup_py']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/docker) by extension 'python_setup_py'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extensions ['ignore', 'ignore_ament_install']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extension 'ignore'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extension 'ignore_ament_install'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extensions ['colcon_pkg']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extension 'colcon_pkg'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extensions ['colcon_meta']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extension 'colcon_meta'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extensions ['ros']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extension 'ros'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extensions ['cmake', 'python']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extension 'cmake'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extension 'python'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extensions ['python_setup_py']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages) by extension 'python_setup_py'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extensions ['ignore', 'ignore_ament_install']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extension 'ignore'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extension 'ignore_ament_install'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extensions ['colcon_pkg']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extension 'colcon_pkg'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extensions ['colcon_meta']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extension 'colcon_meta'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extensions ['ros']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extension 'ros'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extensions ['cmake', 'python']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extension 'cmake'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extension 'python'
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extensions ['python_setup_py']
+[0.259s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_source) by extension 'python_setup_py'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extensions ['ignore', 'ignore_ament_install']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extension 'ignore'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extension 'ignore_ament_install'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extensions ['colcon_pkg']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extension 'colcon_pkg'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extensions ['colcon_meta']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extension 'colcon_meta'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extensions ['ros']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extension 'ros'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extensions ['cmake', 'python']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extension 'cmake'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extension 'python'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extensions ['python_setup_py']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static) by extension 'python_setup_py'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extensions ['ignore', 'ignore_ament_install']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extension 'ignore'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extension 'ignore_ament_install'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extensions ['colcon_pkg']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extension 'colcon_pkg'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extensions ['colcon_meta']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extension 'colcon_meta'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extensions ['ros']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extension 'ros'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extensions ['cmake', 'python']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extension 'cmake'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extension 'python'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extensions ['python_setup_py']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_static/example_gifs) by extension 'python_setup_py'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extensions ['ignore', 'ignore_ament_install']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extension 'ignore'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extension 'ignore_ament_install'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extensions ['colcon_pkg']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extension 'colcon_pkg'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extensions ['colcon_meta']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extension 'colcon_meta'
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extensions ['ros']
+[0.260s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extension 'ros'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extensions ['cmake', 'python']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extension 'cmake'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extension 'python'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extensions ['python_setup_py']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes) by extension 'python_setup_py'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extensions ['ignore', 'ignore_ament_install']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extension 'ignore'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extension 'ignore_ament_install'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extensions ['colcon_pkg']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extension 'colcon_pkg'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extensions ['colcon_meta']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extension 'colcon_meta'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extensions ['ros']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extension 'ros'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extensions ['cmake', 'python']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extension 'cmake'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extension 'python'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extensions ['python_setup_py']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme) by extension 'python_setup_py'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extensions ['ignore', 'ignore_ament_install']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extension 'ignore'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extension 'ignore_ament_install'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extensions ['colcon_pkg']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extension 'colcon_pkg'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extensions ['colcon_meta']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extension 'colcon_meta'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extensions ['ros']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extension 'ros'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extensions ['cmake', 'python']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extension 'cmake'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extension 'python'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extensions ['python_setup_py']
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static) by extension 'python_setup_py'
+[0.261s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extensions ['ignore', 'ignore_ament_install']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extension 'ignore'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extension 'ignore_ament_install'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extensions ['colcon_pkg']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extension 'colcon_pkg'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extensions ['colcon_meta']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extension 'colcon_meta'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extensions ['ros']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extension 'ros'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extensions ['cmake', 'python']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extension 'cmake'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extension 'python'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extensions ['python_setup_py']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/css) by extension 'python_setup_py'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extensions ['ignore', 'ignore_ament_install']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extension 'ignore'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extension 'ignore_ament_install'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extensions ['colcon_pkg']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extension 'colcon_pkg'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extensions ['colcon_meta']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extension 'colcon_meta'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extensions ['ros']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extension 'ros'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extensions ['cmake', 'python']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extension 'cmake'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extension 'python'
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extensions ['python_setup_py']
+[0.262s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/fonts) by extension 'python_setup_py'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extensions ['ignore', 'ignore_ament_install']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extension 'ignore'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extension 'ignore_ament_install'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extensions ['colcon_pkg']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extension 'colcon_pkg'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extensions ['colcon_meta']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extension 'colcon_meta'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extensions ['ros']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extension 'ros'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extensions ['cmake', 'python']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extension 'cmake'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extension 'python'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extensions ['python_setup_py']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/gh_pages/_themes/sphinx_rtd_theme/static/js) by extension 'python_setup_py'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt) by extensions ['ignore', 'ignore_ament_install']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt) by extension 'ignore'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt) by extension 'ignore_ament_install'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt) by extensions ['colcon_pkg']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt) by extension 'colcon_pkg'
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt) by extensions ['colcon_meta']
+[0.263s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt) by extension 'colcon_meta'
+[0.264s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt) by extensions ['ros']
+[0.264s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt) by extension 'ros'
+[0.265s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/trajopt/trajopt' with type 'ros.cmake' and name 'trajopt'
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_common) by extensions ['ignore', 'ignore_ament_install']
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_common) by extension 'ignore'
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_common) by extension 'ignore_ament_install'
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_common) by extensions ['colcon_pkg']
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_common) by extension 'colcon_pkg'
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_common) by extensions ['colcon_meta']
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_common) by extension 'colcon_meta'
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_common) by extensions ['ros']
+[0.265s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_common) by extension 'ros'
+[0.266s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/trajopt/trajopt_common' with type 'ros.cmake' and name 'trajopt_common'
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extensions ['ignore', 'ignore_ament_install']
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extension 'ignore'
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extension 'ignore_ament_install'
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extensions ['colcon_pkg']
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extension 'colcon_pkg'
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extensions ['colcon_meta']
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extension 'colcon_meta'
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extensions ['ros']
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extension 'ros'
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extensions ['cmake', 'python']
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extension 'cmake'
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extension 'python'
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extensions ['python_setup_py']
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext) by extension 'python_setup_py'
+[0.266s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp) by extensions ['ignore', 'ignore_ament_install']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp) by extension 'ignore'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp) by extension 'ignore_ament_install'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp) by extensions ['colcon_pkg']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp) by extension 'colcon_pkg'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp) by extensions ['colcon_meta']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp) by extension 'colcon_meta'
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp) by extensions ['ros']
+[0.267s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp) by extension 'ros'
+[0.267s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/trajopt/trajopt_ext/osqp' with type 'ros.cmake' and name 'osqp'
+[0.268s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp_eigen) by extensions ['ignore', 'ignore_ament_install']
+[0.268s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp_eigen) by extension 'ignore'
+[0.268s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp_eigen) by extension 'ignore_ament_install'
+[0.268s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp_eigen) by extensions ['colcon_pkg']
+[0.268s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp_eigen) by extension 'colcon_pkg'
+[0.268s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp_eigen) by extensions ['colcon_meta']
+[0.268s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp_eigen) by extension 'colcon_meta'
+[0.268s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp_eigen) by extensions ['ros']
+[0.268s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/osqp_eigen) by extension 'ros'
+[0.268s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/trajopt/trajopt_ext/osqp_eigen' with type 'ros.cmake' and name 'osqp_eigen'
+[0.269s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/qpoases) by extensions ['ignore', 'ignore_ament_install']
+[0.269s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/qpoases) by extension 'ignore'
+[0.269s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/qpoases) by extension 'ignore_ament_install'
+[0.269s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/qpoases) by extensions ['colcon_pkg']
+[0.269s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/qpoases) by extension 'colcon_pkg'
+[0.269s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/qpoases) by extensions ['colcon_meta']
+[0.269s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/qpoases) by extension 'colcon_meta'
+[0.269s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/qpoases) by extensions ['ros']
+[0.269s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/qpoases) by extension 'ros'
+[0.270s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/trajopt/trajopt_ext/qpoases' with type 'ros.cmake' and name 'qpoases'
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/vhacd) by extensions ['ignore', 'ignore_ament_install']
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/vhacd) by extension 'ignore'
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/vhacd) by extension 'ignore_ament_install'
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/vhacd) by extensions ['colcon_pkg']
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/vhacd) by extension 'colcon_pkg'
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/vhacd) by extensions ['colcon_meta']
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/vhacd) by extension 'colcon_meta'
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/vhacd) by extensions ['ros']
+[0.270s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ext/vhacd) by extension 'ros'
+[0.271s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/trajopt/trajopt_ext/vhacd' with type 'ros.cmake' and name 'vhacd'
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ifopt) by extensions ['ignore', 'ignore_ament_install']
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ifopt) by extension 'ignore'
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ifopt) by extension 'ignore_ament_install'
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ifopt) by extensions ['colcon_pkg']
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ifopt) by extension 'colcon_pkg'
+[0.271s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ifopt) by extensions ['colcon_meta']
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ifopt) by extension 'colcon_meta'
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ifopt) by extensions ['ros']
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_ifopt) by extension 'ros'
+[0.272s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/trajopt/trajopt_ifopt' with type 'ros.cmake' and name 'trajopt_ifopt'
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extensions ['ignore', 'ignore_ament_install']
+[0.272s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extension 'ignore'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extension 'ignore_ament_install'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extensions ['colcon_pkg']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extension 'colcon_pkg'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extensions ['colcon_meta']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extension 'colcon_meta'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extensions ['ros']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extension 'ros'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extensions ['cmake', 'python']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extension 'cmake'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extension 'python'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extensions ['python_setup_py']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers) by extension 'python_setup_py'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers/trajopt_sqp) by extensions ['ignore', 'ignore_ament_install']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers/trajopt_sqp) by extension 'ignore'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers/trajopt_sqp) by extension 'ignore_ament_install'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers/trajopt_sqp) by extensions ['colcon_pkg']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers/trajopt_sqp) by extension 'colcon_pkg'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers/trajopt_sqp) by extensions ['colcon_meta']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers/trajopt_sqp) by extension 'colcon_meta'
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers/trajopt_sqp) by extensions ['ros']
+[0.273s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_optimizers/trajopt_sqp) by extension 'ros'
+[0.274s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/trajopt/trajopt_optimizers/trajopt_sqp' with type 'ros.cmake' and name 'trajopt_sqp'
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_sco) by extensions ['ignore', 'ignore_ament_install']
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_sco) by extension 'ignore'
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_sco) by extension 'ignore_ament_install'
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_sco) by extensions ['colcon_pkg']
+[0.274s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_sco) by extension 'colcon_pkg'
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_sco) by extensions ['colcon_meta']
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_sco) by extension 'colcon_meta'
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_sco) by extensions ['ros']
+[0.275s] Level 1:colcon.colcon_core.package_identification:_identify(ws/src/trajopt/trajopt_sco) by extension 'ros'
+[0.275s] DEBUG:colcon.colcon_core.package_identification:Package 'ws/src/trajopt/trajopt_sco' with type 'ros.cmake' and name 'trajopt_sco'
+[0.275s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.275s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.275s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.275s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.275s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.293s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'tesseract_viewer_python' from colcon.pkg: {'hooks': ['share/tesseract_viewer_python/hook/ament_prefix_path.dsv', 'share/tesseract_python/hook/python_path.dsv']}
+[0.293s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/trajopt/trajopt_optimizers/trajopt_sqp' from colcon.pkg: {'hooks': ['share/trajopt_sqp/hook/ament_prefix_path.dsv', 'share/trajopt_sqp/hook/ros_package_path.dsv']}
+[0.294s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_support' from colcon.pkg: {'hooks': ['share/tesseract_support/hook/ament_prefix_path.dsv', 'share/tesseract_support/hook/ros_package_path.dsv']}
+[0.294s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/trajopt/trajopt_ext/osqp_eigen' from colcon.pkg: {'hooks': ['share/osqp_eigen/hook/ament_prefix_path.dsv', 'share/osqp_eigen/hook/ros_package_path.dsv']}
+[0.294s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_collision' from colcon.pkg: {'hooks': ['share/tesseract_collision/hook/ament_prefix_path.dsv', 'share/tesseract_collision/hook/ros_package_path.dsv']}
+[0.294s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/trajopt/trajopt' from colcon.pkg: {'hooks': ['share/trajopt/hook/ament_prefix_path.dsv', 'share/trajopt/hook/ros_package_path.dsv']}
+[0.294s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract_planning/tesseract_examples' from colcon.pkg: {'hooks': ['share/tesseract_examples/hook/ament_prefix_path.dsv', 'share/tesseract_examples/hook/ros_package_path.dsv']}
+[0.295s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/trajopt/trajopt_sco' from colcon.pkg: {'hooks': ['share/trajopt_sco/hook/ament_prefix_path.dsv', 'share/trajopt_sco/hook/ros_package_path.dsv']}
+[0.295s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/trajopt/trajopt_ext/vhacd' from colcon.pkg: {'hooks': ['share/vhacd/hook/ament_prefix_path.dsv', 'share/vhacd/hook/ros_package_path.dsv']}
+[0.295s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_environment' from colcon.pkg: {'hooks': ['share/tesseract_environment/hook/ament_prefix_path.dsv', 'share/tesseract_environment/hook/ros_package_path.dsv']}
+[0.295s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_kinematics' from colcon.pkg: {'hooks': ['share/tesseract_kinematics/hook/ament_prefix_path.dsv', 'share/tesseract_kinematics/hook/ros_package_path.dsv']}
+[0.295s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/trajopt/trajopt_ext/qpoases' from colcon.pkg: {'hooks': ['share/qpoases/hook/ament_prefix_path.dsv', 'share/qpoases/hook/ros_package_path.dsv']}
+[0.296s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_geometry' from colcon.pkg: {'hooks': ['share/tesseract_geometry/hook/ament_prefix_path.dsv', 'share/tesseract_geometry/hook/ros_package_path.dsv']}
+[0.296s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_srdf' from colcon.pkg: {'hooks': ['share/tesseract_srdf/hook/ament_prefix_path.dsv', 'share/tesseract_srdf/hook/ros_package_path.dsv']}
+[0.296s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/trajopt/trajopt_ifopt' from colcon.pkg: {'hooks': ['share/trajopt_ifopt/hook/ament_prefix_path.dsv', 'share/trajopt_ifopt/hook/ros_package_path.dsv']}
+[0.296s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract_planning/tesseract_motion_planners' from colcon.pkg: {'hooks': ['share/tesseract_motion_planners/hook/ament_prefix_path.dsv', 'share/tesseract_motion_planners/hook/ros_package_path.dsv']}
+[0.296s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_state_solver' from colcon.pkg: {'hooks': ['share/tesseract_state_solver/hook/ament_prefix_path.dsv', 'share/tesseract_solver/hook/ros_package_path.dsv']}
+[0.297s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_common' from colcon.pkg: {'hooks': ['share/tesseract_common/hook/ament_prefix_path.dsv', 'share/tesseract_common/hook/ros_package_path.dsv']}
+[0.297s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_visualization' from colcon.pkg: {'hooks': ['share/tesseract_visualization/hook/ament_prefix_path.dsv', 'share/tesseract_visualization/hook/ros_package_path.dsv']}
+[0.297s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract_planning/tesseract_command_language' from colcon.pkg: {'hooks': ['share/tesseract_command_language/hook/ament_prefix_path.dsv', 'share/tesseract_command_language/hook/ros_package_path.dsv']}
+[0.297s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/trajopt/trajopt_ext/osqp' from colcon.pkg: {'hooks': ['share/osqp/hook/ament_prefix_path.dsv', 'share/osqp/hook/ros_package_path.dsv']}
+[0.297s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_scene_graph' from colcon.pkg: {'hooks': ['share/tesseract_scene_graph/hook/ament_prefix_path.dsv', 'share/tesseract_scene_graph/hook/ros_package_path.dsv']}
+[0.297s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract_planning/tesseract_task_composer' from colcon.pkg: {'hooks': ['share/tesseract_task_composer/hook/ament_prefix_path.dsv', 'share/tesseract_task_composer/hook/ros_package_path.dsv']}
+[0.298s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/trajopt/trajopt_common' from colcon.pkg: {'hooks': ['share/trajopt_common/hook/ament_prefix_path.dsv', 'share/trajopt_common/hook/ros_package_path.dsv']}
+[0.298s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract/tesseract_urdf' from colcon.pkg: {'hooks': ['share/tesseract_urdf/hook/ament_prefix_path.dsv', 'share/tesseract_urdf/hook/ros_package_path.dsv']}
+[0.298s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'tesseract_python' from colcon.pkg: {'hooks': ['share/tesseract_python/hook/ament_prefix_path.dsv', 'share/tesseract_python/hook/python_path.dsv']}
+[0.298s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract_python' from colcon.pkg: {'hooks': ['share/tesseract_python/hook/ament_prefix_path.dsv', 'share/tesseract_python/hook/python_path.dsv']}
+[0.298s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/ros_industrial_cmake_boilerplate' from colcon.pkg: {'hooks': ['share/ros_industrial_cmake_boilerplate/hook/ament_prefix_path.dsv', 'share/ros_industrial_cmake_boilerplate/hook/ros_package_path.dsv']}
+[0.298s] INFO:colcon.colcon_metadata.metadata.colcon_pkg:Updating descriptor of package 'ws/src/tesseract_planning/tesseract_time_parameterization' from colcon.pkg: {'hooks': ['share/tesseract_time_parameterization/hook/ament_prefix_path.dsv', 'share/tesseract_time_parameterization/hook/ros_package_path.dsv']}
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ifopt' in 'ws/src/ifopt'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ros_industrial_cmake_boilerplate' in 'ws/src/ros_industrial_cmake_boilerplate'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'ruckig' in 'ws/src/ruckig'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'descartes_light' in 'ws/src/descartes_light/descartes_light'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'opw_kinematics' in 'ws/src/opw_kinematics'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'osqp' in 'ws/src/trajopt/trajopt_ext/osqp'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'qpoases' in 'ws/src/trajopt/trajopt_ext/qpoases'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_common' in 'ws/src/tesseract/tesseract_common'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'osqp_eigen' in 'ws/src/trajopt/trajopt_ext/osqp_eigen'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_command_language' in 'ws/src/tesseract_planning/tesseract_command_language'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_support' in 'ws/src/tesseract/tesseract_support'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_geometry' in 'ws/src/tesseract/tesseract_geometry'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_time_parameterization' in 'ws/src/tesseract_planning/tesseract_time_parameterization'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_scene_graph' in 'ws/src/tesseract/tesseract_scene_graph'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_collision' in 'ws/src/tesseract/tesseract_collision'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_srdf' in 'ws/src/tesseract/tesseract_srdf'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_urdf' in 'ws/src/tesseract/tesseract_urdf'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_state_solver' in 'ws/src/tesseract/tesseract_state_solver'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_kinematics' in 'ws/src/tesseract/tesseract_kinematics'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_environment' in 'ws/src/tesseract/tesseract_environment'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'trajopt_common' in 'ws/src/trajopt/trajopt_common'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_visualization' in 'ws/src/tesseract/tesseract_visualization'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'trajopt_sco' in 'ws/src/trajopt/trajopt_sco'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'vhacd' in 'ws/src/trajopt/trajopt_ext/vhacd'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'trajopt' in 'ws/src/trajopt/trajopt'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'trajopt_ifopt' in 'ws/src/trajopt/trajopt_ifopt'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'trajopt_sqp' in 'ws/src/trajopt/trajopt_optimizers/trajopt_sqp'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_motion_planners' in 'ws/src/tesseract_planning/tesseract_motion_planners'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_examples' in 'ws/src/tesseract_planning/tesseract_examples'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_python' in 'tesseract_python'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_python' in 'ws/src/tesseract_python'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_python_nb' in 'tesseract_python_nb'
+[0.314s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'tesseract_viewer_python' in 'tesseract_viewer_python'

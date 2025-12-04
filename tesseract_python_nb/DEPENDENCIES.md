@@ -68,3 +68,29 @@ conda remove libosqp osqp osqp-eigen
 # Then rebuild with TrajOpt
 colcon build --merge-install --cmake-args -DTESSERACT_BUILD_TRAJOPT=ON
 ```
+
+## Task Composer Planning Component
+
+To enable planning pipelines (FreespacePipeline, TrajOptPipeline, OMPLPipeline):
+
+```bash
+# Install ODE (required by Descartes)
+conda install -c conda-forge libode
+
+# Build with planning enabled
+# Note: LIBRARY_PATH, QT_HOST_PATH and CMAKE_POLICY_VERSION_MINIMUM needed on macOS
+LIBRARY_PATH=$CONDA_PREFIX/lib colcon build --merge-install --cmake-args \
+    -DTESSERACT_BUILD_TASK_COMPOSER_PLANNING=ON \
+    -DQT_HOST_PATH=$CONDA_PREFIX \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+```
+
+**Required flags on macOS:**
+- `LIBRARY_PATH=$CONDA_PREFIX/lib` - linker needs to find libode
+- `-DQT_HOST_PATH=$CONDA_PREFIX` - fixes Qt6 cross-compile error from PCL/VTK
+- `-DCMAKE_POLICY_VERSION_MINIMUM=3.5` - fixes jsoncpp CMake policy error
+
+Without this, you'll get errors like:
+```
+Failed to load symbol 'ProcessPlanningInputTaskFactory'
+```
