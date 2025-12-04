@@ -184,8 +184,7 @@ def main():
     program = CompositeInstruction("DEFAULT")
     program.setManipulatorInfo(manip_info)
 
-    # Add Cartesian waypoints from toolpath (limit to 12 for faster testing)
-    tool_poses = tool_poses[:12]
+    # Add Cartesian waypoints from toolpath
     for i, pose in enumerate(tool_poses):
         wp = CartesianWaypoint(pose)
         plan_instruction = MoveInstruction(
