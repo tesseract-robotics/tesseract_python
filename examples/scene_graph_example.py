@@ -29,12 +29,15 @@ from tesseract_robotics.tesseract_environment import (
 )
 from tesseract_robotics.tesseract_scene_graph import Joint, JointType
 
-# Optional: viewer for visualization
-try:
-    from tesseract_robotics_viewer import TesseractViewer
-    HAS_VIEWER = True
-except ImportError:
-    HAS_VIEWER = False
+# Optional: viewer for visualization (disabled in headless mode)
+HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1"
+HAS_VIEWER = False
+if not HEADLESS:
+    try:
+        from tesseract_robotics_viewer import TesseractViewer
+        HAS_VIEWER = True
+    except ImportError:
+        pass
 
 
 def main():

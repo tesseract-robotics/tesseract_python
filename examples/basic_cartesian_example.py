@@ -54,7 +54,7 @@ from tesseract_robotics.tesseract_command_language import (
     WaypointPoly_as_StateWaypointPoly,
 )
 from tesseract_robotics.tesseract_task_composer import (
-    TaskComposerPluginFactory,
+    createTaskComposerPluginFactory,
     TaskComposerDataStorage,
 )
 
@@ -204,8 +204,7 @@ def main():
     print("  - Freespace back to start")
 
     # Create task composer factory
-    config_path = FilesystemPath(task_composer_filename)
-    factory = TaskComposerPluginFactory(config_path, locator)
+    factory = createTaskComposerPluginFactory(task_composer_filename, locator)
 
     # Create executor
     executor = factory.createTaskComposerExecutor("TaskflowExecutor")

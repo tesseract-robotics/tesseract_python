@@ -95,6 +95,71 @@ There are reference leaks warnings at exit. These are likely due to:
 
 These don't affect functionality but should be investigated and fixed.
 
+## TaskComposerPluginFactory Cross-Module Issue - RESOLVED
+
+### Problem
+
+`TaskComposerPluginFactory` takes a `ResourceLocator&` in C++, but nanobind cannot cast `GeneralResourceLocator` (from `tesseract_common` module) to `ResourceLocator` across module boundaries. Even with:
+- `nb::module_::import_()` to import the base module
+- The type displaying as identical in error messages
+- Using `const T&` or `shared_ptr<T>` signatures
+
+The cast fails because nanobind maintains separate type registries per module.
+
+### Solution - WORKING
+
+Use `nb::handle` to accept any Python object, manually verify the type using `nb::isinstance()` with the imported type, then use `nb::cast<>()`:
+
+**C++ Binding:**
+```cpp
+// In tesseract_task_composer_bindings.cpp
+// Import the module at module init
+nb::module_::import_("tesseract_robotics.tesseract_common._tesseract_common");
+
+// Use nb::handle + isinstance for cross-module type resolution
+m.def("createTaskComposerPluginFactory", [](const std::string& config_str, nb::handle locator_handle) {
+    tc::fs::path config(config_str);
+
+    // Get the type from the imported module
+    auto common_module = nb::module_::import_("tesseract_robotics.tesseract_common._tesseract_common");
+    auto grl_type = common_module.attr("GeneralResourceLocator");
+
+    // Verify type
+    if (!nb::isinstance(locator_handle, grl_type)) {
+        throw nb::type_error("locator must be a GeneralResourceLocator");
+    }
+
+    // Cast to C++ type
+    auto* locator = nb::cast<tc::GeneralResourceLocator*>(locator_handle);
+    return std::make_unique<tp::TaskComposerPluginFactory>(config, *locator);
+}, "config"_a, "locator"_a);
+```
+
+**Python Usage:**
+```python
+from tesseract_robotics.tesseract_common import GeneralResourceLocator
+from tesseract_robotics.tesseract_task_composer import createTaskComposerPluginFactory
+
+locator = GeneralResourceLocator()
+factory = createTaskComposerPluginFactory(task_composer_config_file, locator)
+```
+
+### Key Points
+
+1. Accept `nb::handle` (not the concrete type) to avoid nanobind's automatic type checking
+2. Import the module containing the type at runtime
+3. Use `nb::isinstance(handle, type)` to check the type
+4. Use `nb::cast<T*>(handle)` to get the C++ pointer
+5. Accept `std::string` for path arguments instead of `tc::fs::path` to avoid additional cross-module issues
+
+### General Pattern for Cross-Module Inheritance
+
+When a function in module B accepts a type from module A:
+1. Accept `nb::handle` in the binding
+2. Import module A at runtime to get the type object
+3. Use `nb::isinstance()` for type checking
+4. Use `nb::cast<T*>()` for conversion
+
 ## TrajOpt Planner
 
 TrajOpt bindings are optional and auto-detected at build time.

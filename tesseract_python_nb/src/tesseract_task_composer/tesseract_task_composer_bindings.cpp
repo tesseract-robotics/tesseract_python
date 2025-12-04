@@ -41,6 +41,9 @@ namespace tc = tesseract_common;
 NB_MODULE(_tesseract_task_composer, m) {
     m.doc() = "tesseract_task_composer Python bindings";
 
+    // Import tesseract_common module to ensure type hierarchy is available
+    nb::module_::import_("tesseract_robotics.tesseract_common._tesseract_common");
+
     // ========== TaskComposerKeys ==========
     nb::class_<tp::TaskComposerKeys>(m, "TaskComposerKeys")
         .def(nb::init<>())
@@ -142,9 +145,19 @@ NB_MODULE(_tesseract_task_composer, m) {
 
     // ========== TaskComposerPluginFactory ==========
     // Move-only class (deleted copy, has move). Use unique_ptr internally to handle moves.
+    // Note: Cross-module inheritance with ResourceLocator - use nb::handle with manual type check
     nb::class_<tp::TaskComposerPluginFactory>(m, "TaskComposerPluginFactory")
-        .def(nb::init<const tc::fs::path&, const tc::ResourceLocator&>(), "config"_a, "locator"_a,
-             "Create from config file path and resource locator")
+        .def("__init__", [](tp::TaskComposerPluginFactory* self, const std::string& config_str, nb::handle locator_handle) {
+            tc::fs::path config(config_str);
+            auto common_module = nb::module_::import_("tesseract_robotics.tesseract_common._tesseract_common");
+            auto grl_type = common_module.attr("GeneralResourceLocator");
+            if (!nb::isinstance(locator_handle, grl_type)) {
+                throw nb::type_error("locator must be a GeneralResourceLocator");
+            }
+            auto* locator = nb::cast<tc::GeneralResourceLocator*>(locator_handle);
+            new (self) tp::TaskComposerPluginFactory(config, *locator);
+        }, "config"_a, "locator"_a,
+             "Create from config file path (string) and GeneralResourceLocator")
         .def("createTaskComposerExecutor", [](tp::TaskComposerPluginFactory& self, const std::string& name) {
             return self.createTaskComposerExecutor(name);
         }, "name"_a, nb::rv_policy::move,
@@ -159,10 +172,25 @@ NB_MODULE(_tesseract_task_composer, m) {
         .def("getDefaultTaskComposerNodePlugin", &tp::TaskComposerPluginFactory::getDefaultTaskComposerNodePlugin);
 
     // Keep factory functions for backwards compatibility
-    m.def("createTaskComposerPluginFactory", [](const tc::fs::path& config, const tc::ResourceLocator& locator) {
-        return std::make_unique<tp::TaskComposerPluginFactory>(config, locator);
+    // Note: Cross-module inheritance with ResourceLocator - use nb::handle with manual type check
+    m.def("createTaskComposerPluginFactory", [](const std::string& config_str, nb::handle locator_handle) {
+        // Convert config string to path
+        tc::fs::path config(config_str);
+
+        // Get the GeneralResourceLocator type from the tesseract_common module
+        auto common_module = nb::module_::import_("tesseract_robotics.tesseract_common._tesseract_common");
+        auto grl_type = common_module.attr("GeneralResourceLocator");
+
+        // Check if locator is a GeneralResourceLocator
+        if (!nb::isinstance(locator_handle, grl_type)) {
+            throw nb::type_error("locator must be a GeneralResourceLocator");
+        }
+
+        // Cast using the imported type
+        auto* locator = nb::cast<tc::GeneralResourceLocator*>(locator_handle);
+        return std::make_unique<tp::TaskComposerPluginFactory>(config, *locator);
     }, "config"_a, "locator"_a,
-    "Create a TaskComposerPluginFactory from a config file and resource locator");
+    "Create a TaskComposerPluginFactory from a config file path (string) and GeneralResourceLocator");
 
     // ========== AnyPoly ==========
     // Bind AnyPoly class for type-erased data storage

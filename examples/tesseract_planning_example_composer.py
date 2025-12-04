@@ -18,7 +18,7 @@ from tesseract_robotics.tesseract_command_language import CartesianWaypoint, Way
         CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint, \
         AnyPoly_wrap_ProfileDictionary
 
-from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, \
+from tesseract_robotics.tesseract_task_composer import createTaskComposerPluginFactory, \
     TaskComposerDataStorage, TaskComposerContext
 
 from tesseract_robotics_viewer import TesseractViewer
@@ -128,8 +128,7 @@ program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 # program.appendMoveInstruction(MoveInstructionPoly(plan_f2))
 
 # Create the task composer plugin factory and load the plugins
-config_path = FilesystemPath(task_composer_filename)
-factory = TaskComposerPluginFactory(config_path, locator)
+factory = createTaskComposerPluginFactory(task_composer_filename, locator)
 
 # Create the task composer node. In this case the FreespacePipeline is used. Many other are available.
 task = factory.createTaskComposerNode("FreespacePipeline")

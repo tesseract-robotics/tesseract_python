@@ -1,0 +1,2 @@
+source;share/trajopt_sco/hook/ament_prefix_path.dsv
+source;share/trajopt_sco/hook/ros_package_path.dsv
