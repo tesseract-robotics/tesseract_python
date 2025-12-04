@@ -104,7 +104,7 @@ def main():
     # Set the transform for the new joint
     # Rotate 90 degrees around Y axis and translate
     transform = Isometry3d.Identity()
-    transform = transform * AngleAxisd(-math.pi / 2, [0, 1, 0])
+    transform = transform * AngleAxisd(-math.pi / 2, np.array([0, 1, 0], dtype=np.float64))
     transform = transform * Translation3d(0.15, 0.0, 0.0)
     new_joint.parent_to_joint_origin_transform = transform
 
@@ -146,9 +146,8 @@ def main():
         print(f"  {'  ' * depth}{link_name}")
 
         # Get child links through joints
-        for joint_name in scene_graph.getJointNames():
-            joint = scene_graph.getJoint(joint_name)
-            if joint and joint.parent_link_name == link_name:
+        for joint in scene_graph.getJoints():
+            if joint.parent_link_name == link_name:
                 stack.append((joint.child_link_name, depth + 1))
 
     # Optional: visualize with viewer
