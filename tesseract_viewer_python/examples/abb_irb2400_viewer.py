@@ -33,8 +33,10 @@ from tesseract_robotics.tesseract_motion_planners_ompl import OMPLMotionPlanner,
 
 from tesseract_robotics_viewer import TesseractViewer
 import numpy as np
+import os
 
 OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
+HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1"
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
 # Load robot
@@ -58,7 +60,8 @@ viewer.update_environment(t_env, [0, 0, 0])
 joint_names = [f"joint_{i+1}" for i in range(6)]
 viewer.update_joint_positions(joint_names, np.array([1, -0.2, 0.01, 0.3, -0.5, 1]))
 
-viewer.start_serve_background()
+if not HEADLESS:
+    viewer.start_serve_background()
 
 t_env.setState(joint_names, np.ones(6) * 0.1)
 
@@ -140,4 +143,5 @@ viewer.plot_trajectory(final_results_instruction, manip_info, axes_length=0.05)
 
 print("OMPL planning completed successfully!")
 print(f"Number of waypoints: {final_results_instruction.size()}")
-input("Press Enter to exit...")
+if not HEADLESS:
+    input("Press Enter to exit...")

@@ -65,6 +65,9 @@ NB_MODULE(_tesseract_common, m) {
         .def("rotation", [](const Eigen::Isometry3d& self) -> Eigen::Matrix3d {
             return self.rotation();
         })
+        .def("linear", [](const Eigen::Isometry3d& self) -> Eigen::Matrix3d {
+            return self.linear();
+        })
         .def("inverse", [](const Eigen::Isometry3d& self) {
             return self.inverse();
         })

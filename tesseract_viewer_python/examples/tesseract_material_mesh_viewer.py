@@ -3,6 +3,9 @@
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import GeneralResourceLocator
 from tesseract_robotics_viewer import TesseractViewer
+import os
+
+HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1"
 
 shapes_urdf = """
 <robot name="mesh_viewer">
@@ -51,6 +54,9 @@ t_env.init(shapes_urdf, locator)
 
 viewer = TesseractViewer()
 viewer.update_environment(t_env, [0, 0, 0])
-viewer.start_serve_background()
 
-input("Press Enter to exit...")
+if not HEADLESS:
+    viewer.start_serve_background()
+    input("Press Enter to exit...")
+else:
+    print("tesseract_material_mesh_viewer.py: PASSED")

@@ -7,6 +7,8 @@ import re
 import traceback
 from tesseract_robotics_viewer import TesseractViewer
 
+HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1"
+
 shapes_urdf = """
 <robot name="multipleshapes">
 
@@ -107,6 +109,9 @@ t_env.init(shapes_urdf, locator)
 
 viewer = TesseractViewer()
 viewer.update_environment(t_env, [0, 0, 0])
-viewer.start_serve_background()
 
-input("Press Enter to exit...")
+if not HEADLESS:
+    viewer.start_serve_background()
+    input("Press Enter to exit...")
+else:
+    print("shapes_viewer.py: PASSED")

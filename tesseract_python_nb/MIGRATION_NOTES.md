@@ -69,11 +69,15 @@ m.def("InstructionPoly_as_MoveInstructionPoly", [](tp::InstructionPoly& ip) -> t
 - `WaypointPoly_as_StateWaypointPoly(wp)` - for StateWaypoint extraction
 - `WaypointPoly_as_CartesianWaypointPoly(wp)` - for CartesianWaypoint extraction
 
-## CompositeInstruction.flatten() - Not Available
+## CompositeInstruction.flatten() - Not Needed
 
-The SWIG bindings had a `flatten()` method on `CompositeInstruction` that is not available in nanobind. This was a SWIG-specific convenience method. The viewer's trajectory visualization relies on this method.
+The SWIG bindings had a `flatten()` method on `CompositeInstruction`. In nanobind, you can iterate directly over `CompositeInstruction` using `__getitem__` and `len()`.
 
-**Status:** Trajectory visualization not yet working with nanobind bindings.
+## Cross-Module Type Resolution
+
+When a method returns a type from another module (e.g., `Environment.getKinematicGroup()` returns `KinematicGroup` from `tesseract_kinematics`), the module containing that type must be imported first.
+
+**Solution:** The `tesseract_environment/__init__.py` imports `tesseract_kinematics` to ensure `KinematicGroup` is registered.
 
 ## Viewer Trajectory Visualization - RESOLVED
 
