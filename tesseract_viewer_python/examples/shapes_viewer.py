@@ -1,16 +1,15 @@
+"""Simple shapes viewer example using tesseract_robotics with nanobind bindings."""
+
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
 import os
 import re
 import traceback
 from tesseract_robotics_viewer import TesseractViewer
-import numpy as np
-import time
-import sys
 
-shapes_urdf="""
+shapes_urdf = """
 <robot name="multipleshapes">
-  
+
   <link name="world"/>
   <link name="cylinder_link">
     <visual>
@@ -71,47 +70,43 @@ shapes_urdf="""
 </robot>
 """
 
-TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
 
 class TesseractSupportResourceLocator(ResourceLocator):
+    """Resource locator for tesseract_support package resources."""
+
     def __init__(self):
         super().__init__()
-    
+
     def locateResource(self, url):
         try:
-            try:
-                if os.path.exists(url):
-                    return SimpleLocatedResource(url, url, self)
-            except:
-                pass
-            url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
-            if (url_match is None):
-                print("url_match failed")
+            if os.path.exists(url):
+                return SimpleLocatedResource(url, url, self)
+
+            url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$", url)
+            if url_match is None:
+                print(f"url_match failed for: {url}")
                 return None
-            if not "TESSERACT_SUPPORT_DIR" in os.environ:
+
+            tesseract_support = os.environ.get("TESSERACT_SUPPORT_DIR")
+            if tesseract_support is None:
+                print("TESSERACT_SUPPORT_DIR not set")
                 return None
-            tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
+
             filename = os.path.join(tesseract_support, os.path.normpath(url_match.group(1)))
-            ret = SimpleLocatedResource(url, filename, self)
-            return ret
-        except:
+            return SimpleLocatedResource(url, filename, self)
+        except Exception:
             traceback.print_exc()
+            return None
 
 
 t_env = Environment()
 
 # locator must be kept alive by maintaining a reference
-locator=TesseractSupportResourceLocator()
+locator = TesseractSupportResourceLocator()
 t_env.init(shapes_urdf, locator)
 
 viewer = TesseractViewer()
-
-viewer.update_environment(t_env, [0,0,0])
-
+viewer.update_environment(t_env, [0, 0, 0])
 viewer.start_serve_background()
 
-if sys.version_info[0] < 3:
-    raw_input("press enter")
-else:
-    input("press enter")
-
+input("Press Enter to exit...")

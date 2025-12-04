@@ -329,7 +329,8 @@ class TesseractViewerAIO:
         async with self._lock:
             self.scene_json = scene_glft
             self.scene_glb = scene_glb
-            self.t_env = weakref.ref(t_env)
+            # Note: nanobind objects don't support weakref, use direct reference
+            self.t_env = t_env
             await self.server.set_environment(self.scene_json, self.scene_glb)
 
     async def update_trajectory(self, trajectory):
@@ -717,9 +718,7 @@ class TesseractViewerAIO:
         async with self._lock:
             if self.t_env is None:
                 return None
-            t_env = self.t_env()
-            if t_env is None:
-                return None
+            t_env = self.t_env
             if tags is None:
                 tags = []
             tags.append("trajectory")

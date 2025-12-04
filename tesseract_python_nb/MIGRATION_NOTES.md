@@ -26,7 +26,15 @@ python examples/tesseract_kinematics_example.py
 
 ## Progress Log
 
-### 2025-12-04
+### 2025-12-04 (Session 2)
+- Updated tesseract_viewer_python examples for nanobind compatibility
+- Fixed viewer library issues: JointType enum (.value), weakref removal, cross-module types
+- Bumped nanobind version to 0.6.0 (higher than PyPI SWIG 0.5.1 to prevent version conflicts)
+- Added Environment.init() detection for URDF content vs file path
+- Updated abb_irb2400_viewer.py with trajopt code commented out + TODO notes
+- Viewer examples working: shapes_viewer.py, tesseract_material_mesh_viewer.py
+
+### 2025-12-04 (Session 1)
 - Added tesseract_task_composer bindings (core + taskflow, no planning)
 - TaskComposerPluginFactory direct class binding with createTaskComposerNode/Executor
 - Documented yaml-cpp target mismatch fix comprehensively
@@ -222,6 +230,13 @@ pip install -e .
 - [ ] tesseract_planning_example_composer.py - needs: tesseract_task_composer
 - [ ] tesseract_planning_example_no_composer.py - needs: tesseract_motion_planners_trajopt (blocked, see below)
 
+**Viewer Examples (tesseract_viewer_python/examples):**
+
+- [x] shapes_viewer.py - working
+- [x] shapes_viewer_ssl_webxr_headset.py - working (same pattern as shapes_viewer)
+- [x] tesseract_material_mesh_viewer.py - working
+- [ ] abb_irb2400_viewer.py - partially working (OMPL planning works, TrajOpt commented out with TODO)
+
 **Modules Bound:**
 - tesseract_command_language (JointWaypoint, CartesianWaypoint, StateWaypoint, *Poly types, MoveInstruction, CompositeInstruction, ProfileDictionary)
 - tesseract_motion_planners (PlannerRequest, PlannerResponse)
@@ -398,7 +413,17 @@ colcon build --merge-install --packages-skip trajopt trajopt_common trajopt_sco 
 ```
 
 ### Expansion (Remaining Modules)
-- [ ] tesseract_motion_planners_trajopt - blocked on OSQP 1.0 API incompatibility
+
+**TODO: TRAJOPT IS THE KEY PRIORITY FEATURE**
+
+TrajOpt trajectory optimization is the most important missing feature. It enables:
+- Smooth, collision-free trajectory optimization
+- Time-optimal path planning with constraints
+- Essential for real robot motion planning applications
+
+Current status: Blocked on OSQP 1.0 API incompatibility (see details below).
+
+- [ ] **tesseract_motion_planners_trajopt** - KEY PRIORITY, blocked on OSQP 1.0 API
 - [x] tesseract_task_composer - core + taskflow (no planning component - requires trajopt)
 - ~~tesseract_process_managers~~ - deprecated, replaced by tesseract_task_composer
 

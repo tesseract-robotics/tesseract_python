@@ -138,10 +138,18 @@ NB_MODULE(_tesseract_environment, m) {
                         const std::shared_ptr<const tc::ResourceLocator>& locator) {
             return self.init(tc::fs::path(urdf_path), tc::fs::path(srdf_path), locator);
         }, "urdf_path"_a, "srdf_path"_a, "locator"_a)
-        .def("init", [](te::Environment& self, const std::string& urdf_path,
+        // Init from URDF string (for inline URDF content) - SWIG compatibility
+        // Detects if it's content (starts with <) vs file path
+        .def("init", [](te::Environment& self, const std::string& urdf_or_path,
                         const std::shared_ptr<const tc::ResourceLocator>& locator) {
-            return self.init(tc::fs::path(urdf_path), locator);
-        }, "urdf_path"_a, "locator"_a)
+            // If it looks like XML content, treat as URDF string; otherwise as path
+            if (!urdf_or_path.empty() && (urdf_or_path[0] == '<' || urdf_or_path.find("<?xml") == 0 ||
+                urdf_or_path.find("<robot") != std::string::npos)) {
+                return self.init(urdf_or_path, locator);  // URDF content
+            } else {
+                return self.init(tc::fs::path(urdf_or_path), locator);  // File path
+            }
+        }, "urdf_or_path"_a, "locator"_a)
         // State methods
         .def("isInitialized", &te::Environment::isInitialized)
         .def("reset", &te::Environment::reset)
@@ -226,9 +234,17 @@ NB_MODULE(_tesseract_environment, m) {
         .def("getLinkTransform", &te::Environment::getLinkTransform, "link_name"_a)
         .def("getRelativeLinkTransform", &te::Environment::getRelativeLinkTransform,
              "from_link_name"_a, "to_link_name"_a)
-        // Link/Joint access
-        .def("getLink", &te::Environment::getLink, "name"_a)
-        .def("getJoint", &te::Environment::getJoint, "name"_a)
+        // Link/Joint access - dereference shared_ptr for cross-module compatibility
+        .def("getLink", [](const te::Environment& self, const std::string& name) -> const tsg::Link& {
+            auto ptr = self.getLink(name);
+            if (!ptr) throw std::runtime_error("Link not found: " + name);
+            return *ptr;
+        }, "name"_a, nb::rv_policy::reference_internal)
+        .def("getJoint", [](const te::Environment& self, const std::string& name) -> const tsg::Joint& {
+            auto ptr = self.getJoint(name);
+            if (!ptr) throw std::runtime_error("Joint not found: " + name);
+            return *ptr;
+        }, "name"_a, nb::rv_policy::reference_internal)
         // Groups
         .def("getGroupNames", &te::Environment::getGroupNames)
         .def("getGroupJointNames", &te::Environment::getGroupJointNames, "group_name"_a)

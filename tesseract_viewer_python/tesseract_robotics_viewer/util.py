@@ -1,4 +1,4 @@
-from tesseract_robotics.tesseract_common import JointTrajectory, Quaterniond
+from tesseract_robotics.tesseract_common import Quaterniond
 from tesseract_robotics.tesseract_command_language import CompositeInstruction, InstructionPoly_as_MoveInstructionPoly, \
     WaypointPoly_as_StateWaypointPoly
 import json

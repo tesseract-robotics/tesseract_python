@@ -1,16 +1,12 @@
+"""Mesh viewer example demonstrating GLB and DAE mesh loading with materials."""
+
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import GeneralResourceLocator
-import os
-import re
-import traceback
 from tesseract_robotics_viewer import TesseractViewer
-import numpy as np
-import time
-import sys
 
-shapes_urdf="""
+shapes_urdf = """
 <robot name="mesh_viewer">
-  
+
   <link name="world"/>
   <link name="mesh_gltf2_link">
     <visual>
@@ -49,18 +45,12 @@ shapes_urdf="""
 
 t_env = Environment()
 
-# locator_fn must be kept alive by maintaining a reference
-locator=GeneralResourceLocator()
+# GeneralResourceLocator uses TESSERACT_RESOURCE_PATH env var
+locator = GeneralResourceLocator()
 t_env.init(shapes_urdf, locator)
 
 viewer = TesseractViewer()
-
-viewer.update_environment(t_env, [0,0,0])
-
+viewer.update_environment(t_env, [0, 0, 0])
 viewer.start_serve_background()
 
-if sys.version_info[0] < 3:
-    raw_input("press enter")
-else:
-    input("press enter")
-
+input("Press Enter to exit...")

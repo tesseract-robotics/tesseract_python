@@ -170,7 +170,7 @@ def _append_link_recursive(gltf_dict, gltf_buf_io, link_map, joint_map, link_nam
     for j in child_joints:
         _tf_joint = j.parent_to_joint_origin_transform
         parentjoint_node, parentjoint_ind = _append_node(gltf_dict, _tf_joint, "jointparent_" + j.getName())
-        joint_extras = {"tesseract_joint": {"axis": list(j.axis.flatten()), "type": int(j.type), "name": j.getName()}}
+        joint_extras = {"tesseract_joint": {"axis": list(j.axis.flatten()), "type": j.type.value, "name": j.getName()}}
         joint_node, joint_id = _append_node(gltf_dict, name="joint_" + j.getName(),extras=joint_extras)
         parentjoint_node["children"] = [joint_id]
         _, j_link_ind = _append_link_recursive(gltf_dict, gltf_buf_io, link_map, joint_map, j.child_link_name, shapes_mesh_inds)
