@@ -9,6 +9,7 @@
 #include <tesseract_time_parameterization/core/time_parameterization.h>
 #include <tesseract_time_parameterization/core/instructions_trajectory.h>
 #include <tesseract_time_parameterization/totg/time_optimal_trajectory_generation.h>
+#include <tesseract_time_parameterization/isp/iterative_spline_parameterization.h>
 
 // tesseract_command_language
 #include <tesseract_command_language/composite_instruction.h>
@@ -45,4 +46,8 @@ NB_MODULE(_tesseract_time_parameterization, m) {
         .def(nb::init<double, double>(),
              "path_tolerance"_a = 0.1,
              "min_angle_change"_a = 0.001);
+
+    // ========== IterativeSplineParameterization ==========
+    nb::class_<tp::IterativeSplineParameterization, tp::TimeParameterization>(m, "IterativeSplineParameterization")
+        .def(nb::init<bool>(), "add_points"_a = true);
 }

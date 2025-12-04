@@ -210,6 +210,7 @@ find_package(tesseract_time_parameterization REQUIRED)
 add_tesseract_nanobind_extension(
   tesseract_time_parameterization
   src/tesseract_time_parameterization/tesseract_time_parameterization_bindings.cpp
+  tesseract::tesseract_time_parameterization_isp
   tesseract::tesseract_time_parameterization_totg
   tesseract::tesseract_time_parameterization_core
   tesseract::tesseract_command_language

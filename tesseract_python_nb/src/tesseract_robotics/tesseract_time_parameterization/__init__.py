@@ -5,4 +5,5 @@ __all__ = [
     "InstructionsTrajectory",
     "TimeParameterization",
     "TimeOptimalTrajectoryGeneration",
+    "IterativeSplineParameterization",
 ]
