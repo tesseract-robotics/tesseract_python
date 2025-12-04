@@ -9,6 +9,7 @@
 // tesseract_motion_planners core
 #include <tesseract_motion_planners/core/planner.h>
 #include <tesseract_motion_planners/core/types.h>
+#include <tesseract_motion_planners/core/utils.h>
 
 // tesseract_environment
 #include <tesseract_environment/environment.h>
@@ -53,4 +54,9 @@ NB_MODULE(_tesseract_motion_planners, m) {
         .def("clear", &tp::MotionPlanner::clear)
         .def_static("checkRequest", nb::overload_cast<const tp::PlannerRequest&>(&tp::MotionPlanner::checkRequest),
                     "request"_a);
+
+    // ========== Utility functions ==========
+    m.def("assignCurrentStateAsSeed", &tp::assignCurrentStateAsSeed,
+          "composite_instructions"_a, "env"_a,
+          "Assign the current environment state as seed to all CartesianWaypoints in the program");
 }

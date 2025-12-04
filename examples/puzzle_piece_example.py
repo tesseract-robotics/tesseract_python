@@ -49,6 +49,7 @@ from tesseract_robotics.tesseract_task_composer import (
     createTaskComposerPluginFactory,
     TaskComposerDataStorage,
 )
+from tesseract_robotics.tesseract_motion_planners import assignCurrentStateAsSeed
 
 # Optional: viewer for visualization (disabled in pytest/headless mode)
 try:
@@ -190,6 +191,11 @@ def main():
         program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_instruction))
 
     print(f"\nProgram created with {len(tool_poses)} Cartesian waypoints")
+
+    # Assign current state as seed for CartesianWaypoints
+    # This is required for TrajOpt to generate an initial trajectory
+    assignCurrentStateAsSeed(program, env)
+    print("Assigned current joint state as seed for Cartesian waypoints")
 
     # Create task composer factory
     factory = createTaskComposerPluginFactory(task_composer_filename, locator)

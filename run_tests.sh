@@ -3,6 +3,7 @@
 # Usage: ./run_tests.sh [pytest-args]
 # Example: ./run_tests.sh -v
 # Example: ./run_tests.sh tests/tesseract_collision/
+# Example: ./run_tests.sh --lf    # run only last failed tests
 
 set -e
 
