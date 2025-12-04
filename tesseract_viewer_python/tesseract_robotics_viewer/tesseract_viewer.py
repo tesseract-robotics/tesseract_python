@@ -20,7 +20,7 @@ from __future__ import absolute_import
 import threading
 import time
 from tesseract_robotics_viewer.tesseract_env_to_gltf import tesseract_env_to_gltf, tesseract_env_to_glb
-import pkg_resources
+import importlib_resources
 import traceback
 import os
 import numpy as np
@@ -504,8 +504,9 @@ class TesseractViewer():
         assert os.path.isdir(directory), "Invalid target directory %s" % directory
         assert self.scene_json is not None, "Tesseract environment not set"
 
-        index_html = pkg_resources.resource_string('tesseract_robotics_viewer.resources', "static/index.html")
-        tesseract_viewer_js = pkg_resources.resource_string('tesseract_robotics_viewer.resources', "static/tesseract_viewer.js")
+        static_pkg = importlib_resources.files('tesseract_robotics_viewer.resources.static')
+        index_html = (static_pkg / "index.html").read_bytes()
+        tesseract_viewer_js = (static_pkg / "tesseract_viewer.js").read_bytes()
 
         files = {"index.html": index_html, "tesseract_viewer.js": tesseract_viewer_js,
             "tesseract_scene.babylon": self.scene_json.encode()}

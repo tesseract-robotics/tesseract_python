@@ -1,5 +1,3 @@
-
-import pkg_resources
 import mimetypes
 import posixpath
 import traceback
