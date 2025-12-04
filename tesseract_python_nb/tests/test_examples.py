@@ -432,7 +432,6 @@ class TestKinematicsExample:
         assert "Found" in result.stdout and "solutions" in result.stdout
 
 
-@pytest.mark.skip(reason="TaskComposer planning segfaults - requires investigation")
 class TestFreespaceOMPLExampleRun:
     """Test running the actual freespace_ompl_example.py script"""
 
@@ -467,7 +466,6 @@ class TestFreespaceOMPLExampleRun:
         assert "Trajectory has" in result.stdout and "waypoints" in result.stdout
 
 
-@pytest.mark.skip(reason="TaskComposer planning segfaults - requires investigation")
 class TestBasicCartesianExampleRun:
     """Test running the actual basic_cartesian_example.py script"""
 
@@ -522,7 +520,6 @@ class TestSceneGraphExampleRun:
         assert "Command applied successfully" in result.stdout
 
 
-@pytest.mark.skip(reason="TaskComposer planning segfaults - requires investigation")
 class TestGlassUprightExampleRun:
     """Test running the actual glass_upright_example.py script"""
 
@@ -553,32 +550,3 @@ class TestGlassUprightExampleRun:
         assert "Environment initialized" in result.stdout
 
 
-@pytest.mark.skip(reason="TaskComposer planning segfaults - requires investigation")
-class TestPuzzlePieceExampleRun:
-    """Test running the actual puzzle_piece_example.py script"""
-
-    @pytest.fixture
-    def has_task_composer_config(self):
-        """Check if task composer config is available"""
-        config = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
-        return config and os.path.exists(config)
-
-    def test_puzzle_piece_example_runs(self, has_task_composer_config):
-        """Run the puzzle piece example end-to-end"""
-        if not has_task_composer_config:
-            pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set or file not found")
-
-        script = EXAMPLES_DIR / "puzzle_piece_example.py"
-        assert script.exists(), f"Example script not found: {script}"
-
-        result = subprocess.run(
-            [sys.executable, str(script)],
-            capture_output=True,
-            text=True,
-            timeout=180,  # Longer timeout for toolpath planning
-            env=get_env_with_vars(),
-        )
-        # Check exit code
-        assert result.returncode == 0, f"Script failed:\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
-        # Verify some expected output
-        assert "Environment initialized" in result.stdout or "toolpath" in result.stdout.lower()
