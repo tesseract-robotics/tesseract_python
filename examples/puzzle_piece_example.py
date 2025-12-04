@@ -109,11 +109,8 @@ def make_puzzle_tool_poses(locator):
             rot[:3, 2] = norm
             rot[:3, 3] = pos
 
-            # Convert to Isometry3d
-            pose = Isometry3d()
-            pose.setIdentity()
-            # Set the matrix values
-            pose.matrix()[:] = rot
+            # Convert to Isometry3d (default constructor creates identity)
+            pose = Isometry3d(rot)
 
             poses.append(pose)
 
