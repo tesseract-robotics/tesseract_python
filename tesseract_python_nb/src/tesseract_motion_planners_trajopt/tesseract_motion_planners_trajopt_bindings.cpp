@@ -18,6 +18,7 @@
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_plan_profile.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_composite_profile.h>
 #include <tesseract_motion_planners/trajopt/trajopt_collision_config.h>
+#include <tesseract_motion_planners/trajopt/trajopt_waypoint_config.h>
 
 // trajopt for CollisionEvaluatorType
 #include <trajopt/problem_description.hpp>
@@ -41,6 +42,24 @@ NB_MODULE(_tesseract_motion_planners_trajopt, m) {
         .value("SINGLE_TIMESTEP", trajopt::CollisionEvaluatorType::SINGLE_TIMESTEP)
         .value("DISCRETE_CONTINUOUS", trajopt::CollisionEvaluatorType::DISCRETE_CONTINUOUS)
         .value("CAST_CONTINUOUS", trajopt::CollisionEvaluatorType::CAST_CONTINUOUS);
+
+    // ========== TrajOptCartesianWaypointConfig ==========
+    nb::class_<tp::TrajOptCartesianWaypointConfig>(m, "TrajOptCartesianWaypointConfig")
+        .def(nb::init<>())
+        .def_rw("enabled", &tp::TrajOptCartesianWaypointConfig::enabled)
+        .def_rw("use_tolerance_override", &tp::TrajOptCartesianWaypointConfig::use_tolerance_override)
+        .def_rw("lower_tolerance", &tp::TrajOptCartesianWaypointConfig::lower_tolerance)
+        .def_rw("upper_tolerance", &tp::TrajOptCartesianWaypointConfig::upper_tolerance)
+        .def_rw("coeff", &tp::TrajOptCartesianWaypointConfig::coeff);
+
+    // ========== TrajOptJointWaypointConfig ==========
+    nb::class_<tp::TrajOptJointWaypointConfig>(m, "TrajOptJointWaypointConfig")
+        .def(nb::init<>())
+        .def_rw("enabled", &tp::TrajOptJointWaypointConfig::enabled)
+        .def_rw("use_tolerance_override", &tp::TrajOptJointWaypointConfig::use_tolerance_override)
+        .def_rw("lower_tolerance", &tp::TrajOptJointWaypointConfig::lower_tolerance)
+        .def_rw("upper_tolerance", &tp::TrajOptJointWaypointConfig::upper_tolerance)
+        .def_rw("coeff", &tp::TrajOptJointWaypointConfig::coeff);
 
     // ========== CollisionCostConfig ==========
     nb::class_<tp::CollisionCostConfig>(m, "CollisionCostConfig")
@@ -74,7 +93,11 @@ NB_MODULE(_tesseract_motion_planners_trajopt, m) {
 
     // ========== TrajOptDefaultPlanProfile ==========
     nb::class_<tp::TrajOptDefaultPlanProfile, tp::TrajOptPlanProfile>(m, "TrajOptDefaultPlanProfile")
-        .def(nb::init<>());
+        .def(nb::init<>())
+        .def_rw("cartesian_cost_config", &tp::TrajOptDefaultPlanProfile::cartesian_cost_config)
+        .def_rw("cartesian_constraint_config", &tp::TrajOptDefaultPlanProfile::cartesian_constraint_config)
+        .def_rw("joint_cost_config", &tp::TrajOptDefaultPlanProfile::joint_cost_config)
+        .def_rw("joint_constraint_config", &tp::TrajOptDefaultPlanProfile::joint_constraint_config);
 
     // ========== TrajOptDefaultCompositeProfile ==========
     nb::class_<tp::TrajOptDefaultCompositeProfile, tp::TrajOptCompositeProfile>(m, "TrajOptDefaultCompositeProfile")

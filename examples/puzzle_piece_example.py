@@ -50,13 +50,21 @@ from tesseract_robotics.tesseract_task_composer import (
     TaskComposerDataStorage,
 )
 from tesseract_robotics.tesseract_motion_planners import assignCurrentStateAsSeed
+from tesseract_robotics.tesseract_motion_planners_trajopt import (
+    TrajOptDefaultPlanProfile,
+    TrajOptDefaultCompositeProfile,
+    CollisionEvaluatorType,
+    ProfileDictionary_addTrajOptPlanProfile,
+    ProfileDictionary_addTrajOptCompositeProfile,
+)
 
-# Optional: viewer for visualization (disabled in pytest/headless mode)
-try:
-    from tesseract_robotics_viewer import TesseractViewer
-    HAS_VIEWER = os.environ.get("TESSERACT_HEADLESS", "0") != "1" and "pytest" not in sys.modules
-except ImportError:
-    HAS_VIEWER = False
+# Optional: viewer for visualization (skip import in headless/pytest mode)
+TesseractViewer = None
+if os.environ.get("TESSERACT_HEADLESS", "0") != "1" and "pytest" not in sys.modules:
+    try:
+        from tesseract_robotics_viewer import TesseractViewer
+    except ImportError:
+        pass
 
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
@@ -131,9 +139,9 @@ def main():
     # Initialize resource locator and environment
     locator = GeneralResourceLocator()
 
-    # Load KUKA IIWA robot (puzzle piece example uses same robot)
-    urdf_url = "package://tesseract_support/urdf/lbr_iiwa_14_r820.urdf"
-    srdf_url = "package://tesseract_support/urdf/lbr_iiwa_14_r820.srdf"
+    # Load puzzle piece workcell (KUKA + grinder + puzzle piece part)
+    urdf_url = "package://tesseract_support/urdf/puzzle_piece_workcell.urdf"
+    srdf_url = "package://tesseract_support/urdf/puzzle_piece_workcell.srdf"
     urdf_path = FilesystemPath(locator.locateResource(urdf_url).getFilePath())
     srdf_path = FilesystemPath(locator.locateResource(srdf_url).getFilePath())
 
@@ -142,7 +150,7 @@ def main():
         print("Failed to initialize environment")
         return False
 
-    print(f"Environment initialized with robot: {env.getName()}")
+    print(f"Environment initialized: {env.getName()}")
 
     # Define joint names for KUKA IIWA
     joint_names = [f"joint_a{i}" for i in range(1, 8)]
@@ -154,32 +162,30 @@ def main():
     env.setState(joint_names, joint_pos)
 
     # Load tool poses from CSV
-    print("\nLoading toolpath from puzzle_bent.csv...")
     try:
         tool_poses = make_puzzle_tool_poses(locator)
     except Exception as e:
         print(f"Failed to load toolpath: {e}")
         return False
 
-    print(f"Loaded {len(tool_poses)} tool poses")
+    print(f"Loaded {len(tool_poses)} tool poses from CSV")
 
     if len(tool_poses) == 0:
         print("No poses loaded from CSV!")
         return False
 
     # Create manipulator info
-    # Note: The puzzle piece example uses a custom frame "grinder_frame" as TCP
-    # and "part" as working frame. For simplicity we use standard frames.
     manip_info = ManipulatorInfo()
     manip_info.manipulator = "manipulator"
-    manip_info.working_frame = "base_link"
-    manip_info.tcp_frame = "tool0"
+    manip_info.working_frame = "part"
+    manip_info.tcp_frame = "grinder_frame"
 
     # Create program
     program = CompositeInstruction("DEFAULT")
     program.setManipulatorInfo(manip_info)
 
-    # Add Cartesian waypoints from toolpath
+    # Add Cartesian waypoints from toolpath (limit to 12 for faster testing)
+    tool_poses = tool_poses[:12]
     for i, pose in enumerate(tool_poses):
         wp = CartesianWaypoint(pose)
         plan_instruction = MoveInstruction(
@@ -190,12 +196,10 @@ def main():
         plan_instruction.setDescription(f"waypoint_{i}")
         program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_instruction))
 
-    print(f"\nProgram created with {len(tool_poses)} Cartesian waypoints")
+    print(f"Program has {len(tool_poses)} Cartesian waypoints")
 
     # Assign current state as seed for CartesianWaypoints
-    # This is required for TrajOpt to generate an initial trajectory
     assignCurrentStateAsSeed(program, env)
-    print("Assigned current joint state as seed for Cartesian waypoints")
 
     # Create task composer factory
     factory = createTaskComposerPluginFactory(task_composer_filename, locator)
@@ -208,8 +212,27 @@ def main():
     output_key = task.getOutputKeys().get("program")
     input_key = task.getInputKeys().get("planning_input")
 
-    # Create profile dictionary (using defaults)
+    # Create profile dictionary with custom TrajOpt profiles (like C++ example)
     profiles = ProfileDictionary()
+
+    # Configure TrajOpt plan profile
+    trajopt_plan_profile = TrajOptDefaultPlanProfile()
+    trajopt_plan_profile.joint_cost_config.enabled = False
+    trajopt_plan_profile.cartesian_cost_config.enabled = False
+    trajopt_plan_profile.cartesian_constraint_config.enabled = True
+    trajopt_plan_profile.cartesian_constraint_config.coeff = np.array([10.0, 10.0, 10.0, 10.0, 10.0, 0.0])
+
+    # Configure TrajOpt composite profile
+    trajopt_composite_profile = TrajOptDefaultCompositeProfile()
+    trajopt_composite_profile.collision_constraint_config.enabled = False
+    trajopt_composite_profile.collision_cost_config.enabled = True
+    trajopt_composite_profile.collision_cost_config.safety_margin = 0.025
+    trajopt_composite_profile.collision_cost_config.type = CollisionEvaluatorType.SINGLE_TIMESTEP
+    trajopt_composite_profile.collision_cost_config.coeff = 20.0
+
+    # Add profiles to dictionary
+    ProfileDictionary_addTrajOptPlanProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "CARTESIAN", trajopt_plan_profile)
+    ProfileDictionary_addTrajOptCompositeProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_composite_profile)
 
     # Create task data storage
     task_data = TaskComposerDataStorage()
@@ -217,8 +240,7 @@ def main():
     task_data.setData("environment", AnyPoly_wrap_EnvironmentConst(env))
     task_data.setData("profiles", AnyPoly_wrap_ProfileDictionary(profiles))
 
-    print("\nRunning TrajOpt planner for puzzle piece path...")
-    print("(This may take a while for many waypoints)")
+    print("Running TrajOpt planner...")
 
     # Run the task (nanobind returns the node directly, no .get() needed)
     future = executor.run(task, task_data)
@@ -234,10 +256,10 @@ def main():
     results = AnyPoly_as_CompositeInstruction(future.context.data_storage.getData(output_key))
 
     # Print trajectory summary
-    print(f"\nTrajectory has {len(results)} waypoints")
+    print(f"Trajectory has {len(results)} waypoints")
 
     # Optional: visualize with viewer
-    if HAS_VIEWER:
+    if TesseractViewer is not None:
         print("\nStarting viewer at http://localhost:8000")
         viewer = TesseractViewer()
         viewer.update_environment(env, [0, 0, 0])
@@ -246,7 +268,6 @@ def main():
         input("Press Enter to exit...")
 
     # Explicit cleanup to prevent segfault at interpreter shutdown
-    # TaskComposer objects must be destroyed in proper order
     del future
     del task_data
     del task
