@@ -33,6 +33,9 @@ NB_MODULE(_tesseract_motion_planners_trajopt, m) {
     // Import Profile type from tesseract_command_language for cross-module inheritance
     auto cl_module = nb::module_::import_("tesseract_robotics.tesseract_command_language._tesseract_command_language");
 
+    // Import tesseract_collision for ContactTestType (used by TrajOptDefaultCompositeProfile)
+    nb::module_::import_("tesseract_robotics.tesseract_collision._tesseract_collision");
+
     // ========== trajopt::CollisionEvaluatorType enum ==========
     nb::enum_<trajopt::CollisionEvaluatorType>(m, "CollisionEvaluatorType")
         .value("SINGLE_TIMESTEP", trajopt::CollisionEvaluatorType::SINGLE_TIMESTEP)

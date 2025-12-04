@@ -21,10 +21,8 @@ from tesseract_robotics.tesseract_motion_planners import PlannerRequest
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 from tesseract_robotics.tesseract_motion_planners_ompl import OMPLMotionPlanner, OMPLRealVectorPlanProfile, \
     ProfileDictionary_addOMPLProfile
-# TODO: Time parameterization currently has a type mismatch issue - OMPL returns JointWaypointPoly
-# but InstructionsTrajectory expects StateWaypointPoly. See MIGRATION_NOTES.md
-# from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
-#     InstructionsTrajectory
+from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
+    InstructionsTrajectory
 
 # TrajOpt imports - optional, skip if not available
 try:
@@ -143,19 +141,20 @@ def main():
         print("TrajOpt not available - using interpolated OMPL results")
         final_results_instruction = interpolated_results_instruction
 
-    # TODO: Time parameterization currently disabled due to C++ API limitation
-    # InstructionsTrajectory requires StateWaypointPoly, but OMPL returns JointWaypointPoly.
-    # This is a tesseract C++ limitation, not a bindings issue.
-    # When using StateWaypoints, limits should be (n_joints, 2) with [min, max] columns:
-    #
-    # from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, InstructionsTrajectory
-    # time_parameterization = TimeOptimalTrajectoryGeneration()
-    # instructions_trajectory = InstructionsTrajectory(final_results_instruction)
-    # max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078])
-    # vel_limits = np.column_stack((-max_velocity, max_velocity))
-    # acc_limits = np.column_stack((-np.ones(6), np.ones(6)))
-    # jerk_limits = np.column_stack((-np.ones(6), np.ones(6)))
-    # assert time_parameterization.compute(instructions_trajectory, vel_limits, acc_limits, jerk_limits)
+    # Time parameterization - only works with TrajOpt output (StateWaypointPoly)
+    # OMPL returns JointWaypointPoly which InstructionsTrajectory doesn't support
+    if trajopt_success:
+        print("Running time parameterization on TrajOpt results...")
+        time_parameterization = TimeOptimalTrajectoryGeneration()
+        instructions_trajectory = InstructionsTrajectory(final_results_instruction)
+        max_velocity = np.array([2.088, 2.082, 3.27, 3.6, 3.3, 3.078])
+        vel_limits = np.column_stack((-max_velocity, max_velocity))
+        acc_limits = np.column_stack((-np.ones(6), np.ones(6)))
+        jerk_limits = np.column_stack((-np.ones(6), np.ones(6)))
+        if time_parameterization.compute(instructions_trajectory, vel_limits, acc_limits, jerk_limits):
+            print("Time parameterization successful!")
+        else:
+            print("Time parameterization failed")
 
     # Trajectory visualization - util.py now supports both StateWaypointPoly and JointWaypointPoly
     viewer.update_trajectory(final_results_instruction)

@@ -86,15 +86,50 @@ class TestTrajOptProfiles:
     def test_default_plan_profile(self):
         profile = TrajOptDefaultPlanProfile()
         assert profile is not None
+        # Test base class methods
+        assert profile.getKey() is not None
+        assert TrajOptDefaultPlanProfile.getStaticKey() is not None
 
     def test_default_composite_profile(self):
         profile = TrajOptDefaultCompositeProfile()
         assert profile is not None
+        # Test base class methods
+        assert profile.getKey() is not None
+        assert TrajOptDefaultCompositeProfile.getStaticKey() is not None
         # Test default attributes
         assert hasattr(profile, "smooth_velocities")
         assert hasattr(profile, "smooth_accelerations")
         assert hasattr(profile, "smooth_jerks")
         assert hasattr(profile, "collision_cost_config")
+
+    def test_default_composite_profile_all_attributes(self):
+        """Test all TrajOptDefaultCompositeProfile attributes."""
+        profile = TrajOptDefaultCompositeProfile()
+
+        # Smoothing attributes
+        profile.smooth_velocities = True
+        profile.smooth_accelerations = True
+        profile.smooth_jerks = True
+        assert profile.smooth_velocities is True
+        assert profile.smooth_accelerations is True
+        assert profile.smooth_jerks is True
+
+        # Singularity avoidance
+        profile.avoid_singularity = True
+        profile.avoid_singularity_coeff = 5.0
+        assert profile.avoid_singularity is True
+        assert profile.avoid_singularity_coeff == 5.0
+
+        # Segment length parameters
+        profile.longest_valid_segment_fraction = 0.01
+        profile.longest_valid_segment_length = 0.1
+        assert profile.longest_valid_segment_fraction == 0.01
+        assert profile.longest_valid_segment_length == 0.1
+
+        # Collision configs
+        assert hasattr(profile, "collision_cost_config")
+        assert hasattr(profile, "collision_constraint_config")
+        assert hasattr(profile, "contact_test_type")
 
     def test_collision_cost_config(self):
         config = CollisionCostConfig()
@@ -106,6 +141,23 @@ class TestTrajOptProfiles:
         assert config.safety_margin == 0.025
         assert config.type == CollisionEvaluatorType.DISCRETE_CONTINUOUS
 
+    def test_collision_cost_config_all_attributes(self):
+        """Test all CollisionCostConfig attributes."""
+        config = CollisionCostConfig()
+        config.enabled = True
+        config.use_weighted_sum = True
+        config.type = CollisionEvaluatorType.CAST_CONTINUOUS
+        config.safety_margin = 0.05
+        config.safety_margin_buffer = 0.01
+        config.coeff = 25.0
+
+        assert config.enabled is True
+        assert config.use_weighted_sum is True
+        assert config.type == CollisionEvaluatorType.CAST_CONTINUOUS
+        assert config.safety_margin == 0.05
+        assert config.safety_margin_buffer == 0.01
+        assert config.coeff == 25.0
+
     def test_collision_constraint_config(self):
         config = CollisionConstraintConfig()
         assert config is not None
@@ -114,10 +166,49 @@ class TestTrajOptProfiles:
         assert config.enabled is True
         assert config.safety_margin == 0.01
 
+    def test_collision_constraint_config_all_attributes(self):
+        """Test all CollisionConstraintConfig attributes."""
+        config = CollisionConstraintConfig()
+        config.enabled = True
+        config.use_weighted_sum = False
+        config.type = CollisionEvaluatorType.SINGLE_TIMESTEP
+        config.safety_margin = 0.02
+        config.safety_margin_buffer = 0.005
+        config.coeff = 10.0
+
+        assert config.enabled is True
+        assert config.use_weighted_sum is False
+        assert config.type == CollisionEvaluatorType.SINGLE_TIMESTEP
+        assert config.safety_margin == 0.02
+        assert config.safety_margin_buffer == 0.005
+        assert config.coeff == 10.0
+
     def test_collision_evaluator_type_enum(self):
         assert CollisionEvaluatorType.SINGLE_TIMESTEP is not None
         assert CollisionEvaluatorType.DISCRETE_CONTINUOUS is not None
         assert CollisionEvaluatorType.CAST_CONTINUOUS is not None
+
+    def test_composite_profile_with_collision_configs(self):
+        """Test setting collision configs on composite profile."""
+        profile = TrajOptDefaultCompositeProfile()
+
+        # Create and configure collision cost
+        cost_config = CollisionCostConfig()
+        cost_config.enabled = True
+        cost_config.type = CollisionEvaluatorType.DISCRETE_CONTINUOUS
+        cost_config.safety_margin = 0.025
+        cost_config.coeff = 20.0
+        profile.collision_cost_config = cost_config
+
+        # Create and configure collision constraint
+        constraint_config = CollisionConstraintConfig()
+        constraint_config.enabled = False
+        constraint_config.safety_margin = 0.01
+        profile.collision_constraint_config = constraint_config
+
+        # Verify assignment
+        assert profile.collision_cost_config.enabled is True
+        assert profile.collision_constraint_config.enabled is False
 
 
 @pytest.mark.skipif(not TRAJOPT_AVAILABLE, reason="TrajOpt bindings not available")
@@ -128,6 +219,13 @@ class TestTrajOptMotionPlanner:
         planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
         assert planner is not None
         assert planner.getName() == TRAJOPT_DEFAULT_NAMESPACE
+
+    def test_terminate_and_clear(self):
+        """Test terminate() and clear() methods."""
+        planner = TrajOptMotionPlanner(TRAJOPT_DEFAULT_NAMESPACE)
+        # These should not raise exceptions
+        planner.terminate()
+        planner.clear()
 
 
 @pytest.mark.skipif(not TRAJOPT_AVAILABLE, reason="TrajOpt bindings not available")
