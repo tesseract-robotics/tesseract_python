@@ -129,3 +129,12 @@ def test_car_seat_example():
         pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
     module = _load_module("car_seat_example", os.path.join(CORE_EXAMPLES, "car_seat_example.py"))
     module.main()
+
+
+@pytest.mark.planning
+def test_puzzle_piece_auxillary_axes_example():
+    """Test puzzle piece auxiliary axes - demonstrates 9-DOF planning (7 arm + 2 positioner)."""
+    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
+        pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
+    module = _load_module("puzzle_piece_auxillary_axes_example", os.path.join(CORE_EXAMPLES, "puzzle_piece_auxillary_axes_example.py"))
+    module.main()
