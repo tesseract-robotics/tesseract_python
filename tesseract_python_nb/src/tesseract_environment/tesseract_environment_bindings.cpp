@@ -275,5 +275,7 @@ NB_MODULE(_tesseract_environment, m) {
         .def("getCollisionMarginData", &te::Environment::getCollisionMarginData)
         // Locator
         .def("setResourceLocator", &te::Environment::setResourceLocator, "locator"_a)
-        .def("getResourceLocator", &te::Environment::getResourceLocator);
+        .def("getResourceLocator", &te::Environment::getResourceLocator)
+        // Kinematics information (from SRDF)
+        .def("getKinematicsInformation", &te::Environment::getKinematicsInformation);
 }
