@@ -15,7 +15,7 @@ This will:
 - Install Python build tools (nanobind, scikit-build-core, pytest)
 - Install colcon and vcstool
 
-**macOS users:** Also run `brew install libomp swig` for remaining dependencies.
+**macOS users:** Also run `brew install libomp` for OpenMP support.
 
 ### Step 2: Activate Environment
 
@@ -33,14 +33,13 @@ cd ..  # Back to tesseract_python_nanobind
 This will:
 - Create `ws/` workspace
 - Import tesseract dependencies via vcstool
-- Build with colcon (takes 20-40 minutes)
+- Build with colcon
 - Install to `ws/install/`
 
 ### Step 4: Build Python Bindings
 
 ```bash
 cd tesseract_python_nb
-export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:$(pwd)/../ws/install
 pip install -e .
 ```
 
@@ -59,15 +58,11 @@ pytest tests/
 ### Using environment.yml
 
 ```bash
-# Create environment
 conda env create -f environment.yml
 conda activate tesseract_nb
 
 # macOS: Install brew packages
-brew install libomp swig automake autoconf libtool
-
-# Build tesseract C++ (follow Step 3 above)
-# Build Python bindings (follow Step 4 above)
+brew install libomp automake autoconf libtool
 ```
 
 ### From Scratch
@@ -79,7 +74,11 @@ See [DEPENDENCIES.md](DEPENDENCIES.md) for detailed instructions.
 ## Verify Installation
 
 ```python
-python -c "from tesseract_robotics import tesseract_common; print('Success!')"
+from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_common import GeneralResourceLocator
+
+env = Environment()
+print("Success!")
 ```
 
 ---
@@ -88,14 +87,10 @@ python -c "from tesseract_robotics import tesseract_common; print('Success!')"
 
 ### CMake can't find tesseract_common
 
-**Solution:** Set CMAKE_PREFIX_PATH:
+**Solution:** Ensure C++ libs are built and CMAKE_PREFIX_PATH is set:
 ```bash
-export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:$(pwd)/../ws/install
-```
-
-Or source the colcon workspace:
-```bash
-source ../ws/install/setup.bash
+export CMAKE_PREFIX_PATH=$(pwd)/../ws/install:$CONDA_PREFIX
+pip install -e .
 ```
 
 ### ImportError: cannot import _tesseract_common
@@ -110,16 +105,19 @@ pip install -e . --force-reinstall --no-deps
 **Solution:** Export test data paths:
 ```bash
 export TESSERACT_SUPPORT_DIR=$(pwd)/../ws/src/tesseract/tesseract_support
-export TESSERACT_TASK_COMPOSER_DIR=$(pwd)/../ws/src/tesseract_planning/tesseract_task_composer
+```
+
+### macOS: Library not loaded errors
+
+**Solution:** Set DYLD_LIBRARY_PATH:
+```bash
+export DYLD_LIBRARY_PATH=$(pwd)/../ws/install/lib:$DYLD_LIBRARY_PATH
 ```
 
 ---
 
 ## Next Steps
 
-Once prototype works:
-1. Expand to tesseract_geometry module
-2. Continue through remaining 15 modules
-3. Create wheels for distribution
-
-See [MIGRATION_NOTES.md](MIGRATION_NOTES.md) for migration patterns.
+- See [MIGRATION_NOTES.md](MIGRATION_NOTES.md) for API differences from SWIG
+- Check `examples/` for usage patterns
+- Run `pytest tests/ -v` for full test suite

@@ -94,3 +94,46 @@ There are reference leaks warnings at exit. These are likely due to:
 - Cross-module type references not being released properly
 
 These don't affect functionality but should be investigated and fixed.
+
+## TrajOpt Planner
+
+TrajOpt bindings are optional and auto-detected at build time.
+
+### Usage
+
+```python
+from tesseract_robotics.tesseract_motion_planners_trajopt import (
+    TrajOptMotionPlanner,
+    TrajOptDefaultPlanProfile,
+    TrajOptDefaultCompositeProfile,
+    CollisionCostConfig,
+    CollisionEvaluatorType,
+    ProfileDictionary_addTrajOptPlanProfile,
+    ProfileDictionary_addTrajOptCompositeProfile,
+)
+
+# Create profiles
+plan_profile = TrajOptDefaultPlanProfile()
+composite_profile = TrajOptDefaultCompositeProfile()
+composite_profile.smooth_velocities = True
+
+# Configure collision avoidance
+cost_config = CollisionCostConfig()
+cost_config.enabled = True
+cost_config.type = CollisionEvaluatorType.DISCRETE_CONTINUOUS
+cost_config.safety_margin = 0.025
+composite_profile.collision_cost_config = cost_config
+
+# Register profiles
+profiles = ProfileDictionary()
+ProfileDictionary_addTrajOptPlanProfile(profiles, "TrajOptMotionPlannerTask", "DEFAULT", plan_profile)
+ProfileDictionary_addTrajOptCompositeProfile(profiles, "TrajOptMotionPlannerTask", "DEFAULT", composite_profile)
+
+# Solve
+planner = TrajOptMotionPlanner("TrajOptMotionPlannerTask")
+response = planner.solve(request)
+```
+
+### Time Parameterization
+
+TrajOpt output uses `StateWaypointPoly`, which is compatible with time parameterization (unlike OMPL which returns `JointWaypointPoly`).

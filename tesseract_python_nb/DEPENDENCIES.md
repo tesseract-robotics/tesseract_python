@@ -2,22 +2,16 @@
 
 ## C++ Libraries Required
 
-The tesseract Python bindings require the tesseract C++ libraries to be installed and findable by CMake.
+The tesseract Python bindings require the tesseract C++ libraries to be installed.
 
 ### Install Tesseract C++
 
 From the parent directory (tesseract_python_nanobind):
 
 ```bash
-# Option 1: Using colcon (ROS workflow)
-mkdir -p workspace/src
-cd workspace/src
-vcs import < ../../dependencies.rosinstall
-cd ..
-colcon build
-
-# Source the workspace
-source install/setup.bash
+# Using colcon
+source env.sh
+cd ws && colcon build --merge-install
 ```
 
 ### Required Packages
@@ -25,44 +19,52 @@ source install/setup.bash
 Based on `dependencies.rosinstall`:
 - tesseract 0.28.0
 - tesseract_planning 0.28.1
-- trajopt 0.28.0
+- trajopt 0.28.0 (optional, for TrajOpt planner)
 - descartes_light 0.4.5
 - opw_kinematics 0.5.2
-- ifopt 2.1.3
 - ruckig 0.9.2
 - ros_industrial_cmake_boilerplate 0.7.1
 
 ### System Dependencies
 
 ```bash
-# macOS
-brew install cmake eigen console-bridge
+# macOS (via Homebrew + conda)
+brew install libomp
+conda install eigen boost bullet fcl ompl console-bridge
 
 # Ubuntu
-sudo apt install cmake libeigen3-dev libconsole-bridge-dev
+sudo apt install cmake libeigen3-dev libconsole-bridge-dev \
+    libboost-all-dev libbullet-dev libfcl-dev libompl-dev
 ```
 
-## Build Status
+## Python Dependencies
 
-Current error:
-```
-CMake Error: Could not find a package configuration file provided by
-"tesseract_common" with any of the following names:
-  tesseract_commonConfig.cmake
-  tesseract_common-config.cmake
-```
-
-**Solution:** Build tesseract C++ libraries first, then build Python bindings.
-
-## Alternative: Development Mode
-
-For development without full tesseract installation, you could:
-1. Mock the tesseract_common library for testing
-2. Use FetchContent to download tesseract during build
-3. Point CMAKE_PREFIX_PATH to an existing tesseract installation
-
-Example:
 ```bash
-export CMAKE_PREFIX_PATH=/path/to/tesseract/install
-pip install -e .
+pip install nanobind scikit-build-core numpy pytest
+```
+
+## Environment Setup
+
+```bash
+# Activate conda environment
+conda activate tesseract_nb
+
+# Set library paths (macOS)
+export CMAKE_PREFIX_PATH=$PWD/ws/install:$CONDA_PREFIX
+export DYLD_LIBRARY_PATH=$PWD/ws/install/lib:$DYLD_LIBRARY_PATH
+
+# Build Python bindings
+pip install -e tesseract_python_nb
+```
+
+## Optional: TrajOpt Support
+
+TrajOpt requires OSQP 0.6.x (not 1.0.x). The bundled `trajopt_ext/osqp` builds 0.6.3 automatically if no compatible version is found.
+
+```bash
+# If OSQP 1.0.x is installed, remove it
+conda remove libosqp osqp osqp-eigen
+
+# Then rebuild with TrajOpt
+colcon build --merge-install --cmake-args -DTESSERACT_BUILD_TRAJOPT=ON
 ```
