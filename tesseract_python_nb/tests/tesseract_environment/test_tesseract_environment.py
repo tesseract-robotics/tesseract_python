@@ -96,3 +96,15 @@ def get_environment():
 
 def test_env():
     get_environment()
+
+
+def test_anypoly_wrap_environment_const():
+    """Test wrapping Environment in AnyPoly for TaskComposerDataStorage."""
+    from tesseract_robotics.tesseract_environment import AnyPoly_wrap_EnvironmentConst
+
+    env = get_environment()
+    # AnyPoly_wrap_EnvironmentConst expects shared_ptr<const Environment>
+    # The environment is already a shared_ptr from Python's perspective
+    any_poly = AnyPoly_wrap_EnvironmentConst(env)
+    assert any_poly is not None
+    assert not any_poly.isNull()

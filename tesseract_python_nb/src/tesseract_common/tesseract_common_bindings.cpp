@@ -82,6 +82,11 @@ NB_MODULE(_tesseract_common, m) {
             result.rotate(q);
             return result;
         })
+        .def("__mul__", [](const Eigen::Isometry3d& self, const Eigen::AngleAxisd& aa) {
+            Eigen::Isometry3d result = self;
+            result.rotate(aa);
+            return result;
+        })
         .def("__mul__", [](const Eigen::Isometry3d& self, const Eigen::Vector3d& v) {
             return self * v;
         });

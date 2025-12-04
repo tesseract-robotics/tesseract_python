@@ -318,7 +318,9 @@ NB_MODULE(_tesseract_command_language, m) {
             return self.getManipulatorInfo();
         })
         .def("setManipulatorInfo", &tp::MoveInstruction::setManipulatorInfo, "info"_a)
-        .def("print", &tp::MoveInstruction::print, "prefix"_a = "");
+        .def("print", &tp::MoveInstruction::print, "prefix"_a = "")
+        .def("getDescription", &tp::MoveInstruction::getDescription)
+        .def("setDescription", &tp::MoveInstruction::setDescription, "description"_a);
 
     // ========== CompositeInstruction ==========
     nb::class_<tp::CompositeInstruction>(m, "CompositeInstruction")

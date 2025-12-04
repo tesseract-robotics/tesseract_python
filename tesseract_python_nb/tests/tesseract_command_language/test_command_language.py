@@ -294,3 +294,103 @@ class TestABBExampleWorkflow:
         assert program.getProfile() == "DEFAULT"
         result_info = program.getManipulatorInfo()
         assert result_info.tcp_frame == "tool0"
+
+
+class TestMoveInstructionDescription:
+    """Test MoveInstruction.setDescription and getDescription methods."""
+
+    def test_set_get_description(self):
+        """Test setDescription and getDescription on MoveInstruction."""
+        transform = Isometry3d.Identity() * Translation3d(0.5, 0.5, 0.5)
+        wp = CartesianWaypoint(transform)
+        poly_wp = CartesianWaypointPoly_wrap_CartesianWaypoint(wp)
+        mi = MoveInstruction(poly_wp, MoveInstructionType_FREESPACE, "DEFAULT")
+
+        # Set description
+        mi.setDescription("test_waypoint_1")
+        assert mi.getDescription() == "test_waypoint_1"
+
+        # Change description
+        mi.setDescription("updated_waypoint")
+        assert mi.getDescription() == "updated_waypoint"
+
+    def test_description_on_move_instruction_poly(self):
+        """Test setDescription on MoveInstructionPoly."""
+        transform = Isometry3d.Identity() * Translation3d(0.5, 0.5, 0.5)
+        wp = CartesianWaypoint(transform)
+        poly_wp = CartesianWaypointPoly_wrap_CartesianWaypoint(wp)
+        mi = MoveInstruction(poly_wp, MoveInstructionType_FREESPACE, "DEFAULT")
+        mi_poly = MoveInstructionPoly_wrap_MoveInstruction(mi)
+
+        # MoveInstructionPoly also has setDescription
+        mi_poly.setDescription("poly_description")
+        assert mi_poly.getDescription() == "poly_description"
+
+
+class TestAnyPolyWrappers:
+    """Test AnyPoly wrapper functions for TaskComposerDataStorage."""
+
+    def test_anypoly_wrap_composite_instruction(self):
+        """Test wrapping CompositeInstruction in AnyPoly."""
+        from tesseract_robotics.tesseract_command_language import (
+            AnyPoly_wrap_CompositeInstruction,
+        )
+
+        program = CompositeInstruction("DEFAULT")
+        # Add some instructions
+        wp = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.5, 0.5, 0.5))
+        mi = MoveInstruction(
+            CartesianWaypointPoly_wrap_CartesianWaypoint(wp),
+            MoveInstructionType_FREESPACE,
+            "DEFAULT",
+        )
+        program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(mi))
+
+        # Wrap in AnyPoly
+        any_poly = AnyPoly_wrap_CompositeInstruction(program)
+        assert any_poly is not None
+        assert not any_poly.isNull()
+
+    def test_anypoly_wrap_profile_dictionary(self):
+        """Test wrapping ProfileDictionary in AnyPoly."""
+        from tesseract_robotics.tesseract_command_language import (
+            AnyPoly_wrap_ProfileDictionary,
+        )
+
+        profiles = ProfileDictionary()
+        any_poly = AnyPoly_wrap_ProfileDictionary(profiles)
+        assert any_poly is not None
+        assert not any_poly.isNull()
+
+    def test_anypoly_roundtrip_composite_instruction(self):
+        """Test wrapping and unwrapping CompositeInstruction via AnyPoly."""
+        from tesseract_robotics.tesseract_command_language import (
+            AnyPoly_wrap_CompositeInstruction,
+            AnyPoly_as_CompositeInstruction,
+        )
+
+        # Create program with specific content
+        program = CompositeInstruction("MY_PROFILE")
+        wp1 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(1.0, 0.0, 0.0))
+        wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.0, 1.0, 0.0))
+        mi1 = MoveInstruction(
+            CartesianWaypointPoly_wrap_CartesianWaypoint(wp1),
+            MoveInstructionType_FREESPACE,
+            "DEFAULT",
+        )
+        mi2 = MoveInstruction(
+            CartesianWaypointPoly_wrap_CartesianWaypoint(wp2),
+            MoveInstructionType_LINEAR,
+            "DEFAULT",
+        )
+        program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(mi1))
+        program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(mi2))
+
+        # Wrap
+        any_poly = AnyPoly_wrap_CompositeInstruction(program)
+
+        # Unwrap
+        recovered = AnyPoly_as_CompositeInstruction(any_poly)
+        assert recovered is not None
+        assert len(recovered) == 2
+        assert recovered.getProfile() == "MY_PROFILE"

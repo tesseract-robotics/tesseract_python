@@ -13,4 +13,10 @@ __all__ = [
     "TaskComposerPluginFactory",
     # Factory function (backwards compat)
     "createTaskComposerPluginFactory",
+    # AnyPoly and wrapper functions
+    "AnyPoly",
+    "AnyPoly_wrap_CompositeInstruction",
+    "AnyPoly_wrap_ProfileDictionary",
+    "AnyPoly_wrap_EnvironmentConst",
+    "AnyPoly_as_CompositeInstruction",
 ]

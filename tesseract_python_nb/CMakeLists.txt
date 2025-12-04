@@ -244,6 +244,8 @@ add_tesseract_nanobind_extension(
   src/tesseract_task_composer/tesseract_task_composer_bindings.cpp
   tesseract::tesseract_task_composer
   tesseract::tesseract_task_composer_taskflow
+  tesseract::tesseract_environment
+  tesseract::tesseract_command_language
   tesseract::tesseract_common
 )
 

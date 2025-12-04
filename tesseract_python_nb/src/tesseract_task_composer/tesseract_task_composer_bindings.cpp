@@ -27,7 +27,15 @@
 #include <tesseract_common/resource_locator.h>
 #include <tesseract_common/filesystem.h>
 
+// tesseract_environment for Environment wrapper
+#include <tesseract_environment/environment.h>
+
+// tesseract_command_language for CompositeInstruction and ProfileDictionary wrappers
+#include <tesseract_command_language/composite_instruction.h>
+#include <tesseract_command_language/profile_dictionary.h>
+
 namespace tp = tesseract_planning;
+namespace te = tesseract_environment;
 namespace tc = tesseract_common;
 
 NB_MODULE(_tesseract_task_composer, m) {
@@ -155,4 +163,30 @@ NB_MODULE(_tesseract_task_composer, m) {
         return std::make_unique<tp::TaskComposerPluginFactory>(config, locator);
     }, "config"_a, "locator"_a,
     "Create a TaskComposerPluginFactory from a config file and resource locator");
+
+    // ========== AnyPoly ==========
+    // Bind AnyPoly class for type-erased data storage
+    nb::class_<tc::AnyPoly>(m, "AnyPoly")
+        .def(nb::init<>())
+        .def("isNull", &tc::AnyPoly::isNull);
+
+    // ========== AnyPoly wrapper functions for common types ==========
+    // These wrap specific types into AnyPoly for use with TaskComposerDataStorage.setData()
+
+    m.def("AnyPoly_wrap_CompositeInstruction", [](const tp::CompositeInstruction& ci) {
+        return tc::AnyPoly(ci);
+    }, "instruction"_a, "Wrap a CompositeInstruction into an AnyPoly");
+
+    m.def("AnyPoly_wrap_ProfileDictionary", [](std::shared_ptr<tp::ProfileDictionary> pd) {
+        return tc::AnyPoly(pd);
+    }, "profiles"_a, "Wrap a ProfileDictionary shared_ptr into an AnyPoly");
+
+    m.def("AnyPoly_wrap_EnvironmentConst", [](std::shared_ptr<const te::Environment> env) {
+        return tc::AnyPoly(env);
+    }, "environment"_a, "Wrap a const Environment shared_ptr into an AnyPoly");
+
+    // ========== AnyPoly unwrap functions ==========
+    m.def("AnyPoly_as_CompositeInstruction", [](const tc::AnyPoly& ap) -> tp::CompositeInstruction {
+        return ap.as<tp::CompositeInstruction>();
+    }, "any_poly"_a, "Extract a CompositeInstruction from an AnyPoly");
 }
