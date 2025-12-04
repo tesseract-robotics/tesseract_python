@@ -58,7 +58,6 @@ def test_scene_graph_example():
     module.main()
 
 
-@pytest.mark.skip(reason="TaskComposer planning segfaults - requires investigation")
 def test_freespace_ompl_example():
     """Test freespace OMPL example."""
     if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):

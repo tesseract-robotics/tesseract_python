@@ -13,6 +13,7 @@ Required environment variables:
 
 import os
 import sys
+import gc
 import numpy as np
 
 from tesseract_robotics.tesseract_common import (
@@ -223,6 +224,15 @@ def main():
         viewer.update_trajectory(results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
+
+    # Explicit cleanup to prevent segfault at interpreter shutdown
+    # TaskComposer objects must be destroyed in proper order
+    del future
+    del task_data
+    del task
+    del executor
+    del factory
+    gc.collect()
 
     return True
 
