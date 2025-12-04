@@ -30,49 +30,50 @@ import numpy as np
 # git clone https://github.com/tesseract-robotics/tesseract.git
 # set TESSERACT_RESOURCE_PATH=%cd%\tesseract\
 
-locator = GeneralResourceLocator()
-env = Environment()
-urdf_path_str = locator.locateResource("package://tesseract_support/urdf/abb_irb2400.urdf").getFilePath()
-srdf_path_str = locator.locateResource("package://tesseract_support/urdf/abb_irb2400.srdf").getFilePath()
-urdf_path = FilesystemPath(urdf_path_str)
-srdf_path = FilesystemPath(srdf_path_str)
-assert env.init(urdf_path, srdf_path, locator)
 
-robot_joint_names = [f"joint_{i+1}" for i in range(6)]
+def main():
+    locator = GeneralResourceLocator()
+    env = Environment()
+    urdf_path_str = locator.locateResource("package://tesseract_support/urdf/abb_irb2400.urdf").getFilePath()
+    srdf_path_str = locator.locateResource("package://tesseract_support/urdf/abb_irb2400.srdf").getFilePath()
+    urdf_path = FilesystemPath(urdf_path_str)
+    srdf_path = FilesystemPath(srdf_path_str)
+    assert env.init(urdf_path, srdf_path, locator)
 
-# Get the kinematics solver. The name "manipulator" is specified in the SRDF file
-kin_group = env.getKinematicGroup("manipulator")
+    robot_joint_names = [f"joint_{i+1}" for i in range(6)]
 
-# Solve forward kinematics at a specific joint position
-robot_joint_pos = np.deg2rad(np.array([10, 20,-5, 70, 30, 90], dtype=np.float64))
-fwdkin_result = kin_group.calcFwdKin(robot_joint_pos)
-#fwdkin_result is a TransformMap, which is a dictionary of link names to Isometry3d. For this robot, we are
-#interested in the transform of the "tool0" link
-tool0_transform = fwdkin_result["tool0"]
-# Print the transform as a translation and quaternion
-print("Tool0 transform at joint position " + str(robot_joint_pos) + " is: ")
-q = Quaterniond(tool0_transform.rotation())
-print("Translation: " + str(tool0_transform.translation().flatten()))
-print(f"Rotation: {q.w()} {q.x()} {q.y()} {q.z()}")
+    # Get the kinematics solver. The name "manipulator" is specified in the SRDF file
+    kin_group = env.getKinematicGroup("manipulator")
 
-# Solve inverse kinematics at a specific tool0 pose
-tool0_transform2 = Isometry3d.Identity() * Translation3d(0.7, -0.1, 1) * Quaterniond(0.70711, 0, 0.7171, 0)
+    # Solve forward kinematics at a specific joint position
+    robot_joint_pos = np.deg2rad(np.array([10, 20,-5, 70, 30, 90], dtype=np.float64))
+    fwdkin_result = kin_group.calcFwdKin(robot_joint_pos)
+    #fwdkin_result is a TransformMap, which is a dictionary of link names to Isometry3d. For this robot, we are
+    #interested in the transform of the "tool0" link
+    tool0_transform = fwdkin_result["tool0"]
+    # Print the transform as a translation and quaternion
+    print("Tool0 transform at joint position " + str(robot_joint_pos) + " is: ")
+    q = Quaterniond(tool0_transform.rotation())
+    print("Translation: " + str(tool0_transform.translation().flatten()))
+    print(f"Rotation: {q.w()} {q.x()} {q.y()} {q.z()}")
 
-# Create a KinGroupIKInput and KinGroupIKInputs object. The KinGroupIKInputs object is a list of KinGroupIKInput
-ik = KinGroupIKInput()
-ik.pose = tool0_transform2
-ik.tip_link_name = "tool0"
-ik.working_frame = "base_link"
-iks = KinGroupIKInputs()
-iks.append(ik)
-# Solve IK
-ik_result = kin_group.calcInvKin(iks, robot_joint_pos)
-# Print the result
-print(f"Found {len(ik_result)} solutions")
-for i in range(len(ik_result)):
-    print("Solution " + str(i) + ": " + str(ik_result[i].flatten()))
+    # Solve inverse kinematics at a specific tool0 pose
+    tool0_transform2 = Isometry3d.Identity() * Translation3d(0.7, -0.1, 1) * Quaterniond(0.70711, 0, 0.7171, 0)
+
+    # Create a KinGroupIKInput and KinGroupIKInputs object. The KinGroupIKInputs object is a list of KinGroupIKInput
+    ik = KinGroupIKInput()
+    ik.pose = tool0_transform2
+    ik.tip_link_name = "tool0"
+    ik.working_frame = "base_link"
+    iks = KinGroupIKInputs()
+    iks.append(ik)
+    # Solve IK
+    ik_result = kin_group.calcInvKin(iks, robot_joint_pos)
+    # Print the result
+    print(f"Found {len(ik_result)} solutions")
+    for i in range(len(ik_result)):
+        print("Solution " + str(i) + ": " + str(ik_result[i].flatten()))
 
 
-
-
-   
+if __name__ == "__main__":
+    main()

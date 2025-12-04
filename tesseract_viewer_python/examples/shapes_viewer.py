@@ -7,8 +7,6 @@ import re
 import traceback
 from tesseract_robotics_viewer import TesseractViewer
 
-HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1"
-
 shapes_urdf = """
 <robot name="multipleshapes">
 
@@ -101,17 +99,24 @@ class TesseractSupportResourceLocator(ResourceLocator):
             return None
 
 
-t_env = Environment()
+def main():
+    HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1"
 
-# locator must be kept alive by maintaining a reference
-locator = TesseractSupportResourceLocator()
-t_env.init(shapes_urdf, locator)
+    t_env = Environment()
 
-viewer = TesseractViewer()
-viewer.update_environment(t_env, [0, 0, 0])
+    # locator must be kept alive by maintaining a reference
+    locator = TesseractSupportResourceLocator()
+    t_env.init(shapes_urdf, locator)
 
-if not HEADLESS:
-    viewer.start_serve_background()
-    input("Press Enter to exit...")
-else:
-    print("shapes_viewer.py: PASSED")
+    viewer = TesseractViewer()
+    viewer.update_environment(t_env, [0, 0, 0])
+
+    if not HEADLESS:
+        viewer.start_serve_background()
+        input("Press Enter to exit...")
+    else:
+        print("shapes_viewer.py: PASSED")
+
+
+if __name__ == "__main__":
+    main()
