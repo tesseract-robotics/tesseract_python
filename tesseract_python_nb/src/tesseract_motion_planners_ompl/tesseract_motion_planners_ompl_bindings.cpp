@@ -10,6 +10,7 @@
 
 // tesseract_command_language (for Profile base class)
 #include <tesseract_command_language/profile.h>
+#include <tesseract_command_language/profile_dictionary.h>
 
 // tesseract_motion_planners OMPL
 #include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
@@ -20,6 +21,10 @@ namespace tp = tesseract_planning;
 
 NB_MODULE(_tesseract_motion_planners_ompl, m) {
     m.doc() = "tesseract_motion_planners_ompl Python bindings";
+
+    // Import Profile type from tesseract_command_language for cross-module inheritance
+    auto cl_module = nb::module_::import_("tesseract_robotics.tesseract_command_language._tesseract_command_language");
+    auto profile_type = cl_module.attr("Profile");
 
     // ========== OMPLPlannerType enum ==========
     nb::enum_<tp::OMPLPlannerType>(m, "OMPLPlannerType")
@@ -60,9 +65,8 @@ NB_MODULE(_tesseract_motion_planners_ompl, m) {
         .def_rw("range", &tp::SBLConfigurator::range);
 
     // ========== OMPLPlanProfile (base) ==========
-    // Note: We don't bind Profile base class inheritance since it's in another module.
-    // Instead we expose the key methods directly for use with ProfileDictionary.
-    nb::class_<tp::OMPLPlanProfile>(m, "OMPLPlanProfile")
+    // Import the Profile type from command_language and use it as base class
+    nb::class_<tp::OMPLPlanProfile, tp::Profile>(m, "OMPLPlanProfile")
         .def("getKey", &tp::OMPLPlanProfile::getKey)
         .def_static("getStaticKey", &tp::OMPLPlanProfile::getStaticKey);
 
@@ -71,9 +75,19 @@ NB_MODULE(_tesseract_motion_planners_ompl, m) {
         .def(nb::init<>());
 
     // Helper to convert OMPLPlanProfile to Profile::ConstPtr for ProfileDictionary
-    m.def("OMPLPlanProfile_as_ProfileConstPtr", [](std::shared_ptr<tp::OMPLPlanProfile> profile) {
-        return std::static_pointer_cast<const tp::Profile>(profile);
+    // This explicitly casts to the base type for cross-module compatibility
+    m.def("OMPLPlanProfile_as_ProfileConstPtr", [](std::shared_ptr<tp::OMPLPlanProfile> profile) -> tp::Profile::ConstPtr {
+        return profile;  // implicit conversion to base class shared_ptr
     }, "profile"_a, "Convert OMPLPlanProfile to Profile::ConstPtr for use with ProfileDictionary.addProfile");
+
+    // Helper to add OMPL plan profile to ProfileDictionary directly
+    m.def("ProfileDictionary_addOMPLProfile", [](tp::ProfileDictionary& dict,
+                                                  const std::string& ns,
+                                                  const std::string& profile_name,
+                                                  std::shared_ptr<tp::OMPLPlanProfile> profile) {
+        dict.addProfile(ns, profile_name, profile);
+    }, "dict"_a, "ns"_a, "profile_name"_a, "profile"_a,
+    "Add OMPL plan profile to ProfileDictionary (cross-module workaround)");
 
     // ========== OMPLMotionPlanner ==========
     // Note: Not binding inheritance from MotionPlanner to avoid cross-module issues

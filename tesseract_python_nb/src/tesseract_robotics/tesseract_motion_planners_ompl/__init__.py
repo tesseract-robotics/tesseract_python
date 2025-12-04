@@ -10,4 +10,5 @@ __all__ = [
     "OMPLRealVectorPlanProfile",
     "OMPLMotionPlanner",
     "OMPLPlanProfile_as_ProfileConstPtr",
+    "ProfileDictionary_addOMPLProfile",
 ]

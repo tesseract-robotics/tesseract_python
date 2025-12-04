@@ -340,4 +340,14 @@ NB_MODULE(_tesseract_command_language, m) {
         .def("hasProfileEntry", &tp::ProfileDictionary::hasProfileEntry, "key"_a, "ns"_a)
         .def("removeProfileEntry", &tp::ProfileDictionary::removeProfileEntry, "key"_a, "ns"_a)
         .def("clear", &tp::ProfileDictionary::clear);
+
+    // Helper function to add profiles from other modules (cross-module inheritance workaround)
+    // This casts Profile::ConstPtr from other modules to the base type
+    m.def("ProfileDictionary_addProfile", [](tp::ProfileDictionary& dict,
+                                              const std::string& ns,
+                                              const std::string& profile_name,
+                                              tp::Profile::ConstPtr profile) {
+        dict.addProfile(ns, profile_name, profile);
+    }, "dict"_a, "ns"_a, "profile_name"_a, "profile"_a,
+    "Add a profile to the dictionary (cross-module helper)");
 }
