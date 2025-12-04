@@ -37,19 +37,51 @@ The tesseract_command_language uses type-erased "Poly" types (WaypointPoly, Inst
 - Check waypoint type with `isStateWaypoint()`, `isJointWaypoint()`, etc. before casting
 - Type casts will throw RuntimeError if the underlying type doesn't match
 
+### InstructionPoly.as<MoveInstructionPoly>() - RESOLVED
+
+The C++ type erasure `as<T>()` method uses `typeid()` comparison which fails across shared library boundaries. Even when the underlying type IS `MoveInstructionPoly`, the cast fails:
+
+```
+RuntimeError: TypeErasureBase, tried to cast 'tesseract_planning::MoveInstructionPoly' to 'tesseract_planning::MoveInstructionPoly'
+```
+
+This is an RTTI issue where `typeid()` in Python bindings generates different `type_info` than `typeid()` in the tesseract C++ library.
+
+**Root Cause:**
+- `as<T>()` template instantiated in Python binding module creates different `typeid(T)` than the one stored in the type erasure
+- BUT: `isMoveInstruction()` works because both `getType()` and `typeid(MoveInstructionPoly)` are generated within the C++ library
+
+**Solution:** Use `getInterface().recover()` to get the underlying `void*` pointer, then cast:
+
+```cpp
+m.def("InstructionPoly_as_MoveInstructionPoly", [](tp::InstructionPoly& ip) -> tp::MoveInstructionPoly {
+    if (!ip.isMoveInstruction())
+        throw std::runtime_error("InstructionPoly is not a MoveInstruction");
+    auto* ptr = static_cast<tp::MoveInstructionPoly*>(ip.getInterface().recover());
+    return *ptr;  // Copy
+}, "instruction"_a);
+```
+
+**Working Methods:**
+- `InstructionPoly_as_MoveInstructionPoly(instr)` - helper function
+- `instr.asMoveInstruction()` - method on InstructionPoly
+- `WaypointPoly_as_JointWaypointPoly(wp)` - for JointWaypoint extraction
+- `WaypointPoly_as_StateWaypointPoly(wp)` - for StateWaypoint extraction
+- `WaypointPoly_as_CartesianWaypointPoly(wp)` - for CartesianWaypoint extraction
+
 ## CompositeInstruction.flatten() - Not Available
 
 The SWIG bindings had a `flatten()` method on `CompositeInstruction` that is not available in nanobind. This was a SWIG-specific convenience method. The viewer's trajectory visualization relies on this method.
 
 **Status:** Trajectory visualization not yet working with nanobind bindings.
 
-## Viewer Trajectory Visualization
+## Viewer Trajectory Visualization - RESOLVED
 
-The `tesseract_robotics_viewer` module expects:
-1. `StateWaypointPoly` waypoints (not `JointWaypointPoly`)
-2. `CompositeInstruction.flatten()` method (SWIG convenience)
+The `tesseract_robotics_viewer` module now supports:
+1. Both `StateWaypointPoly` and `JointWaypointPoly` waypoints (fixed in util.py)
+2. Iterating over `CompositeInstruction` using `__getitem__` (SWIG's `flatten()` not needed)
 
-Neither is available with the current nanobind bindings when using OMPL planning.
+**Status:** Trajectory visualization works with OMPL planning output.
 
 ## nanobind Reference Leaks
 

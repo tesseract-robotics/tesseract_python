@@ -210,7 +210,17 @@ NB_MODULE(_tesseract_command_language, m) {
         .def("print", &tp::InstructionPoly::print, "prefix"_a = "")
         .def("isCompositeInstruction", &tp::InstructionPoly::isCompositeInstruction)
         .def("isMoveInstruction", &tp::InstructionPoly::isMoveInstruction)
-        .def("isNull", &tp::InstructionPoly::isNull);
+        .def("isNull", &tp::InstructionPoly::isNull)
+        // Workaround for RTTI issues across shared library boundaries
+        // The standard as<T>() uses typeid() which fails when comparing types from different .so files
+        // Since isMoveInstruction() works (uses typeid() within C++ lib), we can use getInterface().recover()
+        // to get the underlying MoveInstructionPoly* and copy it
+        .def("asMoveInstruction", [](tp::InstructionPoly& self) -> tp::MoveInstructionPoly {
+            if (!self.isMoveInstruction())
+                throw std::runtime_error("InstructionPoly is not a MoveInstruction");
+            auto* ptr = static_cast<tp::MoveInstructionPoly*>(self.getInterface().recover());
+            return *ptr;
+        }, "Cast to MoveInstructionPoly. Raises RuntimeError if not a move instruction.");
 
     // ========== MoveInstructionPoly ==========
     // Note: Not binding as subclass due to nanobind cross-module limitations
@@ -243,21 +253,39 @@ NB_MODULE(_tesseract_command_language, m) {
         return tp::MoveInstructionPoly(mi);
     }, "instruction"_a);
 
-    m.def("InstructionPoly_as_MoveInstructionPoly", [](tp::InstructionPoly& ip) -> tp::MoveInstructionPoly& {
-        return ip.as<tp::MoveInstructionPoly>();
-    }, "instruction"_a, nb::rv_policy::reference);
+    // Workaround for RTTI issues across shared library boundaries
+    // The C++ as<T>() method uses typeid() which generates different type_info in Python bindings
+    // Since isMoveInstruction() works (uses typeid() within C++ lib), we can use getInterface().recover()
+    // to get the underlying MoveInstructionPoly* and copy it
+    m.def("InstructionPoly_as_MoveInstructionPoly", [](tp::InstructionPoly& ip) -> tp::MoveInstructionPoly {
+        if (!ip.isMoveInstruction())
+            throw std::runtime_error("InstructionPoly is not a MoveInstruction");
+        // The internal value stores a MoveInstructionPoly - retrieve it via recover()
+        // recover() returns void* to the actual stored value
+        auto* ptr = static_cast<tp::MoveInstructionPoly*>(ip.getInterface().recover());
+        return *ptr;  // Copy
+    }, "instruction"_a);
 
-    m.def("WaypointPoly_as_StateWaypointPoly", [](tp::WaypointPoly& wp) -> tp::StateWaypointPoly& {
-        return wp.as<tp::StateWaypointPoly>();
-    }, "waypoint"_a, nb::rv_policy::reference);
+    m.def("WaypointPoly_as_StateWaypointPoly", [](tp::WaypointPoly& wp) -> tp::StateWaypointPoly {
+        if (!wp.isStateWaypoint())
+            throw std::runtime_error("WaypointPoly is not a StateWaypoint");
+        auto* ptr = static_cast<tp::StateWaypointPoly*>(wp.getInterface().recover());
+        return *ptr;
+    }, "waypoint"_a);
 
-    m.def("WaypointPoly_as_CartesianWaypointPoly", [](tp::WaypointPoly& wp) -> tp::CartesianWaypointPoly& {
-        return wp.as<tp::CartesianWaypointPoly>();
-    }, "waypoint"_a, nb::rv_policy::reference);
+    m.def("WaypointPoly_as_CartesianWaypointPoly", [](tp::WaypointPoly& wp) -> tp::CartesianWaypointPoly {
+        if (!wp.isCartesianWaypoint())
+            throw std::runtime_error("WaypointPoly is not a CartesianWaypoint");
+        auto* ptr = static_cast<tp::CartesianWaypointPoly*>(wp.getInterface().recover());
+        return *ptr;
+    }, "waypoint"_a);
 
-    m.def("WaypointPoly_as_JointWaypointPoly", [](tp::WaypointPoly& wp) -> tp::JointWaypointPoly& {
-        return wp.as<tp::JointWaypointPoly>();
-    }, "waypoint"_a, nb::rv_policy::reference);
+    m.def("WaypointPoly_as_JointWaypointPoly", [](tp::WaypointPoly& wp) -> tp::JointWaypointPoly {
+        if (!wp.isJointWaypoint())
+            throw std::runtime_error("WaypointPoly is not a JointWaypoint");
+        auto* ptr = static_cast<tp::JointWaypointPoly*>(wp.getInterface().recover());
+        return *ptr;
+    }, "waypoint"_a);
 
     // ========== MoveInstruction ==========
     nb::class_<tp::MoveInstruction>(m, "MoveInstruction")

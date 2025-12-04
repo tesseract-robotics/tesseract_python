@@ -134,12 +134,9 @@ final_results_instruction = interpolated_results_instruction
 # max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
 # assert time_parameterization.compute(instructions_trajectory, max_velocity, max_acceleration, max_jerk)
 
-# TODO: The viewer expects StateWaypointPoly but OMPL returns JointWaypointPoly
-# The flatten() method was a SWIG convenience - not available in nanobind
-# Skip trajectory visualization until viewer util is updated to handle JointWaypointPoly
-# final_results = final_results_instruction.flatten()
-# viewer.update_trajectory(final_results)
-# viewer.plot_trajectory(final_results, manip_info, axes_length=0.05)
+# Trajectory visualization - util.py now supports both StateWaypointPoly and JointWaypointPoly
+viewer.update_trajectory(final_results_instruction)
+viewer.plot_trajectory(final_results_instruction, manip_info, axes_length=0.05)
 
 print("OMPL planning completed successfully!")
 print(f"Number of waypoints: {final_results_instruction.size()}")
