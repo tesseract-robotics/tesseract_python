@@ -130,18 +130,27 @@ def get_plugin_factory():
     return tesseract_collision.ContactManagersPluginFactory(collision_config, locator), locator
 
 import pytest
+import gc
 
-@pytest.mark.skip(reason="Segfaults at cleanup due to cross-module shared_ptr issues - functionality works, cleanup crashes")
 def test_bullet_discrete_simple():
-    factory, locator =get_plugin_factory()
-    checker= factory.createDiscreteContactManager("BulletDiscreteSimpleManager")
+    factory, locator = get_plugin_factory()
+    checker = factory.createDiscreteContactManager("BulletDiscreteSimpleManager")
     run_test(checker)
+    # Explicit cleanup to prevent segfault from gc order issues
+    del checker
+    del factory
+    del locator
+    gc.collect()
 
-@pytest.mark.skip(reason="Segfaults at cleanup due to cross-module shared_ptr issues - functionality works, cleanup crashes")
 def test_bullet_discrete_bvh():
-     factory, locator = get_plugin_factory()
-     checker = factory.createDiscreteContactManager("BulletDiscreteBVHManager")
-     run_test(checker)
+    factory, locator = get_plugin_factory()
+    checker = factory.createDiscreteContactManager("BulletDiscreteBVHManager")
+    run_test(checker)
+    # Explicit cleanup to prevent segfault from gc order issues
+    del checker
+    del factory
+    del locator
+    gc.collect()
 
 def __test_fcl_discrete_bvh():
     factory, locator = get_plugin_factory()

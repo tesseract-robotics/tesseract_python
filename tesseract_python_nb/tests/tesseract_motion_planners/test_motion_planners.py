@@ -28,7 +28,7 @@ from tesseract_robotics.tesseract_motion_planners import PlannerRequest, Planner
 from tesseract_robotics.tesseract_motion_planners_ompl import (
     OMPLMotionPlanner,
     OMPLRealVectorPlanProfile,
-    OMPLPlanProfile_as_ProfileConstPtr,
+    ProfileDictionary_addOMPLProfile,
 )
 from tesseract_robotics.tesseract_motion_planners_simple import (
     generateInterpolatedProgram,
@@ -84,7 +84,6 @@ class TestOMPLMotionPlanner:
 class TestOMPLPlanning:
     """Integration test for OMPL motion planning with ABB robot."""
 
-    @pytest.mark.skip(reason="ProfileDictionary.addProfile requires cross-module inheritance workaround - see MIGRATION_NOTES.md")
     def test_ompl_planning_workflow(self, abb_irb2400_environment):
         """Test complete OMPL planning workflow as in abb_irb2400_viewer.py."""
         t_env = abb_irb2400_environment
@@ -131,10 +130,10 @@ class TestOMPLPlanning:
         )
         program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
-        # Setup OMPL planner
+        # Setup OMPL planner - use helper function for cross-module profile registration
         plan_profile = OMPLRealVectorPlanProfile()
         profiles = ProfileDictionary()
-        profiles.addProfile(OMPL_DEFAULT_NAMESPACE, "DEFAULT", OMPLPlanProfile_as_ProfileConstPtr(plan_profile))
+        ProfileDictionary_addOMPLProfile(profiles, OMPL_DEFAULT_NAMESPACE, "DEFAULT", plan_profile)
 
         # Create request
         request = PlannerRequest()
@@ -159,7 +158,6 @@ class TestOMPLPlanning:
 class TestSimplePlanner:
     """Test simple motion planner utilities."""
 
-    @pytest.mark.skip(reason="ProfileDictionary.addProfile requires cross-module inheritance workaround - see MIGRATION_NOTES.md")
     def test_generate_interpolated_program(self, abb_irb2400_environment):
         """Test generateInterpolatedProgram function."""
         t_env = abb_irb2400_environment
@@ -191,10 +189,10 @@ class TestSimplePlanner:
         program.setManipulatorInfo(manip_info)
         program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(mi))
 
-        # First solve with OMPL to get a valid result
+        # First solve with OMPL to get a valid result - use helper function
         plan_profile = OMPLRealVectorPlanProfile()
         profiles = ProfileDictionary()
-        profiles.addProfile(OMPL_DEFAULT_NAMESPACE, "DEFAULT", OMPLPlanProfile_as_ProfileConstPtr(plan_profile))
+        ProfileDictionary_addOMPLProfile(profiles, OMPL_DEFAULT_NAMESPACE, "DEFAULT", plan_profile)
 
         request = PlannerRequest()
         request.instructions = program
