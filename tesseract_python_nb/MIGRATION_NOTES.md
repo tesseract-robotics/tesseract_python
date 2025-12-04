@@ -278,18 +278,59 @@ input_key = task.getInputKeys().get("planning_input")
 input_key = task.getInputKeys().get("program")
 ```
 
+## TrajOpt Profile Configuration
+
+### TrajOptDefaultPlanProfile
+
+Configure waypoint-level TrajOpt behavior via config objects:
+
+```python
+from tesseract_robotics.tesseract_motion_planners_trajopt import (
+    TrajOptDefaultPlanProfile,
+    TrajOptDefaultCompositeProfile,
+    CollisionEvaluatorType,
+    ProfileDictionary_addTrajOptPlanProfile,
+    ProfileDictionary_addTrajOptCompositeProfile,
+)
+
+# Plan profile - waypoint constraints
+trajopt_plan_profile = TrajOptDefaultPlanProfile()
+trajopt_plan_profile.joint_cost_config.enabled = False
+trajopt_plan_profile.cartesian_cost_config.enabled = False
+trajopt_plan_profile.cartesian_constraint_config.enabled = True
+trajopt_plan_profile.cartesian_constraint_config.coeff = np.array([10.0, 10.0, 10.0, 10.0, 10.0, 0.0])
+
+# Composite profile - collision/smoothing
+trajopt_composite_profile = TrajOptDefaultCompositeProfile()
+trajopt_composite_profile.collision_constraint_config.enabled = False
+trajopt_composite_profile.collision_cost_config.enabled = True
+trajopt_composite_profile.collision_cost_config.safety_margin = 0.025
+trajopt_composite_profile.collision_cost_config.type = CollisionEvaluatorType.SINGLE_TIMESTEP
+trajopt_composite_profile.collision_cost_config.coeff = 20.0
+
+# Register profiles
+ProfileDictionary_addTrajOptPlanProfile(profiles, "TrajOptMotionPlannerTask", "CARTESIAN", trajopt_plan_profile)
+ProfileDictionary_addTrajOptCompositeProfile(profiles, "TrajOptMotionPlannerTask", "DEFAULT", trajopt_composite_profile)
+```
+
+Available config classes:
+- `TrajOptCartesianWaypointConfig` - cartesian_cost_config, cartesian_constraint_config
+- `TrajOptJointWaypointConfig` - joint_cost_config, joint_constraint_config
+- `CollisionCostConfig`, `CollisionConstraintConfig` - collision_cost_config, collision_constraint_config
+
+## Cartesian Path Planning with assignCurrentStateAsSeed
+
+When planning Cartesian paths (CartesianWaypoint), TrajOpt needs seed joint states. Use `assignCurrentStateAsSeed()`:
+
+```python
+from tesseract_robotics.tesseract_motion_planners import assignCurrentStateAsSeed
+
+program = CompositeInstruction("DEFAULT")
+# ... add CartesianWaypoint instructions ...
+assignCurrentStateAsSeed(program, env)
+```
+
 ## Known Issues
-
-### Task Composer Planning Segfaults
-
-Running TaskComposer planning pipelines (FreespacePipeline, TrajOptPipeline, OMPLPipeline) currently causes segmentation faults. This appears to be related to:
-- Reference counting issues between nanobind modules
-- RTTI type mismatch across shared library boundaries
-- Taskflow executor thread interactions with Python GIL
-
-**Status:** Under investigation. The planning examples are marked as skipped in the test suite.
-
-**Workaround:** For planning functionality, consider using the SWIG-based tesseract_robotics_python package until this is resolved.
 
 ### Reference Leaks at Exit
 
