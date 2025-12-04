@@ -9,6 +9,9 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source /opt/miniconda3/etc/profile.d/conda.sh
 conda activate tesseract_nb
 
+# Qt6 cross-compile fix (conda Qt6 needs this on macOS)
+export QT_HOST_PATH=$CONDA_PREFIX
+
 # Library paths
 export DYLD_LIBRARY_PATH="$SCRIPT_DIR/ws/install/lib:$DYLD_LIBRARY_PATH"
 

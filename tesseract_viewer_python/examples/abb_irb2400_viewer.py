@@ -40,13 +40,14 @@ except ImportError:
 from tesseract_robotics_viewer import TesseractViewer
 import numpy as np
 import os
+import sys
 
 OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
 
 def main():
-    HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1"
+    HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1" or "pytest" in sys.modules
 
     # Load robot
     locator = GeneralResourceLocator()
@@ -63,13 +64,14 @@ def main():
     manip_info.manipulator = "manipulator"
     manip_info.working_frame = "base_link"
 
-    viewer = TesseractViewer()
-    viewer.update_environment(t_env, [0, 0, 0])
+    viewer = None
+    if not HEADLESS:
+        viewer = TesseractViewer()
+        viewer.update_environment(t_env, [0, 0, 0])
 
     joint_names = [f"joint_{i+1}" for i in range(6)]
-    viewer.update_joint_positions(joint_names, np.array([1, -0.2, 0.01, 0.3, -0.5, 1]))
-
-    if not HEADLESS:
+    if viewer:
+        viewer.update_joint_positions(joint_names, np.array([1, -0.2, 0.01, 0.3, -0.5, 1]))
         viewer.start_serve_background()
 
     t_env.setState(joint_names, np.ones(6) * 0.1)
@@ -157,13 +159,14 @@ def main():
             print("Time parameterization failed")
 
     # Trajectory visualization - util.py now supports both StateWaypointPoly and JointWaypointPoly
-    viewer.update_trajectory(final_results_instruction)
-    viewer.plot_trajectory(final_results_instruction, manip_info, axes_length=0.05)
+    if viewer:
+        viewer.update_trajectory(final_results_instruction)
+        viewer.plot_trajectory(final_results_instruction, manip_info, axes_length=0.05)
 
     planner_type = "OMPL + TrajOpt" if trajopt_success else "OMPL"
     print(f"{planner_type} planning completed successfully!")
     print(f"Number of waypoints: {final_results_instruction.size()}")
-    if not HEADLESS:
+    if viewer:
         input("Press Enter to exit...")
 
 

@@ -1,5 +1,6 @@
 """Simple shapes viewer example using tesseract_robotics with nanobind bindings."""
 
+import sys
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
 import os
@@ -100,7 +101,7 @@ class TesseractSupportResourceLocator(ResourceLocator):
 
 
 def main():
-    HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1"
+    HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1" or "pytest" in sys.modules
 
     t_env = Environment()
 
@@ -108,10 +109,9 @@ def main():
     locator = TesseractSupportResourceLocator()
     t_env.init(shapes_urdf, locator)
 
-    viewer = TesseractViewer()
-    viewer.update_environment(t_env, [0, 0, 0])
-
     if not HEADLESS:
+        viewer = TesseractViewer()
+        viewer.update_environment(t_env, [0, 0, 0])
         viewer.start_serve_background()
         input("Press Enter to exit...")
     else:

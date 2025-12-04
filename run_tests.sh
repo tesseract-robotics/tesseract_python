@@ -18,6 +18,8 @@ export DYLD_LIBRARY_PATH="$SCRIPT_DIR/ws/install/lib:$DYLD_LIBRARY_PATH"
 export TESSERACT_SUPPORT_DIR="$SCRIPT_DIR/ws/src/tesseract/tesseract_support"
 export TESSERACT_RESOURCE_PATH="$SCRIPT_DIR/ws/src/tesseract/"
 export TESSERACT_HEADLESS=1
+export TESSERACT_TASK_COMPOSER_CONFIG_FILE="$SCRIPT_DIR/ws/src/tesseract_planning/tesseract_task_composer/config/task_composer_plugins.yaml"
+export QT_HOST_PATH=$CONDA_PREFIX
 
 echo "============================================"
 echo "Running tesseract_python test suite"

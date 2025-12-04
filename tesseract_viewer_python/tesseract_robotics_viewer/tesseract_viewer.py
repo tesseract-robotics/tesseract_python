@@ -89,8 +89,8 @@ class TesseractViewer():
             traceback.print_exc()
 
         if self.loop is not None:
-            self.loop.stop()
-            self.loop.close()
+            self.loop.call_soon_threadsafe(self.loop.stop)
+            self.loop_thread.join(timeout=2.0)
 
     async def _a_start(self):
         await self.aio_viewer.start()

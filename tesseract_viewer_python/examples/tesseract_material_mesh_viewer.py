@@ -1,5 +1,6 @@
 """Mesh viewer example demonstrating GLB and DAE mesh loading with materials."""
 
+import sys
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import GeneralResourceLocator
 from tesseract_robotics_viewer import TesseractViewer
@@ -46,7 +47,7 @@ shapes_urdf = """
 
 
 def main():
-    HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1"
+    HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1" or "pytest" in sys.modules
 
     t_env = Environment()
 
@@ -54,10 +55,9 @@ def main():
     locator = GeneralResourceLocator()
     t_env.init(shapes_urdf, locator)
 
-    viewer = TesseractViewer()
-    viewer.update_environment(t_env, [0, 0, 0])
-
     if not HEADLESS:
+        viewer = TesseractViewer()
+        viewer.update_environment(t_env, [0, 0, 0])
         viewer.start_serve_background()
         input("Press Enter to exit...")
     else:

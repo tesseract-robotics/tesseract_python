@@ -12,6 +12,7 @@ Required environment variables:
 """
 
 import os
+import sys
 import numpy as np
 
 from tesseract_robotics.tesseract_common import (
@@ -53,10 +54,10 @@ from tesseract_robotics.tesseract_task_composer import (
     TaskComposerDataStorage,
 )
 
-# Optional: viewer for visualization
+# Optional: viewer for visualization (disabled in pytest/headless mode)
 try:
     from tesseract_robotics_viewer import TesseractViewer
-    HAS_VIEWER = True
+    HAS_VIEWER = os.environ.get("TESSERACT_HEADLESS", "0") != "1" and "pytest" not in sys.modules
 except ImportError:
     HAS_VIEWER = False
 
