@@ -97,7 +97,7 @@ jobs:
         build-essential autoconf automake libtool bison libpcre2-dev libpcre3-dev
         lcov libbullet-dev libbullet-extras-dev python3-venv curl libfcl-dev -y -qq
     - name: build-swig
-      uses: johnwason/swig-build-action@v1
+      uses: johnwason/swig-build-action@v1.2
       with:
         cache-key: ${{ matrix.config.os }}-${{ matrix.config.python_version }}
         version: "4.1.1"
