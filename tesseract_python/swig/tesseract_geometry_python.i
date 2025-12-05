@@ -203,6 +203,11 @@ class OcTree {};
 
 %include "tesseract_geometry/mesh_parser.h"
 %pybuffer_binary(const uint8_t* bytes, size_t bytes_len);
+// %pybuffer_binary does not automatically create a typecheck
+%typemap(typecheck) (const uint8_t* bytes, size_t bytes_len) {
+    // Check if the input is a Python bytes or bytearray object
+    $1 = PyBytes_Check($input) || PyByteArray_Check($input);
+}
 %template(createMeshFromResource) tesseract_geometry::createMeshFromResource<tesseract_geometry::Mesh>;
 %template(createSDFMeshFromResource) tesseract_geometry::createMeshFromResource<tesseract_geometry::SDFMesh>;
 %template(createConvexMeshFromResource) tesseract_geometry::createMeshFromResource<tesseract_geometry::ConvexMesh>;
