@@ -102,7 +102,7 @@ jobs:
         cache-key: ${{ matrix.config.os }}-${{ matrix.config.python_version }}
         version: "4.1.1"
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v6
       id: setup-python
       with:
         python-version: '${{ matrix.config.python_version }}'
@@ -198,7 +198,7 @@ jobs:
     - uses: actions/checkout@v6
       with:
         path: ws/src/tesseract_python
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v6
       id: setup-python
       with:
         python-version: '${{ matrix.config.python_version }}'
@@ -311,7 +311,7 @@ jobs:
     - uses: actions/checkout@v6
       with:
         path: ws/src/tesseract_python
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v6
       id: setup-python
       with:
         python-version: '${{ matrix.config.python_version }}'
