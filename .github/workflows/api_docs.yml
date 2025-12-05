@@ -17,7 +17,7 @@ jobs:
           run_number: ${{ github.event.inputs.run_number }}
           name: 'python-docs-ubuntu-20.04-3.10'
           path: 'docs'
-      - uses: actions/upload-pages-artifact@v1
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: 'docs'
   deploy_documentation:
