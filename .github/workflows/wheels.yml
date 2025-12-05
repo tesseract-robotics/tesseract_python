@@ -289,22 +289,22 @@ jobs:
         - py_platform: macosx-12.0-x86_64
           python_version: "3.12"
           arch: x64
-          runner: macos-13
+          runner: macos-15-intel
           brew_prefix: /usr/local
         - py_platform: macosx-12.0-x86_64
           python_version: "3.13"
           arch: x64
-          runner: macos-13
+          runner: macos-15-intel
           brew_prefix: /usr/local
         - py_platform: macosx-12.0-arm64
           python_version: "3.12"
           arch: arm64
-          runner: macos-14
+          runner: macos-15
           brew_prefix: /opt/homebrew
         - py_platform: macosx-12.0-arm64
           python_version: "3.13"
           arch: arm64
-          runner: macos-14
+          runner: macos-15
           brew_prefix: /opt/homebrew
       
     steps:
