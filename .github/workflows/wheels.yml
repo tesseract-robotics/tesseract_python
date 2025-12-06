@@ -241,7 +241,8 @@ jobs:
         -DTESSERACT_PYTHON_BUILD_WHEEL=ON ^
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON ^
         -DVCPKG_APPLOCAL_DEPS=OFF ^
-        -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF
+        -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF ^
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
         if %ERRORLEVEL% GEQ 1 exit 1
     - name: test
       shell: cmd
@@ -289,22 +290,22 @@ jobs:
         - py_platform: macosx-12.0-x86_64
           python_version: "3.12"
           arch: x64
-          runner: macos-13
+          runner: macos-15-intel
           brew_prefix: /usr/local
         - py_platform: macosx-12.0-x86_64
           python_version: "3.13"
           arch: x64
-          runner: macos-13
+          runner: macos-15-intel
           brew_prefix: /usr/local
         - py_platform: macosx-12.0-arm64
           python_version: "3.12"
           arch: arm64
-          runner: macos-14
+          runner: macos-15
           brew_prefix: /opt/homebrew
         - py_platform: macosx-12.0-arm64
           python_version: "3.13"
           arch: arm64
-          runner: macos-14
+          runner: macos-15
           brew_prefix: /opt/homebrew
       
     steps:
@@ -358,7 +359,8 @@ jobs:
             -Dtcmalloc_minimal_LIBRARY=${{ github.workspace }}/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib/libtcmalloc_minimal.dylib \
             -DPYTHON_EXECUTABLE="${{ steps.setup-python.outputs.python-path }}" \
             -DTESSERACT_PYTHON_WHEEL_PLATFORM=${{ matrix.config.py_platform }} \
-            -DTESSERACT_PYTHON_BUILD_WHEEL=ON
+            -DTESSERACT_PYTHON_BUILD_WHEEL=ON \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     - name: test
       shell: bash
       run: |
