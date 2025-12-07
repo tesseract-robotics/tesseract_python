@@ -6,7 +6,7 @@ import pytest
 from tesseract_robotics.planning import (
     Robot,
     RobotState,
-    Transform,
+    Pose,
     translation,
     rotation_x,
     rotation_y,
@@ -24,34 +24,34 @@ from tesseract_robotics.planning import (
 )
 
 
-class TestTransform:
-    """Test Transform class and helpers."""
+class TestPose:
+    """Test Pose class and helpers."""
 
     def test_identity(self):
-        t = Transform.identity()
+        t = Pose.identity()
         np.testing.assert_array_almost_equal(t.position, [0, 0, 0])
         np.testing.assert_array_almost_equal(t.quaternion, [0, 0, 0, 1])
 
     def test_from_xyz(self):
-        t = Transform.from_xyz(1, 2, 3)
+        t = Pose.from_xyz(1, 2, 3)
         assert t.x == 1
         assert t.y == 2
         assert t.z == 3
         np.testing.assert_array_almost_equal(t.position, [1, 2, 3])
 
     def test_from_position(self):
-        t = Transform.from_position([1.5, 2.5, 3.5])
+        t = Pose.from_position([1.5, 2.5, 3.5])
         np.testing.assert_array_almost_equal(t.position, [1.5, 2.5, 3.5])
 
     def test_from_xyz_quat(self):
         # 90 degree rotation around Z
-        t = Transform.from_xyz_quat(1, 2, 3, 0, 0, 0.707, 0.707)
+        t = Pose.from_xyz_quat(1, 2, 3, 0, 0, 0.707, 0.707)
         np.testing.assert_array_almost_equal(t.position, [1, 2, 3])
         np.testing.assert_array_almost_equal(t.quaternion, [0, 0, 0.707, 0.707], decimal=3)
 
     def test_from_xyz_rpy(self):
         # 90 degrees around Z
-        t = Transform.from_xyz_rpy(1, 2, 3, 0, 0, np.pi/2)
+        t = Pose.from_xyz_rpy(1, 2, 3, 0, 0, np.pi/2)
         np.testing.assert_array_almost_equal(t.position, [1, 2, 3])
         roll, pitch, yaw = t.rpy
         np.testing.assert_almost_equal(yaw, np.pi/2, decimal=5)
@@ -81,24 +81,24 @@ class TestTransform:
         rotated = t.rotation_matrix @ x_vec
         np.testing.assert_array_almost_equal(rotated, [0, 1, 0], decimal=5)
 
-    def test_transform_chaining(self):
+    def test_pose_chaining(self):
         t1 = translation(1, 0, 0)
         t2 = translation(0, 2, 0)
         combined = t1 @ t2
         np.testing.assert_array_almost_equal(combined.position, [1, 2, 0])
 
-    def test_transform_inverse(self):
-        t = Transform.from_xyz(1, 2, 3)
+    def test_pose_inverse(self):
+        t = Pose.from_xyz(1, 2, 3)
         inv = t.inverse()
         combined = t @ inv
         np.testing.assert_array_almost_equal(combined.position, [0, 0, 0], decimal=5)
 
     def test_to_isometry(self):
-        t = Transform.from_xyz(1, 2, 3)
+        t = Pose.from_xyz(1, 2, 3)
         iso = t.to_isometry()
         assert iso is not None
         # Round-trip
-        t2 = Transform.from_isometry(iso)
+        t2 = Pose.from_isometry(iso)
         np.testing.assert_array_almost_equal(t.position, t2.position)
 
 
@@ -140,7 +140,7 @@ class TestRobot:
 
     def test_fk(self, robot):
         pose = robot.fk("manipulator", [0, 0, 0, 0, 0, 0])
-        assert isinstance(pose, Transform)
+        assert isinstance(pose, Pose)
         # ABB IRB2400 tool0 at zeros should be around x=0.94, z=1.455
         assert pose.x > 0.9
         assert pose.z > 1.4
@@ -165,14 +165,14 @@ class TestMotionProgram:
 
     def test_add_cartesian_target(self):
         program = MotionProgram("manipulator")
-        program.move_to(CartesianTarget(Transform.from_xyz(0.5, 0, 0.5)))
+        program.move_to(CartesianTarget(Pose.from_xyz(0.5, 0, 0.5)))
         assert len(program) == 1
 
     def test_fluent_api(self):
         program = (MotionProgram("manipulator")
             .move_to(JointTarget([0, 0, 0, 0, 0, 0]))
-            .move_to(CartesianTarget(Transform.from_xyz(0.5, 0, 0.5)))
-            .linear_to(CartesianTarget(Transform.from_xyz(0.5, 0.2, 0.5)))
+            .move_to(CartesianTarget(Pose.from_xyz(0.5, 0, 0.5)))
+            .linear_to(CartesianTarget(Pose.from_xyz(0.5, 0.2, 0.5)))
             .move_to(JointTarget([0.5, 0, 0, 0, 0, 0]))
         )
         assert len(program) == 4
@@ -203,8 +203,8 @@ class TestTargets:
         wp = target.to_waypoint()
         assert wp is not None
 
-    def test_cartesian_target_from_transform(self):
-        pose = Transform.from_xyz(1, 2, 3)
+    def test_cartesian_target_from_pose(self):
+        pose = Pose.from_xyz(1, 2, 3)
         target = CartesianTarget(pose)
         assert target.pose.x == 1
         assert target.pose.y == 2
@@ -268,7 +268,7 @@ class TestCreateObstacle:
             robot,
             name="test_box",
             geometry=box(0.5, 0.5, 0.5),
-            transform=Transform.from_xyz(0.5, 0, 0.3),
+            transform=Pose.from_xyz(0.5, 0, 0.3),
         )
         assert result is True
         assert "test_box" in robot.get_link_names()
@@ -278,7 +278,7 @@ class TestCreateObstacle:
             robot,
             name="test_sphere",
             geometry=sphere(0.1),
-            transform=Transform.from_xyz(0.3, 0.2, 0.6),
+            transform=Pose.from_xyz(0.3, 0.2, 0.6),
             color=(1.0, 0, 0, 1.0),
         )
         assert result is True

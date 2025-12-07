@@ -24,7 +24,7 @@ from tesseract_robotics.planning import (
     Robot,
     MotionProgram,
     CartesianTarget,
-    Transform,
+    Pose,
     TaskComposer,
 )
 from tesseract_robotics.tesseract_command_language import ProfileDictionary
@@ -91,9 +91,9 @@ def make_puzzle_tool_poses(robot):
             x_axis = np.cross(y_axis, norm)
             x_axis = x_axis / np.linalg.norm(x_axis)
 
-            # Build transform from rotation and position
+            # Build pose from rotation and position
             rot = np.column_stack([x_axis, y_axis, norm])
-            poses.append(Transform.from_matrix_position(rot, pos))
+            poses.append(Pose.from_matrix_position(rot, pos))
 
     return poses
 

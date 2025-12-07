@@ -25,7 +25,7 @@ from tesseract_robotics.planning import (
     MotionProgram,
     CartesianTarget,
     StateTarget,
-    Transform,
+    Pose,
     box,
     create_obstacle,
     TaskComposer,
@@ -86,7 +86,7 @@ def main():
         robot,
         name=LINK_BOX_NAME,
         geometry=box(box_size, box_size, box_size),
-        transform=Transform.from_xyz(box_position[0], box_position[1], box_size / 2.0 + OFFSET),
+        transform=Pose.from_xyz(box_position[0], box_position[1], box_size / 2.0 + OFFSET),
         parent_link="workcell_base",
     )
     print(f"Added box at ({box_position[0]}, {box_position[1]}) with size {box_size}m")
@@ -101,11 +101,11 @@ def main():
     # Rotation: pointing down (-Z)
     pick_rotation = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
     pick_position = [box_position[0], box_position[1], box_size + 0.772 + OFFSET]
-    pick_final_pose = Transform.from_matrix_position(pick_rotation, pick_position)
+    pick_final_pose = Pose.from_matrix_position(pick_rotation, pick_position)
 
     # Approach pose (15cm above pick)
     approach_position = [pick_position[0], pick_position[1], pick_position[2] + 0.15]
-    pick_approach_pose = Transform.from_matrix_position(pick_rotation, approach_position)
+    pick_approach_pose = Pose.from_matrix_position(pick_rotation, approach_position)
 
     # Create pick program
     pick_program = (MotionProgram("manipulator", tcp_frame=LINK_END_EFFECTOR_NAME)
@@ -165,13 +165,13 @@ def main():
         [0, 0, 1]
     ])
     place_position = [-0.148856, 0.73085, 1.16]
-    place_pose = Transform.from_matrix_position(place_rotation, place_position)
+    place_pose = Pose.from_matrix_position(place_rotation, place_position)
 
     # Approach pose (25cm back in local Y)
     offset_local = np.array([0.0, -0.25, 0])
     offset_world = place_rotation @ offset_local
     place_approach_position = np.array(place_position) + offset_world
-    place_approach_pose = Transform.from_matrix_position(place_rotation, place_approach_position)
+    place_approach_pose = Pose.from_matrix_position(place_rotation, place_approach_position)
 
     # Retreat to pick approach
     retreat_pose = pick_approach_pose

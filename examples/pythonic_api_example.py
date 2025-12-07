@@ -23,8 +23,8 @@ from tesseract_robotics.planning import (
     MotionProgram,
     CartesianTarget,
     JointTarget,
-    # Transform helpers
-    Transform,
+    # Pose helpers
+    Pose,
     translation,
     rotation_z,
     # Geometry helpers
@@ -82,12 +82,12 @@ def main():
     print(f"   Position: x={pose.x:.3f}, y={pose.y:.3f}, z={pose.z:.3f}")
 
     # =========================================================================
-    # 4. Transforms - Clean API
+    # 4. Poses - Clean API
     # =========================================================================
-    print("\n4. Transform helpers...")
+    print("\n4. Pose helpers...")
 
-    # Create transform from position and quaternion
-    t1 = Transform.from_xyz_quat(0.5, 0, 0.8, 0, 0, 0.707, 0.707)
+    # Create pose from position and quaternion
+    t1 = Pose.from_xyz_quat(0.5, 0, 0.8, 0, 0, 0.707, 0.707)
     print(f"   From xyz_quat: {t1}")
 
     # Create with factory functions and chaining
@@ -108,7 +108,7 @@ def main():
         robot,
         name="table",
         geometry=box(0.8, 0.8, 0.05),
-        transform=Transform.from_xyz(0.5, 0, 0.3),
+        transform=Pose.from_xyz(0.5, 0, 0.3),
         color=(0.6, 0.4, 0.2, 1.0),
     )
     print("   Added table obstacle")
@@ -118,7 +118,7 @@ def main():
         robot,
         name="ball",
         geometry=sphere(0.1),
-        transform=Transform.from_xyz(0.4, 0.2, 0.6),
+        transform=Pose.from_xyz(0.4, 0.2, 0.6),
         color=(1.0, 0.0, 0.0, 1.0),
     )
     print("   Added ball obstacle")
@@ -136,7 +136,7 @@ def main():
         .move_to(JointTarget([0, 0, 0, 0, 0, 0]))
         # Move to Cartesian target
         .move_to(CartesianTarget(
-            Transform.from_xyz_quat(0.8, -0.2, 0.8, 0.707, 0, 0.707, 0)
+            Pose.from_xyz_quat(0.8, -0.2, 0.8, 0.707, 0, 0.707, 0)
         ))
         # Another Cartesian target
         .move_to(CartesianTarget(

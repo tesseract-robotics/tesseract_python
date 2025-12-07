@@ -9,13 +9,13 @@ Example:
         MotionProgram,
         JointTarget,
         CartesianTarget,
-        Transform,
+        Pose,
     )
 
     # Build a program with fluent API
     program = (MotionProgram("manipulator")
         .start_at(JointTarget([0, 0, 0, 0, 0, 0]))
-        .move_to(CartesianTarget(Transform.from_xyz(0.5, 0, 0.5)))
+        .move_to(CartesianTarget(Pose.from_xyz(0.5, 0, 0.5)))
         .move_to(JointTarget([0.5, 0, 0, 0, 0, 0]))
     )
 
@@ -48,7 +48,7 @@ from tesseract_robotics.tesseract_command_language import (
     DEFAULT_PROFILE_KEY,
 )
 
-from tesseract_robotics.planning.transforms import Transform
+from tesseract_robotics.planning.transforms import Pose
 
 
 class MoveType(Enum):
@@ -63,13 +63,13 @@ class CartesianTarget:
     Cartesian waypoint target (pose in Cartesian space).
 
     Attributes:
-        pose: Target pose as Transform or position/quaternion
+        pose: Target pose as Pose or position/quaternion
         move_type: Motion type (FREESPACE or LINEAR)
         profile: Motion profile name
 
     Example:
-        # From Transform
-        target = CartesianTarget(Transform.from_xyz(0.5, 0, 0.5))
+        # From Pose
+        target = CartesianTarget(Pose.from_xyz(0.5, 0, 0.5))
 
         # From position and quaternion
         target = CartesianTarget(
@@ -79,11 +79,11 @@ class CartesianTarget:
 
         # Linear motion
         target = CartesianTarget(
-            Transform.from_xyz(0.5, 0, 0.5),
+            Pose.from_xyz(0.5, 0, 0.5),
             move_type=MoveType.LINEAR,
         )
     """
-    pose: Optional[Transform] = None
+    pose: Optional[Pose] = None
     position: Optional[ArrayLike] = None
     quaternion: Optional[ArrayLike] = None
     move_type: MoveType = MoveType.FREESPACE
@@ -96,9 +96,9 @@ class CartesianTarget:
                 pos = np.asarray(self.position)
                 if self.quaternion is not None:
                     quat = np.asarray(self.quaternion)
-                    self.pose = Transform.from_position_quaternion(pos, quat)
+                    self.pose = Pose.from_position_quaternion(pos, quat)
                 else:
-                    self.pose = Transform.from_position(pos)
+                    self.pose = Pose.from_position(pos)
             else:
                 raise ValueError("Must provide either pose or position")
 
@@ -232,8 +232,8 @@ class MotionProgram:
         # Build program with chained calls
         program = (MotionProgram("manipulator")
             .start_at(JointTarget([0, 0, 0, 0, 0, 0]))
-            .move_to(CartesianTarget(Transform.from_xyz(0.5, 0, 0.5)))
-            .linear_to(CartesianTarget(Transform.from_xyz(0.5, 0.2, 0.5)))
+            .move_to(CartesianTarget(Pose.from_xyz(0.5, 0, 0.5)))
+            .linear_to(CartesianTarget(Pose.from_xyz(0.5, 0.2, 0.5)))
             .move_to(JointTarget([0, 0, 0, 0, 0, 0]))
         )
 

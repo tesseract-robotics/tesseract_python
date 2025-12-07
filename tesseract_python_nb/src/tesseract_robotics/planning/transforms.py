@@ -1,14 +1,14 @@
 """
-Transform helpers for creating poses and transformations.
+Pose helpers for creating poses and transformations.
 
 Provides a clean API for creating transformation matrices without needing
 to manipulate numpy arrays directly or chain Isometry3d operations.
 
 Example:
-    from tesseract_robotics.planning import Transform, translation, rotation_z
+    from tesseract_robotics.planning import Pose, translation, rotation_z
 
-    # Create transform from components
-    pose = Transform.from_xyz_rpy(0.5, 0.0, 0.3, 0, 0, 1.57)
+    # Create pose from components
+    pose = Pose.from_xyz_rpy(0.5, 0.0, 0.3, 0, 0, 1.57)
 
     # Or use helper functions
     pose = translation(0.5, 0.0, 0.3) @ rotation_z(1.57)
@@ -29,11 +29,11 @@ from tesseract_robotics.tesseract_common import Isometry3d
 
 
 @dataclass
-class Transform:
+class Pose:
     """
-    A 3D rigid transformation (rotation + translation).
+    A 3D pose (position + orientation).
 
-    This class provides a Pythonic interface for working with 3D transforms,
+    This class provides a Pythonic interface for working with 3D poses,
     wrapping numpy arrays and providing convenient factory methods.
 
     Attributes:
@@ -41,17 +41,17 @@ class Transform:
 
     Example:
         # From position and orientation
-        t = Transform.from_xyz_quat(0.5, 0, 0.3, 0, 0, 0.707, 0.707)
+        p = Pose.from_xyz_quat(0.5, 0, 0.3, 0, 0, 0.707, 0.707)
 
         # From numpy matrix
-        t = Transform(np.eye(4))
+        p = Pose(np.eye(4))
 
-        # Chain transforms
-        result = t1 @ t2
+        # Chain poses (compose transformations)
+        result = p1 @ p2
 
         # Access components
-        pos = t.position  # [x, y, z]
-        rot = t.rotation_matrix  # 3x3
+        pos = p.position  # [x, y, z]
+        rot = p.rotation_matrix  # 3x3
     """
 
     matrix: np.ndarray
@@ -60,22 +60,22 @@ class Transform:
         """Validate and convert matrix to numpy array."""
         self.matrix = np.asarray(self.matrix, dtype=np.float64)
         if self.matrix.shape != (4, 4):
-            raise ValueError(f"Transform matrix must be 4x4, got {self.matrix.shape}")
+            raise ValueError(f"Pose matrix must be 4x4, got {self.matrix.shape}")
 
     @classmethod
-    def identity(cls) -> Transform:
+    def identity(cls) -> Pose:
         """Create identity transform (no rotation, no translation)."""
         return cls(np.eye(4))
 
     @classmethod
-    def from_xyz(cls, x: float, y: float, z: float) -> Transform:
+    def from_xyz(cls, x: float, y: float, z: float) -> Pose:
         """Create pure translation transform."""
         mat = np.eye(4)
         mat[:3, 3] = [x, y, z]
         return cls(mat)
 
     @classmethod
-    def from_position(cls, position: ArrayLike) -> Transform:
+    def from_position(cls, position: ArrayLike) -> Pose:
         """Create pure translation from position array [x, y, z]."""
         pos = np.asarray(position)
         if pos.shape != (3,):
@@ -92,7 +92,7 @@ class Transform:
         qy: float,
         qz: float,
         qw: float,
-    ) -> Transform:
+    ) -> Pose:
         """
         Create transform from position and quaternion.
 
@@ -110,7 +110,7 @@ class Transform:
         cls,
         position: ArrayLike,
         quaternion: ArrayLike,
-    ) -> Transform:
+    ) -> Pose:
         """
         Create transform from position and quaternion arrays.
 
@@ -134,7 +134,7 @@ class Transform:
         roll: float,
         pitch: float,
         yaw: float,
-    ) -> Transform:
+    ) -> Pose:
         """
         Create transform from position and roll-pitch-yaw angles.
 
@@ -148,12 +148,12 @@ class Transform:
         return cls(mat)
 
     @classmethod
-    def from_matrix(cls, matrix: ArrayLike) -> Transform:
+    def from_matrix(cls, matrix: ArrayLike) -> Pose:
         """Create transform from 4x4 homogeneous matrix."""
         return cls(np.asarray(matrix))
 
     @classmethod
-    def from_matrix_position(cls, rotation: ArrayLike, position: ArrayLike) -> Transform:
+    def from_matrix_position(cls, rotation: ArrayLike, position: ArrayLike) -> Pose:
         """
         Create transform from 3x3 rotation matrix and position.
 
@@ -171,7 +171,7 @@ class Transform:
         return cls(mat)
 
     @classmethod
-    def from_isometry(cls, isometry: Isometry3d) -> Transform:
+    def from_isometry(cls, isometry: Isometry3d) -> Pose:
         """Create transform from Tesseract Isometry3d."""
         return cls(isometry.matrix())
 
@@ -214,33 +214,33 @@ class Transform:
         """Convert to Tesseract Isometry3d."""
         return Isometry3d(self.matrix)
 
-    def inverse(self) -> Transform:
-        """Return the inverse transform."""
-        return Transform(np.linalg.inv(self.matrix))
+    def inverse(self) -> Pose:
+        """Return the inverse pose."""
+        return Pose(np.linalg.inv(self.matrix))
 
-    def __matmul__(self, other: Transform) -> Transform:
-        """Chain transforms: result = self @ other."""
-        if isinstance(other, Transform):
-            return Transform(self.matrix @ other.matrix)
-        raise TypeError(f"Cannot multiply Transform with {type(other)}")
+    def __matmul__(self, other: Pose) -> Pose:
+        """Chain poses: result = self @ other."""
+        if isinstance(other, Pose):
+            return Pose(self.matrix @ other.matrix)
+        raise TypeError(f"Cannot multiply Pose with {type(other)}")
 
     def __repr__(self) -> str:
         pos = self.position
         quat = self.quaternion
         return (
-            f"Transform(position=[{pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f}], "
+            f"Pose(position=[{pos[0]:.4f}, {pos[1]:.4f}, {pos[2]:.4f}], "
             f"quaternion=[{quat[0]:.4f}, {quat[1]:.4f}, {quat[2]:.4f}, {quat[3]:.4f}])"
         )
 
 
 # Convenience factory functions
 
-def translation(x: float, y: float, z: float) -> Transform:
-    """Create pure translation transform."""
-    return Transform.from_xyz(x, y, z)
+def translation(x: float, y: float, z: float) -> Pose:
+    """Create pure translation pose."""
+    return Pose.from_xyz(x, y, z)
 
 
-def rotation_x(angle: float) -> Transform:
+def rotation_x(angle: float) -> Pose:
     """Create rotation around X axis (radians)."""
     c, s = math.cos(angle), math.sin(angle)
     mat = np.eye(4)
@@ -248,10 +248,10 @@ def rotation_x(angle: float) -> Transform:
     mat[1, 2] = -s
     mat[2, 1] = s
     mat[2, 2] = c
-    return Transform(mat)
+    return Pose(mat)
 
 
-def rotation_y(angle: float) -> Transform:
+def rotation_y(angle: float) -> Pose:
     """Create rotation around Y axis (radians)."""
     c, s = math.cos(angle), math.sin(angle)
     mat = np.eye(4)
@@ -259,10 +259,10 @@ def rotation_y(angle: float) -> Transform:
     mat[0, 2] = s
     mat[2, 0] = -s
     mat[2, 2] = c
-    return Transform(mat)
+    return Pose(mat)
 
 
-def rotation_z(angle: float) -> Transform:
+def rotation_z(angle: float) -> Pose:
     """Create rotation around Z axis (radians)."""
     c, s = math.cos(angle), math.sin(angle)
     mat = np.eye(4)
@@ -270,21 +270,21 @@ def rotation_z(angle: float) -> Transform:
     mat[0, 1] = -s
     mat[1, 0] = s
     mat[1, 1] = c
-    return Transform(mat)
+    return Pose(mat)
 
 
 def rotation_from_quaternion(
     qx: float, qy: float, qz: float, qw: float
-) -> Transform:
+) -> Pose:
     """Create pure rotation from quaternion (scalar-last: qx, qy, qz, qw)."""
     mat = np.eye(4)
     mat[:3, :3] = _quaternion_to_rotation_matrix(qx, qy, qz, qw)
-    return Transform(mat)
+    return Pose(mat)
 
 
 def rotation_from_axis_angle(
     axis: ArrayLike, angle: float
-) -> Transform:
+) -> Pose:
     """
     Create pure rotation from axis-angle representation.
 
@@ -310,7 +310,11 @@ def rotation_from_axis_angle(
     mat[2, 1] = t * y * z + s * x
     mat[2, 2] = t * z * z + c
 
-    return Transform(mat)
+    return Pose(mat)
+
+
+# Backwards compatibility alias
+Transform = Pose
 
 
 # Internal helper functions

@@ -53,7 +53,7 @@ from tesseract_robotics.tesseract_environment import (
     ChangeCollisionMarginsCommand,
 )
 
-from tesseract_robotics.planning.transforms import Transform
+from tesseract_robotics.planning.transforms import Pose
 
 
 @dataclass
@@ -317,7 +317,7 @@ class Robot:
         group_name: str,
         joint_positions: ArrayLike,
         tip_link: Optional[str] = None,
-    ) -> Transform:
+    ) -> Pose:
         """
         Compute forward kinematics.
 
@@ -327,7 +327,7 @@ class Robot:
             tip_link: Target link (uses default TCP if None)
 
         Returns:
-            Transform of the tip link
+            Pose of the tip link
         """
         group = self.env.getKinematicGroup(group_name)
         joint_positions = np.asarray(joint_positions, dtype=np.float64)
@@ -338,12 +338,12 @@ class Robot:
             # Use first tip link
             tip_link = list(group.getActiveLinkNames())[-1]
 
-        return Transform.from_isometry(poses[tip_link])
+        return Pose.from_isometry(poses[tip_link])
 
     def ik(
         self,
         group_name: str,
-        target_pose: Union[Transform, Isometry3d],
+        target_pose: Union[Pose, Isometry3d],
         seed: Optional[ArrayLike] = None,
         tip_link: Optional[str] = None,
     ) -> Optional[np.ndarray]:
@@ -361,7 +361,7 @@ class Robot:
         """
         group = self.env.getKinematicGroup(group_name)
 
-        if isinstance(target_pose, Transform):
+        if isinstance(target_pose, Pose):
             target_pose = target_pose.to_isometry()
 
         if seed is None:

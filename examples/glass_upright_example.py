@@ -23,7 +23,7 @@ from tesseract_robotics.planning import (
     Robot,
     MotionProgram,
     StateTarget,
-    Transform,
+    Pose,
     sphere,
     create_obstacle,
     TaskComposer,
@@ -53,7 +53,7 @@ def main():
         robot,
         name="sphere_attached",
         geometry=sphere(0.15),
-        transform=Transform.from_xyz(0.5, 0, 0.55),
+        transform=Pose.from_xyz(0.5, 0, 0.55),
     )
     print("Added sphere obstacle at (0.5, 0, 0.55)")
 

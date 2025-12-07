@@ -23,7 +23,7 @@ from tesseract_robotics.planning import (
     CartesianTarget,
     StateTarget,
     MoveType,
-    Transform,
+    Pose,
     box,
     create_obstacle,
     TaskComposer,
@@ -53,7 +53,7 @@ def main():
         robot,
         name="box_obstacle",
         geometry=box(0.5, 0.5, 0.5),
-        transform=Transform.from_xyz(1.0, 0, 0),
+        transform=Pose.from_xyz(1.0, 0, 0),
     )
     print("Added box obstacle at (1.0, 0, 0)")
 
@@ -64,8 +64,8 @@ def main():
 
     # Create Cartesian waypoints (tool poses)
     # Quaternion(0, 0, 1, 0) = 180 deg rotation around Z (pointing down)
-    wp1_pose = Transform.from_xyz_quat(0.5, -0.2, 0.62, 0, 0, 1.0, 0)
-    wp2_pose = Transform.from_xyz_quat(0.5, 0.3, 0.62, 0, 0, 1.0, 0)
+    wp1_pose = Pose.from_xyz_quat(0.5, -0.2, 0.62, 0, 0, 1.0, 0)
+    wp2_pose = Pose.from_xyz_quat(0.5, 0.3, 0.62, 0, 0, 1.0, 0)
 
     # Build motion program with fluent API
     # - Start at joint position

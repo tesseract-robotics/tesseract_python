@@ -52,7 +52,8 @@ from tesseract_robotics.planning.program import (
 )
 
 from tesseract_robotics.planning.transforms import (
-    Transform,
+    Pose,
+    Transform,  # Backwards compatibility alias
     translation,
     rotation_x,
     rotation_y,
@@ -94,7 +95,8 @@ __all__ = [
     "StateTarget",
     "MoveType",
     # Transforms
-    "Transform",
+    "Pose",
+    "Transform",  # Backwards compatibility alias
     "translation",
     "rotation_x",
     "rotation_y",
