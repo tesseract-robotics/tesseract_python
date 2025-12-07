@@ -19,8 +19,9 @@ export DYLD_LIBRARY_PATH="$SCRIPT_DIR/ws/install/lib:$DYLD_LIBRARY_PATH"
 export TESSERACT_SUPPORT_DIR="$SCRIPT_DIR/ws/src/tesseract/tesseract_support"
 export TESSERACT_RESOURCE_PATH="$SCRIPT_DIR/ws/src/tesseract/"
 
-# Task composer config (required for planning examples)
-export TESSERACT_TASK_COMPOSER_CONFIG_FILE="$SCRIPT_DIR/ws/src/tesseract_planning/tesseract_task_composer/config/task_composer_plugins.yaml"
+# Task composer config (required for planning examples and tests)
+export TESSERACT_TASK_COMPOSER_DIR="$SCRIPT_DIR/ws/src/tesseract_planning/tesseract_task_composer"
+export TESSERACT_TASK_COMPOSER_CONFIG_FILE="$TESSERACT_TASK_COMPOSER_DIR/config/task_composer_plugins.yaml"
 
 # For headless testing (set to 1 to skip server startup in viewer examples)
 # Default to 0 (interactive) - run_tests.sh overrides to 1
