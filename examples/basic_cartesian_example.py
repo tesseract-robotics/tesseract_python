@@ -2,7 +2,7 @@
 Basic Cartesian Example
 
 This example demonstrates Cartesian motion planning using TrajOpt with the KUKA IIWA robot.
-It creates a point cloud obstacle and plans a trajectory that includes both freespace and
+It creates a box obstacle and plans a trajectory that includes both freespace and
 linear Cartesian moves.
 
 Based on: tesseract_examples/src/basic_cartesian_example.cpp
@@ -14,50 +14,19 @@ Required environment variables:
 
 import os
 import sys
-import gc
 import numpy as np
 
-from tesseract_robotics.tesseract_common import (
-    GeneralResourceLocator,
-    FilesystemPath,
-    Isometry3d,
-    Translation3d,
-    Quaterniond,
-    ManipulatorInfo,
-)
-from tesseract_robotics.tesseract_environment import (
-    Environment,
-    AddLinkCommand,
-    AnyPoly_wrap_EnvironmentConst,
-)
-from tesseract_robotics.tesseract_scene_graph import (
-    Link,
-    Joint,
-    JointType,
-    Visual,
-    Collision,
-)
-from tesseract_robotics.tesseract_geometry import Box
-from tesseract_robotics.tesseract_command_language import (
-    CompositeInstruction,
-    MoveInstruction,
-    MoveInstructionType_FREESPACE,
-    MoveInstructionType_LINEAR,
-    StateWaypoint,
-    CartesianWaypoint,
-    StateWaypointPoly_wrap_StateWaypoint,
-    CartesianWaypointPoly_wrap_CartesianWaypoint,
-    MoveInstructionPoly_wrap_MoveInstruction,
-    ProfileDictionary,
-    AnyPoly_wrap_CompositeInstruction,
-    AnyPoly_wrap_ProfileDictionary,
-    AnyPoly_as_CompositeInstruction,
-    InstructionPoly_as_MoveInstructionPoly,
-    WaypointPoly_as_StateWaypointPoly,
-)
-from tesseract_robotics.tesseract_task_composer import (
-    createTaskComposerPluginFactory,
-    TaskComposerDataStorage,
+from tesseract_robotics.planning import (
+    Robot,
+    MotionProgram,
+    JointTarget,
+    CartesianTarget,
+    StateTarget,
+    MoveType,
+    Transform,
+    box,
+    create_obstacle,
+    TaskComposer,
 )
 
 # Optional: viewer for visualization (disabled in pytest/headless mode)
@@ -67,209 +36,75 @@ try:
 except ImportError:
     HAS_VIEWER = False
 
-TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
-
-
-def add_box_obstacle():
-    """Add a box obstacle to represent a simplified point cloud"""
-    link_box = Link("box_obstacle")
-
-    # Create visual - a box to represent an obstacle
-    visual = Visual()
-    visual.origin = Isometry3d.Identity()
-    visual.origin = visual.origin * Translation3d(1.0, 0, 0)  # Position at (1, 0, 0)
-    visual.geometry = Box(0.5, 0.5, 0.5)  # 0.5m cube
-    link_box.visual.append(visual)
-
-    # Create collision (same as visual)
-    collision = Collision()
-    collision.origin = visual.origin
-    collision.geometry = visual.geometry
-    link_box.collision.append(collision)
-
-    # Create joint to attach box to base_link
-    joint_box = Joint("joint_box_obstacle")
-    joint_box.parent_link_name = "base_link"
-    joint_box.child_link_name = link_box.getName()
-    joint_box.type = JointType.FIXED
-
-    return AddLinkCommand(link_box, joint_box)
-
 
 def main():
-    # Get config file path
-    task_composer_filename = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
-    if not task_composer_filename:
-        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE environment variable not set")
-        print("Set it to: tesseract_planning/tesseract_task_composer/config/task_composer_plugins.yaml")
+    # Check for task composer config
+    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE") and not os.environ.get("TESSERACT_TASK_COMPOSER_DIR"):
+        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE or TESSERACT_TASK_COMPOSER_DIR not set")
+        print("Run: source env.sh")
         return False
-
-    # Initialize resource locator and environment
-    locator = GeneralResourceLocator()
 
     # Load KUKA IIWA robot
-    urdf_url = "package://tesseract_support/urdf/lbr_iiwa_14_r820.urdf"
-    srdf_url = "package://tesseract_support/urdf/lbr_iiwa_14_r820.srdf"
-    urdf_path = FilesystemPath(locator.locateResource(urdf_url).getFilePath())
-    srdf_path = FilesystemPath(locator.locateResource(srdf_url).getFilePath())
-
-    env = Environment()
-    if not env.init(urdf_path, srdf_path, locator):
-        print("Failed to initialize environment")
-        return False
-
-    print(f"Environment initialized with robot: {env.getName()}")
-    print(f"Root link: {env.getRootLinkName()}")
+    robot = Robot.from_tesseract_support("lbr_iiwa_14_r820")
+    print(f"Loaded robot: {robot}")
 
     # Add box obstacle (simplified version of point cloud)
-    cmd = add_box_obstacle()
-    if not env.applyCommand(cmd):
-        print("Failed to add obstacle to environment")
-        return False
+    create_obstacle(
+        robot,
+        name="box_obstacle",
+        geometry=box(0.5, 0.5, 0.5),
+        transform=Transform.from_xyz(1.0, 0, 0),
+    )
     print("Added box obstacle at (1.0, 0, 0)")
 
-    # Define joint names for KUKA IIWA
-    joint_names = [f"joint_a{i}" for i in range(1, 8)]
-
-    # Define initial joint position
+    # Get joint names and set initial position
+    joint_names = robot.get_joint_names("manipulator")
     joint_pos = np.array([-0.4, 0.2762, 0.0, -1.3348, 0.0, 1.4959, 0.0])
-
-    # Set initial state
-    env.setState(joint_names, joint_pos)
-
-    # Create manipulator info
-    manip_info = ManipulatorInfo()
-    manip_info.manipulator = "manipulator"
-    manip_info.working_frame = "base_link"
-    manip_info.tcp_frame = "tool0"
-
-    # Create program
-    program = CompositeInstruction("cartesian_program")
-    program.setManipulatorInfo(manip_info)
-
-    # Start waypoint (joint position)
-    wp0 = StateWaypoint(joint_names, joint_pos)
+    robot.set_joints(joint_pos, joint_names=joint_names)
 
     # Create Cartesian waypoints (tool poses)
-    # wp1: First Cartesian target
-    wp1 = CartesianWaypoint(
-        Isometry3d.Identity() * Translation3d(0.5, -0.2, 0.62) * Quaterniond(0, 0, 1.0, 0)
-    )
+    # Quaternion(0, 0, 1, 0) = 180 deg rotation around Z (pointing down)
+    wp1_pose = Transform.from_xyz_quat(0.5, -0.2, 0.62, 0, 0, 1.0, 0)
+    wp2_pose = Transform.from_xyz_quat(0.5, 0.3, 0.62, 0, 0, 1.0, 0)
 
-    # wp2: Second Cartesian target (linear move)
-    wp2 = CartesianWaypoint(
-        Isometry3d.Identity() * Translation3d(0.5, 0.3, 0.62) * Quaterniond(0, 0, 1.0, 0)
+    # Build motion program with fluent API
+    # - Start at joint position
+    # - Freespace move to first Cartesian target
+    # - Linear move to second Cartesian target
+    # - Freespace move back to start
+    program = (MotionProgram("manipulator", tcp_frame="tool0", profile="cartesian_program")
+        .set_joint_names(joint_names)
+        .move_to(StateTarget(joint_pos, names=joint_names, profile="freespace_profile"))
+        .move_to(CartesianTarget(wp1_pose, profile="freespace_profile"))
+        .linear_to(CartesianTarget(wp2_pose, profile="RASTER"))
+        .move_to(StateTarget(joint_pos, names=joint_names, profile="freespace_profile"))
     )
-
-    # Create instructions
-    # Start instruction
-    start_instruction = MoveInstruction(
-        StateWaypointPoly_wrap_StateWaypoint(wp0),
-        MoveInstructionType_FREESPACE,
-        "freespace_profile"
-    )
-    start_instruction.setDescription("Start Instruction")
-
-    # Freespace move to first Cartesian target
-    plan_f0 = MoveInstruction(
-        CartesianWaypointPoly_wrap_CartesianWaypoint(wp1),
-        MoveInstructionType_FREESPACE,
-        "freespace_profile"
-    )
-    plan_f0.setDescription("from_start_plan")
-
-    # Linear move to second Cartesian target
-    plan_c0 = MoveInstruction(
-        CartesianWaypointPoly_wrap_CartesianWaypoint(wp2),
-        MoveInstructionType_LINEAR,
-        "RASTER"
-    )
-    plan_c0.setDescription("linear_move")
-
-    # Freespace move back to start
-    plan_f1 = MoveInstruction(
-        StateWaypointPoly_wrap_StateWaypoint(wp0),
-        MoveInstructionType_FREESPACE,
-        "freespace_profile"
-    )
-    plan_f1.setDescription("to_end_plan")
-
-    # Add instructions to program
-    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
-    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f0))
-    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_c0))
-    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
 
     print("\nProgram created with TrajOpt Cartesian planning")
     print("  - Freespace to Cartesian wp1")
     print("  - Linear to Cartesian wp2")
     print("  - Freespace back to start")
 
-    # Create task composer factory
-    factory = createTaskComposerPluginFactory(task_composer_filename, locator)
-
-    # Create executor
-    executor = factory.createTaskComposerExecutor("TaskflowExecutor")
-
-    # Create task (TrajOpt pipeline)
-    task = factory.createTaskComposerNode("TrajOptPipeline")
-    output_key = task.getOutputKeys().get("program")
-    input_key = task.getInputKeys().get("planning_input")
-
-    # Create profile dictionary (using defaults)
-    profiles = ProfileDictionary()
-
-    # Create task data storage
-    task_data = TaskComposerDataStorage()
-    task_data.setData(input_key, AnyPoly_wrap_CompositeInstruction(program))
-    task_data.setData("environment", AnyPoly_wrap_EnvironmentConst(env))
-    task_data.setData("profiles", AnyPoly_wrap_ProfileDictionary(profiles))
-
+    # Plan using TaskComposer
     print("\nRunning TrajOpt planner...")
+    composer = TaskComposer.from_config()
+    result = composer.plan(robot, program, pipeline="TrajOptPipeline")
 
-    # Run the task (nanobind returns the node directly, no .get() needed)
-    future = executor.run(task, task_data)
-    future.wait()
-
-    if not future.context.isSuccessful():
-        print("Planning failed!")
+    if not result.successful:
+        print(f"Planning failed: {result.message}")
         return False
 
     print("Planning successful!")
-
-    # Get results
-    results = AnyPoly_as_CompositeInstruction(future.context.data_storage.getData(output_key))
-
-    # Print trajectory summary
-    print(f"\nTrajectory has {len(results)} waypoints")
-
-    # Count waypoint types
-    n_state = 0
-    for instr in results:
-        if instr.isMoveInstruction():
-            move_instr = InstructionPoly_as_MoveInstructionPoly(instr)
-            wp = move_instr.getWaypoint()
-            if wp.isStateWaypoint():
-                n_state += 1
-    print(f"  State waypoints: {n_state}")
+    print(f"\nTrajectory has {len(result)} waypoints")
 
     # Optional: visualize with viewer
-    if HAS_VIEWER:
+    if HAS_VIEWER and result.raw_results is not None:
         print("\nStarting viewer at http://localhost:8000")
         viewer = TesseractViewer()
-        viewer.update_environment(env, [0, 0, 0])
-        viewer.update_trajectory(results)
+        viewer.update_environment(robot.env, [0, 0, 0])
+        viewer.update_trajectory(result.raw_results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
-
-    # Explicit cleanup to prevent segfault at interpreter shutdown
-    # TaskComposer objects must be destroyed in proper order
-    del future
-    del task_data
-    del task
-    del executor
-    del factory
-    gc.collect()
 
     return True
 

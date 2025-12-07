@@ -76,6 +76,7 @@ from tesseract_robotics.planning.planner import (
     plan_freespace,
     plan_cartesian,
     PlannerConfig,
+    assign_current_state_as_seed,
 )
 
 from tesseract_robotics.planning.composer import (
@@ -113,6 +114,7 @@ __all__ = [
     "plan_freespace",
     "plan_cartesian",
     "PlannerConfig",
+    "assign_current_state_as_seed",
     # Task Composer
     "TaskComposer",
 ]

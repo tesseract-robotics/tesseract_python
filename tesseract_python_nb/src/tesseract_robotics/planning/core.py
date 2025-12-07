@@ -48,6 +48,9 @@ from tesseract_robotics.tesseract_environment import (
     AddLinkCommand,
     RemoveLinkCommand,
     MoveLinkCommand,
+    ModifyAllowedCollisionsCommand,
+    ModifyAllowedCollisionsType,
+    ChangeCollisionMarginsCommand,
 )
 
 from tesseract_robotics.planning.transforms import Transform
@@ -447,20 +450,56 @@ class Robot:
 
     def move_link(
         self,
-        joint_name: str,
-        parent_link: str,
+        joint: Joint,
     ) -> bool:
         """
-        Move a link by changing its parent.
+        Move a link by providing a new joint configuration.
+
+        This attaches the child link to a new parent link via the joint.
 
         Args:
-            joint_name: Name of the joint to modify
-            parent_link: New parent link name
+            joint: Joint object specifying new parent-child relationship
 
         Returns:
             True if successful
         """
-        cmd = MoveLinkCommand(joint_name, parent_link)
+        cmd = MoveLinkCommand(joint)
+        return self.env.applyCommand(cmd)
+
+    def add_allowed_collision(
+        self,
+        link1: str,
+        link2: str,
+        reason: str = "Adjacent",
+    ) -> bool:
+        """
+        Add an allowed collision pair.
+
+        Args:
+            link1: First link name
+            link2: Second link name
+            reason: Reason for allowing collision
+
+        Returns:
+            True if successful
+        """
+        from tesseract_robotics.tesseract_common import AllowedCollisionMatrix
+        acm = AllowedCollisionMatrix()
+        acm.addAllowedCollision(link1, link2, reason)
+        cmd = ModifyAllowedCollisionsCommand(acm, ModifyAllowedCollisionsType.ADD)
+        return self.env.applyCommand(cmd)
+
+    def set_collision_margin(self, margin: float) -> bool:
+        """
+        Set default collision margin distance.
+
+        Args:
+            margin: Collision margin in meters
+
+        Returns:
+            True if successful
+        """
+        cmd = ChangeCollisionMarginsCommand(margin)
         return self.env.applyCommand(cmd)
 
     @property

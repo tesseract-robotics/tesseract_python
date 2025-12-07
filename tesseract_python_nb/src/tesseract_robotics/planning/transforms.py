@@ -153,6 +153,24 @@ class Transform:
         return cls(np.asarray(matrix))
 
     @classmethod
+    def from_matrix_position(cls, rotation: ArrayLike, position: ArrayLike) -> Transform:
+        """
+        Create transform from 3x3 rotation matrix and position.
+
+        Args:
+            rotation: 3x3 rotation matrix
+            position: [x, y, z] position
+
+        Example:
+            R = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
+            t = Transform.from_matrix_position(R, [0.5, 0, 0.3])
+        """
+        mat = np.eye(4)
+        mat[:3, :3] = rotation
+        mat[:3, 3] = position
+        return cls(mat)
+
+    @classmethod
     def from_isometry(cls, isometry: Isometry3d) -> Transform:
         """Create transform from Tesseract Isometry3d."""
         return cls(isometry.matrix())

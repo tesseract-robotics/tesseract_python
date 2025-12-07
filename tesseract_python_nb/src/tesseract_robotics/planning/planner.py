@@ -29,6 +29,9 @@ from tesseract_robotics.tesseract_command_language import (
     CompositeInstruction,
     ProfileDictionary,
 )
+from tesseract_robotics.tesseract_motion_planners import (
+    assignCurrentStateAsSeed as _assignCurrentStateAsSeed,
+)
 
 # Re-export PlanningResult from composer
 from tesseract_robotics.planning.composer import PlanningResult, TaskComposer
@@ -146,3 +149,20 @@ def plan_cartesian(
         pipeline=config.pipeline,
         profiles=profiles,
     )
+
+
+def assign_current_state_as_seed(
+    program: CompositeInstruction,
+    robot: "Robot",
+) -> None:
+    """
+    Assign current robot state as seed for Cartesian waypoints.
+
+    This is required for planning with Cartesian waypoints to provide
+    an initial joint configuration hint.
+
+    Args:
+        program: CompositeInstruction to seed
+        robot: Robot instance with current state
+    """
+    _assignCurrentStateAsSeed(program, robot.env)

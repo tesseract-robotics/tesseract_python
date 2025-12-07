@@ -335,3 +335,17 @@ assignCurrentStateAsSeed(program, env)
 ### Reference Leaks at Exit
 
 nanobind reference leak warnings may appear at program exit. These don't affect functionality but indicate cleanup issues with cross-module type references.
+
+### OMPL Constrained Planning API Removed
+
+The `OMPLPlannerConstrainedConfig` class and related constrained planning support has been removed from tesseract's OMPL planner implementation. The header `config/ompl_planner_constrained_config.h` no longer exists in the installed headers.
+
+**Impact:** Examples like `glass_upright_ompl_example.cpp` (which kept a glass upright during motion using `ompl::base::Constraint`) cannot be ported. The C++ test file still exists in the tesseract source but uses deprecated API.
+
+**Current Status:** Constrained OMPL planning (custom constraints on end-effector orientation, etc.) is not available through Python bindings. Use TrajOpt with Cartesian constraints as an alternative for orientation-constrained planning.
+
+**Workaround:** For glass-upright style constraints, use TrajOpt with `cartesian_constraint_config.coeff` to penalize orientation deviations:
+```python
+trajopt_plan_profile.cartesian_constraint_config.enabled = True
+trajopt_plan_profile.cartesian_constraint_config.coeff = np.array([1.0, 1.0, 1.0, 10.0, 10.0, 0.0])  # High weight on rx, ry
+```

@@ -458,8 +458,8 @@ class TestFreespaceOMPLExampleRun:
         )
         # Check exit code
         assert result.returncode == 0, f"Script failed:\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
-        # Verify some expected output
-        assert "Environment initialized" in result.stdout
+        # Verify some expected output (refactored to use Pythonic API)
+        assert "Loaded robot" in result.stdout
         assert "Added sphere obstacle" in result.stdout
         assert "Running OMPL planner" in result.stdout
         assert "Planning successful" in result.stdout
@@ -492,8 +492,8 @@ class TestBasicCartesianExampleRun:
         )
         # Check exit code
         assert result.returncode == 0, f"Script failed:\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
-        # Verify some expected output
-        assert "Environment initialized" in result.stdout
+        # Verify some expected output (refactored to use Pythonic API)
+        assert "Loaded robot" in result.stdout
         assert "Planning" in result.stdout
 
 
@@ -546,7 +546,7 @@ class TestGlassUprightExampleRun:
         )
         # Check exit code
         assert result.returncode == 0, f"Script failed:\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
-        # Verify some expected output
-        assert "Environment initialized" in result.stdout
+        # Verify some expected output (refactored to use Pythonic API)
+        assert "Loaded robot" in result.stdout
 
 
