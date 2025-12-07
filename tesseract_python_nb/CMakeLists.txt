@@ -205,6 +205,25 @@ add_tesseract_nanobind_extension(
   tesseract::tesseract_common
 )
 
+# Add tesseract_motion_planners_descartes module (optional - only if descartes component was built)
+find_package(tesseract_motion_planners QUIET COMPONENTS descartes)
+find_package(descartes_light QUIET)
+if(tesseract_motion_planners_descartes_FOUND AND descartes_light_FOUND)
+  message(STATUS "tesseract_motion_planners descartes component found - building bindings")
+  add_tesseract_nanobind_extension(
+    tesseract_motion_planners_descartes
+    src/tesseract_motion_planners_descartes/tesseract_motion_planners_descartes_bindings.cpp
+    tesseract::tesseract_motion_planners_descartes
+    tesseract::tesseract_motion_planners_core
+    tesseract::tesseract_environment
+    tesseract::tesseract_command_language
+    tesseract::tesseract_collision_core
+    tesseract::tesseract_common
+  )
+else()
+  message(STATUS "tesseract_motion_planners descartes component not found - skipping bindings")
+endif()
+
 # Add tesseract_motion_planners_trajopt module (optional - only if trajopt component was built)
 find_package(tesseract_motion_planners QUIET COMPONENTS trajopt)
 find_package(trajopt QUIET)
