@@ -44,6 +44,7 @@ from tesseract_robotics.tesseract_task_composer import (
     AnyPoly_wrap_EnvironmentConst,
     AnyPoly_as_CompositeInstruction,
 )
+from tesseract_robotics.tesseract_motion_planners import assignCurrentStateAsSeed
 
 
 @dataclass
@@ -236,6 +237,9 @@ class TaskComposer:
             composite = program.to_composite_instruction(joint_names, tcp_frame)
         else:
             composite = program
+
+        # Auto-seed Cartesian waypoints with current robot state
+        assignCurrentStateAsSeed(composite, robot.env)
 
         # Setup profiles
         if profiles is None:

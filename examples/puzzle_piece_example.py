@@ -26,7 +26,6 @@ from tesseract_robotics.planning import (
     CartesianTarget,
     Transform,
     TaskComposer,
-    assign_current_state_as_seed,
 )
 from tesseract_robotics.tesseract_command_language import ProfileDictionary
 from tesseract_robotics.tesseract_motion_planners_trajopt import (
@@ -144,10 +143,6 @@ def main():
 
     print(f"Program has {len(program)} Cartesian waypoints")
 
-    # Convert to CompositeInstruction for seeding
-    composite = program.to_composite_instruction()
-    assign_current_state_as_seed(composite, robot)
-
     # Create custom TrajOpt profiles for Cartesian path following
     profiles = ProfileDictionary()
 
@@ -172,9 +167,9 @@ def main():
 
     print("Running TrajOpt planner...")
 
-    # Plan using TaskComposer
+    # Plan using TaskComposer (auto-seeds Cartesian waypoints)
     composer = TaskComposer.from_config()
-    result = composer.plan(robot, composite, pipeline="TrajOptPipeline", profiles=profiles)
+    result = composer.plan(robot, program, pipeline="TrajOptPipeline", profiles=profiles)
 
     if not result.successful:
         print(f"Planning failed: {result.message}")

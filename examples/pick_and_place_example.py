@@ -29,7 +29,6 @@ from tesseract_robotics.planning import (
     box,
     create_obstacle,
     TaskComposer,
-    assign_current_state_as_seed,
 )
 from tesseract_robotics.tesseract_scene_graph import Joint, JointType
 from tesseract_robotics.tesseract_common import Isometry3d
@@ -116,14 +115,11 @@ def main():
         .linear_to(CartesianTarget(pick_final_pose, profile="CARTESIAN"))
     )
 
-    # Assign current state as seed for Cartesian waypoints
-    pick_composite = pick_program.to_composite_instruction()
-    assign_current_state_as_seed(pick_composite, robot)
-
     print(f"Pick program: {len(pick_program)} instructions")
     print("Running TrajOpt planner for PICK...")
 
-    pick_result = composer.plan(robot, pick_composite, pipeline="TrajOptPipeline")
+    # TaskComposer.plan() auto-seeds Cartesian waypoints
+    pick_result = composer.plan(robot, pick_program, pipeline="TrajOptPipeline")
 
     if not pick_result.successful:
         print(f"PICK planning failed: {pick_result.message}")
@@ -189,14 +185,10 @@ def main():
         .linear_to(CartesianTarget(place_pose, profile="CARTESIAN"))  # Final place
     )
 
-    # Assign current state as seed
-    place_composite = place_program.to_composite_instruction()
-    assign_current_state_as_seed(place_composite, robot)
-
     print(f"Place program: {len(place_program)} instructions")
     print("Running TrajOpt planner for PLACE...")
 
-    place_result = composer.plan(robot, place_composite, pipeline="TrajOptPipeline")
+    place_result = composer.plan(robot, place_program, pipeline="TrajOptPipeline")
 
     if not place_result.successful:
         print(f"PLACE planning failed: {place_result.message}")
