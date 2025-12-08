@@ -138,11 +138,30 @@ jobs:
         source venv/bin/activate
         python -m pip install --upgrade pip
         python -m pip install ws/build/tesseract_python/python/wheelhouse/*
-        python -m pip install pytest        
+        python -m pip install pytest
         export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
         export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
         cd ws/src/tesseract_python/tesseract_python
         pytest -s
+    - name: build nanobind wheel
+      working-directory: ws/src/tesseract_python/tesseract_python_nb
+      run: |
+        export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib
+        export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/ws/install
+        pip install nanobind scikit-build-core
+        CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" pip wheel . -w dist/ --no-build-isolation
+    - name: test nanobind
+      shell: bash
+      run: |
+        python3 -m venv venv_nb
+        source venv_nb/bin/activate
+        python -m pip install --upgrade pip
+        python -m pip install ws/src/tesseract_python/tesseract_python_nb/dist/*.whl
+        python -m pip install pytest
+        export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
+        export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
+        cd ws/src/tesseract_python/tesseract_python_nb
+        pytest tests/ -v
     - name: build docs
       if: matrix.config.docs == true
       shell: bash
@@ -250,7 +269,7 @@ jobs:
         if %errorlevel% neq 0 exit /b %errorlevel%
         call venv\Scripts\activate
         if %errorlevel% neq 0 exit /b %errorlevel%
-        python --version 
+        python --version
         python -m pip install --upgrade pip
         if %errorlevel% neq 0 exit /b %errorlevel%
         for %%I in ("%GITHUB_WORKSPACE%\ws\build\tesseract_python\python\wheelhouse\*") do set WHEEL_FILE=%%~I
@@ -266,6 +285,36 @@ jobs:
         cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python
         if %errorlevel% neq 0 exit /b %errorlevel%
         python -m pytest -s
+        if %errorlevel% neq 0 exit /b %errorlevel%
+    - name: build nanobind wheel
+      shell: cmd
+      run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
+        set CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\ws\install
+        set PATH=%PATH%;%GITHUB_WORKSPACE%\ws\install\bin
+        python -m pip install nanobind scikit-build-core
+        cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb
+        set CMAKE_ARGS=-DCMAKE_POLICY_VERSION_MINIMUM=3.5
+        pip wheel . -w dist\ --no-build-isolation
+        if %errorlevel% neq 0 exit /b %errorlevel%
+    - name: test nanobind
+      shell: cmd
+      run: |
+        python -m venv venv_nb
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        call venv_nb\Scripts\activate
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        python -m pip install --upgrade pip
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        for %%I in ("%GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb\dist\*") do set NB_WHEEL=%%~I
+        python -m pip install %NB_WHEEL%
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        python -m pip install pytest
+        if %errorlevel% neq 0 exit /b %errorlevel%
+        set TESSERACT_SUPPORT_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract\tesseract_support
+        set TESSERACT_TASK_COMPOSER_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract_planning\tesseract_task_composer
+        cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb
+        python -m pytest tests\ -v
         if %errorlevel% neq 0 exit /b %errorlevel%
     - name: archive wheels
       if: always()
