@@ -136,10 +136,14 @@ jobs:
       run: |
         export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
         mkdir -p wheelhouse
-        auditwheel repair dist/*.whl -w wheelhouse --plat manylinux_2_35_x86_64
+        # Only repair tesseract wheel, exclude numpy
+        auditwheel repair dist/tesseract*.whl -w wheelhouse --plat auto
     - name: test
       run: |
-        python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl --force-reinstall
+        # Install from dist for testing (wheelhouse may have higher glibc reqs)
+        python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/dist/tesseract*.whl --force-reinstall
+        # Set LD_LIBRARY_PATH for unrepaired wheel
+        export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
         export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
         export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
         export TESSERACT_RESOURCE_PATH=$GITHUB_WORKSPACE/ws/src/tesseract
@@ -149,7 +153,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: 'python-${{ matrix.config.os }}-${{ matrix.config.arch }}'
-        path: ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl
+        path: ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/tesseract*.whl
     - name: archive logs
       if: failure()
       uses: actions/upload-artifact@v4
