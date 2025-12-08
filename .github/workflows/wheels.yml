@@ -54,6 +54,7 @@ jobs:
       run: |
         export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
         export CMAKE_PREFIX_PATH=$CONDA_PREFIX:$GITHUB_WORKSPACE/ws/install
+        export LIBRARY_PATH=$CONDA_PREFIX/lib:$LIBRARY_PATH
 
         colcon build --merge-install \
             --packages-ignore tesseract_python tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd \
