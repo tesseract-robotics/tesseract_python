@@ -164,7 +164,7 @@ echo ""
 
 colcon build \
     --merge-install \
-    --packages-ignore tesseract_examples tesseract_python trajopt_ifopt trajopt_sqp ifopt vhacd osqp qpoases osqp_eigen tesseract_task_composer \
+    --packages-ignore tesseract_examples tesseract_python trajopt_ifopt trajopt_sqp ifopt vhacd qpoases osqp_eigen tesseract_task_composer \
     --event-handlers console_cohesion+ \
     --cmake-force-configure \
     --cmake-args \
@@ -184,7 +184,6 @@ colcon build \
         -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" \
         -DCMAKE_LIBRARY_PATH="$CONDA_PREFIX/lib" \
         -DQT_HOST_PATH="$CONDA_PREFIX" \
-        -DCMAKE_DISABLE_FIND_PACKAGE_osqp=ON \
         "${OPENMP_CMAKE_ARGS[@]}"
 
 echo ""
