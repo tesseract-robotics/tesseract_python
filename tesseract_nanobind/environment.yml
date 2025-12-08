@@ -25,7 +25,6 @@ dependencies:
   - jsoncpp
   - yaml-cpp
   - tinyxml2
-  - pcl
   - bullet-cpp
   - fcl
   - ompl
