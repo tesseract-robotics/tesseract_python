@@ -5,7 +5,7 @@ build-backend = "scikit_build_core.build"
 [project]
 name = "tesseract-robotics-nanobind"
 description = "Tesseract robotics Python bindings (nanobind)"
-readme = "README.md"
+readme = "../README.md"
 # we're keeping 3.9, since that's the python version that Rhino 8 uses
 # this is in the interest of supporting the compas.dev community
 requires-python = ">=3.9"
