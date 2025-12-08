@@ -12,8 +12,8 @@ pip install tesseract-robotics
 
 ```bash
 # 1. Clone and setup
-git clone https://github.com/tesseract-robotics/tesseract_python.git
-cd tesseract_python
+git clone https://github.com/tesseract-robotics/tesseract_nanobind.git
+cd tesseract_nanobind
 
 # 2. Build C++ dependencies
 source env.sh
