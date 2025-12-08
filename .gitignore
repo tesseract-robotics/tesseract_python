@@ -1,5 +1,7 @@
 # Build artifacts
 ws/
+install/
+log/
 build.log
 build.pid
 setup.log
@@ -7,6 +9,7 @@ setup.log
 # IDE
 .vscode/
 .idea/
+.claude/
 
 # Python
 __pycache__/
@@ -16,6 +19,11 @@ __pycache__/
 dist/
 build/
 *.so
+.env
 
 # OS
 .DS_Store
+
+# Sphinx docs
+docs/_build/
+docs/readme.md

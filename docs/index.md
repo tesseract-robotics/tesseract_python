@@ -28,6 +28,9 @@ Developed and maintained by Wason Technology, LLC and Jelle Feringa.
 :maxdepth: 2
 
 readme.md
+QUICKSTART.md
+DEPENDENCIES.md
+MIGRATION_NOTES.md
 _source/important_notes.md
 _source/examples/examples.md
 _source/modules/api.rst
