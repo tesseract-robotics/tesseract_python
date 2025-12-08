@@ -8,15 +8,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-macos:
+  build:
     runs-on: ${{ matrix.config.runner }}
     strategy:
       fail-fast: false
       matrix:
         config:
-        - arch: arm64
+        - os: macos
+          arch: arm64
           runner: macos-14
-          brew_prefix: /opt/homebrew
+        - os: linux
+          arch: x64
+          runner: ubuntu-22.04
     defaults:
       run:
         shell: bash -el {0}
@@ -24,7 +27,8 @@ jobs:
     - uses: actions/checkout@v4
       with:
         path: ws/src/tesseract_nanobind
-    - name: brew
+    - name: brew (macOS)
+      if: matrix.config.os == 'macos'
       run: |
         brew install libomp automake autoconf libtool
     - name: cache conda env
@@ -32,24 +36,36 @@ jobs:
       id: conda-cache
       with:
         path: ~/miniconda3/envs
-        key: conda-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml') }}
+        key: conda-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml') }}
     - uses: conda-incubator/setup-miniconda@v3
       with:
         miniforge-version: latest
         activate-environment: tesseract_nb
         environment-file: ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml
         use-mamba: true
+    - name: cache vcs repos
+      uses: actions/cache@v4
+      with:
+        path: |
+          ws/src/tesseract
+          ws/src/tesseract_planning
+          ws/src/trajopt
+          ws/src/descartes_light
+          ws/src/opw_kinematics
+          ws/src/ruckig
+        key: vcs-${{ hashFiles('ws/src/tesseract_nanobind/dependencies.rosinstall') }}
     - name: vcs import
       working-directory: ws/src
-      run: vcs import --input tesseract_nanobind/dependencies.rosinstall
+      run: vcs import --input tesseract_nanobind/dependencies.rosinstall --skip-existing
     - name: cache colcon build
       uses: actions/cache@v4
       with:
         path: ws/install
-        key: colcon-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/dependencies.rosinstall') }}
+        key: colcon-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/dependencies.rosinstall') }}
         restore-keys: |
-          colcon-${{ matrix.config.arch }}-
-    - name: colcon build C++ deps
+          colcon-${{ matrix.config.os }}-${{ matrix.config.arch }}-
+    - name: colcon build C++ deps (macOS)
+      if: matrix.config.os == 'macos'
       working-directory: ws
       run: |
         export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
@@ -66,12 +82,30 @@ jobs:
             -DTESSERACT_ENABLE_TESTING=OFF -DTESSERACT_BUILD_PCL=OFF \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DOpenMP_CXX_INCLUDE_DIR=${{ matrix.config.brew_prefix }}/opt/libomp/include \
-            -DOpenMP_C_INCLUDE_DIR=${{ matrix.config.brew_prefix }}/opt/libomp/include \
+            -DOpenMP_CXX_INCLUDE_DIR=/opt/homebrew/opt/libomp/include \
+            -DOpenMP_C_INCLUDE_DIR=/opt/homebrew/opt/libomp/include \
             -DOpenMP_CXX_LIB_NAMES=libomp -DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp" \
             -DOpenMP_C_LIB_NAMES=libomp -DOpenMP_C_FLAGS="-Xpreprocessor -fopenmp" \
-            -DOpenMP_libomp_LIBRARY=${{ matrix.config.brew_prefix }}/opt/libomp/lib/libomp.dylib
-    - name: build nanobind wheel
+            -DOpenMP_libomp_LIBRARY=/opt/homebrew/opt/libomp/lib/libomp.dylib
+    - name: colcon build C++ deps (Linux)
+      if: matrix.config.os == 'linux'
+      working-directory: ws
+      run: |
+        export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
+        export CMAKE_PREFIX_PATH=$CONDA_PREFIX:$GITHUB_WORKSPACE/ws/install
+        export LIBRARY_PATH=$CONDA_PREFIX/lib:$LIBRARY_PATH
+
+        colcon build --merge-install \
+            --packages-ignore tesseract_python tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd \
+            --event-handlers console_cohesion+ \
+            --cmake-force-configure \
+            --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release \
+            -DINSTALL_OMPL=OFF -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF \
+            -DBUILD_SHARED_LIBS=ON -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF \
+            -DTESSERACT_ENABLE_TESTING=OFF -DTESSERACT_BUILD_PCL=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+    - name: build nanobind wheel (macOS)
+      if: matrix.config.os == 'macos'
       working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
       run: |
         export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
@@ -79,12 +113,29 @@ jobs:
         pip install delocate
         CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0" \
           pip wheel . -w dist/ --no-build-isolation
-    - name: delocate
+    - name: build nanobind wheel (Linux)
+      if: matrix.config.os == 'linux'
       working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
       run: |
-        export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib:${{ matrix.config.brew_prefix }}/opt/libomp/lib
+        export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
+        export CMAKE_PREFIX_PATH=$CONDA_PREFIX:$GITHUB_WORKSPACE/ws/install
+        pip install auditwheel
+        CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" \
+          pip wheel . -w dist/ --no-build-isolation
+    - name: delocate (macOS)
+      if: matrix.config.os == 'macos'
+      working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
+      run: |
+        export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib:/opt/homebrew/opt/libomp/lib
         mkdir -p wheelhouse
         delocate-wheel -w wheelhouse -v dist/*.whl
+    - name: auditwheel (Linux)
+      if: matrix.config.os == 'linux'
+      working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
+      run: |
+        export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
+        mkdir -p wheelhouse
+        auditwheel repair dist/*.whl -w wheelhouse --plat manylinux_2_35_x86_64
     - name: test
       run: |
         python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl --force-reinstall
@@ -95,12 +146,12 @@ jobs:
     - name: archive wheels
       uses: actions/upload-artifact@v4
       with:
-        name: 'python-macos-${{ matrix.config.arch }}'
+        name: 'python-${{ matrix.config.os }}-${{ matrix.config.arch }}'
         path: ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl
     - name: archive logs
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: 'build-logs-macos-${{ matrix.config.arch }}'
+        name: 'build-logs-${{ matrix.config.os }}-${{ matrix.config.arch }}'
         path: "**/*.log"
         retention-days: 2
