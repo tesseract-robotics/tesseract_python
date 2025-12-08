@@ -340,7 +340,9 @@ NB_MODULE(_tesseract_command_language, m) {
             return self.getInstructions();
         }, nb::rv_policy::reference_internal)
         .def("setInstructions", &tp::CompositeInstruction::setInstructions, "instructions"_a)
-        .def("appendMoveInstruction", nb::overload_cast<const tp::MoveInstructionPoly&>(&tp::CompositeInstruction::appendMoveInstruction), "mi"_a)
+        .def("appendMoveInstruction", [](tp::CompositeInstruction& self, const tp::MoveInstructionPoly& mi) {
+            self.appendMoveInstruction(mi);
+        }, "mi"_a)
         .def("size", &tp::CompositeInstruction::size)
         .def("empty", &tp::CompositeInstruction::empty)
         .def("clear", &tp::CompositeInstruction::clear)
