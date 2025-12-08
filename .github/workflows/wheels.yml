@@ -139,7 +139,7 @@ jobs:
         auditwheel repair dist/*.whl -w wheelhouse --plat auto
     - name: test
       run: |
-        python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl --force-reinstall
+        python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/dist/*.whl --force-reinstall
         export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
         export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
         export TESSERACT_RESOURCE_PATH=$GITHUB_WORKSPACE/ws/src/tesseract
