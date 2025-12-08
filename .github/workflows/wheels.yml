@@ -61,7 +61,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ws/install
-        key: colcon-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/dependencies.rosinstall') }}
+        key: colcon-v2-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/dependencies.rosinstall') }}
         restore-keys: |
           colcon-${{ matrix.config.os }}-${{ matrix.config.arch }}-
     - name: colcon build C++ deps (macOS)
@@ -73,7 +73,7 @@ jobs:
         export LIBRARY_PATH=$CONDA_PREFIX/lib:$LIBRARY_PATH
 
         colcon build --merge-install \
-            --packages-ignore tesseract_python tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd \
+            --packages-ignore tesseract_python tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd tesseract_urdf \
             --event-handlers console_cohesion+ \
             --cmake-force-configure \
             --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release \
@@ -96,7 +96,7 @@ jobs:
         export LIBRARY_PATH=$CONDA_PREFIX/lib:$LIBRARY_PATH
 
         colcon build --merge-install \
-            --packages-ignore tesseract_python tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd \
+            --packages-ignore tesseract_python tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd tesseract_urdf \
             --event-handlers console_cohesion+ \
             --cmake-force-configure \
             --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release \
