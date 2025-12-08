@@ -27,6 +27,12 @@ jobs:
     - name: brew
       run: |
         brew install libomp automake autoconf libtool
+    - name: cache conda env
+      uses: actions/cache@v4
+      id: conda-cache
+      with:
+        path: ~/miniconda3/envs
+        key: conda-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml') }}
     - uses: conda-incubator/setup-miniconda@v3
       with:
         miniforge-version: latest
