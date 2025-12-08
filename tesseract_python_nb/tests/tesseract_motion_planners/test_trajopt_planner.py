@@ -79,7 +79,6 @@ def lbr_iiwa_environment():
     return t_env, manip_info, joint_names
 
 
-@pytest.mark.skipif(not TRAJOPT_AVAILABLE, reason="TrajOpt bindings not available")
 class TestTrajOptProfiles:
     """Test TrajOpt profile types."""
 
@@ -211,7 +210,6 @@ class TestTrajOptProfiles:
         assert profile.collision_constraint_config.enabled is False
 
 
-@pytest.mark.skipif(not TRAJOPT_AVAILABLE, reason="TrajOpt bindings not available")
 class TestTrajOptMotionPlanner:
     """Test TrajOpt motion planner."""
 
@@ -228,7 +226,6 @@ class TestTrajOptMotionPlanner:
         planner.clear()
 
 
-@pytest.mark.skipif(not TRAJOPT_AVAILABLE, reason="TrajOpt bindings not available")
 class TestTrajOptPlanning:
     """Integration test for TrajOpt motion planning."""
 

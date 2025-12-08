@@ -11,7 +11,7 @@ on:
       - created
 
 env:
-  VCPKG_PKGS: >- 
+  VCPKG_PKGS: >-
     boost-dll boost-program-options
     boost-serialization boost-filesystem
     boost-stacktrace boost-algorithm
@@ -24,6 +24,7 @@ env:
     fcl ompl taskflow
     bullet3[multithreading,double-precision,rtti]
     ccd[double-precision] gperftools
+
 jobs:
   build-ubuntu:
     runs-on: ${{ matrix.config.runs_on }}
@@ -36,44 +37,27 @@ jobs:
           runs_on: ubuntu-22.04
           container: ubuntu:22.04
           py_platform: manylinux_2_35_x86_64
-          python_version: "3.8"
-          docs: true
-          docs_cmake: ON
-        - os: ubuntu-22.04
-          runs_on: ubuntu-22.04
-          container: ubuntu:22.04
-          py_platform: manylinux_2_35_x86_64
           python_version: "3.9"
-          docs: true
-          docs_cmake: ON
         - os: ubuntu-22.04
           runs_on: ubuntu-22.04
           container: ubuntu:22.04
           py_platform: manylinux_2_35_x86_64
           python_version: "3.10"
-          docs: true
-          docs_cmake: ON
         - os: ubuntu-22.04
           runs_on: ubuntu-22.04
           container: ubuntu:22.04
           py_platform: manylinux_2_35_x86_64
-          python_version: "3.11.0"
-          docs: true
-          docs_cmake: ON
+          python_version: "3.11"
         - os: ubuntu-22.04
           runs_on: ubuntu-22.04
           container: ubuntu:22.04
           py_platform: manylinux_2_35_x86_64
-          python_version: "3.12.0"
-          docs: true
-          docs_cmake: ON
+          python_version: "3.12"
         - os: ubuntu-22.04
           runs_on: ubuntu-22.04
           container: ubuntu:22.04
           py_platform: manylinux_2_35_x86_64
-          python_version: "3.13.0"
-          docs: true
-          docs_cmake: ON
+          python_version: "3.13"
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
@@ -84,7 +68,7 @@ jobs:
       shell: bash
       run: |
         echo -en "XKBMODEL=\"pc105\"\nXKBLAYOUT=\"us\"\nXKBVARIANT=\"\"\nXKBOPTIONS=\"\"\nBACKSPACE=\"guess\"\n" > /etc/default/keyboard
-        apt update 
+        apt update
         apt install sudo tzdata python3 keyboard-configuration -y -qq
         ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
         dpkg-reconfigure --frontend noninteractive tzdata
@@ -96,12 +80,6 @@ jobs:
         libflann-dev libjsoncpp-dev libyaml-cpp-dev git cmake ninja-build
         build-essential autoconf automake libtool bison libpcre2-dev libpcre3-dev
         lcov libbullet-dev libbullet-extras-dev python3-venv curl libfcl-dev -y -qq
-    - name: build-swig
-      uses: johnwason/swig-build-action@v1
-      with:
-        cache-key: ${{ matrix.config.os }}-${{ matrix.config.python_version }}
-        version: "4.1.1"
-
     - uses: actions/setup-python@v5
       id: setup-python
       with:
@@ -109,58 +87,39 @@ jobs:
     - name: pip
       run: |
         python -m pip install --upgrade pip
-        python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool patchelf
-    - name: pip
-      if: matrix.config.docs == true
-      run: |
-        python -m pip install -r ws/src/tesseract_python/docs/requirements.txt
+        python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool patchelf nanobind scikit-build-core pytest
     - name: vcs import
       working-directory: ws/src
-      run: vcs import --input tesseract_python/dependencies_with_ext.rosinstall
-    - name: colcon build
+      run: vcs import --input tesseract_python/dependencies.rosinstall
+    - name: colcon build C++ deps
       working-directory: ws
       run: >
-        colcon build --packages-up-to tesseract_python --merge-install
+        colcon build --merge-install
+        --packages-ignore tesseract_python tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd
         --cmake-force-configure
         --packages-ignore bullet
         --event-handlers console_cohesion+
         --cmake-args -DCMAKE_BUILD_TYPE=Release
         -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF
-        -DPYTHON_EXECUTABLE="${{ steps.setup-python.outputs.python-path }}"
-        -DTESSERACT_PYTHON_BUILD_WHEEL=ON
-        -DTESSERACT_PYTHON_WHEEL_PLATFORM=${{ matrix.config.py_platform }}
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON
-        -DTESSERACT_PYTHON_BUILD_DOCUMENTATION=${{ matrix.config.docs_cmake }}
-    - name: test
-      shell: bash
-      run: |
-        python3 -m venv venv
-        source venv/bin/activate
-        python -m pip install --upgrade pip
-        python -m pip install ws/build/tesseract_python/python/wheelhouse/*
-        python -m pip install pytest
-        export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
-        export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
-        cd ws/src/tesseract_python/tesseract_python
-        pytest -s
+        -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF -DTESSERACT_ENABLE_TESTING=OFF
     - name: build nanobind wheel
       working-directory: ws/src/tesseract_python/tesseract_python_nb
       run: |
         export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib
         export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/ws/install
-        pip install nanobind scikit-build-core
         CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" pip wheel . -w dist/ --no-build-isolation
-    - name: auditwheel nanobind
+    - name: auditwheel
       working-directory: ws/src/tesseract_python/tesseract_python_nb
       run: |
         export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib
         mkdir -p wheelhouse
         auditwheel repair dist/*.whl -w wheelhouse --plat ${{ matrix.config.py_platform }}
-    - name: test nanobind
+    - name: test
       shell: bash
       run: |
-        python3 -m venv venv_nb
-        source venv_nb/bin/activate
+        python3 -m venv venv
+        source venv/bin/activate
         python -m pip install --upgrade pip
         python -m pip install ws/src/tesseract_python/tesseract_python_nb/wheelhouse/*.whl
         python -m pip install pytest
@@ -168,42 +127,18 @@ jobs:
         export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
         cd ws/src/tesseract_python/tesseract_python_nb
         pytest tests/ -v
-    - name: archive nanobind wheels
-      uses: actions/upload-artifact@v4
-      with:
-        name: 'python-nanobind-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
-        path: ws/src/tesseract_python/tesseract_python_nb/wheelhouse/*.whl
-    - name: build docs
-      if: matrix.config.docs == true
-      shell: bash
-      working-directory: ws/build/tesseract_python
-      run: |
-        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GITHUB_WORKSPACE/ws/install/lib
-        cmake --build . --config Release --target tesseract_python_doc
     - name: archive wheels
       uses: actions/upload-artifact@v4
       with:
-        name: 'python-wheels-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
-        path: ws/build/tesseract_python/python/*
-    - name: archive docs
-      uses: actions/upload-artifact@v4
-      with:
-        name: 'python-docs-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
-        path: ws/build/tesseract_python/docs/*
+        name: 'python-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
+        path: ws/src/tesseract_python/tesseract_python_nb/wheelhouse/*.whl
+
   build-win:
     runs-on: windows-2022
     strategy:
       fail-fast: false
       matrix:
         config:
-          - arch: x64
-            vcpkg_triplet: x64-windows-release
-            cmake_arch: x64
-            python_version: "3.7"
-          - arch: x64
-            vcpkg_triplet: x64-windows-release
-            cmake_arch: x64
-            python_version: "3.8"
           - arch: x64
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
@@ -215,15 +150,15 @@ jobs:
           - arch: x64
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
-            python_version: "3.11.0"
+            python_version: "3.11"
           - arch: x64
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
-            python_version: "3.12.0"
+            python_version: "3.12"
           - arch: x64
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
-            python_version: "3.13.0"
+            python_version: "3.13"
     steps:
     - uses: actions/checkout@v4
       with:
@@ -241,18 +176,15 @@ jobs:
         triplet: ${{ matrix.config.vcpkg_triplet }}
         extra-args: --clean-after-build
         token: ${{ github.token }}
-        cache-key: win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}
+        cache-key: win-${{ matrix.config.arch }}-nanobind
         github-binarycache: true
-    - name: pip3
+    - name: pip
       run: |
-        python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
-    - name: choco
-      run: |
-        choco install swig ninja -r
+        python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool nanobind scikit-build-core
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_python\dependencies.rosinstall
-    - name: colcon build
+    - name: colcon build C++ deps
       working-directory: ws
       shell: cmd
       run: |
@@ -262,17 +194,32 @@ jobs:
         set PATH=%PATH%;%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}\bin
         set CC=cl
         set CCX=cl
-        colcon build --packages-up-to tesseract_python --merge-install ^
+        colcon build --merge-install ^
         --cmake-force-configure ^
         --event-handlers console_cohesion+ ^
-        --packages-ignore tesseract_examples trajopt_ifopt trajopt_sqp gtest ^
+        --packages-ignore tesseract_python tesseract_examples trajopt_ifopt trajopt_sqp gtest ifopt vhacd ^
         --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release ^
-        -DPYTHON_EXECUTABLE="${{ steps.setup-python.outputs.python-path }}" ^
-        -DTESSERACT_PYTHON_BUILD_WHEEL=ON ^
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON ^
         -DVCPKG_APPLOCAL_DEPS=OFF ^
-        -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF
+        -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF -DTESSERACT_ENABLE_TESTING=OFF
         if %ERRORLEVEL% GEQ 1 exit 1
+    - name: build nanobind wheel
+      shell: cmd
+      run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
+        set CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\ws\install
+        set PATH=%PATH%;%GITHUB_WORKSPACE%\ws\install\bin
+        cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb
+        set CMAKE_ARGS=-DCMAKE_POLICY_VERSION_MINIMUM=3.5
+        pip wheel . -w dist\ --no-build-isolation
+        if %errorlevel% neq 0 exit /b %errorlevel%
+    - name: delvewheel
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb
+        mkdir wheelhouse
+        for %%I in ("dist\*.whl") do delvewheel repair "%%I" -w wheelhouse --add-path "%GITHUB_WORKSPACE%\ws\install\bin;%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}\bin"
+        if %errorlevel% neq 0 exit /b %errorlevel%
     - name: test
       shell: cmd
       run: |
@@ -280,52 +227,10 @@ jobs:
         if %errorlevel% neq 0 exit /b %errorlevel%
         call venv\Scripts\activate
         if %errorlevel% neq 0 exit /b %errorlevel%
-        python --version
         python -m pip install --upgrade pip
         if %errorlevel% neq 0 exit /b %errorlevel%
-        for %%I in ("%GITHUB_WORKSPACE%\ws\build\tesseract_python\python\wheelhouse\*") do set WHEEL_FILE=%%~I
-        if %errorlevel% neq 0 exit /b %errorlevel%
-        echo WHEEL_FILE=%WHEEL_FILE%
+        for %%I in ("%GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb\wheelhouse\*") do set WHEEL_FILE=%%~I
         python -m pip install %WHEEL_FILE%
-        if %errorlevel% neq 0 exit /b %errorlevel%
-        python -m pip install pytest
-        if %errorlevel% neq 0 exit /b %errorlevel%
-        set TESSERACT_SUPPORT_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract\tesseract_support
-        set TESSERACT_TASK_COMPOSER_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract_planning\tesseract_task_composer
-        if %errorlevel% neq 0 exit /b %errorlevel%
-        cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python
-        if %errorlevel% neq 0 exit /b %errorlevel%
-        python -m pytest -s
-        if %errorlevel% neq 0 exit /b %errorlevel%
-    - name: build nanobind wheel
-      shell: cmd
-      run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
-        set CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\ws\install
-        set PATH=%PATH%;%GITHUB_WORKSPACE%\ws\install\bin
-        python -m pip install nanobind scikit-build-core
-        cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb
-        set CMAKE_ARGS=-DCMAKE_POLICY_VERSION_MINIMUM=3.5
-        pip wheel . -w dist\ --no-build-isolation
-        if %errorlevel% neq 0 exit /b %errorlevel%
-    - name: delvewheel nanobind
-      shell: cmd
-      run: |
-        cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb
-        mkdir wheelhouse
-        for %%I in ("dist\*.whl") do delvewheel repair "%%I" -w wheelhouse --add-path "%GITHUB_WORKSPACE%\ws\install\bin;%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}\bin"
-        if %errorlevel% neq 0 exit /b %errorlevel%
-    - name: test nanobind
-      shell: cmd
-      run: |
-        python -m venv venv_nb
-        if %errorlevel% neq 0 exit /b %errorlevel%
-        call venv_nb\Scripts\activate
-        if %errorlevel% neq 0 exit /b %errorlevel%
-        python -m pip install --upgrade pip
-        if %errorlevel% neq 0 exit /b %errorlevel%
-        for %%I in ("%GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb\wheelhouse\*") do set NB_WHEEL=%%~I
-        python -m pip install %NB_WHEEL%
         if %errorlevel% neq 0 exit /b %errorlevel%
         python -m pip install pytest
         if %errorlevel% neq 0 exit /b %errorlevel%
@@ -334,17 +239,11 @@ jobs:
         cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb
         python -m pytest tests\ -v
         if %errorlevel% neq 0 exit /b %errorlevel%
-    - name: archive nanobind wheels
-      uses: actions/upload-artifact@v4
-      with:
-        name: 'python-nanobind-win-${{matrix.config.python_version}}'
-        path: ws/src/tesseract_python/tesseract_python_nb/wheelhouse/*.whl
     - name: archive wheels
-      if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: 'python-wheels-win-${{matrix.config.python_version}}'
-        path: ws/build/tesseract_python/python
+        name: 'python-win-${{matrix.config.python_version}}'
+        path: ws/src/tesseract_python/tesseract_python_nb/wheelhouse/*.whl
     - name: archive logs
       if: failure()
       uses: actions/upload-artifact@v4
@@ -352,6 +251,7 @@ jobs:
         name: 'build-logs-win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}'
         path: "**/*.log"
         retention-days: 2
+
   build-macos:
     runs-on: ${{ matrix.config.runner }}
     strategy:
@@ -385,10 +285,10 @@ jobs:
         triplet: ${{ matrix.config.arch }}-osx-dynamic-release
         extra-args: --clean-after-build --overlay-triplets=${{ github.workspace }}/ws/src/tesseract_python/.github/workflows/vcpkg_triplets
         token: ${{ github.token }}
-        cache-key: osx-${{ matrix.config.arch }}-vcpkg-nanobind
+        cache-key: osx-${{ matrix.config.arch }}-nanobind
         github-binarycache: true
         revision: master
-    - name: pip3
+    - name: pip
       run: |
         python3 -m pip install numpy setuptools wheel pytest colcon-common-extensions vcstool delocate nanobind scikit-build-core
     - name: vcs import
@@ -423,7 +323,7 @@ jobs:
         export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/ws/install:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release
         CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0" \
           pip wheel . -w dist/ --no-build-isolation
-    - name: delocate wheel
+    - name: delocate
       working-directory: ws/src/tesseract_python/tesseract_python_nb
       run: |
         export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib:${{ matrix.config.brew_prefix }}/opt/libomp/lib
@@ -442,7 +342,6 @@ jobs:
         cd ws/src/tesseract_python/tesseract_python_nb
         pytest tests/ -v
     - name: archive wheels
-      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: 'python-macos-${{ matrix.config.arch }}'
@@ -454,6 +353,7 @@ jobs:
         name: 'build-logs-macos-${{ matrix.config.arch }}'
         path: "**/*.log"
         retention-days: 2
+
   collect-wheels:
     needs:
       - build-win
@@ -461,15 +361,15 @@ jobs:
       - build-macos
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v2
-      with:
-        path: robotraconteur
+    - uses: actions/checkout@v4
     - name: Download CI artifacts
       uses: actions/download-artifact@v4
       with:
-        path: artifacts/main
-    - name: archive wheels
+        pattern: python-*
+        path: dist
+        merge-multiple: true
+    - name: archive all wheels
       uses: actions/upload-artifact@v4
       with:
-        name: 'python-wheels-all'
-        path: artifacts/**/wheelhouse/*.whl
+        name: 'tesseract-robotics-nanobind-wheels'
+        path: dist/*.whl

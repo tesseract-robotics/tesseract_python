@@ -72,7 +72,6 @@ def abb_irb2400_environment():
     return t_env, manip_info, joint_names
 
 
-# @pytest.mark.skipif(not DESCARTES_AVAILABLE, reason="Descartes bindings not available")
 class TestDescartesProfiles:
     """Test Descartes profile types."""
 
@@ -117,7 +116,6 @@ class TestDescartesProfiles:
         assert profile.debug is True
 
 
-# @pytest.mark.skipif(not DESCARTES_AVAILABLE, reason="Descartes bindings not available")
 class TestDescartesMotionPlanner:
     """Test Descartes motion planner."""
 
@@ -134,7 +132,6 @@ class TestDescartesMotionPlanner:
         planner.clear()
 
 
-# @pytest.mark.skipif(not DESCARTES_AVAILABLE, reason="Descartes bindings not available")
 class TestDescartesPlanning:
     """Integration test for Descartes motion planning."""
 
