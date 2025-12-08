@@ -64,6 +64,13 @@ jobs:
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_nanobind/dependencies.rosinstall
+    - name: cache colcon build
+      uses: actions/cache@v4
+      with:
+        path: ws/install
+        key: colcon-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/dependencies.rosinstall') }}
+        restore-keys: |
+          colcon-${{ matrix.config.arch }}-
     - name: colcon build C++ deps
       working-directory: ws
       run: |
