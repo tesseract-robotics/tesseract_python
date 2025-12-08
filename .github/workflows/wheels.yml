@@ -6,21 +6,6 @@ on:
       - main
   pull_request:
 
-env:
-  VCPKG_PKGS: >-
-    boost-dll boost-program-options
-    boost-serialization boost-filesystem
-    boost-stacktrace boost-algorithm
-    boost-format
-    tinyxml2 console-bridge assimp
-    urdfdom octomap orocos-kdl pcl
-    gtest benchmark flann jsoncpp
-    yaml-cpp eigen3
-    openblas
-    fcl ompl taskflow
-    bullet3[multithreading,double-precision,rtti]
-    ccd[double-precision] gperftools
-
 jobs:
   build-macos:
     runs-on: ${{ matrix.config.runner }}
@@ -28,39 +13,28 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - py_platform: macosx_12_0_x86_64
-          arch: x64
+        - arch: x64
           runner: macos-13
           brew_prefix: /usr/local
-        - py_platform: macosx_12_0_arm64
-          arch: arm64
+        - arch: arm64
           runner: macos-14
           brew_prefix: /opt/homebrew
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
     - uses: actions/checkout@v4
       with:
         path: ws/src/tesseract_nanobind
-    - uses: actions/setup-python@v5
-      id: setup-python
-      with:
-        python-version: '3.12'
     - name: brew
       run: |
-        brew install libomp cmake automake autoconf libtool gcc ninja
-    - name: vcpkg build
-      uses: johnwason/vcpkg-action@v6
+        brew install libomp automake autoconf libtool
+    - uses: conda-incubator/setup-miniconda@v3
       with:
-        pkgs: >-
-          ${{ env.VCPKG_PKGS }}
-        triplet: ${{ matrix.config.arch }}-osx-dynamic-release
-        extra-args: --clean-after-build --overlay-triplets=${{ github.workspace }}/ws/src/tesseract_nanobind/.github/workflows/vcpkg_triplets
-        token: ${{ github.token }}
-        cache-key: osx-${{ matrix.config.arch }}-nanobind
-        github-binarycache: true
-        revision: master
-    - name: pip
-      run: |
-        python3 -m pip install numpy setuptools wheel pytest colcon-common-extensions vcstool delocate nanobind scikit-build-core
+        miniforge-version: latest
+        activate-environment: tesseract_nb
+        environment-file: ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml
+        use-mamba: true
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_nanobind/dependencies.rosinstall
@@ -74,8 +48,8 @@ jobs:
     - name: colcon build C++ deps
       working-directory: ws
       run: |
-        export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib:$GITHUB_WORKSPACE/ws/install/lib
-        export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release
+        export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
+        export CMAKE_PREFIX_PATH=$CONDA_PREFIX:$GITHUB_WORKSPACE/ws/install
 
         colcon build --merge-install \
             --packages-ignore tesseract_python tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd \
@@ -84,36 +58,31 @@ jobs:
             --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release \
             -DINSTALL_OMPL=OFF -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF \
             -DBUILD_SHARED_LIBS=ON -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF \
-            -DVCPKG_APPLOCAL_DEPS=OFF -DTESSERACT_ENABLE_TESTING=OFF \
+            -DTESSERACT_ENABLE_TESTING=OFF \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DOpenMP_CXX_INCLUDE_DIR=${{ matrix.config.brew_prefix }}/opt/libomp/include \
             -DOpenMP_C_INCLUDE_DIR=${{ matrix.config.brew_prefix }}/opt/libomp/include \
             -DOpenMP_CXX_LIB_NAMES=libomp -DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp" \
             -DOpenMP_C_LIB_NAMES=libomp -DOpenMP_C_FLAGS="-Xpreprocessor -fopenmp" \
-            -DOpenMP_libomp_LIBRARY=${{ matrix.config.brew_prefix }}/opt/libomp/lib/libomp.dylib \
-            -Dtcmalloc_minimal_LIBRARY=${{ github.workspace }}/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib/libtcmalloc_minimal.dylib
+            -DOpenMP_libomp_LIBRARY=${{ matrix.config.brew_prefix }}/opt/libomp/lib/libomp.dylib
     - name: build nanobind wheel
       working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
       run: |
-        export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib
-        export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/ws/install:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release
+        export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
+        export CMAKE_PREFIX_PATH=$CONDA_PREFIX:$GITHUB_WORKSPACE/ws/install
+        pip install delocate
         CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0" \
           pip wheel . -w dist/ --no-build-isolation
     - name: delocate
       working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
       run: |
-        export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib:${{ matrix.config.brew_prefix }}/opt/libomp/lib
+        export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib:${{ matrix.config.brew_prefix }}/opt/libomp/lib
         mkdir -p wheelhouse
         delocate-wheel -w wheelhouse -v dist/*.whl
     - name: test
-      shell: bash
       run: |
-        ${{ steps.setup-python.outputs.python-path }} -m venv venv
-        source venv/bin/activate
-        python -m pip install --upgrade pip
-        python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl
-        python -m pip install pytest
+        python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl --force-reinstall
         export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
         export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
         cd ws/src/tesseract_nanobind/tesseract_nanobind
