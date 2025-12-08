@@ -60,7 +60,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'readme.md']
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = 'sphinx_rtd_theme'
-html_theme_path = ['_themes']
 
 html_theme_options = {
     'logo_only': False,
