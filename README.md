@@ -1,9 +1,12 @@
 # Tesseract Python (nanobind)
 
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://github.com/tesseract-robotics/tesseract_nanobind)
-[![PyPI](https://img.shields.io/pypi/v/tesseract-robotics-nanobind)](https://pypi.org/project/tesseract-robotics-nanobind/)
 [![Build Status](https://github.com/tesseract-robotics/tesseract_nanobind/actions/workflows/wheels.yml/badge.svg)](https://github.com/tesseract-robotics/tesseract_nanobind/actions)
 [![license - Apache 2.0](https://img.shields.io/:license-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
+
+> **Note:** This is a friendly fork of [tesseract_python](https://github.com/tesseract-robotics/tesseract_python) that replaces SWIG bindings with modern [nanobind](https://github.com/wjakob/nanobind) bindings.
+>
+> **Status: Pre-release** - This project is close to being published on PyPI but is currently under review. The bindings are functional and tested, but CI/CD infrastructure requires polish before official release. Contributions welcome!
 
 Python bindings for [Tesseract](https://github.com/tesseract-robotics/tesseract) robotics motion planning using [nanobind](https://github.com/wjakob/nanobind).
 
@@ -19,14 +22,12 @@ Python bindings for [Tesseract](https://github.com/tesseract-robotics/tesseract)
 
 ## Installation
 
-```bash
-pip install tesseract-robotics-nanobind
-```
+> **Coming soon to PyPI** - Once CI/CD is finalized, install via:
+> ```bash
+> pip install tesseract-robotics-nanobind
+> ```
 
-Wheels available for:
-- Linux (x86_64): Python 3.9-3.13
-- Windows (x64): Python 3.9-3.13
-- macOS (x64, arm64): Python 3.12
+For now, build from source (see below).
 
 ## Quick Start
 
