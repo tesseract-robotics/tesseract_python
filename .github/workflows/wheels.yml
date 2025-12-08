@@ -79,11 +79,10 @@ jobs:
             --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release \
             -DINSTALL_OMPL=OFF -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF \
             -DBUILD_SHARED_LIBS=ON -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF \
-            -DTESSERACT_ENABLE_TESTING=OFF \
+            -DTESSERACT_BUILD_TRAJOPT=OFF -DTESSERACT_ENABLE_TESTING=OFF \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
             -DQT_HOST_PATH=$CONDA_PREFIX \
-            -DCMAKE_DISABLE_FIND_PACKAGE_osqp=ON \
             -DOpenMP_CXX_INCLUDE_DIR=/opt/homebrew/opt/libomp/include \
             -DOpenMP_C_INCLUDE_DIR=/opt/homebrew/opt/libomp/include \
             -DOpenMP_CXX_LIB_NAMES=libomp -DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp" \
@@ -104,9 +103,8 @@ jobs:
             --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release \
             -DINSTALL_OMPL=OFF -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF \
             -DBUILD_SHARED_LIBS=ON -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF \
-            -DTESSERACT_ENABLE_TESTING=OFF \
-            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-            -DCMAKE_DISABLE_FIND_PACKAGE_osqp=ON
+            -DTESSERACT_BUILD_TRAJOPT=OFF -DTESSERACT_ENABLE_TESTING=OFF \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
     - name: build nanobind wheel (macOS)
       if: matrix.config.os == 'macos'
       working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
