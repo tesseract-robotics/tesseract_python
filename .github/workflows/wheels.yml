@@ -150,18 +150,29 @@ jobs:
         export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/ws/install
         pip install nanobind scikit-build-core
         CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" pip wheel . -w dist/ --no-build-isolation
+    - name: auditwheel nanobind
+      working-directory: ws/src/tesseract_python/tesseract_python_nb
+      run: |
+        export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib
+        mkdir -p wheelhouse
+        auditwheel repair dist/*.whl -w wheelhouse --plat ${{ matrix.config.py_platform }}
     - name: test nanobind
       shell: bash
       run: |
         python3 -m venv venv_nb
         source venv_nb/bin/activate
         python -m pip install --upgrade pip
-        python -m pip install ws/src/tesseract_python/tesseract_python_nb/dist/*.whl
+        python -m pip install ws/src/tesseract_python/tesseract_python_nb/wheelhouse/*.whl
         python -m pip install pytest
         export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
         export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
         cd ws/src/tesseract_python/tesseract_python_nb
         pytest tests/ -v
+    - name: archive nanobind wheels
+      uses: actions/upload-artifact@v4
+      with:
+        name: 'python-nanobind-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
+        path: ws/src/tesseract_python/tesseract_python_nb/wheelhouse/*.whl
     - name: build docs
       if: matrix.config.docs == true
       shell: bash
@@ -297,6 +308,13 @@ jobs:
         set CMAKE_ARGS=-DCMAKE_POLICY_VERSION_MINIMUM=3.5
         pip wheel . -w dist\ --no-build-isolation
         if %errorlevel% neq 0 exit /b %errorlevel%
+    - name: delvewheel nanobind
+      shell: cmd
+      run: |
+        cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb
+        mkdir wheelhouse
+        for %%I in ("dist\*.whl") do delvewheel repair "%%I" -w wheelhouse --add-path "%GITHUB_WORKSPACE%\ws\install\bin;%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}\bin"
+        if %errorlevel% neq 0 exit /b %errorlevel%
     - name: test nanobind
       shell: cmd
       run: |
@@ -306,7 +324,7 @@ jobs:
         if %errorlevel% neq 0 exit /b %errorlevel%
         python -m pip install --upgrade pip
         if %errorlevel% neq 0 exit /b %errorlevel%
-        for %%I in ("%GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb\dist\*") do set NB_WHEEL=%%~I
+        for %%I in ("%GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb\wheelhouse\*") do set NB_WHEEL=%%~I
         python -m pip install %NB_WHEEL%
         if %errorlevel% neq 0 exit /b %errorlevel%
         python -m pip install pytest
@@ -316,6 +334,11 @@ jobs:
         cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python_nb
         python -m pytest tests\ -v
         if %errorlevel% neq 0 exit /b %errorlevel%
+    - name: archive nanobind wheels
+      uses: actions/upload-artifact@v4
+      with:
+        name: 'python-nanobind-win-${{matrix.config.python_version}}'
+        path: ws/src/tesseract_python/tesseract_python_nb/wheelhouse/*.whl
     - name: archive wheels
       if: always()
       uses: actions/upload-artifact@v4
