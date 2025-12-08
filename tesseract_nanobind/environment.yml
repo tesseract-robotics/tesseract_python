@@ -28,6 +28,7 @@ dependencies:
   - bullet-cpp
   - fcl
   - ompl
+  - pcl
   - ipopt
   - gtest
   - libosqp
