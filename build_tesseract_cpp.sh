@@ -164,7 +164,7 @@ echo ""
 
 colcon build \
     --merge-install \
-    --packages-ignore tesseract_examples tesseract_python trajopt_ifopt trajopt_sqp ifopt vhacd qpoases osqp_eigen tesseract_task_composer \
+    --packages-ignore tesseract_examples tesseract_python trajopt_ifopt trajopt_sqp ifopt vhacd qpoases osqp_eigen tesseract_nanobind tesseract_viewer_python \
     --event-handlers console_cohesion+ \
     --cmake-force-configure \
     --cmake-args \
