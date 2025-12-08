@@ -136,7 +136,7 @@ jobs:
       run: |
         export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
         mkdir -p wheelhouse
-        auditwheel repair dist/*.whl -w wheelhouse --plat linux_x86_64
+        auditwheel repair dist/*.whl -w wheelhouse --plat auto
     - name: test
       run: |
         python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl --force-reinstall
