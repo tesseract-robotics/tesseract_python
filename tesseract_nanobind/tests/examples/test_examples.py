@@ -18,7 +18,7 @@ import os
 import importlib.util
 import pytest
 
-# Path: tesseract_python_nb/tests/examples/test_examples.py
+# Path: tesseract_nanobind/tests/examples/test_examples.py
 # ROOT_DIR should be tesseract_python_nanobind (4 levels up)
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 VIEWER_EXAMPLES = os.path.join(ROOT_DIR, "tesseract_viewer_python", "examples")

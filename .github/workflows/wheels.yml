@@ -104,13 +104,13 @@ jobs:
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON
         -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF -DTESSERACT_ENABLE_TESTING=OFF
     - name: build nanobind wheel
-      working-directory: ws/src/tesseract_nanobind/tesseract_python_nb
+      working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
       run: |
         export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib
         export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/ws/install
         CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" pip wheel . -w dist/ --no-build-isolation
     - name: auditwheel
-      working-directory: ws/src/tesseract_nanobind/tesseract_python_nb
+      working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
       run: |
         export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib
         mkdir -p wheelhouse
@@ -121,17 +121,17 @@ jobs:
         python3 -m venv venv
         source venv/bin/activate
         python -m pip install --upgrade pip
-        python -m pip install ws/src/tesseract_nanobind/tesseract_python_nb/wheelhouse/*.whl
+        python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl
         python -m pip install pytest
         export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
         export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
-        cd ws/src/tesseract_nanobind/tesseract_python_nb
+        cd ws/src/tesseract_nanobind/tesseract_nanobind
         pytest tests/ -v
     - name: archive wheels
       uses: actions/upload-artifact@v4
       with:
         name: 'python-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
-        path: ws/src/tesseract_nanobind/tesseract_python_nb/wheelhouse/*.whl
+        path: ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl
 
   build-win:
     runs-on: windows-2022
@@ -209,14 +209,14 @@ jobs:
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
         set CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\ws\install
         set PATH=%PATH%;%GITHUB_WORKSPACE%\ws\install\bin
-        cd %GITHUB_WORKSPACE%\ws\src\tesseract_nanobind\tesseract_python_nb
+        cd %GITHUB_WORKSPACE%\ws\src\tesseract_nanobind\tesseract_nanobind
         set CMAKE_ARGS=-DCMAKE_POLICY_VERSION_MINIMUM=3.5
         pip wheel . -w dist\ --no-build-isolation
         if %errorlevel% neq 0 exit /b %errorlevel%
     - name: delvewheel
       shell: cmd
       run: |
-        cd %GITHUB_WORKSPACE%\ws\src\tesseract_nanobind\tesseract_python_nb
+        cd %GITHUB_WORKSPACE%\ws\src\tesseract_nanobind\tesseract_nanobind
         mkdir wheelhouse
         for %%I in ("dist\*.whl") do delvewheel repair "%%I" -w wheelhouse --add-path "%GITHUB_WORKSPACE%\ws\install\bin;%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}\bin"
         if %errorlevel% neq 0 exit /b %errorlevel%
@@ -229,21 +229,21 @@ jobs:
         if %errorlevel% neq 0 exit /b %errorlevel%
         python -m pip install --upgrade pip
         if %errorlevel% neq 0 exit /b %errorlevel%
-        for %%I in ("%GITHUB_WORKSPACE%\ws\src\tesseract_nanobind\tesseract_python_nb\wheelhouse\*") do set WHEEL_FILE=%%~I
+        for %%I in ("%GITHUB_WORKSPACE%\ws\src\tesseract_nanobind\tesseract_nanobind\wheelhouse\*") do set WHEEL_FILE=%%~I
         python -m pip install %WHEEL_FILE%
         if %errorlevel% neq 0 exit /b %errorlevel%
         python -m pip install pytest
         if %errorlevel% neq 0 exit /b %errorlevel%
         set TESSERACT_SUPPORT_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract\tesseract_support
         set TESSERACT_TASK_COMPOSER_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract_planning\tesseract_task_composer
-        cd %GITHUB_WORKSPACE%\ws\src\tesseract_nanobind\tesseract_python_nb
+        cd %GITHUB_WORKSPACE%\ws\src\tesseract_nanobind\tesseract_nanobind
         python -m pytest tests\ -v
         if %errorlevel% neq 0 exit /b %errorlevel%
     - name: archive wheels
       uses: actions/upload-artifact@v4
       with:
         name: 'python-win-${{matrix.config.python_version}}'
-        path: ws/src/tesseract_nanobind/tesseract_python_nb/wheelhouse/*.whl
+        path: ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl
     - name: archive logs
       if: failure()
       uses: actions/upload-artifact@v4
@@ -317,14 +317,14 @@ jobs:
             -DOpenMP_libomp_LIBRARY=${{ matrix.config.brew_prefix }}/opt/libomp/lib/libomp.dylib \
             -Dtcmalloc_minimal_LIBRARY=${{ github.workspace }}/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib/libtcmalloc_minimal.dylib
     - name: build nanobind wheel
-      working-directory: ws/src/tesseract_nanobind/tesseract_python_nb
+      working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
       run: |
         export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib
         export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/ws/install:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release
         CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0" \
           pip wheel . -w dist/ --no-build-isolation
     - name: delocate
-      working-directory: ws/src/tesseract_nanobind/tesseract_python_nb
+      working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
       run: |
         export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release/lib:${{ matrix.config.brew_prefix }}/opt/libomp/lib
         mkdir -p wheelhouse
@@ -335,17 +335,17 @@ jobs:
         ${{ steps.setup-python.outputs.python-path }} -m venv venv
         source venv/bin/activate
         python -m pip install --upgrade pip
-        python -m pip install ws/src/tesseract_nanobind/tesseract_python_nb/wheelhouse/*.whl
+        python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl
         python -m pip install pytest
         export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
         export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
-        cd ws/src/tesseract_nanobind/tesseract_python_nb
+        cd ws/src/tesseract_nanobind/tesseract_nanobind
         pytest tests/ -v
     - name: archive wheels
       uses: actions/upload-artifact@v4
       with:
         name: 'python-macos-${{ matrix.config.arch }}'
-        path: ws/src/tesseract_nanobind/tesseract_python_nb/wheelhouse/*.whl
+        path: ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl
     - name: archive logs
       if: failure()
       uses: actions/upload-artifact@v4

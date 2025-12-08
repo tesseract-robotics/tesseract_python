@@ -9,4 +9,4 @@ source env.sh
 
 export TESSERACT_HEADLESS=1
 
-exec pytest tesseract_python_nb/tests "$@"
+exec pytest tesseract_nanobind/tests "$@"

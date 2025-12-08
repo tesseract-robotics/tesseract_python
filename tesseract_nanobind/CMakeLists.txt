@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(tesseract_python_nb LANGUAGES CXX)
+project(tesseract_nanobind LANGUAGES CXX)
 
 # Build configuration
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)

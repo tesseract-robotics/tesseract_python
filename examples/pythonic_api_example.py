@@ -14,7 +14,7 @@ import os
 import numpy as np
 
 # Add src to path for development
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "tesseract_python_nb", "src"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "tesseract_nanobind", "src"))
 
 from tesseract_robotics.planning import (
     # Core classes

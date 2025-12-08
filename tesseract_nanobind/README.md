@@ -20,7 +20,7 @@ source env.sh
 cd ws && colcon build --merge-install
 
 # 3. Install Python package
-cd ../tesseract_python_nb
+cd ../tesseract_nanobind
 pip install -e .
 
 # 4. Test

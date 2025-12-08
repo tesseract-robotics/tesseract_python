@@ -1,5 +1,5 @@
 #!/bin/zsh
-# Setup conda environment for tesseract_python_nb development
+# Setup conda environment for tesseract_nanobind development
 # Based on .github/workflows/wheels.yml dependencies
 
 set -e  # Exit on error
@@ -136,7 +136,7 @@ echo "     cd .."
 echo "     ./build_tesseract_cpp.sh"
 echo ""
 echo "  2. Build Python bindings:"
-echo "     cd tesseract_python_nb"
+echo "     cd tesseract_nanobind"
 echo "     pip install -e ."
 echo ""
 echo "  3. Run tests:"

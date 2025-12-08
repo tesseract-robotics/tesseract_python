@@ -5,7 +5,7 @@
 ### Step 1: Setup Conda Environment
 
 ```bash
-cd tesseract_python_nb
+cd tesseract_nanobind
 ./setup_conda_env.sh
 ```
 
@@ -39,7 +39,7 @@ This will:
 ### Step 4: Build Python Bindings
 
 ```bash
-cd tesseract_python_nb
+cd tesseract_nanobind
 pip install -e .
 ```
 

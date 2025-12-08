@@ -54,7 +54,7 @@ export CMAKE_PREFIX_PATH=$PWD/ws/install:$CONDA_PREFIX
 export DYLD_LIBRARY_PATH=$PWD/ws/install/lib:$DYLD_LIBRARY_PATH
 
 # Build Python bindings
-pip install -e tesseract_python_nb
+pip install -e tesseract_nanobind
 ```
 
 ## Optional: TrajOpt Support
