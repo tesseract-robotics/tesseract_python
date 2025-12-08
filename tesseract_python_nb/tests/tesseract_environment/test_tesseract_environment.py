@@ -1,15 +1,9 @@
-from tesseract_robotics import tesseract_scene_graph
-from tesseract_robotics import tesseract_collision
 from tesseract_robotics import tesseract_environment
-from tesseract_robotics.tesseract_common import Isometry3d, Translation3d, AngleAxisd
-from tesseract_robotics import tesseract_common
-from tesseract_robotics import tesseract_collision
 from tesseract_robotics import tesseract_urdf
 from tesseract_robotics import tesseract_srdf
 from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 import traceback
 import os
-import re
 import numpy as np
 
 def get_scene_graph():
@@ -66,7 +60,7 @@ def get_environment():
                 print(evt2.revision)
                 if evt2.revision == 4:
                     command_applied[0] = True
-        except:
+        except Exception:
             traceback.print_exc()
     event_cb = tesseract_environment.EventCallbackFn(event_cb_py)
 
@@ -78,19 +72,6 @@ def get_environment():
     cmd = tesseract_environment.RemoveJointCommand("joint_a7-tool0")
     assert env.applyCommand(cmd)
     assert command_applied[0]
-
-    # env.init() now populates contact managers?
-
-    """discrete_create_fn = tesseract_collision.DiscreteContactManagerFactoryCreateMethod(tesseract_collision_bullet.BulletDiscreteBVHManager.create)
-    assert env.registerDiscreteContactManager(tesseract_collision_bullet.BulletDiscreteBVHManager.name(),
-        discrete_create_fn)
-
-    cont_create_fn = tesseract_collision.ContinuousContactManagerFactoryCreateMethod(tesseract_collision_bullet.BulletCastBVHManager.create)
-    assert env.registerContinuousContactManager(tesseract_collision_bullet.BulletCastBVHManager.name(),
-        cont_create_fn)
-
-    env.setActiveDiscreteContactManager(tesseract_collision_bullet.BulletDiscreteBVHManager.name())
-    env.setActiveContinuousContactManager(tesseract_collision_bullet.BulletCastBVHManager.name())"""
 
     return env
 

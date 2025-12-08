@@ -11,9 +11,7 @@ def test_geometry_instantiation():
     capsule = tesseract_geometry.Capsule(1,1)
     plane = tesseract_geometry.Plane(1,1,1,1)
     sphere = tesseract_geometry.Sphere(1)
-    #TODO: convex_mesh = tesseract_geometry.ConvexMesh()
-    #TODO: mesh = tesseract_geometry.ConvexMesh()
-    #TODO: sdf_mesh = tesseract_geometry.SDFMesh()
+    # Mesh types require vertices/faces - see test_mesh, test_convex_mesh, test_sdf_mesh
 
 def test_geometry_box():
     geom = tesseract_geometry.Box(1, 1, 1)
@@ -79,8 +77,6 @@ def test_geometry_plane():
     nptest.assert_almost_equal(geom_clone.getC(), 1)
     nptest.assert_almost_equal(geom_clone.getD(), 1)
 
-
-#TODO: Mesh constructors
 
 def test_geometry_load_mesh():
     TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]

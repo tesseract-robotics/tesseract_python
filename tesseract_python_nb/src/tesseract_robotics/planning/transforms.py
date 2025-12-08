@@ -64,12 +64,12 @@ class Pose:
 
     @classmethod
     def identity(cls) -> Pose:
-        """Create identity transform (no rotation, no translation)."""
+        """Create identity pose (no rotation, no translation)."""
         return cls(np.eye(4))
 
     @classmethod
     def from_xyz(cls, x: float, y: float, z: float) -> Pose:
-        """Create pure translation transform."""
+        """Create pure translation pose."""
         mat = np.eye(4)
         mat[:3, 3] = [x, y, z]
         return cls(mat)
@@ -94,7 +94,7 @@ class Pose:
         qw: float,
     ) -> Pose:
         """
-        Create transform from position and quaternion.
+        Create pose from position and quaternion.
 
         Args:
             x, y, z: Position coordinates
@@ -112,7 +112,7 @@ class Pose:
         quaternion: ArrayLike,
     ) -> Pose:
         """
-        Create transform from position and quaternion arrays.
+        Create pose from position and quaternion arrays.
 
         Args:
             position: [x, y, z] position
@@ -136,7 +136,7 @@ class Pose:
         yaw: float,
     ) -> Pose:
         """
-        Create transform from position and roll-pitch-yaw angles.
+        Create pose from position and roll-pitch-yaw angles.
 
         Args:
             x, y, z: Position coordinates
@@ -149,13 +149,13 @@ class Pose:
 
     @classmethod
     def from_matrix(cls, matrix: ArrayLike) -> Pose:
-        """Create transform from 4x4 homogeneous matrix."""
+        """Create pose from 4x4 homogeneous matrix."""
         return cls(np.asarray(matrix))
 
     @classmethod
     def from_matrix_position(cls, rotation: ArrayLike, position: ArrayLike) -> Pose:
         """
-        Create transform from 3x3 rotation matrix and position.
+        Create pose from 3x3 rotation matrix and position.
 
         Args:
             rotation: 3x3 rotation matrix
@@ -163,7 +163,7 @@ class Pose:
 
         Example:
             R = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
-            t = Transform.from_matrix_position(R, [0.5, 0, 0.3])
+            p = Pose.from_matrix_position(R, [0.5, 0, 0.3])
         """
         mat = np.eye(4)
         mat[:3, :3] = rotation
@@ -172,7 +172,7 @@ class Pose:
 
     @classmethod
     def from_isometry(cls, isometry: Isometry3d) -> Pose:
-        """Create transform from Tesseract Isometry3d."""
+        """Create pose from Tesseract Isometry3d."""
         return cls(isometry.matrix())
 
     @property

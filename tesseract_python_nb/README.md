@@ -43,7 +43,7 @@ pytest tests/
 - tesseract_time_parameterization - TOTG, ISP
 - tesseract_task_composer - TaskComposerPluginFactory
 
-## Example
+## Example (Low-Level API)
 
 ```python
 from tesseract_robotics.tesseract_environment import Environment
@@ -56,6 +56,43 @@ env.init("/path/to/robot.urdf", "/path/to/robot.srdf", locator)
 print(f"Joints: {env.getJointNames()}")
 print(f"Links: {env.getLinkNames()}")
 ```
+
+## Pythonic API
+
+A high-level API is available in `tesseract_robotics.planning` that eliminates boilerplate:
+
+```python
+from tesseract_robotics.planning import (
+    Robot, MotionProgram, JointTarget, CartesianTarget,
+    Pose, box, create_obstacle, TaskComposer,
+)
+
+# Load robot (one-liner)
+robot = Robot.from_urdf(
+    "package://tesseract_support/urdf/abb_irb2400.urdf",
+    "package://tesseract_support/urdf/abb_irb2400.srdf"
+)
+
+# Add obstacle
+create_obstacle(robot, "box", box(0.5, 0.5, 0.5), Pose.from_xyz(0.5, 0, 0.3))
+
+# Build motion program (fluent API, no poly wrapping)
+program = (MotionProgram("manipulator", tcp_frame="tool0")
+    .set_joint_names(robot.get_joint_names("manipulator"))
+    .move_to(JointTarget([0, 0, 0, 0, 0, 0]))
+    .move_to(CartesianTarget(Pose.from_xyz(0.5, 0.3, 0.8)))
+)
+
+# Plan
+composer = TaskComposer.from_config()
+result = composer.plan(robot, program)
+
+if result.successful:
+    for pt in result.trajectory:
+        print(pt.positions)
+```
+
+See `examples/` for more.
 
 ## API Differences from SWIG
 
