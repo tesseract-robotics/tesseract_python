@@ -136,9 +136,7 @@ jobs:
       run: |
         export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
         mkdir -p wheelhouse
-        # Skip auditwheel repair - just copy wheel to wheelhouse
-        # Ubuntu 22.04's glibc is too new for manylinux tags
-        cp dist/*.whl wheelhouse/
+        auditwheel repair dist/*.whl -w wheelhouse --plat linux_x86_64
     - name: test
       run: |
         python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/*.whl --force-reinstall
