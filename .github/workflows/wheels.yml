@@ -14,9 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - arch: x64
-          runner: macos-13
-          brew_prefix: /usr/local
         - arch: arm64
           runner: macos-14
           brew_prefix: /opt/homebrew

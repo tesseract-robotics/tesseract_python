@@ -16,7 +16,7 @@ dependencies:
   # C++ dependencies (from wheels.yml vcpkg packages)
   - eigen>=3.3
   - boost-cpp
-  - console-bridge
+  - console_bridge
   - assimp
   - urdfdom
   - octomap
@@ -27,7 +27,7 @@ dependencies:
   - tinyxml2
   - pcl
   - bullet-cpp
-  - libfcl
+  - fcl
   - ompl
   - ipopt
   - gtest
