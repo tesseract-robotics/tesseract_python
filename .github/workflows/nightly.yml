@@ -42,7 +42,7 @@ jobs:
              DOWNSTREAM_CMAKE_ARGS: "-DCMAKE_BUILD_TYPE=Release"}
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
 
       - name: Free Disk Space
         run: |
@@ -57,10 +57,10 @@ jobs:
         shell: cmake -P {0}
         run: |
           string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
-          message("::set-output name=timestamp::${current_date}")
+          echo "timestamp=${current_date}" >> $GITHUB_OUTPUT
 
       - name: ccache cache files
-        uses: actions/cache@v1.1.0
+        uses: actions/cache@v4
         with:
           path: ${{ matrix.env.CI_NAME }}/.ccache
           key: ${{ matrix.env.CI_NAME }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}

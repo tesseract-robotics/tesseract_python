@@ -77,7 +77,7 @@ jobs:
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         path: ws/src/tesseract_python
     - name: install sudo, tzdata, keyboard-configuration
@@ -102,7 +102,7 @@ jobs:
         cache-key: ${{ matrix.config.os }}-${{ matrix.config.python_version }}
         version: "4.1.1"
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       id: setup-python
       with:
         python-version: '${{ matrix.config.python_version }}'
@@ -225,10 +225,10 @@ jobs:
             cmake_arch: x64
             python_version: "3.13.0"
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         path: ws/src/tesseract_python
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       id: setup-python
       with:
         python-version: '${{ matrix.config.python_version }}'
@@ -367,10 +367,10 @@ jobs:
           runner: macos-14
           brew_prefix: /opt/homebrew
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         path: ws/src/tesseract_python
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       id: setup-python
       with:
         python-version: '3.12'
