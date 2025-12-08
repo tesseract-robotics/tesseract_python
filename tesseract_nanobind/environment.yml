@@ -31,9 +31,9 @@ dependencies:
   - pcl
   - ipopt
   - gtest
-  - libosqp
   - qpoases
-  - osqp-eigen
+  # Note: libosqp/osqp-eigen removed - trajopt needs OSQP 0.6.x, conda has 1.0.x
+  # trajopt_ext/osqp builds compatible version automatically
 
   # Python build dependencies
   - pip
