@@ -54,10 +54,6 @@ input = "src/tesseract_robotics/__init__.py"
 [tool.scikit-build.cmake.define]
 CMAKE_POLICY_DEFAULT_CMP0135 = "NEW"
 
-[tool.cibuildwheel]
-build-verbosity = 3
-test-requires = ["numpy", "pytest"]
-test-command = "pytest {project}/tests"
-build-frontend = "pip"
-skip = ["*_i686", "*-musllinux_*", "*-win32", "pp*"]
-macos.environment.MACOSX_DEPLOYMENT_TARGET = "11.00"
+# Note: cibuildwheel is not used because this package requires
+# pre-built tesseract C++ libraries. See .github/workflows/wheels.yml
+# for the custom CI that builds C++ deps first via colcon.
