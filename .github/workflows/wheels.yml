@@ -69,11 +69,12 @@ jobs:
       run: vcs import --input tesseract_nanobind/dependencies.rosinstall --skip-existing
     - name: cache colcon build
       uses: actions/cache@v4
+      id: colcon-cache
       with:
         path: ws/install
         key: colcon-v5-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/dependencies.rosinstall') }}
     - name: colcon build C++ deps (macOS)
-      if: matrix.config.os == 'macos'
+      if: matrix.config.os == 'macos' && steps.colcon-cache.outputs.cache-hit != 'true'
       working-directory: ws
       run: |
         export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
@@ -98,7 +99,7 @@ jobs:
             -DOpenMP_C_LIB_NAMES=libomp -DOpenMP_C_FLAGS="-Xpreprocessor -fopenmp" \
             -DOpenMP_libomp_LIBRARY=/opt/homebrew/opt/libomp/lib/libomp.dylib
     - name: colcon build C++ deps (Linux)
-      if: matrix.config.os == 'linux'
+      if: matrix.config.os == 'linux' && steps.colcon-cache.outputs.cache-hit != 'true'
       working-directory: ws
       run: |
         export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
