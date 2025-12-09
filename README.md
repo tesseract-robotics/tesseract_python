@@ -1,13 +1,12 @@
 # Tesseract Python (nanobind)
 
+[![PyPI](https://img.shields.io/pypi/v/tesseract-robotics-nanobind.svg)](https://pypi.org/project/tesseract-robotics-nanobind/)
 [![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://github.com/tesseract-robotics/tesseract_nanobind)
 [![Build Status](https://github.com/tesseract-robotics/tesseract_nanobind/actions/workflows/wheels.yml/badge.svg)](https://github.com/tesseract-robotics/tesseract_nanobind/actions)
 [![Documentation](https://img.shields.io/badge/docs-online-brightgreen.svg)](https://tesseract-robotics.github.io/tesseract_nanobind/)
 [![license - Apache 2.0](https://img.shields.io/:license-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
 > **Note:** This is a friendly fork of [tesseract_python](https://github.com/tesseract-robotics/tesseract_python) that replaces SWIG bindings with modern [nanobind](https://github.com/wjakob/nanobind) bindings.
->
-> **Status: Pre-release** - Building and testing on Linux and macOS. Windows CI coming soon. Contributions welcome!
 
 Python bindings for [Tesseract](https://github.com/tesseract-robotics/tesseract) robotics motion planning using [nanobind](https://github.com/wjakob/nanobind).
 
@@ -23,12 +22,11 @@ Python bindings for [Tesseract](https://github.com/tesseract-robotics/tesseract)
 
 ## Installation
 
-> **Coming soon to PyPI** - Once CI/CD is finalized, install via:
-> ```bash
-> pip install tesseract-robotics-nanobind
-> ```
+```bash
+pip install tesseract-robotics-nanobind
+```
 
-For now, build from source (see below).
+**Platform support:** Linux x86_64. macOS arm64 coming soon.
 
 ## Quick Start
 
@@ -87,38 +85,6 @@ See the `examples/` directory for:
 - `pick_and_place_example.py` - Pick and place with TrajOpt
 - `puzzle_piece_example.py` - Cartesian path following
 - And more...
-
-## Building from Source
-
-```bash
-# Clone
-git clone https://github.com/tesseract-robotics/tesseract_nanobind.git
-cd tesseract_nanobind
-
-# Build C++ dependencies
-source env.sh
-cd ws && colcon build --merge-install
-
-# Install Python package
-cd ../tesseract_nanobind
-pip install -e .
-
-# Test
-pytest tests/
-```
-
-## Requirements
-
-- Python 3.9+
-- Tesseract C++ libraries
-- CMake 3.15+
-
-## Architecture
-
-- **nanobind** for Python bindings (modern, fast, small binaries)
-- **scikit-build-core** for Python packaging
-- Native Eigen/numpy integration
-- Stable ABI support
 
 ## Acknowledgments
 
