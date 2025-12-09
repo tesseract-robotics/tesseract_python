@@ -44,6 +44,9 @@ jobs:
       if: matrix.config.os == 'macos'
       run: |
         brew install libomp automake autoconf libtool
+    - name: set Python version in environment.yml
+      run: |
+        sed -i.bak 's/python=3.12/python=${{ matrix.python }}/' ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml
     - name: cache conda env
       uses: actions/cache@v4
       id: conda-cache
@@ -55,7 +58,6 @@ jobs:
         miniforge-version: latest
         activate-environment: tesseract_nb
         environment-file: ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml
-        python-version: ${{ matrix.python }}
         use-mamba: true
     - name: cache vcs repos
       uses: actions/cache@v4
