@@ -30,13 +30,19 @@ available in ``tesseract_common``:
 Resource Locators
 =================
 
-Resource locators are used by Tesseract to locate resources such as meshes, urdfs, srdfs, etc. The 
+Resource locators are used by Tesseract to locate resources such as meshes, urdfs, srdfs, etc. The
 :py:class:`tesseract_common.GeneralResourceLocator` class is available to locate resources in Python. This
 class searches paths in the environmental variable ``TESSERACT_RESOURCE_PATH`` to find resources. Each ``package://<dir>/``
-will search for the subdirectory ``<dir>`` in each path in ``TESSERACT_RESOURCE_PATH``. 
+will search for the subdirectory ``<dir>`` in each path in ``TESSERACT_RESOURCE_PATH``.
 
-It is also possible to create a custom resource locator. See the ``TesseractSupportResourceLocator`` in the
-unit tests for an example of a custom resource locator.
+**Auto-configuration:** When you import ``tesseract_robotics``, the following environment variables are automatically
+set to point to bundled data (if not already set):
+
+* ``TESSERACT_RESOURCE_PATH`` - Path to bundled resources for ``package://`` URL resolution
+* ``TESSERACT_SUPPORT_DIR`` - Path to bundled tesseract_support directory
+* ``TESSERACT_TASK_COMPOSER_CONFIG_FILE`` - Path to bundled task composer config
+
+This means ``package://tesseract_support/urdf/...`` URLs work out of the box without manual configuration.
 
 Boost Filesystem
 ================
