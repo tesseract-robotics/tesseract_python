@@ -2,6 +2,8 @@
 
 ## Installation
 
+**Platform:** Linux x86_64 (Python 3.9-3.12). macOS coming soon.
+
 ```bash
 pip install tesseract-robotics-nanobind
 ```
