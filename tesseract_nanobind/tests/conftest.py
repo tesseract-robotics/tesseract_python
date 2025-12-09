@@ -9,6 +9,10 @@ Custom markers:
   - basic: Basic examples (collision, kinematics, scene_graph)
 """
 
+# Import tesseract_robotics to trigger env var configuration
+# This must happen before test collection to set TESSERACT_SUPPORT_DIR etc.
+import tesseract_robotics  # noqa: F401
+
 import gc
 import pytest
 
