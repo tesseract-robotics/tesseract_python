@@ -142,8 +142,9 @@ jobs:
       run: |
         # Install from dist for testing (wheelhouse may have higher glibc reqs)
         python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/dist/tesseract*.whl --force-reinstall
-        # Set LD_LIBRARY_PATH for unrepaired wheel
+        # Set library path for unrepaired wheel (LD for Linux, DYLD for macOS)
         export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+        export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$CONDA_PREFIX/lib:$DYLD_LIBRARY_PATH
         export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
         export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
         export TESSERACT_RESOURCE_PATH=$GITHUB_WORKSPACE/ws/src/tesseract
