@@ -1,4 +1,9 @@
-__version__ = "0.6.2"
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("tesseract-robotics-nanobind")
+except PackageNotFoundError:
+    __version__ = "0.0.0.dev"  # fallback for editable installs without build
 
 import os
 from pathlib import Path
