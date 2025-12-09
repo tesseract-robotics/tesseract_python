@@ -25,6 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        python: ['3.9', '3.13']
         config:
         - os: macos
           arch: arm64
@@ -48,12 +49,13 @@ jobs:
       id: conda-cache
       with:
         path: ~/miniconda3/envs
-        key: conda-v2-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml') }}
+        key: conda-v2-py${{ matrix.python }}-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml') }}
     - uses: conda-incubator/setup-miniconda@v3
       with:
         miniforge-version: latest
         activate-environment: tesseract_nb
         environment-file: ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml
+        python-version: ${{ matrix.python }}
         use-mamba: true
     - name: cache vcs repos
       uses: actions/cache@v4
@@ -74,7 +76,7 @@ jobs:
       id: colcon-cache
       with:
         path: ws/install
-        key: colcon-v5-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/dependencies.rosinstall') }}
+        key: colcon-v5-py${{ matrix.python }}-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/dependencies.rosinstall') }}
     - name: colcon build C++ deps (macOS)
       if: matrix.config.os == 'macos' && steps.colcon-cache.outputs.cache-hit != 'true'
       working-directory: ws
@@ -168,7 +170,7 @@ jobs:
     - name: archive wheels
       uses: actions/upload-artifact@v4
       with:
-        name: 'python-${{ matrix.config.os }}-${{ matrix.config.arch }}'
+        name: 'python-${{ matrix.python }}-${{ matrix.config.os }}-${{ matrix.config.arch }}'
         path: ws/src/tesseract_nanobind/tesseract_nanobind/wheelhouse/tesseract*.whl
     - name: archive logs
       if: failure()
@@ -188,7 +190,7 @@ jobs:
     steps:
     - uses: actions/download-artifact@v4
       with:
-        pattern: python-linux-*  # TODO: change back to python-* after PyPI size limit increase
+        pattern: python-*-linux-*  # TODO: change back to python-* after PyPI size limit increase
         merge-multiple: true
         path: dist/
     - name: List wheels
