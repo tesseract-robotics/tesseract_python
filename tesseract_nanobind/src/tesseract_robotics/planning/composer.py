@@ -189,9 +189,16 @@ class TaskComposer:
                     )
 
         if config_path is None:
+            # Last resort: use bundled config
+            from tesseract_robotics import get_task_composer_config_path
+            bundled = get_task_composer_config_path()
+            if bundled and bundled.is_file():
+                config_path = str(bundled)
+
+        if config_path is None:
             raise ValueError(
                 "No config path provided and TESSERACT_TASK_COMPOSER_CONFIG_FILE "
-                "or TESSERACT_TASK_COMPOSER_DIR not set"
+                "not set. Ensure tesseract_robotics is installed with bundled data."
             )
 
         factory = TaskComposerPluginFactory(

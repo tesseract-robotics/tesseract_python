@@ -6,7 +6,7 @@
 
 > **Note:** This is a friendly fork of [tesseract_python](https://github.com/tesseract-robotics/tesseract_python) that replaces SWIG bindings with modern [nanobind](https://github.com/wjakob/nanobind) bindings.
 >
-> **Status: Pre-release** - This project is functional and tested locally, but CI/CD is being stabilized. Currently building/testing on macOS only. Linux and Windows CI coming soon. Contributions welcome!
+> **Status: Pre-release** - Building and testing on Linux and macOS. Windows CI coming soon. Contributions welcome!
 
 Python bindings for [Tesseract](https://github.com/tesseract-robotics/tesseract) robotics motion planning using [nanobind](https://github.com/wjakob/nanobind).
 

@@ -3,6 +3,7 @@ import os
 import numpy as np
 import pytest
 
+import tesseract_robotics  # triggers env var setup
 from tesseract_robotics.tesseract_common import (
     FilesystemPath,
     Isometry3d,
@@ -38,7 +39,7 @@ from tesseract_robotics.tesseract_task_composer import (
 
 
 TESSERACT_SUPPORT_DIR = os.environ.get("TESSERACT_SUPPORT_DIR", "")
-TESSERACT_TASK_COMPOSER_DIR = os.environ.get("TESSERACT_TASK_COMPOSER_DIR", "")
+TESSERACT_TASK_COMPOSER_CONFIG = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE", "")
 
 
 @pytest.fixture
@@ -101,12 +102,10 @@ class TestTaskComposerPluginFactory:
     """Test TaskComposerPluginFactory."""
 
     def test_create_factory(self):
-        if not TESSERACT_TASK_COMPOSER_DIR:
-            pytest.skip("TESSERACT_TASK_COMPOSER_DIR not set")
+        if not TESSERACT_TASK_COMPOSER_CONFIG:
+            pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
 
-        config_path = FilesystemPath(
-            os.path.join(TESSERACT_TASK_COMPOSER_DIR, "config/task_composer_plugins_no_trajopt_ifopt.yaml")
-        )
+        config_path = FilesystemPath(TESSERACT_TASK_COMPOSER_CONFIG)
         locator = GeneralResourceLocator()
         factory = TaskComposerPluginFactory(config_path, locator)
         assert factory is not None
@@ -116,14 +115,12 @@ class TestTaskComposerTrajOptPipeline:
     """Test TrajOpt pipeline through task composer."""
 
     def test_trajopt_pipeline(self, iiwa_environment):
-        if not TESSERACT_TASK_COMPOSER_DIR:
-            pytest.skip("TESSERACT_TASK_COMPOSER_DIR not set")
+        if not TESSERACT_TASK_COMPOSER_CONFIG:
+            pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
 
         env, manip_info = iiwa_environment
 
-        config_path = FilesystemPath(
-            os.path.join(TESSERACT_TASK_COMPOSER_DIR, "config/task_composer_plugins_no_trajopt_ifopt.yaml")
-        )
+        config_path = FilesystemPath(TESSERACT_TASK_COMPOSER_CONFIG)
         locator = GeneralResourceLocator()
         factory = TaskComposerPluginFactory(config_path, locator)
 

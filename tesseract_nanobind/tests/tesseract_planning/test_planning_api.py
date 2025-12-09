@@ -294,9 +294,9 @@ class TestPlanningIntegration:
 
     def test_plan_freespace(self, robot):
         """Test freespace planning through TaskComposer."""
-        composer_dir = os.environ.get("TESSERACT_TASK_COMPOSER_DIR")
-        if not composer_dir:
-            pytest.skip("TESSERACT_TASK_COMPOSER_DIR not set")
+        composer_config = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
+        if not composer_config:
+            pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
 
         from tesseract_robotics.planning import plan_freespace
 
