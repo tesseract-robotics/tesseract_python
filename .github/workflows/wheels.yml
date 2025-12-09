@@ -36,7 +36,7 @@ jobs:
       id: conda-cache
       with:
         path: ~/miniconda3/envs
-        key: conda-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml') }}
+        key: conda-v2-${{ matrix.config.os }}-${{ matrix.config.arch }}-${{ hashFiles('ws/src/tesseract_nanobind/tesseract_nanobind/environment.yml') }}
     - uses: conda-incubator/setup-miniconda@v3
       with:
         miniforge-version: latest
@@ -142,14 +142,12 @@ jobs:
       run: |
         # Install from dist for testing (wheelhouse may have higher glibc reqs)
         python -m pip install ws/src/tesseract_nanobind/tesseract_nanobind/dist/tesseract*.whl --force-reinstall
-        # Set library path for unrepaired wheel (LD for Linux, DYLD for macOS)
+        # Set library path for native libs (LD for Linux, DYLD for macOS)
         export LD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
         export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$CONDA_PREFIX/lib:$DYLD_LIBRARY_PATH
-        export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/tesseract_support
-        export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/src/tesseract_planning/tesseract_task_composer
-        export TESSERACT_RESOURCE_PATH=$GITHUB_WORKSPACE/ws/src/tesseract
+        # TESSERACT_SUPPORT_DIR, TESSERACT_RESOURCE_PATH, TESSERACT_TASK_COMPOSER_CONFIG_FILE
+        # are now auto-set by tesseract_robotics.__init__.py using bundled data
         cd ws/src/tesseract_nanobind/tesseract_nanobind
-        # Skip tests requiring URDF file loading (hardcoded paths in compiled libs)
         pytest tests/tesseract_command_language tests/tesseract_common -v
     - name: archive wheels
       uses: actions/upload-artifact@v4
