@@ -124,7 +124,7 @@ jobs:
       run: |
         export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
         export CMAKE_PREFIX_PATH=$CONDA_PREFIX:$GITHUB_WORKSPACE/ws/install
-        pip install delocate
+        pip install delocate setuptools-scm
         CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0" \
           pip wheel . -w dist/ --no-build-isolation
     - name: build nanobind wheel (Linux)
@@ -133,7 +133,7 @@ jobs:
       run: |
         export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
         export CMAKE_PREFIX_PATH=$CONDA_PREFIX:$GITHUB_WORKSPACE/ws/install
-        pip install auditwheel
+        pip install auditwheel setuptools-scm
         CMAKE_ARGS="-DCMAKE_POLICY_VERSION_MINIMUM=3.5" \
           pip wheel . -w dist/ --no-build-isolation
     - name: delocate (macOS)
