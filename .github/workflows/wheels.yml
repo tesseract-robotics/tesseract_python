@@ -25,14 +25,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ['3.9', '3.13']
+        python: ['3.9', '3.12']
         config:
-        - os: macos
-          arch: arm64
-          runner: macos-14
         - os: linux
           arch: x64
           runner: ubuntu-22.04
+        # macOS disabled: wheels exceed PyPI size limit
+        # - os: macos
+        #   arch: arm64
+        #   runner: macos-14
     defaults:
       run:
         shell: bash -el {0}
