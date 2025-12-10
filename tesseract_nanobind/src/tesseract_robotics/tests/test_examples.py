@@ -376,7 +376,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-EXAMPLES_DIR = Path(__file__).parent.parent.parent / "examples"
+# Path: tests/test_examples.py -> tesseract_robotics -> src -> tesseract_nanobind -> project root
+EXAMPLES_DIR = Path(__file__).parent.parent.parent.parent.parent / "examples"
 
 
 def get_env_with_vars():

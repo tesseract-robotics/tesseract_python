@@ -1,6 +1,6 @@
 #!/bin/zsh
 # Build tesseract C++ libraries using colcon
-# Based on .github/workflows/wheels.yml build process
+# KEEP IN SYNC WITH: .github/workflows/wheels.yml (authoritative reference)
 
 set -e  # Exit on error
 
@@ -156,10 +156,9 @@ echo ""
 export CMAKE_PREFIX_PATH="$CONDA_PREFIX:$CMAKE_PREFIX_PATH"
 echo "CMAKE_PREFIX_PATH: $CMAKE_PREFIX_PATH"
 
-# Set linker flags to find conda libraries
-export LDFLAGS="-L$CONDA_PREFIX/lib $LDFLAGS"
-export CXXFLAGS="-I$CONDA_PREFIX/include $CXXFLAGS"
-echo "LDFLAGS: $LDFLAGS"
+# Set LIBRARY_PATH for linker to find conda libraries (matches CI)
+export LIBRARY_PATH=$CONDA_PREFIX/lib:$LIBRARY_PATH
+echo "LIBRARY_PATH: $LIBRARY_PATH"
 echo ""
 
 colcon build \
@@ -181,8 +180,6 @@ colcon build \
         -DVCPKG_APPLOCAL_DEPS=OFF \
         -DTESSERACT_ENABLE_TESTING=OFF \
         -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
-        -DCMAKE_PREFIX_PATH="$CONDA_PREFIX" \
-        -DCMAKE_LIBRARY_PATH="$CONDA_PREFIX/lib" \
         -DQT_HOST_PATH="$CONDA_PREFIX" \
         "${OPENMP_CMAKE_ARGS[@]}"
 
