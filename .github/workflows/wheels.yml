@@ -167,7 +167,7 @@ jobs:
         # TESSERACT_SUPPORT_DIR, TESSERACT_RESOURCE_PATH, TESSERACT_TASK_COMPOSER_CONFIG_FILE
         # are now auto-set by tesseract_robotics.__init__.py using bundled data
         cd ws/src/tesseract_nanobind/tesseract_nanobind
-        pytest tests/tesseract_command_language tests/tesseract_common -v
+        pytest src/tesseract_robotics/tests/tesseract_command_language src/tesseract_robotics/tests/tesseract_common -v
     - name: archive wheels
       uses: actions/upload-artifact@v4
       with:

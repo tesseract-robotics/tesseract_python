@@ -11,7 +11,9 @@ readme = "../README.md"
 requires-python = ">=3.9"
 dependencies = [
     "numpy>=1.21.0",
+    "pytest>=7.0",
 ]
+
 authors = [
     { name = "Jelle Feringa", email = "jelle@terrestrial.construction" },
     { name = "John Wason", email = "wason@wasontech.com" },
@@ -42,9 +44,12 @@ dynamic = ["version"]
 Homepage = "https://github.com/tesseract-robotics/tesseract_nanobind"
 Repository = "https://github.com/tesseract-robotics/tesseract_nanobind"
 
+[project.scripts]
+tesseract_nanobind_selftest = "tesseract_robotics.selftest:main"
+
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = ["tests"]
+testpaths = ["src/tesseract_robotics/tests"]
 python_files = ["test_*.py"]
 addopts = ["-ra", "--strict-markers", "--tb=short"]
 
