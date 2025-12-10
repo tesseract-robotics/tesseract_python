@@ -131,7 +131,6 @@ def test_car_seat_example():
 
 
 @pytest.mark.planning
-@pytest.mark.skip(reason="Segfaults on macOS - external positioner axes planning needs investigation")
 def test_puzzle_piece_auxillary_axes_example():
     """Test puzzle piece auxiliary axes - demonstrates 9-DOF planning (7 arm + 2 positioner)."""
     if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):

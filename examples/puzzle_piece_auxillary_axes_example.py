@@ -15,37 +15,18 @@ Required environment variables:
 
 import os
 import sys
-import gc
 import csv
 import numpy as np
 
-from tesseract_robotics.tesseract_common import (
-    GeneralResourceLocator,
-    FilesystemPath,
-    Isometry3d,
-    ManipulatorInfo,
+from tesseract_robotics.planning import (
+    Robot,
+    MotionProgram,
+    CartesianTarget,
+    Pose,
+    TaskComposer,
+    MoveType,
 )
-from tesseract_robotics.tesseract_environment import (
-    Environment,
-    AnyPoly_wrap_EnvironmentConst,
-)
-from tesseract_robotics.tesseract_command_language import (
-    CompositeInstruction,
-    MoveInstruction,
-    MoveInstructionType_LINEAR,
-    CartesianWaypoint,
-    CartesianWaypointPoly_wrap_CartesianWaypoint,
-    MoveInstructionPoly_wrap_MoveInstruction,
-    ProfileDictionary,
-    AnyPoly_wrap_CompositeInstruction,
-    AnyPoly_wrap_ProfileDictionary,
-    AnyPoly_as_CompositeInstruction,
-)
-from tesseract_robotics.tesseract_task_composer import (
-    createTaskComposerPluginFactory,
-    TaskComposerDataStorage,
-)
-from tesseract_robotics.tesseract_motion_planners import assignCurrentStateAsSeed
+from tesseract_robotics.tesseract_command_language import ProfileDictionary
 from tesseract_robotics.tesseract_motion_planners_trajopt import (
     TrajOptDefaultPlanProfile,
     TrajOptDefaultCompositeProfile,
@@ -65,7 +46,7 @@ if "pytest" not in sys.modules:
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
 
-def make_puzzle_tool_poses(locator):
+def make_puzzle_tool_poses(robot):
     """
     Load toolpath poses from the puzzle_bent.csv file.
 
@@ -73,7 +54,7 @@ def make_puzzle_tool_poses(locator):
     We construct a full orientation from the normal using the position for the x-axis.
     """
     # Locate the CSV file
-    resource = locator.locateResource("package://tesseract_support/urdf/puzzle_bent.csv")
+    resource = robot.locator.locateResource("package://tesseract_support/urdf/puzzle_bent.csv")
     csv_path = resource.getFilePath()
 
     poses = []
@@ -109,44 +90,26 @@ def make_puzzle_tool_poses(locator):
             x_axis = np.cross(y_axis, norm)
             x_axis = x_axis / np.linalg.norm(x_axis)
 
-            # Build rotation matrix
-            rot = np.eye(4)
-            rot[:3, 0] = x_axis
-            rot[:3, 1] = y_axis
-            rot[:3, 2] = norm
-            rot[:3, 3] = pos
-
-            # Convert to Isometry3d
-            pose = Isometry3d(rot)
-
-            poses.append(pose)
+            # Build pose from rotation and position
+            rot = np.column_stack([x_axis, y_axis, norm])
+            poses.append(Pose.from_matrix_position(rot, pos))
 
     return poses
 
 
 def main():
-    # Get config file path
-    task_composer_filename = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
-    if not task_composer_filename:
-        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE environment variable not set")
-        print("Set it to: tesseract_planning/tesseract_task_composer/config/task_composer_plugins.yaml")
+    # Check for task composer config
+    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE") and not os.environ.get("TESSERACT_TASK_COMPOSER_DIR"):
+        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE or TESSERACT_TASK_COMPOSER_DIR not set")
+        print("Run: source env.sh")
         return False
-
-    # Initialize resource locator and environment
-    locator = GeneralResourceLocator()
 
     # Load puzzle piece workcell (KUKA + grinder + puzzle piece part + auxiliary axes)
-    urdf_url = "package://tesseract_support/urdf/puzzle_piece_workcell.urdf"
-    srdf_url = "package://tesseract_support/urdf/puzzle_piece_workcell.srdf"
-    urdf_path = FilesystemPath(locator.locateResource(urdf_url).getFilePath())
-    srdf_path = FilesystemPath(locator.locateResource(srdf_url).getFilePath())
-
-    env = Environment()
-    if not env.init(urdf_path, srdf_path, locator):
-        print("Failed to initialize environment")
-        return False
-
-    print(f"Environment initialized: {env.getName()}")
+    robot = Robot.from_urdf(
+        "package://tesseract_support/urdf/puzzle_piece_workcell.urdf",
+        "package://tesseract_support/urdf/puzzle_piece_workcell.srdf"
+    )
+    print(f"Loaded robot with {len(robot.get_link_names())} links")
 
     # Define joint names for KUKA IIWA (7) + auxiliary axes (2) = 9 DOF
     joint_names = [
@@ -169,11 +132,11 @@ def main():
     ])
 
     # Set initial state
-    env.setState(joint_names, joint_pos)
+    robot.set_joints(joint_pos, joint_names=joint_names)
 
     # Load tool poses from CSV
     try:
-        tool_poses = make_puzzle_tool_poses(locator)
+        tool_poses = make_puzzle_tool_poses(robot)
     except Exception as e:
         print(f"Failed to load toolpath: {e}")
         return False
@@ -184,44 +147,17 @@ def main():
         print("No poses loaded from CSV!")
         return False
 
-    # Create manipulator info - use manipulator_aux group (9 DOF)
-    manip_info = ManipulatorInfo()
-    manip_info.manipulator = "manipulator_aux"  # 9 DOF group including auxiliary axes
-    manip_info.working_frame = "part"
-    manip_info.tcp_frame = "grinder_frame"
+    # Build motion program with all waypoints
+    # Use manipulator_aux group (9 DOF including auxiliary axes)
+    program = MotionProgram("manipulator_aux", tcp_frame="grinder_frame", working_frame="part")
+    program.set_joint_names(joint_names)
 
-    # Create program
-    program = CompositeInstruction("DEFAULT")
-    program.setManipulatorInfo(manip_info)
+    for pose in tool_poses:
+        program.linear_to(CartesianTarget(pose, profile="CARTESIAN"))
 
-    # Add Cartesian waypoints from toolpath
-    for i, pose in enumerate(tool_poses):
-        wp = CartesianWaypoint(pose)
-        plan_instruction = MoveInstruction(
-            CartesianWaypointPoly_wrap_CartesianWaypoint(wp),
-            MoveInstructionType_LINEAR,
-            "CARTESIAN"
-        )
-        plan_instruction.setDescription(f"waypoint_{i}")
-        program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_instruction))
+    print(f"Program has {len(program)} Cartesian waypoints")
 
-    print(f"Program has {len(tool_poses)} Cartesian waypoints")
-
-    # Assign current state as seed for CartesianWaypoints
-    assignCurrentStateAsSeed(program, env)
-
-    # Create task composer factory
-    factory = createTaskComposerPluginFactory(task_composer_filename, locator)
-
-    # Create executor
-    executor = factory.createTaskComposerExecutor("TaskflowExecutor")
-
-    # Create task (TrajOpt pipeline for Cartesian path)
-    task = factory.createTaskComposerNode("TrajOptPipeline")
-    output_key = task.getOutputKeys().get("program")
-    input_key = task.getInputKeys().get("planning_input")
-
-    # Create profile dictionary with custom TrajOpt profiles
+    # Create custom TrajOpt profiles for Cartesian path following
     profiles = ProfileDictionary()
 
     # Configure TrajOpt plan profile
@@ -244,46 +180,27 @@ def main():
     ProfileDictionary_addTrajOptPlanProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "CARTESIAN", trajopt_plan_profile)
     ProfileDictionary_addTrajOptCompositeProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_composite_profile)
 
-    # Create task data storage
-    task_data = TaskComposerDataStorage()
-    task_data.setData(input_key, AnyPoly_wrap_CompositeInstruction(program))
-    task_data.setData("environment", AnyPoly_wrap_EnvironmentConst(env))
-    task_data.setData("profiles", AnyPoly_wrap_ProfileDictionary(profiles))
-
     print("Running TrajOpt planner with 9 DOF (7 arm + 2 auxiliary axes)...")
 
-    # Run the task
-    future = executor.run(task, task_data)
-    future.wait()
+    # Plan using TaskComposer (auto-seeds Cartesian waypoints, handles cleanup)
+    composer = TaskComposer.from_config()
+    result = composer.plan(robot, program, pipeline="TrajOptPipeline", profiles=profiles)
 
-    if not future.context.isSuccessful():
-        print("Planning failed!")
+    if not result.successful:
+        print(f"Planning failed: {result.message}")
         return False
 
     print("Planning successful!")
-
-    # Get results
-    results = AnyPoly_as_CompositeInstruction(future.context.data_storage.getData(output_key))
-
-    # Print trajectory summary
-    print(f"Trajectory has {len(results)} waypoints")
+    print(f"Trajectory has {len(result)} waypoints")
 
     # Optional: visualize with viewer
     if TesseractViewer is not None:
         print("\nStarting viewer at http://localhost:8000")
         viewer = TesseractViewer()
-        viewer.update_environment(env, [0, 0, 0])
-        viewer.update_trajectory(results)
+        viewer.update_environment(robot.env, [0, 0, 0])
+        viewer.update_trajectory(result.raw_results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
-
-    # Explicit cleanup to prevent segfault at interpreter shutdown
-    del future
-    del task_data
-    del task
-    del executor
-    del factory
-    gc.collect()
 
     return True
 
