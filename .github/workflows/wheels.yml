@@ -166,15 +166,13 @@ jobs:
         export DYLD_LIBRARY_PATH=$GITHUB_WORKSPACE/ws/install/lib:$CONDA_PREFIX/lib:$DYLD_LIBRARY_PATH
         # TESSERACT_SUPPORT_DIR, TESSERACT_RESOURCE_PATH, TESSERACT_TASK_COMPOSER_CONFIG_FILE
         # are now auto-set by tesseract_robotics.__init__.py using bundled data
-        # Run all tests from project root (ws/src/tesseract_nanobind)
-        # time_parameterization skipped (API not bound)
-        # TESSERACT_HEADLESS=1 required for viewer/planning examples
-        # PYTHONPATH="" ensures installed package is used, not src/
-        cd ws/src/tesseract_nanobind
+        # Run tests from repo root with tests copied outside src tree
+        # This ensures installed package is used, not local src/
         export TESSERACT_HEADLESS=1
-        PYTHONPATH="" pytest tesseract_nanobind/src/tesseract_robotics/tests \
-          --ignore=tesseract_nanobind/src/tesseract_robotics/tests/tesseract_time_parameterization \
-          --import-mode=importlib \
+        cd ws/src/tesseract_nanobind
+        cp -r tesseract_nanobind/src/tesseract_robotics/tests /tmp/tesseract_tests
+        pytest /tmp/tesseract_tests \
+          --ignore=/tmp/tesseract_tests/tesseract_time_parameterization \
           -v --tb=short
     - name: archive wheels
       uses: actions/upload-artifact@v4
