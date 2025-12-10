@@ -21,7 +21,6 @@ authors = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Topic :: Scientific/Engineering",
-    "Topic :: Scientific/Engineering :: Robotics",
     "Operating System :: Unix",
     "Operating System :: POSIX",
     # "Operating System :: macOS",
