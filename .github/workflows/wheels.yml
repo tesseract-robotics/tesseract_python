@@ -167,7 +167,12 @@ jobs:
         # TESSERACT_SUPPORT_DIR, TESSERACT_RESOURCE_PATH, TESSERACT_TASK_COMPOSER_CONFIG_FILE
         # are now auto-set by tesseract_robotics.__init__.py using bundled data
         cd ws/src/tesseract_nanobind/tesseract_nanobind
-        pytest src/tesseract_robotics/tests/tesseract_command_language src/tesseract_robotics/tests/tesseract_common -v
+        # Run all tests - time_parameterization skipped (API not bound)
+        # TESSERACT_HEADLESS=1 required for viewer/planning examples
+        export TESSERACT_HEADLESS=1
+        pytest src/tesseract_robotics/tests \
+          --ignore=src/tesseract_robotics/tests/tesseract_time_parameterization \
+          -v --tb=short
     - name: archive wheels
       uses: actions/upload-artifact@v4
       with:
