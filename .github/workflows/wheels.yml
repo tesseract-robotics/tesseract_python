@@ -169,9 +169,10 @@ jobs:
         # Run all tests from project root (ws/src/tesseract_nanobind)
         # time_parameterization skipped (API not bound)
         # TESSERACT_HEADLESS=1 required for viewer/planning examples
+        # PYTHONPATH="" ensures installed package is used, not src/
         cd ws/src/tesseract_nanobind
         export TESSERACT_HEADLESS=1
-        pytest tesseract_nanobind/src/tesseract_robotics/tests \
+        PYTHONPATH="" pytest tesseract_nanobind/src/tesseract_robotics/tests \
           --ignore=tesseract_nanobind/src/tesseract_robotics/tests/tesseract_time_parameterization \
           --import-mode=importlib \
           -v --tb=short
