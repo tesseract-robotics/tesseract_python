@@ -168,10 +168,11 @@ jobs:
         # are now auto-set by tesseract_robotics.__init__.py using bundled data
         # Run all tests - time_parameterization skipped (API not bound)
         # TESSERACT_HEADLESS=1 required for viewer/planning examples
-        # Run from root to avoid src/ shadowing installed package
+        # --import-mode=importlib prevents pytest from adding src/ to sys.path
         export TESSERACT_HEADLESS=1
         pytest ws/src/tesseract_nanobind/tesseract_nanobind/src/tesseract_robotics/tests \
           --ignore=ws/src/tesseract_nanobind/tesseract_nanobind/src/tesseract_robotics/tests/tesseract_time_parameterization \
+          --import-mode=importlib \
           -v --tb=short
     - name: archive wheels
       uses: actions/upload-artifact@v4
