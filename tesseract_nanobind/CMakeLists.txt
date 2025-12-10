@@ -296,7 +296,7 @@ if(EXISTS "${TESSERACT_SUPPORT_SRC}")
     DESTINATION tesseract_robotics/data/tesseract_support
     FILES_MATCHING
     PATTERN "*.urdf" PATTERN "*.srdf" PATTERN "*.yaml" PATTERN "*.xacro"
-    PATTERN "*.stl" PATTERN "*.dae" PATTERN "*.ply" PATTERN "*.obj" PATTERN "*.csv"
+    PATTERN "*.stl" PATTERN "*.STL" PATTERN "*.dae" PATTERN "*.ply" PATTERN "*.obj" PATTERN "*.csv"
     PATTERN "*.xml" PATTERN "*.png" PATTERN "*.jpg" PATTERN "*.jpeg"
     PATTERN ".git" EXCLUDE PATTERN "__pycache__" EXCLUDE)
 else()
