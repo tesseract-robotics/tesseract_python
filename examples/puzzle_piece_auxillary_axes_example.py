@@ -54,9 +54,9 @@ from tesseract_robotics.tesseract_motion_planners_trajopt import (
     ProfileDictionary_addTrajOptCompositeProfile,
 )
 
-# Optional: viewer for visualization (skip import in headless/pytest mode)
+# Viewer (skip in pytest)
 TesseractViewer = None
-if os.environ.get("TESSERACT_HEADLESS", "0") != "1" and "pytest" not in sys.modules:
+if "pytest" not in sys.modules:
     try:
         from tesseract_robotics_viewer import TesseractViewer
     except ImportError:

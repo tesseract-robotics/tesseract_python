@@ -12,6 +12,7 @@ Required environment variables:
 """
 
 import os
+import sys
 import numpy as np
 import math
 
@@ -29,13 +30,11 @@ from tesseract_robotics.tesseract_environment import (
 )
 from tesseract_robotics.tesseract_scene_graph import Joint, JointType
 
-# Optional: viewer for visualization (disabled in headless mode)
-HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1"
-HAS_VIEWER = False
-if not HEADLESS:
+# Viewer (skip in pytest)
+TesseractViewer = None
+if "pytest" not in sys.modules:
     try:
         from tesseract_robotics_viewer import TesseractViewer
-        HAS_VIEWER = True
     except ImportError:
         pass
 
@@ -154,7 +153,7 @@ def main():
                 stack.append((joint.child_link_name, depth + 1))
 
     # Optional: visualize with viewer
-    if HAS_VIEWER:
+    if TesseractViewer is not None:
         print("\nStarting viewer at http://localhost:8000")
         viewer = TesseractViewer()
         viewer.update_environment(env, [0, 0, 0])

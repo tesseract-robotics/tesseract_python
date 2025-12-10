@@ -90,7 +90,6 @@ def get_env_info() -> dict:
         "TESSERACT_SUPPORT_DIR",
         "TESSERACT_RESOURCE_PATH",
         "TESSERACT_TASK_COMPOSER_CONFIG_FILE",
-        "TESSERACT_HEADLESS",
         "DYLD_LIBRARY_PATH",
         "LD_LIBRARY_PATH",
     ]

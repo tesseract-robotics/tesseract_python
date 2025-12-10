@@ -47,7 +47,7 @@ TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
 
 def main():
-    HEADLESS = os.environ.get("TESSERACT_HEADLESS", "0") == "1" or "pytest" in sys.modules
+    HEADLESS = "pytest" in sys.modules
 
     # Load robot
     locator = GeneralResourceLocator()

@@ -8,7 +8,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 source env.sh
-export TESSERACT_HEADLESS=1
 
 echo "Running failing TrajOpt planning tests..."
 echo ""

@@ -29,12 +29,13 @@ from tesseract_robotics.planning import (
     TaskComposer,
 )
 
-# Optional: viewer for visualization (disabled in pytest/headless mode)
-try:
-    from tesseract_robotics_viewer import TesseractViewer
-    HAS_VIEWER = os.environ.get("TESSERACT_HEADLESS", "0") != "1" and "pytest" not in sys.modules
-except ImportError:
-    HAS_VIEWER = False
+# Viewer (skip in pytest)
+TesseractViewer = None
+if "pytest" not in sys.modules:
+    try:
+        from tesseract_robotics_viewer import TesseractViewer
+    except ImportError:
+        pass
 
 
 def main():
@@ -98,7 +99,7 @@ def main():
     print(f"\nTrajectory has {len(result)} waypoints")
 
     # Optional: visualize with viewer
-    if HAS_VIEWER and result.raw_results is not None:
+    if TesseractViewer is not None and result.raw_results is not None:
         print("\nStarting viewer at http://localhost:8000")
         viewer = TesseractViewer()
         viewer.update_environment(robot.env, [0, 0, 0])

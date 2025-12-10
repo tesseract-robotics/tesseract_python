@@ -33,9 +33,9 @@ from tesseract_robotics.planning import (
 from tesseract_robotics.tesseract_scene_graph import Joint, JointType
 from tesseract_robotics.tesseract_common import Isometry3d
 
-# Optional: viewer for visualization
+# Viewer (skip in pytest)
 TesseractViewer = None
-if os.environ.get("TESSERACT_HEADLESS", "0") != "1" and "pytest" not in sys.modules:
+if "pytest" not in sys.modules:
     try:
         from tesseract_robotics_viewer import TesseractViewer
     except ImportError:

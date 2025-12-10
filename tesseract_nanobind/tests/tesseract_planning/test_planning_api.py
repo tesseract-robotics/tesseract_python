@@ -292,13 +292,8 @@ class TestPlanningIntegration:
     def robot(self):
         return Robot.from_tesseract_support("abb_irb2400")
 
-    @pytest.mark.xfail(reason="Task composer pipeline execution has issues - direct planners work, see tesseract_motion_planners tests")
     def test_plan_freespace(self, robot):
-        """Test freespace planning through TaskComposer.
-
-        Note: Direct planner APIs work correctly (see test_motion_planners.py::test_ompl_planning_workflow).
-        The task composer pipeline execution has issues that need investigation.
-        """
+        """Test freespace planning through TaskComposer."""
         composer_config = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
         if not composer_config:
             pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")

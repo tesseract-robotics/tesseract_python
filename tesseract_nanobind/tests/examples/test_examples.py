@@ -1,7 +1,7 @@
 """Tests that run the example scripts to verify API coverage.
 
-These tests import and run each example's main() function in headless mode.
-The goal is to verify all API methods can be invoked without error.
+These tests import and run each example's main() function.
+pytest in sys.modules = headless mode (no viewer).
 
 Markers:
   - @pytest.mark.viewer: Viewer/visualization examples
