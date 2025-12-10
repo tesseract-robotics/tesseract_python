@@ -49,7 +49,7 @@ tesseract_nanobind_selftest = "tesseract_robotics.selftest:main"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = ["src/tesseract_robotics/tests"]
+testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = ["-ra", "--strict-markers", "--tb=short"]
 
