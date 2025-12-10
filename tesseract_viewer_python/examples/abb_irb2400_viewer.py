@@ -37,10 +37,14 @@ try:
 except ImportError:
     TRAJOPT_AVAILABLE = False
 
-from tesseract_robotics_viewer import TesseractViewer
 import numpy as np
 import os
 import sys
+
+# Viewer (skip import in pytest)
+TesseractViewer = None
+if "pytest" not in sys.modules:
+    from tesseract_robotics_viewer import TesseractViewer
 
 OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"

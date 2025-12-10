@@ -3,8 +3,12 @@
 import sys
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import GeneralResourceLocator
-from tesseract_robotics_viewer import TesseractViewer
 import os
+
+# Viewer (skip import in pytest)
+TesseractViewer = None
+if "pytest" not in sys.modules:
+    from tesseract_robotics_viewer import TesseractViewer
 
 shapes_urdf = """
 <robot name="mesh_viewer">

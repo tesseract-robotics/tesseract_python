@@ -117,6 +117,15 @@ def test_pick_and_place_example():
     """Test pick and place example."""
     if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE"):
         pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
+    # Check if required mesh exists (not bundled in wheel)
+    try:
+        from tesseract_robotics.tesseract_common import GeneralResourceLocator
+        locator = GeneralResourceLocator()
+        resource = locator.locateResource("package://tesseract_support/meshes/pick_and_place/workcell.STL")
+        if resource is None or not os.path.exists(resource.getFilePath()):
+            pytest.skip("pick_and_place meshes not available (not bundled in wheel)")
+    except Exception:
+        pytest.skip("pick_and_place meshes not available")
     module = _load_module("pick_and_place_example", os.path.join(CORE_EXAMPLES, "pick_and_place_example.py"))
     # Note: This example may fail planning (return False) but should not segfault
     module.main()

@@ -6,7 +6,11 @@ from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedRe
 import os
 import re
 import traceback
-from tesseract_robotics_viewer import TesseractViewer
+
+# Viewer (skip import in pytest)
+TesseractViewer = None
+if "pytest" not in sys.modules:
+    from tesseract_robotics_viewer import TesseractViewer
 
 shapes_urdf = """
 <robot name="multipleshapes">
