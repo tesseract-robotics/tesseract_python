@@ -442,9 +442,12 @@ class TestFreespaceOMPLExampleRun:
         config = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
         return config and os.path.exists(config)
 
-    @pytest.mark.xfail(reason="Planning currently fails - known issue")
+    @pytest.mark.xfail(reason="macOS RTTI issue: std::type_index differs across DSOs")
     def test_freespace_ompl_example_runs(self, has_task_composer_config):
-        """Run the freespace OMPL example end-to-end"""
+        """Run the freespace OMPL example end-to-end.
+
+        Note: Fails on macOS due to std::type_index mismatch across shared libraries.
+        """
         if not has_task_composer_config:
             pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set or file not found")
 
@@ -477,9 +480,12 @@ class TestBasicCartesianExampleRun:
         config = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
         return config and os.path.exists(config)
 
-    @pytest.mark.xfail(reason="Planning currently fails - known issue")
+    @pytest.mark.xfail(reason="macOS RTTI issue: std::type_index differs across DSOs")
     def test_basic_cartesian_example_runs(self, has_task_composer_config):
-        """Run the basic Cartesian example end-to-end"""
+        """Run the basic Cartesian example end-to-end.
+
+        Note: Fails on macOS due to std::type_index mismatch across shared libraries.
+        """
         if not has_task_composer_config:
             pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set or file not found")
 
@@ -532,9 +538,12 @@ class TestGlassUprightExampleRun:
         config = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
         return config and os.path.exists(config)
 
-    @pytest.mark.xfail(reason="Planning currently fails - known issue")
+    @pytest.mark.xfail(reason="macOS RTTI issue: std::type_index differs across DSOs")
     def test_glass_upright_example_runs(self, has_task_composer_config):
-        """Run the glass upright example end-to-end"""
+        """Run the glass upright example end-to-end.
+
+        Note: Fails on macOS due to std::type_index mismatch across shared libraries.
+        """
         if not has_task_composer_config:
             pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set or file not found")
 

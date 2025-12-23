@@ -288,7 +288,12 @@ class TaskComposer:
             )
 
         output_key = task.getOutputKeys().get("program")
-        input_key = task.getInputKeys().get("planning_input")
+        # Different pipelines use different input keys
+        input_keys = task.getInputKeys()
+        try:
+            input_key = input_keys.get("planning_input")
+        except (KeyError, IndexError):
+            input_key = input_keys.get("program")
 
         # Wrap data for task composer
         program_anypoly = AnyPoly_wrap_CompositeInstruction(composite)

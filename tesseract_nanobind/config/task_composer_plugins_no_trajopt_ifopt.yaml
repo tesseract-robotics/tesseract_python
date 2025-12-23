@@ -11,7 +11,7 @@ task_composer_plugins:
       TaskflowExecutor:
         class: TaskflowTaskComposerExecutorFactory
         config:
-          threads: 0
+          threads: 12
   tasks:
     plugins:
       DescartesFTask:

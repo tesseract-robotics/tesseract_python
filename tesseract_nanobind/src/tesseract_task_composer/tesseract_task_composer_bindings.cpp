@@ -209,9 +209,13 @@ NB_MODULE(_tesseract_task_composer, m) {
         return tc::AnyPoly(pd);
     }, "profiles"_a, "Wrap a ProfileDictionary shared_ptr into an AnyPoly");
 
-    m.def("AnyPoly_wrap_EnvironmentConst", [](std::shared_ptr<const te::Environment> env) {
-        return tc::AnyPoly(env);
-    }, "environment"_a, "Wrap a const Environment shared_ptr into an AnyPoly");
+    // Accept Environment reference and create non-owning shared_ptr
+    // This is safe because Python keeps the Environment alive during planning
+    m.def("AnyPoly_wrap_EnvironmentConst", [](const te::Environment& env) {
+        // Create non-owning shared_ptr with no-op deleter
+        auto env_ptr = std::shared_ptr<const te::Environment>(&env, [](const te::Environment*){});
+        return tc::AnyPoly(env_ptr);
+    }, "environment"_a, "Wrap a const Environment reference into an AnyPoly");
 
     // ========== AnyPoly unwrap functions ==========
     m.def("AnyPoly_as_CompositeInstruction", [](const tc::AnyPoly& ap) -> tp::CompositeInstruction {

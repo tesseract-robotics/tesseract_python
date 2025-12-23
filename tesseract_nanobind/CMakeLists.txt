@@ -256,14 +256,15 @@ add_tesseract_nanobind_extension(
   tesseract::tesseract_common
 )
 
-# Find and add tesseract_task_composer (core and taskflow components only, planning requires trajopt)
-find_package(tesseract_task_composer REQUIRED COMPONENTS core taskflow)
+# Find and add tesseract_task_composer (including planning for correct type_index)
+find_package(tesseract_task_composer REQUIRED COMPONENTS core taskflow planning)
 
 add_tesseract_nanobind_extension(
   tesseract_task_composer
   src/tesseract_task_composer/tesseract_task_composer_bindings.cpp
   tesseract::tesseract_task_composer
   tesseract::tesseract_task_composer_taskflow
+  tesseract::tesseract_task_composer_planning_nodes  # Required for shared type_index
   tesseract::tesseract_environment
   tesseract::tesseract_command_language
   tesseract::tesseract_common
