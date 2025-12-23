@@ -353,7 +353,17 @@ NB_MODULE(_tesseract_command_language, m) {
         }, nb::rv_policy::reference_internal)
         .def("__iter__", [](tp::CompositeInstruction& self) {
             return nb::make_iterator(nb::type<tp::CompositeInstruction>(), "iterator", self.begin(), self.end());
-        }, nb::keep_alive<0, 1>());
+        }, nb::keep_alive<0, 1>())
+        .def("flatten", [](tp::CompositeInstruction& self) {
+            // Convert reference_wrapper vector to regular vector for Python
+            auto refs = self.flatten();
+            std::vector<tp::InstructionPoly> result;
+            result.reserve(refs.size());
+            for (auto& ref : refs) {
+                result.push_back(ref.get());
+            }
+            return result;
+        }, "Flatten nested CompositeInstructions into a flat vector of InstructionPoly");
 
     // ========== Profile (base class) ==========
     nb::class_<tp::Profile>(m, "Profile")

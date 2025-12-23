@@ -27,3 +27,4 @@ build/
 # Sphinx docs
 docs/_build/
 docs/readme.md
+CLAUDE.md
