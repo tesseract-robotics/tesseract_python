@@ -140,6 +140,11 @@ class Robot:
         self.env = env
         self.locator = locator or GeneralResourceLocator()
         self._manipulator_cache: Dict[str, ManipulatorInfo] = {}
+        # Set FCL as default collision checker (more reliable than Bullet)
+        try:
+            env.setActiveDiscreteContactManager("FCLDiscreteBVHManager")
+        except Exception:
+            pass  # FCL may not be available, keep configured default
 
     @classmethod
     def from_urdf(
@@ -181,6 +186,7 @@ class Robot:
         urdf_path: Union[str, Path],
         srdf_path: Union[str, Path],
         locator: Optional[GeneralResourceLocator] = None,
+        resource_path: Optional[Union[str, Path]] = None,
     ) -> Robot:
         """
         Load robot from local URDF and SRDF files.
@@ -189,18 +195,42 @@ class Robot:
             urdf_path: Path to URDF file
             srdf_path: Path to SRDF file
             locator: Resource locator for resolving mesh references
+            resource_path: Optional path to add to TESSERACT_RESOURCE_PATH
+                for resolving package:// URLs in URDF/SRDF meshes.
 
         Returns:
             Initialized Robot instance
+
+        Raises:
+            RuntimeError: If environment initialization fails, with helpful
+                message about resource path configuration.
         """
+        import os
+        if resource_path is not None:
+            current = os.environ.get("TESSERACT_RESOURCE_PATH", "")
+            if current:
+                os.environ["TESSERACT_RESOURCE_PATH"] = f"{resource_path}:{current}"
+            else:
+                os.environ["TESSERACT_RESOURCE_PATH"] = str(resource_path)
+
         locator = locator or GeneralResourceLocator()
 
-        urdf_path = FilesystemPath(str(urdf_path))
-        srdf_path = FilesystemPath(str(srdf_path))
+        urdf_fs = FilesystemPath(str(urdf_path))
+        srdf_fs = FilesystemPath(str(srdf_path))
 
         env = Environment()
-        if not env.init(urdf_path, srdf_path, locator):
-            raise RuntimeError(f"Failed to initialize environment from {urdf_path}")
+        try:
+            if not env.init(urdf_fs, srdf_fs, locator):
+                raise RuntimeError("Environment.init() returned False")
+        except Exception as e:
+            resource_path_val = os.environ.get("TESSERACT_RESOURCE_PATH", "not set")
+            raise RuntimeError(
+                f"Failed to load robot from {urdf_path}\n"
+                f"Error: {e}\n\n"
+                f"If URDF uses package:// URLs, set TESSERACT_RESOURCE_PATH "
+                f"or use resource_path parameter.\n"
+                f"Current TESSERACT_RESOURCE_PATH: {resource_path_val}"
+            ) from e
 
         return cls(env, locator)
 
@@ -501,6 +531,21 @@ class Robot:
         """
         cmd = ChangeCollisionMarginsCommand(margin)
         return self.env.applyCommand(cmd)
+
+    def set_collision_checker(self, name: str = "FCLDiscreteBVHManager") -> bool:
+        """
+        Set active discrete collision checker.
+
+        Args:
+            name: Manager name. Options:
+                - "FCLDiscreteBVHManager" (default, recommended)
+                - "BulletDiscreteBVHManager"
+                - "BulletDiscreteSimpleManager"
+
+        Returns:
+            True if successful
+        """
+        return self.env.setActiveDiscreteContactManager(name)
 
     @property
     def scene_graph(self) -> SceneGraph:

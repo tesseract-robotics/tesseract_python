@@ -18,7 +18,7 @@ Example Usage:
         MotionProgram,
         CartesianTarget,
         JointTarget,
-        plan_freespace,
+        plan_trajopt,
     )
 
     # Load robot from URDF/SRDF
@@ -32,8 +32,8 @@ Example Usage:
         .move_to(JointTarget([0.5, 0, 0, 0, 0, 0]))
     )
 
-    # Plan and execute
-    result = plan_freespace(robot, program)
+    # Plan with TrajOpt (trajectory optimization)
+    result = plan_trajopt(robot, program)
     if result.successful:
         print(f"Found trajectory with {len(result.trajectory)} waypoints")
 """
@@ -74,7 +74,8 @@ from tesseract_robotics.planning.geometry import (
 
 from tesseract_robotics.planning.planner import (
     PlanningResult,
-    plan_freespace,
+    plan_trajopt,
+    plan_ompl,
     plan_cartesian,
     PlannerConfig,
     assign_current_state_as_seed,
@@ -113,7 +114,8 @@ __all__ = [
     "create_obstacle",
     # Planning
     "PlanningResult",
-    "plan_freespace",
+    "plan_trajopt",
+    "plan_ompl",
     "plan_cartesian",
     "PlannerConfig",
     "assign_current_state_as_seed",

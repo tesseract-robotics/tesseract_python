@@ -285,10 +285,8 @@ if(NOT EXISTS "${TESSERACT_SUPPORT_SRC}")
   set(TESSERACT_SUPPORT_SRC "${CMAKE_CURRENT_SOURCE_DIR}/../../tesseract/tesseract_support")
 endif()
 
-set(TASK_COMPOSER_CFG_SRC "${CMAKE_CURRENT_SOURCE_DIR}/../ws/src/tesseract_planning/tesseract_task_composer/config")
-if(NOT EXISTS "${TASK_COMPOSER_CFG_SRC}")
-  set(TASK_COMPOSER_CFG_SRC "${CMAKE_CURRENT_SOURCE_DIR}/../../tesseract_planning/tesseract_task_composer/config")
-endif()
+# Use our local config with threads: 0 (use all cores)
+set(TASK_COMPOSER_CFG_SRC "${CMAKE_CURRENT_SOURCE_DIR}/config")
 
 if(EXISTS "${TESSERACT_SUPPORT_SRC}")
   message(STATUS "Installing tesseract_support from: ${TESSERACT_SUPPORT_SRC}")

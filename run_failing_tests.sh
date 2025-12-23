@@ -13,5 +13,5 @@ echo "Running failing TrajOpt planning tests..."
 echo ""
 
 # These tests fail because TrajOpt planning returns nullptr/failure
-pytest tesseract_nanobind/tests/tesseract_planning/test_planning_api.py::TestPlanningIntegration::test_plan_freespace \
+pytest tesseract_nanobind/tests/tesseract_planning/test_planning_api.py::TestPlanningIntegration::test_plan_trajopt \
        -v --tb=short "$@"

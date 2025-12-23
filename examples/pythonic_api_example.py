@@ -32,7 +32,7 @@ from tesseract_robotics.planning import (
     sphere,
     create_obstacle,
     # Planning
-    plan_freespace,
+    plan_trajopt,
     TaskComposer,
 )
 
@@ -162,7 +162,7 @@ def main():
         return True
 
     try:
-        result = plan_freespace(robot, program)
+        result = plan_trajopt(robot, program)
 
         if result.successful:
             print(f"   Planning successful!")

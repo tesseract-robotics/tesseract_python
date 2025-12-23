@@ -68,6 +68,7 @@ root = ".."  # git root is parent of tesseract_nanobind/
 
 [tool.scikit-build.cmake.define]
 CMAKE_POLICY_DEFAULT_CMP0135 = "NEW"
+CMAKE_POLICY_VERSION_MINIMUM = "3.5"
 
 # Note: cibuildwheel is not used because this package requires
 # pre-built tesseract C++ libraries. See .github/workflows/wheels.yml

@@ -5,7 +5,7 @@ Provides top-level functions for common planning operations that handle
 all the setup automatically.
 
 Example:
-    from tesseract_robotics.planning import Robot, MotionProgram, plan_freespace
+    from tesseract_robotics.planning import Robot, MotionProgram, plan_trajopt
 
     robot = Robot.from_tesseract_support("abb_irb2400")
 
@@ -14,7 +14,7 @@ Example:
         .move_to(CartesianTarget(Transform.from_xyz(0.5, 0, 0.5)))
     )
 
-    result = plan_freespace(robot, program)
+    result = plan_trajopt(robot, program)
     if result.successful:
         print(f"Found {len(result)} waypoints")
 """
@@ -58,16 +58,17 @@ class PlannerConfig:
     time_parameterization: bool = True
 
 
-def plan_freespace(
+def plan_trajopt(
     robot: "Robot",
     program: Union["MotionProgram", CompositeInstruction],
     config: Optional[PlannerConfig] = None,
     profiles: Optional[ProfileDictionary] = None,
 ) -> PlanningResult:
     """
-    Plan freespace motion.
+    Plan motion using TrajOpt (trajectory optimization).
 
-    Uses TrajOpt for collision-free point-to-point motion.
+    TrajOpt optimizes trajectories for smoothness and collision avoidance.
+    Best for refining paths or when starting close to the goal.
 
     Args:
         robot: Robot instance
@@ -80,7 +81,7 @@ def plan_freespace(
 
     Example:
         from tesseract_robotics.planning import (
-            Robot, MotionProgram, JointTarget, plan_freespace
+            Robot, MotionProgram, JointTarget, plan_trajopt
         )
 
         robot = Robot.from_tesseract_support("abb_irb2400")
@@ -89,12 +90,60 @@ def plan_freespace(
             .move_to(JointTarget([0.5, 0, 0, 0, 0, 0]))
         )
 
-        result = plan_freespace(robot, program)
+        result = plan_trajopt(robot, program)
         if result:
             for point in result:
                 print(point.positions)
     """
     config = config or PlannerConfig()
+
+    composer = TaskComposer.from_config()
+    return composer.plan(
+        robot,
+        program,
+        pipeline=config.pipeline,
+        profiles=profiles,
+    )
+
+
+def plan_ompl(
+    robot: "Robot",
+    program: Union["MotionProgram", CompositeInstruction],
+    config: Optional[PlannerConfig] = None,
+    profiles: Optional[ProfileDictionary] = None,
+) -> PlanningResult:
+    """
+    Plan motion using OMPL (sampling-based planner).
+
+    OMPL uses sampling-based algorithms (RRT, PRM, etc.) for motion planning.
+    Best for finding paths in complex environments or long-distance motions.
+
+    Args:
+        robot: Robot instance
+        program: Motion program or CompositeInstruction
+        config: Planner configuration (pipeline defaults to "OMPLPipeline")
+        profiles: Custom motion profiles
+
+    Returns:
+        PlanningResult with trajectory if successful
+
+    Example:
+        from tesseract_robotics.planning import (
+            Robot, MotionProgram, JointTarget, plan_ompl
+        )
+
+        robot = Robot.from_tesseract_support("abb_irb2400")
+        program = (MotionProgram("manipulator")
+            .move_to(JointTarget([0, 0, 0, 0, 0, 0]))
+            .move_to(JointTarget([0.5, 0, 0, 0, 0, 0]))
+        )
+
+        result = plan_ompl(robot, program)
+        if result:
+            for point in result:
+                print(point.positions)
+    """
+    config = config or PlannerConfig(pipeline="OMPLPipeline")
 
     composer = TaskComposer.from_config()
     return composer.plan(

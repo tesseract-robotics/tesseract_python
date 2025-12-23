@@ -254,11 +254,23 @@ class MotionProgram:
         Initialize motion program builder.
 
         Args:
-            group_name: Kinematic group name
+            group_name: Kinematic group name from SRDF (e.g., "manipulator").
             tcp_frame: TCP frame name (auto-detected if None)
             working_frame: Working/base frame name
             profile: Default motion profile name
+
+        Example:
+            program = MotionProgram("manipulator")
+            program.move_to(JointTarget([0, 0, 0, 0, 0, 0]))
+
+        Raises:
+            TypeError: If group_name is missing or not a string.
         """
+        if not group_name or not isinstance(group_name, str):
+            raise TypeError(
+                "MotionProgram requires group_name as first argument. "
+                "Example: MotionProgram('manipulator')"
+            )
         self.group_name = group_name
         self.tcp_frame = tcp_frame
         self.working_frame = working_frame
