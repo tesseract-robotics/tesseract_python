@@ -186,5 +186,4 @@ for instr in trajopt_results:
 viewer.update_trajectory(trajopt_results)
 viewer.plot_trajectory(trajopt_results, manip_info, axes_length=0.05)
 
-input("press enter to exit")
 

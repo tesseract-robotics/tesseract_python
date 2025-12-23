@@ -457,7 +457,6 @@ def main():
         viewer.update_environment(env, [0, 0, 0])
         viewer.update_trajectory(place_results)
         viewer.start_serve_background()
-        input("Press Enter to exit...")
 
     # Explicit cleanup to prevent segfault at interpreter shutdown
     del pick_future, place_future

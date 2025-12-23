@@ -182,4 +182,3 @@ for instr in results:
 viewer.update_trajectory(results)
 viewer.plot_trajectory(results, manip_info)
 
-input("press enter to exit")
