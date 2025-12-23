@@ -169,8 +169,8 @@ max_jerk = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
 max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
 assert time_parameterization.compute(instructions_trajectory, max_velocity, max_acceleration, max_jerk)
 
-# Flatten the results into a single list of instructions
-trajopt_results = trajopt_results_instruction.flatten()
+# Get the results as a list of instructions
+trajopt_results = trajopt_results_instruction.getInstructions()
 
 # Print out the resulting waypoints
 for instr in trajopt_results:
