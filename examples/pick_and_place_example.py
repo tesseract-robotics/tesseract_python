@@ -1,23 +1,10 @@
 """
 Pick and Place Example
 
-This example demonstrates pick and place motion planning using TrajOpt.
-The robot picks up a box from the table and places it on a shelf.
-
-Key features:
-- Dynamic environment modification (adding box to scene)
-- MoveLinkCommand to attach box to end effector
-- ModifyAllowedCollisionsCommand to ignore box-gripper collisions
-- Two-phase planning: PICK then PLACE
-
-Based on: tesseract_examples/src/pick_and_place_example.cpp
-
-Required environment variables:
-- TESSERACT_RESOURCE_PATH: Path to tesseract repo (for tesseract_support)
-- TESSERACT_TASK_COMPOSER_CONFIG_FILE: Path to task composer config YAML
+Pick and place motion planning using TrajOpt. The robot picks up a box and places it on a shelf.
 """
+
 import sys
-import os
 import numpy as np
 
 from tesseract_robotics.planning import (
@@ -33,7 +20,6 @@ from tesseract_robotics.planning import (
 from tesseract_robotics.tesseract_scene_graph import Joint, JointType
 from tesseract_robotics.tesseract_common import Isometry3d
 
-# Viewer (skip in pytest)
 TesseractViewer = None
 if "pytest" not in sys.modules:
     try:
@@ -41,7 +27,6 @@ if "pytest" not in sys.modules:
     except ImportError:
         pass
 
-# Constants
 OFFSET = 0.005
 LINK_BOX_NAME = "box"
 LINK_BASE_NAME = "base_link"
@@ -49,17 +34,10 @@ LINK_END_EFFECTOR_NAME = "iiwa_tool0"
 
 
 def main():
-    # Configuration
-    box_position = [-0.2, 0.55]  # x, y position of box on table
-    box_size = 0.1  # 10cm cube
+    box_position = [-0.2, 0.55]
+    box_size = 0.1
 
-    # Check for task composer config
-    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE") and not os.environ.get("TESSERACT_TASK_COMPOSER_DIR"):
-        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE or TESSERACT_TASK_COMPOSER_DIR not set")
-        print("Run: source env.sh")
-        return False
-
-    # Load KUKA IIWA with workcell (includes shelves/cabinet)
+    # Load KUKA IIWA with workcell
     robot = Robot.from_urdf(
         "package://tesseract_support/urdf/pick_and_place_plan.urdf",
         "package://tesseract_support/urdf/pick_and_place_plan.srdf"

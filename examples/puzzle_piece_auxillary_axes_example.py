@@ -1,19 +1,9 @@
 """
 Puzzle Piece Auxiliary Axes Example
 
-This example demonstrates Cartesian path planning using TrajOpt with auxiliary axes.
-The robot (KUKA IIWA 7-DOF) is combined with a 2-DOF positioner (aux1, aux2) for
-a total of 9 degrees of freedom. The planner can move both the robot and the
-auxiliary axes to follow the toolpath.
-
-Based on: tesseract_examples/src/puzzle_piece_auxillary_axes_example.cpp
-
-Required environment variables:
-- TESSERACT_RESOURCE_PATH: Path to tesseract repo (for tesseract_support)
-- TESSERACT_TASK_COMPOSER_CONFIG_FILE: Path to task composer config YAML
+Cartesian path planning with 9-DOF (KUKA IIWA 7-DOF + 2-DOF positioner).
 """
 
-import os
 import sys
 import csv
 import numpy as np
@@ -35,7 +25,6 @@ from tesseract_robotics.tesseract_motion_planners_trajopt import (
     ProfileDictionary_addTrajOptCompositeProfile,
 )
 
-# Viewer (skip in pytest)
 TesseractViewer = None
 if "pytest" not in sys.modules:
     try:
@@ -98,13 +87,7 @@ def make_puzzle_tool_poses(robot):
 
 
 def main():
-    # Check for task composer config
-    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE") and not os.environ.get("TESSERACT_TASK_COMPOSER_DIR"):
-        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE or TESSERACT_TASK_COMPOSER_DIR not set")
-        print("Run: source env.sh")
-        return False
-
-    # Load puzzle piece workcell (KUKA + grinder + puzzle piece part + auxiliary axes)
+    # Load puzzle piece workcell with auxiliary axes
     robot = Robot.from_urdf(
         "package://tesseract_support/urdf/puzzle_piece_workcell.urdf",
         "package://tesseract_support/urdf/puzzle_piece_workcell.srdf"

@@ -1,21 +1,10 @@
 """
 Glass Upright Example
 
-This example demonstrates constrained motion planning using TrajOpt where
-the robot must keep the tool orientation "upright" (constraining the orientation)
-while moving through space. This is useful for tasks like carrying a glass of water.
-
-The key difference from freespace planning is that TrajOpt applies constraints
-to keep the tool orientation fixed while allowing position changes.
-
-Based on: tesseract_examples/src/glass_upright_example.cpp
-
-Required environment variables:
-- TESSERACT_RESOURCE_PATH: Path to tesseract repo (for tesseract_support)
-- TESSERACT_TASK_COMPOSER_CONFIG_FILE: Path to task composer config YAML
+Demonstrates constrained motion planning using TrajOpt where the robot keeps
+the tool orientation "upright" while moving. Useful for carrying a glass of water.
 """
 
-import os
 import sys
 import numpy as np
 
@@ -29,7 +18,6 @@ from tesseract_robotics.planning import (
     TaskComposer,
 )
 
-# Viewer (skip in pytest)
 TesseractViewer = None
 if "pytest" not in sys.modules:
     try:
@@ -39,13 +27,7 @@ if "pytest" not in sys.modules:
 
 
 def main():
-    # Check for task composer config
-    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE") and not os.environ.get("TESSERACT_TASK_COMPOSER_DIR"):
-        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE or TESSERACT_TASK_COMPOSER_DIR not set")
-        print("Run: source env.sh")
-        return False
-
-    # Load KUKA IIWA robot (one-liner!)
+    # Load KUKA IIWA robot
     robot = Robot.from_tesseract_support("lbr_iiwa_14_r820")
     print(f"Loaded robot with {len(robot.get_link_names())} links")
 

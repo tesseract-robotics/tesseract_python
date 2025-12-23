@@ -1,21 +1,9 @@
 """
 Puzzle Piece Example
 
-This example demonstrates Cartesian path planning using TrajOpt for following a
-toolpath defined in a CSV file. The robot follows a series of poses along a
-puzzle piece edge.
-
-Based on: tesseract_examples/src/puzzle_piece_example.cpp
-
-Required environment variables:
-- TESSERACT_RESOURCE_PATH: Path to tesseract repo (for tesseract_support)
-- TESSERACT_TASK_COMPOSER_CONFIG_FILE: Path to task composer config YAML
-
-Required files:
-- tesseract_support/urdf/puzzle_bent.csv: CSV file with toolpath poses
+Cartesian path planning using TrajOpt to follow a toolpath from a CSV file.
 """
 
-import os
 import sys
 import csv
 import numpy as np
@@ -36,7 +24,6 @@ from tesseract_robotics.tesseract_motion_planners_trajopt import (
     ProfileDictionary_addTrajOptCompositeProfile,
 )
 
-# Viewer (skip in pytest)
 TesseractViewer = None
 if "pytest" not in sys.modules:
     try:
@@ -99,13 +86,7 @@ def make_puzzle_tool_poses(robot):
 
 
 def main():
-    # Check for task composer config
-    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE") and not os.environ.get("TESSERACT_TASK_COMPOSER_DIR"):
-        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE or TESSERACT_TASK_COMPOSER_DIR not set")
-        print("Run: source env.sh")
-        return False
-
-    # Load puzzle piece workcell (KUKA + grinder + puzzle piece part)
+    # Load puzzle piece workcell
     robot = Robot.from_urdf(
         "package://tesseract_support/urdf/puzzle_piece_workcell.urdf",
         "package://tesseract_support/urdf/puzzle_piece_workcell.srdf"

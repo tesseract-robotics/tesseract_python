@@ -1,18 +1,10 @@
 """
 Basic Cartesian Example
 
-This example demonstrates Cartesian motion planning using TrajOpt with the KUKA IIWA robot.
-It creates a box obstacle and plans a trajectory that includes both freespace and
-linear Cartesian moves.
-
-Based on: tesseract_examples/src/basic_cartesian_example.cpp
-
-Required environment variables:
-- TESSERACT_RESOURCE_PATH: Path to tesseract repo (for tesseract_support)
-- TESSERACT_TASK_COMPOSER_CONFIG_FILE: Path to task composer config YAML
+Demonstrates Cartesian motion planning using TrajOpt with the KUKA IIWA robot.
+Creates a box obstacle and plans a trajectory with freespace and linear Cartesian moves.
 """
 
-import os
 import sys
 import numpy as np
 
@@ -29,7 +21,6 @@ from tesseract_robotics.planning import (
     TaskComposer,
 )
 
-# Viewer (skip in pytest)
 TesseractViewer = None
 if "pytest" not in sys.modules:
     try:
@@ -39,12 +30,6 @@ if "pytest" not in sys.modules:
 
 
 def main():
-    # Check for task composer config
-    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE") and not os.environ.get("TESSERACT_TASK_COMPOSER_DIR"):
-        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE or TESSERACT_TASK_COMPOSER_DIR not set")
-        print("Run: source env.sh")
-        return False
-
     # Load KUKA IIWA robot
     robot = Robot.from_tesseract_support("lbr_iiwa_14_r820")
     print(f"Loaded robot: {robot}")
