@@ -163,6 +163,8 @@ colcon build \
         -GNinja \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+        -DCMAKE_CXX_VISIBILITY_PRESET=default \
+        -DCMAKE_C_VISIBILITY_PRESET=default \
         -DINSTALL_OMPL=OFF \
         -DINSTALL_OMPL_TAG=master \
         -DBUILD_IPOPT=OFF \
