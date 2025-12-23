@@ -292,14 +292,13 @@ class TestPlanningIntegration:
     def robot(self):
         return Robot.from_tesseract_support("abb_irb2400")
 
-    @pytest.mark.xfail(reason="macOS RTTI issue: std::type_index differs across DSOs for same type")
+    @pytest.mark.xfail(reason="TaskComposer pipeline aborts - needs profile/config investigation")
     def test_plan_trajopt(self, robot):
         """Test TrajOpt planning through TaskComposer.
 
-        Note: On macOS, TaskComposer planning fails due to std::type_index
-        mismatch across shared libraries. The AnyPoly type check fails because
-        typeid(shared_ptr<const Environment>) gives different values in the
-        Python bindings vs the tesseract_task_composer_planning_nodes library.
+        Note: RTTI fix applied (explicit template instantiation) - no more type errors.
+        TaskComposer still aborts - likely needs proper profiles or config.
+        Direct TrajOpt planner tests pass (see test_trajopt_planner.py).
         """
         composer_config = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
         if not composer_config:
