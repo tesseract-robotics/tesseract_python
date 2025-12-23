@@ -72,14 +72,6 @@ fi
 echo "Creating workspace at: $WORKSPACE_DIR"
 mkdir -p "$WORKSPACE_DIR/src"
 
-# Copy tesseract_python to workspace
-echo "Copying tesseract_python to workspace..."
-if [ -d "$WORKSPACE_DIR/src/tesseract_python" ]; then
-    echo "  (already exists, skipping)"
-else
-    cp -r "$(pwd)/tesseract_python" "$WORKSPACE_DIR/src/"
-fi
-
 # Copy dependencies.rosinstall to workspace
 echo "Copying dependencies.rosinstall..."
 if [ ! -f "$(pwd)/dependencies.rosinstall" ]; then
@@ -163,6 +155,7 @@ echo ""
 
 colcon build \
     --merge-install \
+    --parallel-workers ${COLCON_PARALLEL_WORKERS:-$(nproc 2>/dev/null || sysctl -n hw.ncpu)} \
     --packages-ignore tesseract_examples tesseract_python trajopt_ifopt trajopt_sqp ifopt vhacd qpoases osqp_eigen tesseract_nanobind tesseract_viewer_python \
     --event-handlers console_cohesion+ \
     --cmake-force-configure \
