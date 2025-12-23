@@ -1,8 +1,4 @@
-"""Tests for tesseract_motion_planners_trajopt bindings.
-
-These tests cover TrajOpt motion planner and profiles.
-"""
-import os
+"""Tests for tesseract_motion_planners_trajopt bindings."""
 import numpy as np
 import pytest
 
@@ -53,20 +49,13 @@ TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
 @pytest.fixture
 def lbr_iiwa_environment():
-    """Load LBR IIWA robot environment for testing (same as SWIG tests)."""
-    tesseract_support = os.environ.get("TESSERACT_SUPPORT_DIR")
-    if not tesseract_support:
-        pytest.skip("TESSERACT_SUPPORT_DIR not set")
-
+    """Load LBR IIWA robot environment for testing."""
     locator = GeneralResourceLocator()
-
-    urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf"))
-    srdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf"))
+    urdf_path = FilesystemPath(locator.locateResource("package://tesseract_support/urdf/lbr_iiwa_14_r820.urdf").getFilePath())
+    srdf_path = FilesystemPath(locator.locateResource("package://tesseract_support/urdf/lbr_iiwa_14_r820.srdf").getFilePath())
 
     t_env = Environment()
-    success = t_env.init(urdf_path, srdf_path, locator)
-    if not success:
-        pytest.skip("Failed to initialize LBR IIWA environment")
+    assert t_env.init(urdf_path, srdf_path, locator), "Failed to initialize LBR IIWA"
 
     manip_info = ManipulatorInfo()
     manip_info.tcp_frame = "tool0"
@@ -75,7 +64,6 @@ def lbr_iiwa_environment():
     manip_info.manipulator_ik_solver = "KDLInvKinChainLMA"
 
     joint_names = list(t_env.getJointGroup("manipulator").getJointNames())
-
     return t_env, manip_info, joint_names
 
 

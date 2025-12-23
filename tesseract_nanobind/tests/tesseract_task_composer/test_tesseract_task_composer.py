@@ -1,23 +1,11 @@
-"""Tests for tesseract_task_composer bindings.
-
-Tests task composer factory creation and pipeline configuration loading.
-Note: Pipeline execution tests are in tesseract_planning module which tests
-the direct planner APIs that work correctly.
-"""
+"""Tests for tesseract_task_composer bindings."""
 import os
 import gc
 import pytest
 
 import tesseract_robotics  # triggers env var setup
-from tesseract_robotics.tesseract_common import (
-    FilesystemPath,
-    GeneralResourceLocator,
-)
+from tesseract_robotics.tesseract_common import FilesystemPath, GeneralResourceLocator
 from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory
-
-
-TESSERACT_SUPPORT_DIR = os.environ.get("TESSERACT_SUPPORT_DIR", "")
-TESSERACT_TASK_COMPOSER_CONFIG = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE", "")
 
 
 class TestTaskComposerPluginFactory:
@@ -25,10 +13,7 @@ class TestTaskComposerPluginFactory:
 
     def test_create_factory_and_nodes(self):
         """Test factory creation and pipeline node creation."""
-        if not TESSERACT_TASK_COMPOSER_CONFIG:
-            pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
-
-        config_path = FilesystemPath(TESSERACT_TASK_COMPOSER_CONFIG)
+        config_path = FilesystemPath(os.environ["TESSERACT_TASK_COMPOSER_CONFIG_FILE"])
         locator = GeneralResourceLocator()
         factory = TaskComposerPluginFactory(config_path, locator)
         assert factory is not None

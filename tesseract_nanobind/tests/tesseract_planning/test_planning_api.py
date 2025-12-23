@@ -1,5 +1,4 @@
 """Tests for the Pythonic planning API."""
-import os
 import numpy as np
 import pytest
 
@@ -294,10 +293,6 @@ class TestPlanningIntegration:
 
     def test_plan_freespace(self, robot):
         """Test freespace planning through TaskComposer."""
-        composer_config = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
-        if not composer_config:
-            pytest.skip("TESSERACT_TASK_COMPOSER_CONFIG_FILE not set")
-
         from tesseract_robotics.planning import plan_freespace
 
         joint_names = robot.get_joint_names("manipulator")
