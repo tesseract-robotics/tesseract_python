@@ -50,10 +50,7 @@ def main():
     composer = TaskComposer.from_config()
     result = composer.plan(robot, program, pipeline="TrajOptPipeline")
 
-    if not result.successful:
-        print(f"Planning failed: {result.message}")
-        return False
-
+    assert result.successful, f"Planning failed: {result.message}"
     print(f"Planning successful! Trajectory: {len(result)} waypoints")
 
     if TesseractViewer is not None and result.raw_results is not None:
@@ -62,8 +59,6 @@ def main():
         viewer.update_trajectory(result.raw_results)
         viewer.start_serve_background()
 
-    return True
-
 
 if __name__ == "__main__":
-    exit(0 if main() else 1)
+    main()

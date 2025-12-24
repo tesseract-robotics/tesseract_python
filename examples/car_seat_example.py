@@ -122,10 +122,7 @@ def plan_motion(robot, composer, joint_names, start_pos, end_pos, phase_name):
     print(f"Planning with TrajOpt...")
     result = composer.plan(robot, program, pipeline="TrajOptPipeline")
 
-    if not result.successful:
-        print(f"{phase_name} failed: {result.message}")
-        return None
-
+    assert result.successful, f"{phase_name} failed: {result.message}"
     print(f"{phase_name} OK: {len(result)} waypoints")
     return result
 
@@ -157,8 +154,6 @@ def main():
 
     # Phase 1: Move to pick position
     pick_result = plan_motion(robot, composer, joint_names, home_pos, pick_pos, "PICK")
-    if not pick_result:
-        return False
 
     # Phase 2: Attach seat
     print("\n=== ATTACH SEAT ===")
@@ -167,8 +162,6 @@ def main():
 
     # Phase 3: Move to place position
     place_result = plan_motion(robot, composer, joint_names, pick_pos, place_pos, "PLACE")
-    if not place_result:
-        return False
 
     # Visualize
     if TesseractViewer is not None:
@@ -179,8 +172,7 @@ def main():
         viewer.start_serve_background()
 
     print("\nDone!")
-    return True
 
 
 if __name__ == "__main__":
-    exit(0 if main() else 1)
+    main()

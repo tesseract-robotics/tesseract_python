@@ -16,6 +16,16 @@ from tesseract_robotics.planning import (
     Pose,
     TaskComposer,
 )
+from tesseract_robotics.tesseract_command_language import ProfileDictionary
+from tesseract_robotics.tesseract_motion_planners_trajopt import (
+    TrajOptDefaultPlanProfile,
+    TrajOptDefaultCompositeProfile,
+    CollisionEvaluatorType,
+    ProfileDictionary_addTrajOptPlanProfile,
+    ProfileDictionary_addTrajOptCompositeProfile,
+)
+
+TRAJOPT_NS = "TrajOptMotionPlannerTask"
 
 TesseractViewer = None
 if "pytest" not in sys.modules:
@@ -61,6 +71,30 @@ def make_puzzle_tool_poses(robot):
     return poses
 
 
+def create_profiles():
+    """Create TrajOpt profiles for Cartesian path following."""
+    profiles = ProfileDictionary()
+
+    # Plan profile: Cartesian constraint with lower weight on tool-axis rotation
+    plan = TrajOptDefaultPlanProfile()
+    plan.joint_cost_config.enabled = False
+    plan.cartesian_cost_config.enabled = False
+    plan.cartesian_constraint_config.enabled = True
+    plan.cartesian_constraint_config.coeff = np.array([5.0, 5.0, 5.0, 2.0, 2.0, 0.0])
+
+    # Composite profile: collision cost only
+    composite = TrajOptDefaultCompositeProfile()
+    composite.collision_constraint_config.enabled = False
+    composite.collision_cost_config.enabled = True
+    composite.collision_cost_config.safety_margin = 0.025
+    composite.collision_cost_config.type = CollisionEvaluatorType.SINGLE_TIMESTEP
+    composite.collision_cost_config.coeff = 1.0
+
+    ProfileDictionary_addTrajOptPlanProfile(profiles, TRAJOPT_NS, "CARTESIAN", plan)
+    ProfileDictionary_addTrajOptCompositeProfile(profiles, TRAJOPT_NS, "DEFAULT", composite)
+    return profiles
+
+
 def main():
     # Load puzzle piece workcell with auxiliary axes
     robot = Robot.from_urdf(
@@ -80,29 +114,24 @@ def main():
     # Load tool poses from CSV
     tool_poses = make_puzzle_tool_poses(robot)
     print(f"Loaded {len(tool_poses)} tool poses")
-
-    if not tool_poses:
-        print("No poses loaded!")
-        return False
+    assert tool_poses, "No poses loaded from CSV"
 
     # Build motion program with Cartesian waypoints
     program = (MotionProgram("manipulator_aux", tcp_frame="grinder_frame", working_frame="part")
         .set_joint_names(joint_names))
 
     for pose in tool_poses:
-        program.linear_to(CartesianTarget(pose))
+        program.linear_to(CartesianTarget(pose, profile="CARTESIAN"))
 
     print(f"Program: {len(program)} waypoints")
 
-    # Plan with default TrajOpt configuration
+    # Plan with custom TrajOpt profiles for Cartesian path following
     print("Planning with TrajOpt (9 DOF: 7 arm + 2 aux)...")
     composer = TaskComposer.from_config()
-    result = composer.plan(robot, program, pipeline="TrajOptPipeline")
+    profiles = create_profiles()
+    result = composer.plan(robot, program, pipeline="TrajOptPipeline", profiles=profiles)
 
-    if not result.successful:
-        print(f"Planning failed: {result.message}")
-        return False
-
+    assert result.successful, f"Planning failed: {result.message}"
     print(f"Success! {len(result)} trajectory waypoints")
 
     # Visualize
@@ -113,8 +142,6 @@ def main():
         viewer.update_trajectory(result.raw_results)
         viewer.start_serve_background()
 
-    return True
-
 
 if __name__ == "__main__":
-    exit(0 if main() else 1)
+    main()

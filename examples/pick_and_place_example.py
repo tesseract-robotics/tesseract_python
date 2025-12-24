@@ -100,9 +100,7 @@ def main():
     )
 
     pick_result = composer.plan(robot, pick_program, pipeline="TrajOptPipeline", profiles=profiles)
-    if not pick_result.successful:
-        print(f"PICK failed: {pick_result.message}")
-        return False
+    assert pick_result.successful, f"PICK failed: {pick_result.message}"
     print(f"PICK OK: {len(pick_result)} waypoints")
 
     # === ATTACH BOX ===
@@ -144,9 +142,7 @@ def main():
     )
 
     place_result = composer.plan(robot, place_program, pipeline="TrajOptPipeline", profiles=profiles)
-    if not place_result.successful:
-        print(f"PLACE failed: {place_result.message}")
-        return False
+    assert place_result.successful, f"PLACE failed: {place_result.message}"
     print(f"PLACE OK: {len(place_result)} waypoints")
 
     if TesseractViewer is not None:
@@ -157,8 +153,7 @@ def main():
         viewer.start_serve_background()
 
     print("\nDone!")
-    return True
 
 
 if __name__ == "__main__":
-    exit(0 if main() else 1)
+    main()
