@@ -22,7 +22,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Iterator, List, Optional, Sequence, Union
+from typing import Dict, Iterator, List, Optional, Union
 
 import numpy as np
 
@@ -129,14 +129,17 @@ class TaskComposer:
     Example:
         composer = TaskComposer.from_config()
 
-        # Plan with TrajOpt
-        result = composer.plan(robot, program, pipeline="TrajOptPipeline")
-
-        # Plan with OMPL
-        result = composer.plan(robot, program, pipeline="OMPLPipeline")
-
-        # Plan freespace motion (auto-selects pipeline)
+        # Plan with TrajOpt (optimization-based)
         result = composer.plan_freespace(robot, program)
+
+        # Plan with OMPL (sampling-based: RRT, RRT*, PRM, etc.)
+        result = composer.plan_ompl(robot, program)
+
+        # Plan Cartesian path
+        result = composer.plan_cartesian(robot, program)
+
+        # Or specify pipeline directly
+        result = composer.plan(robot, program, pipeline="TrajOptPipeline")
     """
 
     def __init__(
@@ -150,7 +153,21 @@ class TaskComposer:
         Args:
             factory: Initialized TaskComposerPluginFactory
             locator: Resource locator
+
+        Raises:
+            TypeError: If factory is not a TaskComposerPluginFactory
+
+        Note:
+            Use TaskComposer.from_config() for simpler initialization.
+            Do not pass a Robot or Environment - use the factory pattern.
         """
+        if not isinstance(factory, TaskComposerPluginFactory):
+            type_name = type(factory).__name__
+            raise TypeError(
+                f"Expected TaskComposerPluginFactory, got {type_name}. "
+                f"Use TaskComposer.from_config() for easy initialization, or "
+                f"create a factory with TaskComposerPluginFactory(config_path, locator)."
+            )
         self.factory = factory
         self.locator = locator or GeneralResourceLocator()
         self._executor = None
@@ -175,30 +192,40 @@ class TaskComposer:
             Initialized TaskComposer
         """
         locator = locator or GeneralResourceLocator()
+        tried_paths: List[str] = []
 
         if config_path is None:
             # Try environment variable first
-            config_path = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
+            env_path = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
+            if env_path:
+                tried_paths.append(f"TESSERACT_TASK_COMPOSER_CONFIG_FILE={env_path}")
+                if Path(env_path).is_file():
+                    config_path = env_path
 
             if config_path is None:
                 # Fall back to TESSERACT_TASK_COMPOSER_DIR
                 composer_dir = os.environ.get("TESSERACT_TASK_COMPOSER_DIR")
                 if composer_dir:
-                    config_path = os.path.join(
-                        composer_dir, "config/task_composer_plugins_no_trajopt_ifopt.yaml"
-                    )
+                    dir_path = Path(composer_dir) / "config/task_composer_plugins_no_trajopt_ifopt.yaml"
+                    tried_paths.append(f"TESSERACT_TASK_COMPOSER_DIR: {dir_path}")
+                    if dir_path.is_file():
+                        config_path = str(dir_path)
 
         if config_path is None:
             # Last resort: use bundled config
             from tesseract_robotics import get_task_composer_config_path
             bundled = get_task_composer_config_path()
-            if bundled and bundled.is_file():
-                config_path = str(bundled)
+            if bundled:
+                tried_paths.append(f"bundled config: {bundled}")
+                if bundled.is_file():
+                    config_path = str(bundled)
 
         if config_path is None:
+            paths_tried = "\n  - ".join(tried_paths) if tried_paths else "(none)"
             raise ValueError(
-                "No config path provided and TESSERACT_TASK_COMPOSER_CONFIG_FILE "
-                "not set. Ensure tesseract_robotics is installed with bundled data."
+                f"No valid task composer config found.\n"
+                f"Tried:\n  - {paths_tried}\n"
+                f"Set TESSERACT_TASK_COMPOSER_CONFIG_FILE or install with bundled data."
             )
 
         factory = TaskComposerPluginFactory(
@@ -323,7 +350,8 @@ class TaskComposer:
         """
         Plan freespace motion using TrajOpt pipeline.
 
-        Convenience method that uses TrajOptPipeline.
+        Convenience method that uses TrajOptPipeline for optimization-based
+        collision-free motion planning. For sampling-based planning, use plan_ompl().
 
         Args:
             robot: Robot instance
@@ -334,6 +362,29 @@ class TaskComposer:
             PlanningResult
         """
         return self.plan(robot, program, pipeline="TrajOptPipeline", profiles=profiles)
+
+    def plan_ompl(
+        self,
+        robot: "Robot",
+        program: Union["MotionProgram", CompositeInstruction],
+        profiles: Optional[ProfileDictionary] = None,
+    ) -> PlanningResult:
+        """
+        Plan freespace motion using OMPL pipeline.
+
+        Uses sampling-based planners (RRT, RRT*, PRM, etc.) for collision-free
+        motion planning. Good for complex environments where optimization-based
+        planners may get stuck in local minima.
+
+        Args:
+            robot: Robot instance
+            program: Motion program
+            profiles: Custom profiles (use to configure specific OMPL planner)
+
+        Returns:
+            PlanningResult
+        """
+        return self.plan(robot, program, pipeline="OMPLPipeline", profiles=profiles)
 
     def plan_cartesian(
         self,

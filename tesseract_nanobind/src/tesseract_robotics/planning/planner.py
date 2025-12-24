@@ -105,6 +105,55 @@ def plan_freespace(
     )
 
 
+def plan_ompl(
+    robot: "Robot",
+    program: Union["MotionProgram", CompositeInstruction],
+    config: Optional[PlannerConfig] = None,
+    profiles: Optional[ProfileDictionary] = None,
+) -> PlanningResult:
+    """
+    Plan freespace motion using OMPL sampling-based planners.
+
+    Uses OMPL (RRT, RRT*, PRM, etc.) for collision-free motion planning.
+    Good for complex environments where optimization-based planners may
+    get stuck in local minima.
+
+    Args:
+        robot: Robot instance
+        program: Motion program or CompositeInstruction
+        config: Planner configuration
+        profiles: Custom motion profiles
+
+    Returns:
+        PlanningResult with trajectory if successful
+
+    Example:
+        from tesseract_robotics.planning import (
+            Robot, MotionProgram, JointTarget, plan_ompl
+        )
+
+        robot = Robot.from_tesseract_support("abb_irb2400")
+        program = (MotionProgram("manipulator")
+            .move_to(JointTarget([0, 0, 0, 0, 0, 0]))
+            .move_to(JointTarget([0.5, 0.5, 0.5, 0, 0, 0]))
+        )
+
+        result = plan_ompl(robot, program)
+        if result:
+            for point in result:
+                print(point.positions)
+    """
+    config = config or PlannerConfig(pipeline="OMPLPipeline")
+
+    composer = TaskComposer.from_config()
+    return composer.plan(
+        robot,
+        program,
+        pipeline=config.pipeline,
+        profiles=profiles,
+    )
+
+
 def plan_cartesian(
     robot: "Robot",
     program: Union["MotionProgram", CompositeInstruction],

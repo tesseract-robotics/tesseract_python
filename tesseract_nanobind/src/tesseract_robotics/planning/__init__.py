@@ -75,6 +75,7 @@ from tesseract_robotics.planning.geometry import (
 from tesseract_robotics.planning.planner import (
     PlanningResult,
     plan_freespace,
+    plan_ompl,
     plan_cartesian,
     PlannerConfig,
     assign_current_state_as_seed,
@@ -114,6 +115,7 @@ __all__ = [
     # Planning
     "PlanningResult",
     "plan_freespace",
+    "plan_ompl",
     "plan_cartesian",
     "PlannerConfig",
     "assign_current_state_as_seed",
