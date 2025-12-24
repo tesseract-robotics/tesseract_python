@@ -29,7 +29,7 @@ if "pytest" not in sys.modules:
 
 OFFSET = 0.005
 LINK_BOX_NAME = "box"
-LINK_BASE_NAME = "base_link"
+LINK_BASE_NAME = "world"  # matches C++ original
 LINK_END_EFFECTOR_NAME = "iiwa_tool0"
 
 
@@ -86,7 +86,7 @@ def main():
     pick_approach_pose = Pose.from_matrix_position(pick_rotation, approach_position)
 
     # Create pick program
-    pick_program = (MotionProgram("manipulator", tcp_frame=LINK_END_EFFECTOR_NAME)
+    pick_program = (MotionProgram("manipulator", tcp_frame=LINK_END_EFFECTOR_NAME, working_frame=LINK_BASE_NAME)
         .set_joint_names(joint_names)
         .move_to(StateTarget(joint_start_pos, names=joint_names, profile="FREESPACE"))
         .move_to(CartesianTarget(pick_approach_pose, profile="FREESPACE"))
@@ -131,8 +131,9 @@ def main():
     # ==================== PLACE PHASE ====================
     print("\n=== PLACE PHASE ===")
 
-    # Get final state from pick trajectory
+    # Get final state from pick trajectory and update robot state
     pick_final = pick_result.trajectory[-1].positions
+    robot.set_joints(pick_final, joint_names=joint_names)
 
     # Define place location (middle left shelf)
     # 90deg rotation around Z axis
@@ -155,7 +156,7 @@ def main():
     retreat_pose = pick_approach_pose
 
     # Create place program
-    place_program = (MotionProgram("manipulator", tcp_frame=LINK_END_EFFECTOR_NAME)
+    place_program = (MotionProgram("manipulator", tcp_frame=LINK_END_EFFECTOR_NAME, working_frame=LINK_BASE_NAME)
         .set_joint_names(joint_names)
         .move_to(StateTarget(pick_final, names=joint_names))  # Start from pick final
         .linear_to(CartesianTarget(retreat_pose, profile="CARTESIAN"))  # Retreat
