@@ -48,25 +48,33 @@ LINK_END_EFFECTOR_NAME = "iiwa_tool0"
 
 
 def create_pick_and_place_profiles():
-    """Create custom TrajOpt profiles for pick and place planning."""
-    from tesseract_robotics.tesseract_motion_planners_trajopt import CollisionEvaluatorType
+    """Create custom TrajOpt profiles matching C++ pick_and_place_example.cpp.
 
+    C++ settings (from tesseract_examples):
+    - Plan profile: cartesian constraint enabled, coeff=10
+    - Composite profile:
+      - collision_constraint: margin=0.0, buffer=0.005, coeff=10
+      - collision_cost: margin=0.005, buffer=0.01, coeff=50
+      - longest_valid_segment_length=0.05
+    """
     profiles = ProfileDictionary()
 
-    # Plan profile for CARTESIAN moves
+    # Plan profile for CARTESIAN moves (LINEAR motions)
     plan_profile = TrajOptDefaultPlanProfile()
     plan_profile.joint_cost_config.enabled = False
     plan_profile.cartesian_cost_config.enabled = False
     plan_profile.cartesian_constraint_config.enabled = True
     plan_profile.cartesian_constraint_config.coeff = np.full(6, 10.0)
 
-    # Composite profile - use cost (not constraint) for attached object scenarios
+    # Composite profile - adjusted settings for feasibility
+    # Use cost-only approach (like puzzle_piece_example) instead of hard constraint
     composite_profile = TrajOptDefaultCompositeProfile()
     composite_profile.longest_valid_segment_length = 0.05
+    # Collision constraint disabled (hard constraint causes solver to fail)
     composite_profile.collision_constraint_config.enabled = False
+    # Collision cost enabled with small margin
     composite_profile.collision_cost_config.enabled = True
     composite_profile.collision_cost_config.safety_margin = 0.025
-    composite_profile.collision_cost_config.type = CollisionEvaluatorType.SINGLE_TIMESTEP
     composite_profile.collision_cost_config.coeff = 20.0
 
     # Register profiles
@@ -169,7 +177,7 @@ def main():
 
     robot.move_link(joint_box2)
 
-    # Add allowed collisions between box and nearby links
+    # Add allowed collisions between box and nearby links (matches C++ exactly)
     robot.add_allowed_collision(LINK_BOX_NAME, LINK_END_EFFECTOR_NAME, "Never")
     robot.add_allowed_collision(LINK_BOX_NAME, "iiwa_link_7", "Never")
     robot.add_allowed_collision(LINK_BOX_NAME, "iiwa_link_6", "Never")
@@ -184,34 +192,31 @@ def main():
     robot.set_joints(pick_final, joint_names=joint_names)
 
     # Define place location (middle left shelf)
-    # 90deg rotation around Z axis
-    cos_45, sin_45 = 0.7071068, 0.7071068
+    # C++ Eigen::Quaterniond(w=0, x=0, y=0.7071068, z=0.7071068).matrix()
+    # This is a 180° rotation around axis (0, 0.7071, 0.7071)
+    # Rotation matrix: [[-1,0,0], [0,0,1], [0,1,0]]
     place_rotation = np.array([
-        [cos_45, -sin_45, 0],
-        [sin_45, cos_45, 0],
-        [0, 0, 1]
+        [-1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0],
+        [0.0, 1.0, 0.0]
     ])
-    place_position = [-0.148856, 0.73085, 1.16]
+    place_position = [-0.148856, 0.73085, 1.16]  # middle_left_shelf
     place_pose = Pose.from_matrix_position(place_rotation, place_position)
 
-    # Approach pose (25cm back in local Y)
-    offset_local = np.array([0.0, -0.25, 0])
-    offset_world = place_rotation @ offset_local
-    place_approach_position = np.array(place_position) + offset_world
+    # Approach pose (25cm back in Y - matches C++)
+    place_approach_position = np.array(place_position) + np.array([0.0, -0.25, 0.0])
     place_approach_pose = Pose.from_matrix_position(place_rotation, place_approach_position)
 
     # Retreat to pick approach
     retreat_pose = pick_approach_pose
 
-    # Create place program
-    # Note: Final .move_to(place_pose) commented out - TrajOpt fails with 4 waypoints
-    # due to shelf collision geometry. Would need to disable shelf collision for final approach.
+    # Create place program (C++ uses LINEAR for retreat and place, FREESPACE for approach)
     place_program = (MotionProgram("manipulator", tcp_frame=LINK_END_EFFECTOR_NAME, working_frame=LINK_BASE_NAME)
         .set_joint_names(joint_names)
         .move_to(StateTarget(pick_final, names=joint_names))
-        .move_to(CartesianTarget(retreat_pose, profile="FREESPACE"))
+        .linear_to(CartesianTarget(retreat_pose, profile="CARTESIAN"))
         .move_to(CartesianTarget(place_approach_pose, profile="FREESPACE"))
-        # .move_to(CartesianTarget(place_pose, profile="FREESPACE"))  # fails: shelf collision
+        .linear_to(CartesianTarget(place_pose, profile="CARTESIAN"))
     )
 
     print(f"Place program: {len(place_program)} instructions")
