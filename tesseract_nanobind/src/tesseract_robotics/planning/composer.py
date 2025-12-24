@@ -39,6 +39,8 @@ from tesseract_robotics.tesseract_command_language import (
 from tesseract_robotics.tesseract_task_composer import (
     TaskComposerPluginFactory,
     TaskComposerDataStorage,
+    TaskComposerExecutor,
+    TaskflowTaskComposerExecutor,
     AnyPoly_wrap_CompositeInstruction,
     AnyPoly_wrap_ProfileDictionary,
     AnyPoly_wrap_EnvironmentConst,
@@ -146,6 +148,8 @@ class TaskComposer:
         self,
         factory: TaskComposerPluginFactory,
         locator: Optional[GeneralResourceLocator] = None,
+        num_threads: Optional[int] = None,
+        executor: Optional[TaskComposerExecutor] = None,
     ):
         """
         Initialize TaskComposer.
@@ -153,9 +157,12 @@ class TaskComposer:
         Args:
             factory: Initialized TaskComposerPluginFactory
             locator: Resource locator
+            num_threads: Number of threads for executor (overrides YAML config)
+            executor: Pre-configured executor (overrides num_threads and YAML)
 
         Raises:
             TypeError: If factory is not a TaskComposerPluginFactory
+            ValueError: If both num_threads and executor are provided
 
         Note:
             Use TaskComposer.from_config() for simpler initialization.
@@ -168,15 +175,20 @@ class TaskComposer:
                 f"Use TaskComposer.from_config() for easy initialization, or "
                 f"create a factory with TaskComposerPluginFactory(config_path, locator)."
             )
+        if num_threads is not None and executor is not None:
+            raise ValueError("Cannot specify both num_threads and executor")
         self.factory = factory
         self.locator = locator or GeneralResourceLocator()
-        self._executor = None
+        self._num_threads = num_threads
+        self._executor = executor
 
     @classmethod
     def from_config(
         cls,
         config_path: Optional[Union[str, Path]] = None,
         locator: Optional[GeneralResourceLocator] = None,
+        num_threads: Optional[int] = None,
+        executor: Optional[TaskComposerExecutor] = None,
     ) -> TaskComposer:
         """
         Create TaskComposer from config file.
@@ -187,9 +199,23 @@ class TaskComposer:
         Args:
             config_path: Path to task composer config YAML
             locator: Resource locator
+            num_threads: Number of threads for executor (overrides YAML config)
+            executor: Pre-configured executor (overrides num_threads and YAML)
 
         Returns:
             Initialized TaskComposer
+
+        Example:
+            # Use YAML config (default)
+            composer = TaskComposer.from_config()
+
+            # Override thread count
+            composer = TaskComposer.from_config(num_threads=4)
+
+            # Use custom executor
+            from tesseract_robotics.tesseract_task_composer import TaskflowTaskComposerExecutor
+            executor = TaskflowTaskComposerExecutor("MyExecutor", 8)
+            composer = TaskComposer.from_config(executor=executor)
         """
         locator = locator or GeneralResourceLocator()
         tried_paths: List[str] = []
@@ -233,13 +259,22 @@ class TaskComposer:
             locator,
         )
 
-        return cls(factory, locator)
+        return cls(factory, locator, num_threads=num_threads, executor=executor)
 
     @property
     def executor(self):
         """Get or create task executor (lazy initialization)."""
         if self._executor is None:
-            self._executor = self.factory.createTaskComposerExecutor("TaskflowExecutor")
+            if self._num_threads is not None:
+                # Create executor with explicit thread count (capped to available cores)
+                max_threads = os.cpu_count() or 1
+                threads = min(self._num_threads, max_threads)
+                self._executor = TaskflowTaskComposerExecutor(
+                    "TaskflowExecutor", threads
+                )
+            else:
+                # Use factory (respects YAML config)
+                self._executor = self.factory.createTaskComposerExecutor("TaskflowExecutor")
         return self._executor
 
     def plan(
