@@ -1,39 +1,29 @@
 #!/usr/bin/env python
 """
-Example demonstrating the Pythonic API for Tesseract motion planning.
+Pythonic API Example
 
-This example shows the simplified, high-level API that wraps the
-lower-level nanobind bindings with convenient factory functions,
-automatic type conversions, and builder patterns.
-
-Compare this to basic_cartesian_example.py to see the reduction in
-boilerplate code.
+Demonstrates the high-level planning API with:
+- Robot loading from URDF/SRDF
+- Pose helpers and transforms
+- Obstacle creation
+- Motion program building with fluent API
+- Planning with plan_freespace()
 """
 import sys
-import os
 import numpy as np
 
-# Add src to path for development
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "tesseract_nanobind", "src"))
-
 from tesseract_robotics.planning import (
-    # Core classes
     Robot,
-    # Motion program building
     MotionProgram,
     CartesianTarget,
     JointTarget,
-    # Pose helpers
     Pose,
     translation,
     rotation_z,
-    # Geometry helpers
     box,
     sphere,
     create_obstacle,
-    # Planning
     plan_freespace,
-    TaskComposer,
 )
 
 
@@ -154,39 +144,25 @@ def main():
     # =========================================================================
     print("\n7. Planning motion...")
 
-    # Check if task composer is available
-    composer_dir = os.environ.get("TESSERACT_TASK_COMPOSER_DIR")
-    if not composer_dir:
-        print("   TESSERACT_TASK_COMPOSER_DIR not set, skipping planning")
-        print("   (Run: source env.sh)")
-        return True
+    result = plan_freespace(robot, program)
 
-    try:
-        result = plan_freespace(robot, program)
+    if result.successful:
+        print(f"   Planning successful!")
+        print(f"   Trajectory has {len(result)} waypoints")
 
-        if result.successful:
-            print(f"   Planning successful!")
-            print(f"   Trajectory has {len(result)} waypoints")
+        # Access trajectory points
+        if result.trajectory:
+            print(f"   First point: {result[0].positions}")
+            print(f"   Last point: {result[-1].positions}")
 
-            # Access trajectory points
-            if result.trajectory:
-                print(f"   First point: {result[0].positions}")
-                print(f"   Last point: {result[-1].positions}")
-
-                # Convert to numpy for analysis
-                trajectory_array = result.to_numpy()
-                print(f"   Trajectory shape: {trajectory_array.shape}")
-        else:
-            print(f"   Planning failed: {result.message}")
-            # Still consider example successful even if planning fails
-            # (may be due to environment constraints)
-
-    except Exception as e:
-        print(f"   Planning error: {e}")
-        # Don't fail the example for planning errors
+            # Convert to numpy for analysis
+            trajectory_array = result.to_numpy()
+            print(f"   Trajectory shape: {trajectory_array.shape}")
+    else:
+        print(f"   Planning failed: {result.message}")
 
     print("\n" + "=" * 60)
-    print("Example completed successfully!")
+    print("Example completed!")
     print("=" * 60)
 
     return True

@@ -2,38 +2,33 @@
 Car Seat Example
 
 This example demonstrates:
-- Dynamic mesh loading using createMeshFromResource
+- Dynamic mesh loading using createMeshFromPath
 - Convex hull generation using makeConvexMesh
 - Adding dynamically created links with meshes to the environment
 - Moving links to attach objects to the robot end effector
-- Multi-phase motion planning with TrajOpt
+- Multi-phase motion planning with the high-level API
 
 Based on: tesseract_examples/src/car_seat_example.cpp
-
-Required environment variables:
-- TESSERACT_RESOURCE_PATH: Path to tesseract repo (for tesseract_support)
-- TESSERACT_TASK_COMPOSER_CONFIG_FILE: Path to task composer config YAML
 """
 import sys
-import os
-import gc
 import numpy as np
-import math
 
+from tesseract_robotics.planning import (
+    Robot,
+    MotionProgram,
+    StateTarget,
+    TaskComposer,
+)
 from tesseract_robotics.tesseract_common import (
     GeneralResourceLocator,
-    FilesystemPath,
     Isometry3d,
-    ManipulatorInfo,
     AllowedCollisionMatrix,
 )
 from tesseract_robotics.tesseract_environment import (
-    Environment,
     AddLinkCommand,
     MoveLinkCommand,
     ModifyAllowedCollisionsCommand,
     ModifyAllowedCollisionsType,
-    AnyPoly_wrap_EnvironmentConst,
 )
 from tesseract_robotics.tesseract_scene_graph import (
     Link,
@@ -42,29 +37,9 @@ from tesseract_robotics.tesseract_scene_graph import (
     Visual,
     Collision,
 )
-from tesseract_robotics.tesseract_geometry import (
-    createMeshFromPath,
-)
+from tesseract_robotics.tesseract_geometry import createMeshFromPath
 from tesseract_robotics.tesseract_collision import makeConvexMesh
-from tesseract_robotics.tesseract_command_language import (
-    CompositeInstruction,
-    MoveInstruction,
-    MoveInstructionType_FREESPACE,
-    StateWaypoint,
-    StateWaypointPoly_wrap_StateWaypoint,
-    MoveInstructionPoly_wrap_MoveInstruction,
-    ProfileDictionary,
-    AnyPoly_wrap_CompositeInstruction,
-    AnyPoly_wrap_ProfileDictionary,
-    AnyPoly_as_CompositeInstruction,
-)
-from tesseract_robotics.tesseract_task_composer import (
-    createTaskComposerPluginFactory,
-    TaskComposerDataStorage,
-)
-from tesseract_robotics.tesseract_motion_planners import assignCurrentStateAsSeed
 
-# Viewer (skip in pytest)
 TesseractViewer = None
 if "pytest" not in sys.modules:
     try:
@@ -151,9 +126,9 @@ def get_position_vector(joint_names, pos_dict):
     return np.array([pos_dict[name] for name in joint_names])
 
 
-def add_seats(locator):
-    """Create commands to add seats to the environment."""
-    commands = []
+def add_seats(robot):
+    """Create and add seat links to the environment."""
+    locator = robot.locator
 
     # Get the base path for meshes
     visual_mesh_path = locator.locateResource(
@@ -195,276 +170,140 @@ def add_seats(locator):
 
         # Create transformation: rotate 180 degrees around Z axis
         transform_mat = np.eye(4)
-        # Rotation by pi around Z axis
-        transform_mat[0, 0] = -1.0
+        transform_mat[0, 0] = -1.0  # Rotation by pi around Z axis
         transform_mat[1, 1] = -1.0
-        # Translation: position seats along X axis
-        transform_mat[:3, 3] = [0.5 + i, 2.15, 0.45]
+        transform_mat[:3, 3] = [0.5 + i, 2.15, 0.45]  # Position along X axis
         joint_seat.parent_to_joint_origin_transform = Isometry3d(transform_mat)
 
-        commands.append(AddLinkCommand(link_seat, joint_seat))
+        cmd = AddLinkCommand(link_seat, joint_seat)
+        if not robot.env.applyCommand(cmd):
+            raise RuntimeError(f"Failed to add {seat_name}")
 
-    return commands
+    print(f"Added 3 seats to environment")
 
 
-def main():
-    # Get config file path
-    task_composer_filename = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
-    if not task_composer_filename:
-        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE environment variable not set")
-        print("Set it to: tesseract_planning/tesseract_task_composer/config/task_composer_plugins.yaml")
-        return False
-
-    # Initialize resource locator and environment
-    locator = GeneralResourceLocator()
-
-    # Load car seat demo robot
-    urdf_url = "package://tesseract_support/urdf/car_seat_demo.urdf"
-    srdf_url = "package://tesseract_support/urdf/car_seat_demo.srdf"
-    urdf_path = FilesystemPath(locator.locateResource(urdf_url).getFilePath())
-    srdf_path = FilesystemPath(locator.locateResource(srdf_url).getFilePath())
-
-    env = Environment()
-    if not env.init(urdf_path, srdf_path, locator):
-        print("Failed to initialize environment")
-        return False
-
-    print(f"Environment initialized: {env.getName()}")
-
-    # Get predefined positions
-    positions = get_predefined_positions()
-
-    # Get joint names from manipulator
-    joint_group = env.getJointGroup("manipulator")
-    joint_names = list(joint_group.getJointNames())
-    print(f"Joint names: {joint_names}")
-
-    # Create seats and add to environment
-    print("\nAdding seats to environment...")
-    seat_commands = add_seats(locator)
-    for cmd in seat_commands:
-        if not env.applyCommand(cmd):
-            print("Failed to add seat to environment")
-            return False
-    print(f"Added {len(seat_commands)} seats")
-
-    # Move to home position
-    env.setState(positions["Home"])
-
-    # Create task composer factory
-    factory = createTaskComposerPluginFactory(task_composer_filename, locator)
-
-    # Create executor
-    executor = factory.createTaskComposerExecutor("TaskflowExecutor")
-
-    # Create profile dictionary (use defaults)
-    profiles = ProfileDictionary()
-
-    # ==================== PICK PHASE ====================
-    print("\n=== PICK SEAT 1 ===")
-
-    # Create manipulator info
-    manip_info = ManipulatorInfo()
-    manip_info.manipulator = "manipulator"
-    manip_info.working_frame = "world"
-    manip_info.tcp_frame = "end_effector"
-
-    # Create pick program
-    pick_program = CompositeInstruction("FREESPACE")
-    pick_program.setManipulatorInfo(manip_info)
-    pick_program.setDescription("Pick up the first seat!")
-
-    # Start and end positions
-    start_pos = get_position_vector(joint_names, positions["Home"])
-    pick_pos = get_position_vector(joint_names, positions["Pick1"])
-
-    # Start waypoint
-    wp_start = StateWaypoint(joint_names, start_pos)
-    start_instruction = MoveInstruction(
-        StateWaypointPoly_wrap_StateWaypoint(wp_start),
-        MoveInstructionType_FREESPACE,
-        "FREESPACE"
-    )
-    start_instruction.setDescription("Start Instruction")
-
-    # Pick waypoint
-    wp_pick = StateWaypoint(joint_names, pick_pos)
-    pick_instruction = MoveInstruction(
-        StateWaypointPoly_wrap_StateWaypoint(wp_pick),
-        MoveInstructionType_FREESPACE,
-        "FREESPACE"
-    )
-    pick_instruction.setDescription("Freespace pick seat 1")
-
-    # Add instructions
-    pick_program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
-    pick_program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(pick_instruction))
-
-    # Assign current state as seed
-    assignCurrentStateAsSeed(pick_program, env)
-
-    print(f"Pick program: {len(pick_program)} instructions")
-
-    # Create and run pick task
-    pick_task = factory.createTaskComposerNode("TrajOptPipeline")
-    pick_output_key = pick_task.getOutputKeys().get("program")
-    pick_input_key = pick_task.getInputKeys().get("planning_input")
-
-    pick_data = TaskComposerDataStorage()
-    pick_data.setData(pick_input_key, AnyPoly_wrap_CompositeInstruction(pick_program))
-    pick_data.setData("environment", AnyPoly_wrap_EnvironmentConst(env))
-    pick_data.setData("profiles", AnyPoly_wrap_ProfileDictionary(profiles))
-
-    print("Running TrajOpt planner for PICK...")
-    pick_future = executor.run(pick_task, pick_data)
-    pick_future.wait()
-
-    if not pick_future.context.isSuccessful():
-        print("PICK planning failed!")
-        del pick_future
-        del pick_data
-        del pick_task
-        del executor
-        del factory
-        gc.collect()
-        return False
-
-    print("PICK planning successful!")
-
-    # Get pick results
-    pick_results = AnyPoly_as_CompositeInstruction(
-        pick_future.context.data_storage.getData(pick_output_key)
-    )
-    print(f"Pick trajectory has {len(pick_results)} waypoints")
-
-    # ==================== ATTACH SEAT TO END EFFECTOR ====================
-    print("\n=== ATTACHING SEAT ===")
-
-    # Get the state at pick position
-    env.setState(positions["Pick1"])
-    state = env.getState()
+def attach_seat_to_effector(robot, seat_name="seat_1"):
+    """Attach a seat to the end effector."""
+    state = robot.env.getState()
 
     # Get transforms for end effector and seat
     end_effector_tf = state.link_transforms["end_effector"]
-    seat_tf = state.link_transforms["seat_1"]
+    seat_tf = state.link_transforms[seat_name]
 
     # Move seat to be child of end effector
-    joint_seat_robot = Joint("joint_seat_1_robot")
+    joint_seat_robot = Joint(f"joint_{seat_name}_robot")
     joint_seat_robot.parent_link_name = "end_effector"
-    joint_seat_robot.child_link_name = "seat_1"
+    joint_seat_robot.child_link_name = seat_name
     joint_seat_robot.type = JointType.FIXED
     # Calculate relative transform: seat in end_effector frame
-    # Use .matrix() to get numpy arrays from Isometry3d objects
     relative_tf = np.linalg.inv(end_effector_tf.matrix()) @ seat_tf.matrix()
     joint_seat_robot.parent_to_joint_origin_transform = Isometry3d(relative_tf)
 
     move_cmd = MoveLinkCommand(joint_seat_robot)
-    if not env.applyCommand(move_cmd):
-        print("Failed to attach seat to end effector")
-        return False
+    if not robot.env.applyCommand(move_cmd):
+        raise RuntimeError(f"Failed to attach {seat_name}")
 
     # Add allowed collisions between seat and nearby links
     acm = AllowedCollisionMatrix()
-    acm.addAllowedCollision("seat_1", "end_effector", "Adjacent")
-    acm.addAllowedCollision("seat_1", "cell_logo", "Never")
-    acm.addAllowedCollision("seat_1", "fence", "Never")
-    acm.addAllowedCollision("seat_1", "link_b", "Never")
-    acm.addAllowedCollision("seat_1", "link_r", "Never")
-    acm.addAllowedCollision("seat_1", "link_t", "Never")
+    acm.addAllowedCollision(seat_name, "end_effector", "Adjacent")
+    acm.addAllowedCollision(seat_name, "cell_logo", "Never")
+    acm.addAllowedCollision(seat_name, "fence", "Never")
+    acm.addAllowedCollision(seat_name, "link_b", "Never")
+    acm.addAllowedCollision(seat_name, "link_r", "Never")
+    acm.addAllowedCollision(seat_name, "link_t", "Never")
 
     acm_cmd = ModifyAllowedCollisionsCommand(acm, ModifyAllowedCollisionsType.ADD)
-    if not env.applyCommand(acm_cmd):
-        print("Failed to modify allowed collisions")
+    if not robot.env.applyCommand(acm_cmd):
+        raise RuntimeError("Failed to modify allowed collisions")
+
+    print(f"Attached {seat_name} to end effector")
+
+
+def main():
+    # Load car seat demo robot using high-level API
+    robot = Robot.from_urdf(
+        "package://tesseract_support/urdf/car_seat_demo.urdf",
+        "package://tesseract_support/urdf/car_seat_demo.srdf"
+    )
+    print(f"Loaded robot: {robot.env.getName()}")
+
+    # Get predefined positions
+    positions = get_predefined_positions()
+
+    # Get joint names
+    joint_group = robot.env.getJointGroup("manipulator")
+    joint_names = list(joint_group.getJointNames())
+    print(f"Joint names: {joint_names}")
+
+    # Add seats to environment (requires low-level mesh operations)
+    print("\nAdding seats to environment...")
+    add_seats(robot)
+
+    # Move to home position
+    robot.set_joints(positions["Home"])
+
+    # Create task composer
+    composer = TaskComposer.from_config()
+
+    # ==================== PICK PHASE ====================
+    print("\n=== PICK SEAT 1 ===")
+
+    start_pos = get_position_vector(joint_names, positions["Home"])
+    pick_pos = get_position_vector(joint_names, positions["Pick1"])
+
+    # High-level motion program
+    pick_program = (MotionProgram("manipulator", tcp_frame="end_effector")
+        .set_joint_names(joint_names)
+        .move_to(StateTarget(start_pos, names=joint_names, profile="FREESPACE"))
+        .move_to(StateTarget(pick_pos, names=joint_names, profile="FREESPACE"))
+    )
+
+    print(f"Pick program: {len(pick_program)} instructions")
+    print("Running TrajOpt planner for PICK...")
+
+    pick_result = composer.plan(robot, pick_program, pipeline="TrajOptPipeline")
+
+    if not pick_result.successful:
+        print(f"PICK planning failed: {pick_result.message}")
         return False
 
-    print("Seat attached to end effector with collision exceptions")
+    print(f"PICK successful! {len(pick_result)} waypoints")
+
+    # ==================== ATTACH SEAT ====================
+    print("\n=== ATTACHING SEAT ===")
+    robot.set_joints(positions["Pick1"])
+    attach_seat_to_effector(robot, "seat_1")
 
     # ==================== PLACE PHASE ====================
     print("\n=== PLACE SEAT 1 ===")
 
-    # Create place program
-    place_program = CompositeInstruction("FREESPACE")
-    place_program.setManipulatorInfo(manip_info)
-    place_program.setDescription("Place the first seat!")
-
-    # Start and end positions
     place_start_pos = get_position_vector(joint_names, positions["Pick1"])
     place_end_pos = get_position_vector(joint_names, positions["Place1"])
 
-    # Start waypoint
-    wp_place_start = StateWaypoint(joint_names, place_start_pos)
-    place_start_instruction = MoveInstruction(
-        StateWaypointPoly_wrap_StateWaypoint(wp_place_start),
-        MoveInstructionType_FREESPACE,
-        "FREESPACE"
+    place_program = (MotionProgram("manipulator", tcp_frame="end_effector")
+        .set_joint_names(joint_names)
+        .move_to(StateTarget(place_start_pos, names=joint_names, profile="FREESPACE"))
+        .move_to(StateTarget(place_end_pos, names=joint_names, profile="FREESPACE"))
     )
-    place_start_instruction.setDescription("Start Instruction")
-
-    # Place waypoint
-    wp_place = StateWaypoint(joint_names, place_end_pos)
-    place_instruction = MoveInstruction(
-        StateWaypointPoly_wrap_StateWaypoint(wp_place),
-        MoveInstructionType_FREESPACE,
-        "FREESPACE"
-    )
-    place_instruction.setDescription("Freespace place seat 1")
-
-    # Add instructions
-    place_program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(place_start_instruction))
-    place_program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(place_instruction))
-
-    # Assign current state as seed
-    assignCurrentStateAsSeed(place_program, env)
 
     print(f"Place program: {len(place_program)} instructions")
-
-    # Create and run place task
-    place_task = factory.createTaskComposerNode("TrajOptPipeline")
-    place_output_key = place_task.getOutputKeys().get("program")
-    place_input_key = place_task.getInputKeys().get("planning_input")
-
-    place_data = TaskComposerDataStorage()
-    place_data.setData(place_input_key, AnyPoly_wrap_CompositeInstruction(place_program))
-    place_data.setData("environment", AnyPoly_wrap_EnvironmentConst(env))
-    place_data.setData("profiles", AnyPoly_wrap_ProfileDictionary(profiles))
-
     print("Running TrajOpt planner for PLACE...")
-    place_future = executor.run(place_task, place_data)
-    place_future.wait()
 
-    if not place_future.context.isSuccessful():
-        print("PLACE planning failed!")
-        del pick_future, place_future
-        del pick_data, place_data
-        del pick_task, place_task
-        del executor
-        del factory
-        gc.collect()
+    place_result = composer.plan(robot, place_program, pipeline="TrajOptPipeline")
+
+    if not place_result.successful:
+        print(f"PLACE planning failed: {place_result.message}")
         return False
 
-    print("PLACE planning successful!")
-
-    # Get place results
-    place_results = AnyPoly_as_CompositeInstruction(
-        place_future.context.data_storage.getData(place_output_key)
-    )
-    print(f"Place trajectory has {len(place_results)} waypoints")
+    print(f"PLACE successful! {len(place_result)} waypoints")
 
     # Optional: visualize with viewer
     if TesseractViewer is not None:
         print("\nStarting viewer at http://localhost:8000")
         viewer = TesseractViewer()
-        viewer.update_environment(env, [0, 0, 0])
-        viewer.update_trajectory(place_results)
+        viewer.update_environment(robot.env, [0, 0, 0])
+        viewer.update_trajectory(place_result.raw_results)
         viewer.start_serve_background()
-
-    # Explicit cleanup to prevent segfault at interpreter shutdown
-    del pick_future, place_future
-    del pick_data, place_data
-    del pick_task, place_task
-    del executor
-    del factory
-    gc.collect()
 
     print("\nDone!")
     return True

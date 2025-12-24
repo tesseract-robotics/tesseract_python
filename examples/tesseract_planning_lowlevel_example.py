@@ -1,52 +1,47 @@
-from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
-    ManipulatorInfo, GeneralResourceLocator
-from tesseract_robotics.tesseract_environment import Environment
-from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
-from tesseract_robotics.tesseract_command_language import CartesianWaypoint, WaypointPoly, \
-    MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, \
-    CompositeInstruction, MoveInstructionPoly, CartesianWaypointPoly, ProfileDictionary, \
-    CartesianWaypointPoly_wrap_CartesianWaypoint, MoveInstructionPoly_wrap_MoveInstruction, \
-    InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly
+"""
+Low-Level Planning Example (Advanced)
 
-from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
-from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
-from tesseract_robotics.tesseract_motion_planners_ompl import RRTConnectConfigurator, \
-    OMPLMotionPlanner, OMPLRealVectorPlanProfile
-from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
-    InstructionsTrajectory
-from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
-    TrajOptMotionPlanner
+This example demonstrates using individual Tesseract planners directly WITHOUT
+the TaskComposer. This gives fine-grained control over each planning step.
 
-import os
-import re
-import traceback
-from tesseract_robotics_viewer import TesseractViewer
-import numpy as np
-import time
+For most use cases, prefer the high-level API (see tesseract_planning_example_composer.py):
+    from tesseract_robotics.planning import Robot, MotionProgram, plan_freespace
+    result = plan_freespace(robot, program)
+
+Use this low-level approach when you need:
+- Custom planner pipelines not available in TaskComposer
+- Fine-grained control over individual planners (OMPL, TrajOpt)
+- Custom time parameterization settings
+- To bypass the TaskComposer config system
+"""
 import sys
+import numpy as np
 
-# This example demonstrates using the Tesseract Planners without using the Tesseract Composer. In most cases it is
-# recommended to use the Tesseract Composer as it provides a more robust and flexible interface. However, there are
-# cases where the Tesseract Composer is not available or it is desired to use the Tesseract Planners without the
-# Tesseract Composer. This example demonstrates how to do that.
+from tesseract_robotics.tesseract_common import (
+    FilesystemPath, Isometry3d, Translation3d, Quaterniond,
+    ManipulatorInfo, GeneralResourceLocator,
+)
+from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_command_language import (
+    CartesianWaypoint, MoveInstructionType_FREESPACE, MoveInstruction,
+    CompositeInstruction, ProfileDictionary,
+    CartesianWaypointPoly_wrap_CartesianWaypoint, MoveInstructionPoly_wrap_MoveInstruction,
+    InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly,
+)
+from tesseract_robotics.tesseract_motion_planners import PlannerRequest
+from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
+from tesseract_robotics.tesseract_motion_planners_ompl import OMPLMotionPlanner, OMPLRealVectorPlanProfile
+from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, InstructionsTrajectory
+from tesseract_robotics.tesseract_motion_planners_trajopt import (
+    TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, TrajOptMotionPlanner,
+)
 
-# An environment is initialized using URDF and SRDF files. These files need to be configured for the scene, and
-# to use the correct collision and kinematics plugins. See the collision and kinematics examples for more details on
-# how to do this.
-
-# This example uses the GeneralResourceLocator to find resources on the file system. The GeneralResourceLocator
-# uses the TESSERACT_RESOURCE_PATH environmental variable.
-#
-# TESSERACT_RESOURCE_PATH must be set to the directory containing the `tesseract_support` package. This can be done
-# by running:
-#
-# git clone https://github.com/tesseract-robotics/tesseract.git
-# export TESSERACT_RESOURCE_PATH="$(pwd)/tesseract/"
-#
-# or on Windows
-#
-# git clone https://github.com/tesseract-robotics/tesseract.git
-# set TESSERACT_RESOURCE_PATH=%cd%\tesseract\
+TesseractViewer = None
+if "pytest" not in sys.modules:
+    try:
+        from tesseract_robotics_viewer import TesseractViewer
+    except ImportError:
+        pass
 
 
 
