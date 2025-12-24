@@ -1,8 +1,4 @@
-"""Tests for tesseract_motion_planners bindings.
-
-These tests cover motion planner types including OMPL and simple planners.
-"""
-import os
+"""Tests for tesseract_motion_planners bindings."""
 import numpy as np
 import pytest
 
@@ -41,23 +37,11 @@ OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
 @pytest.fixture
 def abb_irb2400_environment():
     """Load ABB IRB2400 robot environment for testing."""
-    tesseract_support = os.environ.get("TESSERACT_SUPPORT_DIR")
-    if not tesseract_support:
-        pytest.skip("TESSERACT_SUPPORT_DIR not set")
-
     locator = GeneralResourceLocator()
-
-    urdf_url = "package://tesseract_support/urdf/abb_irb2400.urdf"
-    srdf_url = "package://tesseract_support/urdf/abb_irb2400.srdf"
-
-    urdf_path = FilesystemPath(locator.locateResource(urdf_url).getFilePath())
-    srdf_path = FilesystemPath(locator.locateResource(srdf_url).getFilePath())
-
+    urdf_path = FilesystemPath(locator.locateResource("package://tesseract_support/urdf/abb_irb2400.urdf").getFilePath())
+    srdf_path = FilesystemPath(locator.locateResource("package://tesseract_support/urdf/abb_irb2400.srdf").getFilePath())
     t_env = Environment()
-    success = t_env.init(urdf_path, srdf_path, locator)
-    if not success:
-        pytest.skip("Failed to initialize ABB IRB2400 environment")
-
+    assert t_env.init(urdf_path, srdf_path, locator), "Failed to initialize ABB IRB2400"
     return t_env
 
 

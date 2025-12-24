@@ -1,8 +1,8 @@
 """
-Freespace OMPL Example (High-Level API)
+Glass Upright Example
 
-Demonstrates freespace motion planning using OMPL with the KUKA IIWA robot.
-Adds a sphere obstacle to the environment and plans a collision-free path around it.
+Demonstrates constrained motion planning using TrajOpt where the robot keeps
+the tool orientation "upright" while moving. Useful for carrying a glass of water.
 """
 
 import sys
@@ -11,7 +11,7 @@ import numpy as np
 from tesseract_robotics.planning import (
     Robot,
     MotionProgram,
-    JointTarget,
+    StateTarget,
     Pose,
     sphere,
     create_obstacle,
@@ -50,20 +50,27 @@ def main():
     # Set initial state
     robot.set_joints(joint_start_pos, joint_names=joint_names)
 
-    # Create motion program with fluent API (vs 20+ lines of manual poly wrapping)
-    program = (MotionProgram("manipulator", tcp_frame="tool0")
+    # Create motion program with "UPRIGHT" profile
+    # The UPRIGHT profile will constrain orientation while allowing position changes
+    # Using LINEAR motion and StateTargets for full state specification
+    program = (MotionProgram("manipulator", tcp_frame="tool0", profile="UPRIGHT")
         .set_joint_names(joint_names)
-        .move_to(JointTarget(joint_start_pos))
-        .move_to(JointTarget(joint_end_pos))
+        .linear_to(StateTarget(joint_start_pos, names=joint_names, profile="UPRIGHT"))
+        .linear_to(StateTarget(joint_end_pos, names=joint_names, profile="UPRIGHT"))
     )
-    print(f"\nCreated program with {len(program)} waypoints")
+
+    print("\nProgram created with 'UPRIGHT' constraint profile")
+    print("The tool orientation will be constrained during motion")
 
     # Plan using TaskComposer
-    print("\nRunning OMPL planner (FreespacePipeline)...")
+    print("\nRunning TrajOpt planner with upright constraint...")
     composer = TaskComposer.from_config()
-    result = composer.plan(robot, program, pipeline="FreespacePipeline")
+    result = composer.plan(robot, program, pipeline="TrajOptPipeline")
 
-    assert result.successful, f"Planning failed: {result.message}"
+    if not result.successful:
+        print(f"Planning failed: {result.message}")
+        return False
+
     print("Planning successful!")
     print(f"\nTrajectory has {len(result)} waypoints:")
     for i, point in enumerate(result.trajectory):
@@ -77,6 +84,9 @@ def main():
         viewer.update_trajectory(result.raw_results)
         viewer.start_serve_background()
 
+    return True
+
 
 if __name__ == "__main__":
-    main()
+    success = main()
+    exit(0 if success else 1)

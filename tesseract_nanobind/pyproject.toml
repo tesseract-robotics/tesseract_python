@@ -12,6 +12,7 @@ requires-python = ">=3.9"
 dependencies = [
     "numpy>=1.21.0",
     "pytest>=7.0",
+    "pytest-xdist>=3.0",
 ]
 
 authors = [
@@ -51,6 +52,12 @@ minversion = "6.0"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = ["-ra", "--strict-markers", "--tb=short"]
+markers = [
+    "viewer: Viewer examples (deselect with '-m \"not viewer\"')",
+    "planning: Motion planning examples",
+    "basic: Basic examples (collision, kinematics, scene_graph)",
+    "lowlevel: Low-level API examples",
+]
 
 [tool.scikit-build]
 minimum-version = "build-system.requires"

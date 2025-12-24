@@ -72,6 +72,12 @@ function(add_tesseract_nanobind_extension module_name source_file)
   # Link tesseract libraries (passed as remaining arguments)
   target_link_libraries(_${module_name} PRIVATE ${ARGN})
 
+  # RTTI visibility fix: Export typeinfo symbols so typeid() comparison works
+  # across library boundaries (needed for TaskComposer plugin compatibility)
+  set_target_properties(_${module_name} PROPERTIES
+    CXX_VISIBILITY_PRESET default
+    VISIBILITY_INLINES_HIDDEN OFF)
+
   # Install the module
   install(TARGETS _${module_name}
           LIBRARY DESTINATION tesseract_robotics/${module_name})

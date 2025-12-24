@@ -1,21 +1,9 @@
 """
-Puzzle Piece Example
+Puzzle Piece Auxiliary Axes Example
 
-This example demonstrates Cartesian path planning using TrajOpt for following a
-toolpath defined in a CSV file. The robot follows a series of poses along a
-puzzle piece edge.
-
-Based on: tesseract_examples/src/puzzle_piece_example.cpp
-
-Required environment variables:
-- TESSERACT_RESOURCE_PATH: Path to tesseract repo (for tesseract_support)
-- TESSERACT_TASK_COMPOSER_CONFIG_FILE: Path to task composer config YAML
-
-Required files:
-- tesseract_support/urdf/puzzle_bent.csv: CSV file with toolpath poses
+Cartesian path planning with 9-DOF (KUKA IIWA 7-DOF + 2-DOF positioner).
 """
 
-import os
 import sys
 import csv
 import numpy as np
@@ -26,6 +14,7 @@ from tesseract_robotics.planning import (
     CartesianTarget,
     Pose,
     TaskComposer,
+    MoveType,
 )
 from tesseract_robotics.tesseract_command_language import ProfileDictionary
 from tesseract_robotics.tesseract_motion_planners_trajopt import (
@@ -36,7 +25,6 @@ from tesseract_robotics.tesseract_motion_planners_trajopt import (
     ProfileDictionary_addTrajOptCompositeProfile,
 )
 
-# Viewer (skip in pytest)
 TesseractViewer = None
 if "pytest" not in sys.modules:
     try:
@@ -99,24 +87,32 @@ def make_puzzle_tool_poses(robot):
 
 
 def main():
-    # Check for task composer config
-    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE") and not os.environ.get("TESSERACT_TASK_COMPOSER_DIR"):
-        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE or TESSERACT_TASK_COMPOSER_DIR not set")
-        print("Run: source env.sh")
-        return False
-
-    # Load puzzle piece workcell (KUKA + grinder + puzzle piece part)
+    # Load puzzle piece workcell with auxiliary axes
     robot = Robot.from_urdf(
         "package://tesseract_support/urdf/puzzle_piece_workcell.urdf",
         "package://tesseract_support/urdf/puzzle_piece_workcell.srdf"
     )
     print(f"Loaded robot with {len(robot.get_link_names())} links")
 
-    # Define joint names for KUKA IIWA
-    joint_names = [f"joint_a{i}" for i in range(1, 8)]
+    # Define joint names for KUKA IIWA (7) + auxiliary axes (2) = 9 DOF
+    joint_names = [
+        "joint_a1", "joint_a2", "joint_a3", "joint_a4",
+        "joint_a5", "joint_a6", "joint_a7",
+        "joint_aux1", "joint_aux2"
+    ]
 
-    # Define initial joint position
-    joint_pos = np.array([-0.785398, 0.4, 0.0, -1.9, 0.0, 1.0, 0.0])
+    # Define initial joint position (9 values)
+    joint_pos = np.array([
+        -0.785398,  # joint_a1
+        0.4,        # joint_a2
+        0.0,        # joint_a3
+        -1.9,       # joint_a4
+        0.0,        # joint_a5
+        1.0,        # joint_a6
+        0.0,        # joint_a7
+        0.0,        # joint_aux1 (positioner rotation around Z)
+        0.0         # joint_aux2 (positioner tilt)
+    ])
 
     # Set initial state
     robot.set_joints(joint_pos, joint_names=joint_names)
@@ -135,7 +131,8 @@ def main():
         return False
 
     # Build motion program with all waypoints
-    program = MotionProgram("manipulator", tcp_frame="grinder_frame", working_frame="part")
+    # Use manipulator_aux group (9 DOF including auxiliary axes)
+    program = MotionProgram("manipulator_aux", tcp_frame="grinder_frame", working_frame="part")
     program.set_joint_names(joint_names)
 
     for pose in tool_poses:
@@ -151,7 +148,8 @@ def main():
     trajopt_plan_profile.joint_cost_config.enabled = False
     trajopt_plan_profile.cartesian_cost_config.enabled = False
     trajopt_plan_profile.cartesian_constraint_config.enabled = True
-    trajopt_plan_profile.cartesian_constraint_config.coeff = np.array([10.0, 10.0, 10.0, 10.0, 10.0, 0.0])
+    # Coefficients: [x, y, z, rx, ry, rz] - lower weight on rotation around z (tool axis)
+    trajopt_plan_profile.cartesian_constraint_config.coeff = np.array([5.0, 5.0, 5.0, 2.0, 2.0, 0.0])
 
     # Configure TrajOpt composite profile
     trajopt_composite_profile = TrajOptDefaultCompositeProfile()
@@ -159,15 +157,15 @@ def main():
     trajopt_composite_profile.collision_cost_config.enabled = True
     trajopt_composite_profile.collision_cost_config.safety_margin = 0.025
     trajopt_composite_profile.collision_cost_config.type = CollisionEvaluatorType.SINGLE_TIMESTEP
-    trajopt_composite_profile.collision_cost_config.coeff = 20.0
+    trajopt_composite_profile.collision_cost_config.coeff = 1.0
 
     # Add profiles to dictionary
     ProfileDictionary_addTrajOptPlanProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "CARTESIAN", trajopt_plan_profile)
     ProfileDictionary_addTrajOptCompositeProfile(profiles, TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_composite_profile)
 
-    print("Running TrajOpt planner...")
+    print("Running TrajOpt planner with 9 DOF (7 arm + 2 auxiliary axes)...")
 
-    # Plan using TaskComposer (auto-seeds Cartesian waypoints)
+    # Plan using TaskComposer (auto-seeds Cartesian waypoints, handles cleanup)
     composer = TaskComposer.from_config()
     result = composer.plan(robot, program, pipeline="TrajOptPipeline", profiles=profiles)
 
@@ -185,7 +183,6 @@ def main():
         viewer.update_environment(robot.env, [0, 0, 0])
         viewer.update_trajectory(result.raw_results)
         viewer.start_serve_background()
-        input("Press Enter to exit...")
 
     return True
 

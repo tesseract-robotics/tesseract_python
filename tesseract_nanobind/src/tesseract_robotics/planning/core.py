@@ -39,6 +39,7 @@ from tesseract_robotics.tesseract_common import (
     Isometry3d,
 )
 from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_kinematics import KinGroupIKInput
 from tesseract_robotics.tesseract_scene_graph import (
     Joint,
     Link,
@@ -372,10 +373,13 @@ class Robot:
         if tip_link is None:
             tip_link = list(group.getActiveLinkNames())[-1]
 
-        result = group.calcInvKin(
-            {tip_link: target_pose},
-            seed,
-        )
+        # Get working frame from group
+        working_frame = group.getBaseLinkName()
+
+        # Create proper IK input
+        ik_input = KinGroupIKInput(target_pose, working_frame, tip_link)
+
+        result = group.calcInvKin(ik_input, seed)
 
         if result is None or len(result) == 0:
             return None

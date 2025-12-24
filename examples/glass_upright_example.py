@@ -1,21 +1,12 @@
 """
-Glass Upright Example
+Glass Upright Example (High-Level API)
 
-This example demonstrates constrained motion planning using TrajOpt where
-the robot must keep the tool orientation "upright" (constraining the orientation)
-while moving through space. This is useful for tasks like carrying a glass of water.
+Demonstrates constrained motion planning using TrajOpt where the robot keeps
+the tool orientation "upright" while moving. Useful for carrying a glass of water.
 
-The key difference from freespace planning is that TrajOpt applies constraints
-to keep the tool orientation fixed while allowing position changes.
-
-Based on: tesseract_examples/src/glass_upright_example.cpp
-
-Required environment variables:
-- TESSERACT_RESOURCE_PATH: Path to tesseract repo (for tesseract_support)
-- TESSERACT_TASK_COMPOSER_CONFIG_FILE: Path to task composer config YAML
+Uses simplified high-level API from tesseract_robotics.planning.
 """
 
-import os
 import sys
 import numpy as np
 
@@ -29,7 +20,6 @@ from tesseract_robotics.planning import (
     TaskComposer,
 )
 
-# Viewer (skip in pytest)
 TesseractViewer = None
 if "pytest" not in sys.modules:
     try:
@@ -39,17 +29,11 @@ if "pytest" not in sys.modules:
 
 
 def main():
-    # Check for task composer config
-    if not os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE") and not os.environ.get("TESSERACT_TASK_COMPOSER_DIR"):
-        print("Error: TESSERACT_TASK_COMPOSER_CONFIG_FILE or TESSERACT_TASK_COMPOSER_DIR not set")
-        print("Run: source env.sh")
-        return False
-
-    # Load KUKA IIWA robot (one-liner!)
+    # Load KUKA IIWA robot
     robot = Robot.from_tesseract_support("lbr_iiwa_14_r820")
     print(f"Loaded robot with {len(robot.get_link_names())} links")
 
-    # Add sphere obstacle (one-liner vs 20+ lines before)
+    # Add sphere obstacle
     create_obstacle(
         robot,
         name="sphere_attached",
@@ -69,8 +53,7 @@ def main():
     robot.set_joints(joint_start_pos, joint_names=joint_names)
 
     # Create motion program with "UPRIGHT" profile
-    # The UPRIGHT profile will constrain orientation while allowing position changes
-    # Using LINEAR motion and StateTargets for full state specification
+    # The UPRIGHT profile constrains orientation while allowing position changes
     program = (MotionProgram("manipulator", tcp_frame="tool0", profile="UPRIGHT")
         .set_joint_names(joint_names)
         .linear_to(StateTarget(joint_start_pos, names=joint_names, profile="UPRIGHT"))
@@ -78,17 +61,14 @@ def main():
     )
 
     print("\nProgram created with 'UPRIGHT' constraint profile")
-    print("The tool orientation will be constrained during motion")
+    print("Tool orientation will be constrained during motion")
 
     # Plan using TaskComposer
     print("\nRunning TrajOpt planner with upright constraint...")
     composer = TaskComposer.from_config()
     result = composer.plan(robot, program, pipeline="TrajOptPipeline")
 
-    if not result.successful:
-        print(f"Planning failed: {result.message}")
-        return False
-
+    assert result.successful, f"Planning failed: {result.message}"
     print("Planning successful!")
     print(f"\nTrajectory has {len(result)} waypoints:")
     for i, point in enumerate(result.trajectory):
@@ -101,11 +81,7 @@ def main():
         viewer.update_environment(robot.env, [0, 0, 0])
         viewer.update_trajectory(result.raw_results)
         viewer.start_serve_background()
-        input("Press Enter to exit...")
-
-    return True
 
 
 if __name__ == "__main__":
-    success = main()
-    exit(0 if success else 1)
+    main()

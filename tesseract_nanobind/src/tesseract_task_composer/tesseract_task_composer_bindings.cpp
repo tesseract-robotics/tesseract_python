@@ -58,7 +58,7 @@ NB_MODULE(_tesseract_task_composer, m) {
         .def("data", &tp::TaskComposerKeys::data);
 
     // ========== TaskComposerDataStorage ==========
-    // nanobind handles shared_ptr automatically when returned from functions
+    // Use shared_ptr for proper lifetime management with executor.run()
     nb::class_<tp::TaskComposerDataStorage>(m, "TaskComposerDataStorage")
         .def(nb::init<>())
         .def("getName", &tp::TaskComposerDataStorage::getName)
@@ -67,6 +67,11 @@ NB_MODULE(_tesseract_task_composer, m) {
         .def("setData", &tp::TaskComposerDataStorage::setData, "key"_a, "data"_a)
         .def("getData", nb::overload_cast<const std::string&>(&tp::TaskComposerDataStorage::getData, nb::const_), "key"_a)
         .def("removeData", &tp::TaskComposerDataStorage::removeData, "key"_a);
+
+    // Factory function that returns shared_ptr (useful when passing to executor.run)
+    m.def("createTaskComposerDataStorage", []() {
+        return std::make_shared<tp::TaskComposerDataStorage>();
+    }, "Create a TaskComposerDataStorage as shared_ptr");
 
     // ========== TaskComposerNodeInfo ==========
     nb::class_<tp::TaskComposerNodeInfo>(m, "TaskComposerNodeInfo")
@@ -79,7 +84,38 @@ NB_MODULE(_tesseract_task_composer, m) {
     // ========== TaskComposerNodeInfoContainer ==========
     nb::class_<tp::TaskComposerNodeInfoContainer>(m, "TaskComposerNodeInfoContainer")
         .def(nb::init<>())
-        .def("getAbortingNode", &tp::TaskComposerNodeInfoContainer::getAbortingNode);
+        .def("getAbortingNodeInfo", [](const tp::TaskComposerNodeInfoContainer& self) -> nb::object {
+            auto uuid = self.getAbortingNode();
+            if (uuid.is_nil())
+                return nb::none();
+            auto info = self.getInfo(uuid);
+            if (!info)
+                return nb::none();
+            // Return a dict with the info
+            nb::dict result;
+            result["name"] = info->name;
+            result["return_value"] = info->return_value;
+            result["status_code"] = info->status_code;
+            result["status_message"] = info->status_message;
+            result["elapsed_time"] = info->elapsed_time;
+            return result;
+        })
+        .def("getAllInfos", [](const tp::TaskComposerNodeInfoContainer& self) -> nb::list {
+            nb::list result;
+            auto info_map = self.getInfoMap();
+            for (const auto& [uuid, info] : info_map) {
+                if (info) {
+                    nb::dict d;
+                    d["name"] = info->name;
+                    d["return_value"] = info->return_value;
+                    d["status_code"] = info->status_code;
+                    d["status_message"] = info->status_message;
+                    d["elapsed_time"] = info->elapsed_time;
+                    result.append(d);
+                }
+            }
+            return result;
+        });
 
     // ========== TaskComposerContext ==========
     nb::class_<tp::TaskComposerContext>(m, "TaskComposerContext")
@@ -93,7 +129,9 @@ NB_MODULE(_tesseract_task_composer, m) {
             [](const tp::TaskComposerContext& self) { return self.data_storage; },
             [](tp::TaskComposerContext& self, std::shared_ptr<tp::TaskComposerDataStorage> v) { self.data_storage = v; })
         .def("isAborted", &tp::TaskComposerContext::isAborted)
-        .def("isSuccessful", &tp::TaskComposerContext::isSuccessful);
+        .def("isSuccessful", &tp::TaskComposerContext::isSuccessful)
+        .def_prop_ro("task_infos",
+            [](const tp::TaskComposerContext& self) { return self.task_infos; });
 
     // ========== TaskComposerNode (abstract base) ==========
     nb::class_<tp::TaskComposerNode>(m, "TaskComposerNode")
@@ -113,14 +151,15 @@ NB_MODULE(_tesseract_task_composer, m) {
             [](tp::TaskComposerFuture& self, std::shared_ptr<tp::TaskComposerContext> v) { self.context = v; })
         .def("valid", &tp::TaskComposerFuture::valid)
         .def("ready", &tp::TaskComposerFuture::ready)
-        .def("wait", &tp::TaskComposerFuture::wait)
-        .def("waitFor", &tp::TaskComposerFuture::waitFor, "duration"_a);
+        .def("wait", &tp::TaskComposerFuture::wait, nb::call_guard<nb::gil_scoped_release>())
+        .def("waitFor", &tp::TaskComposerFuture::waitFor, "duration"_a, nb::call_guard<nb::gil_scoped_release>());
 
     // ========== TaskComposerExecutor (abstract base) ==========
     nb::class_<tp::TaskComposerExecutor>(m, "TaskComposerExecutor")
         .def("getName", &tp::TaskComposerExecutor::getName)
         .def("run", [](tp::TaskComposerExecutor& self, const tp::TaskComposerNode& node,
                        std::shared_ptr<tp::TaskComposerDataStorage> data_storage, bool dotgraph) {
+            nb::gil_scoped_release release;
             return self.run(node, data_storage, dotgraph);
         }, "node"_a, "data_storage"_a, "dotgraph"_a = false)
         .def("getWorkerCount", &tp::TaskComposerExecutor::getWorkerCount)
@@ -137,7 +176,8 @@ NB_MODULE(_tesseract_task_composer, m) {
         .def("getName", &tp::TaskflowTaskComposerExecutor::getName)
         .def("run", [](tp::TaskflowTaskComposerExecutor& self, const tp::TaskComposerNode& node,
                        std::shared_ptr<tp::TaskComposerDataStorage> data_storage, bool dotgraph) {
-            // Cast to base class to call public run method
+            // Release GIL to allow C++ threads to run in parallel
+            nb::gil_scoped_release release;
             return static_cast<tp::TaskComposerExecutor&>(self).run(node, data_storage, dotgraph);
         }, "node"_a, "data_storage"_a, "dotgraph"_a = false)
         .def("getWorkerCount", &tp::TaskflowTaskComposerExecutor::getWorkerCount)
@@ -196,7 +236,12 @@ NB_MODULE(_tesseract_task_composer, m) {
     // Bind AnyPoly class for type-erased data storage
     nb::class_<tc::AnyPoly>(m, "AnyPoly")
         .def(nb::init<>())
-        .def("isNull", &tc::AnyPoly::isNull);
+        .def("isNull", &tc::AnyPoly::isNull)
+        .def("getTypeName", [](const tc::AnyPoly& self) {
+            if (self.isNull())
+                return std::string("null");
+            return std::string(self.getType().name());
+        });
 
     // ========== AnyPoly wrapper functions for common types ==========
     // These wrap specific types into AnyPoly for use with TaskComposerDataStorage.setData()

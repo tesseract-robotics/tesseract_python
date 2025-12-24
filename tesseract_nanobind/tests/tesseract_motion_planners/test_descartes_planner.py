@@ -1,8 +1,4 @@
-"""Tests for tesseract_motion_planners_descartes bindings.
-
-These tests cover Descartes motion planner and profiles.
-"""
-import os
+"""Tests for tesseract_motion_planners_descartes bindings."""
 import numpy as np
 import pytest
 
@@ -47,19 +43,12 @@ DESCARTES_DEFAULT_NAMESPACE = "DescartesMotionPlannerTask"
 @pytest.fixture
 def abb_irb2400_environment():
     """Load ABB IRB2400 robot environment for testing (has OPW kinematics)."""
-    tesseract_support = os.environ.get("TESSERACT_SUPPORT_DIR")
-    if not tesseract_support:
-        pytest.skip("TESSERACT_SUPPORT_DIR not set")
-
     locator = GeneralResourceLocator()
-
-    urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/abb_irb2400.urdf"))
-    srdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/abb_irb2400.srdf"))
+    urdf_path = FilesystemPath(locator.locateResource("package://tesseract_support/urdf/abb_irb2400.urdf").getFilePath())
+    srdf_path = FilesystemPath(locator.locateResource("package://tesseract_support/urdf/abb_irb2400.srdf").getFilePath())
 
     t_env = Environment()
-    success = t_env.init(urdf_path, srdf_path, locator)
-    if not success:
-        pytest.skip("Failed to initialize ABB IRB2400 environment")
+    assert t_env.init(urdf_path, srdf_path, locator), "Failed to initialize ABB IRB2400"
 
     manip_info = ManipulatorInfo()
     manip_info.tcp_frame = "tool0"
@@ -68,7 +57,6 @@ def abb_irb2400_environment():
     manip_info.working_frame = "base_link"
 
     joint_names = list(t_env.getJointGroup("manipulator").getJointNames())
-
     return t_env, manip_info, joint_names
 
 

@@ -1,5 +1,5 @@
 """
-Freespace OMPL Example (High-Level API)
+Freespace OMPL Example
 
 Demonstrates freespace motion planning using OMPL with the KUKA IIWA robot.
 Adds a sphere obstacle to the environment and plans a collision-free path around it.
@@ -63,7 +63,10 @@ def main():
     composer = TaskComposer.from_config()
     result = composer.plan(robot, program, pipeline="FreespacePipeline")
 
-    assert result.successful, f"Planning failed: {result.message}"
+    if not result.successful:
+        print(f"Planning failed: {result.message}")
+        return False
+
     print("Planning successful!")
     print(f"\nTrajectory has {len(result)} waypoints:")
     for i, point in enumerate(result.trajectory):
@@ -77,6 +80,9 @@ def main():
         viewer.update_trajectory(result.raw_results)
         viewer.start_serve_background()
 
+    return True
+
 
 if __name__ == "__main__":
-    main()
+    success = main()
+    exit(0 if success else 1)

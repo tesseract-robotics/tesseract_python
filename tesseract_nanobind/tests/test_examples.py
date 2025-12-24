@@ -378,6 +378,7 @@ from pathlib import Path
 
 # tests/test_examples.py -> tesseract_nanobind/tests -> tesseract_nanobind -> repo root
 EXAMPLES_DIR = Path(__file__).parent.parent.parent / "examples"
+LOWLEVEL_EXAMPLES_DIR = EXAMPLES_DIR / "lowlevel"
 
 
 def get_env_with_vars():
@@ -426,11 +427,10 @@ class TestKinematicsExample:
         )
         # Check exit code
         assert result.returncode == 0, f"Script failed:\n{result.stderr}"
-        # Verify some expected output
+        # Verify some expected output (high-level API format)
         assert "Tool0 transform" in result.stdout
         assert "Translation:" in result.stdout
-        assert "Rotation:" in result.stdout
-        assert "Found" in result.stdout and "solutions" in result.stdout
+        assert "solution" in result.stdout.lower()
 
 
 class TestFreespaceOMPLExampleRun:
@@ -493,17 +493,17 @@ class TestBasicCartesianExampleRun:
         )
         # Check exit code
         assert result.returncode == 0, f"Script failed:\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
-        # Verify some expected output (refactored to use Pythonic API)
-        assert "Loaded robot" in result.stdout
-        assert "Planning" in result.stdout
+        # Verify some expected output (high-level API format)
+        assert "Planning successful" in result.stdout
+        assert "waypoints" in result.stdout.lower()
 
 
 class TestSceneGraphExampleRun:
-    """Test running the actual scene_graph_example.py script"""
+    """Test running the actual scene_graph_example.py script (lowlevel only)"""
 
     def test_scene_graph_example_runs(self):
         """Run the scene graph example end-to-end"""
-        script = EXAMPLES_DIR / "scene_graph_example.py"
+        script = LOWLEVEL_EXAMPLES_DIR / "scene_graph_example.py"
         assert script.exists(), f"Example script not found: {script}"
 
         result = subprocess.run(
