@@ -70,6 +70,7 @@ from tesseract_robotics.planning.geometry import (
     mesh_from_file,
     convex_mesh_from_file,
     create_obstacle,
+    create_fixed_joint,
 )
 
 from tesseract_robotics.planning.planner import (
@@ -112,6 +113,7 @@ __all__ = [
     "mesh_from_file",
     "convex_mesh_from_file",
     "create_obstacle",
+    "create_fixed_joint",
     # Planning
     "PlanningResult",
     "plan_freespace",

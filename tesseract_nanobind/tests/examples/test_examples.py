@@ -21,6 +21,8 @@ def _load_module(name, path):
     return module
 
 
+# === Viewer Examples ===
+
 @pytest.mark.viewer
 def test_shapes_viewer():
     _load_module("shapes_viewer", VIEWER_EXAMPLES / "shapes_viewer.py").main()
@@ -37,6 +39,8 @@ def test_abb_irb2400_viewer():
     _load_module("abb_irb2400_viewer", VIEWER_EXAMPLES / "abb_irb2400_viewer.py").main()
 
 
+# === Basic Examples (Low-Level API) ===
+
 @pytest.mark.basic
 def test_collision_example():
     _load_module("tesseract_collision_example", CORE_EXAMPLES / "tesseract_collision_example.py").main()
@@ -51,6 +55,20 @@ def test_kinematics_example():
 def test_scene_graph_example():
     _load_module("scene_graph_example", CORE_EXAMPLES / "scene_graph_example.py").main()
 
+
+# === Basic Examples (High-Level API) ===
+
+@pytest.mark.basic
+def test_collision_highlevel_example():
+    _load_module("tesseract_collision_highlevel_example", CORE_EXAMPLES / "tesseract_collision_highlevel_example.py").main()
+
+
+@pytest.mark.basic
+def test_kinematics_highlevel_example():
+    _load_module("tesseract_kinematics_highlevel_example", CORE_EXAMPLES / "tesseract_kinematics_highlevel_example.py").main()
+
+
+# === Planning Examples (Low-Level API) ===
 
 @pytest.mark.planning
 def test_freespace_ompl_example():
@@ -85,3 +103,35 @@ def test_car_seat_example():
 @pytest.mark.planning
 def test_puzzle_piece_auxillary_axes_example():
     _load_module("puzzle_piece_auxillary_axes_example", CORE_EXAMPLES / "puzzle_piece_auxillary_axes_example.py").main()
+
+
+# === Planning Examples (High-Level API) ===
+
+@pytest.mark.planning
+def test_freespace_ompl_highlevel_example():
+    _load_module("freespace_ompl_highlevel_example", CORE_EXAMPLES / "freespace_ompl_highlevel_example.py").main()
+
+
+@pytest.mark.planning
+def test_basic_cartesian_highlevel_example():
+    _load_module("basic_cartesian_highlevel_example", CORE_EXAMPLES / "basic_cartesian_highlevel_example.py").main()
+
+
+@pytest.mark.planning
+def test_glass_upright_highlevel_example():
+    _load_module("glass_upright_highlevel_example", CORE_EXAMPLES / "glass_upright_highlevel_example.py").main()
+
+
+@pytest.mark.planning
+def test_pick_and_place_highlevel_example():
+    _load_module("pick_and_place_highlevel_example", CORE_EXAMPLES / "pick_and_place_highlevel_example.py").main()
+
+
+@pytest.mark.planning
+def test_car_seat_highlevel_example():
+    _load_module("car_seat_highlevel_example", CORE_EXAMPLES / "car_seat_highlevel_example.py").main()
+
+
+@pytest.mark.planning
+def test_puzzle_piece_auxillary_axes_highlevel_example():
+    _load_module("puzzle_piece_auxillary_axes_highlevel_example", CORE_EXAMPLES / "puzzle_piece_auxillary_axes_highlevel_example.py").main()
