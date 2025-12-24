@@ -1,8 +1,10 @@
 """
-Glass Upright Example
+Glass Upright Example (High-Level API)
 
 Demonstrates constrained motion planning using TrajOpt where the robot keeps
 the tool orientation "upright" while moving. Useful for carrying a glass of water.
+
+Uses simplified high-level API from tesseract_robotics.planning.
 """
 
 import sys
@@ -31,7 +33,7 @@ def main():
     robot = Robot.from_tesseract_support("lbr_iiwa_14_r820")
     print(f"Loaded robot with {len(robot.get_link_names())} links")
 
-    # Add sphere obstacle (one-liner vs 20+ lines before)
+    # Add sphere obstacle
     create_obstacle(
         robot,
         name="sphere_attached",
@@ -51,8 +53,7 @@ def main():
     robot.set_joints(joint_start_pos, joint_names=joint_names)
 
     # Create motion program with "UPRIGHT" profile
-    # The UPRIGHT profile will constrain orientation while allowing position changes
-    # Using LINEAR motion and StateTargets for full state specification
+    # The UPRIGHT profile constrains orientation while allowing position changes
     program = (MotionProgram("manipulator", tcp_frame="tool0", profile="UPRIGHT")
         .set_joint_names(joint_names)
         .linear_to(StateTarget(joint_start_pos, names=joint_names, profile="UPRIGHT"))
@@ -60,7 +61,7 @@ def main():
     )
 
     print("\nProgram created with 'UPRIGHT' constraint profile")
-    print("The tool orientation will be constrained during motion")
+    print("Tool orientation will be constrained during motion")
 
     # Plan using TaskComposer
     print("\nRunning TrajOpt planner with upright constraint...")

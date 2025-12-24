@@ -1,5 +1,5 @@
 """
-Freespace OMPL Example
+Freespace OMPL Example (High-Level API)
 
 Demonstrates freespace motion planning using OMPL with the KUKA IIWA robot.
 Adds a sphere obstacle to the environment and plans a collision-free path around it.
