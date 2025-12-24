@@ -151,14 +151,15 @@ NB_MODULE(_tesseract_task_composer, m) {
             [](tp::TaskComposerFuture& self, std::shared_ptr<tp::TaskComposerContext> v) { self.context = v; })
         .def("valid", &tp::TaskComposerFuture::valid)
         .def("ready", &tp::TaskComposerFuture::ready)
-        .def("wait", &tp::TaskComposerFuture::wait)
-        .def("waitFor", &tp::TaskComposerFuture::waitFor, "duration"_a);
+        .def("wait", &tp::TaskComposerFuture::wait, nb::call_guard<nb::gil_scoped_release>())
+        .def("waitFor", &tp::TaskComposerFuture::waitFor, "duration"_a, nb::call_guard<nb::gil_scoped_release>());
 
     // ========== TaskComposerExecutor (abstract base) ==========
     nb::class_<tp::TaskComposerExecutor>(m, "TaskComposerExecutor")
         .def("getName", &tp::TaskComposerExecutor::getName)
         .def("run", [](tp::TaskComposerExecutor& self, const tp::TaskComposerNode& node,
                        std::shared_ptr<tp::TaskComposerDataStorage> data_storage, bool dotgraph) {
+            nb::gil_scoped_release release;
             return self.run(node, data_storage, dotgraph);
         }, "node"_a, "data_storage"_a, "dotgraph"_a = false)
         .def("getWorkerCount", &tp::TaskComposerExecutor::getWorkerCount)
@@ -175,7 +176,8 @@ NB_MODULE(_tesseract_task_composer, m) {
         .def("getName", &tp::TaskflowTaskComposerExecutor::getName)
         .def("run", [](tp::TaskflowTaskComposerExecutor& self, const tp::TaskComposerNode& node,
                        std::shared_ptr<tp::TaskComposerDataStorage> data_storage, bool dotgraph) {
-            // Cast to base class to call public run method
+            // Release GIL to allow C++ threads to run in parallel
+            nb::gil_scoped_release release;
             return static_cast<tp::TaskComposerExecutor&>(self).run(node, data_storage, dotgraph);
         }, "node"_a, "data_storage"_a, "dotgraph"_a = false)
         .def("getWorkerCount", &tp::TaskflowTaskComposerExecutor::getWorkerCount)
