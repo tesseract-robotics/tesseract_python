@@ -2,6 +2,29 @@
 Pick and Place Example
 
 Pick and place motion planning using TrajOpt. The robot picks up a box and places it on a shelf.
+
+Based on: tesseract_examples/src/pick_and_place_example.cpp
+
+Config file loaded:
+    task_composer_plugins_no_trajopt_ifopt.yaml
+    (from TESSERACT_TASK_COMPOSER_CONFIG_FILE env var or package default)
+
+C++ vs Python approach differences:
+    The C++ example creates CUSTOM TrajOpt profiles with specific collision settings:
+    - trajopt_plan_profile with cartesian_constraint_config.coeff = 10
+    - trajopt_composite_profile with collision_constraint_config:
+        - collision_margin_buffer = 0.005
+        - collision_coeff_data = default
+        - smooth_velocities/accelerations/jerks = true
+
+    This Python example uses DEFAULT profiles from the YAML config, which may have
+    different collision constraint tolerances. As a result:
+    - PICK phase: succeeds (no attached objects, simpler collision geometry)
+    - PLACE phase: may fail TrajOpt optimization (attached box creates tighter
+      collision constraints that default profiles struggle with)
+
+    To match C++ behavior, you would need to create custom ProfileDictionary entries
+    via the low-level API and pass them to the planner.
 """
 
 import sys
