@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# Pre-commit hook: runs full test suite before allowing commit
+# Skip with: git commit --no-verify
+#
+# Install: git config core.hooksPath .githooks
+#
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+echo -e "${YELLOW}Running pre-commit tests...${NC}"
+
+./scripts/run_tests.sh || {
+    echo -e "${RED}Tests failed! Commit blocked.${NC}"
+    exit 1
+}
+
+echo -e "${GREEN}All tests passed!${NC}"
