@@ -11,6 +11,7 @@ source "$SCRIPT_DIR/env.sh"
 # Group by param:num_planners to show CPU scaling impact clearly
 exec pytest tesseract_nanobind/tests/benchmarks \
     --benchmark-enable \
+    --benchmark-min-rounds=2 \
     --benchmark-group-by=param:num_planners \
     --benchmark-sort=fullname \
     --benchmark-histogram=bench \
