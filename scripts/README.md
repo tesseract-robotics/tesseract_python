@@ -33,6 +33,21 @@ Sets:
 - `TESSERACT_RESOURCE_PATH` - resource locator base path
 - `TESSERACT_TASK_COMPOSER_CONFIG_FILE` - task composer plugin config
 
+### `run_benchmarks.sh`
+Runs planning benchmarks. By default uses xdist for parallel execution (no timing):
+
+```bash
+./scripts/run_benchmarks.sh                    # parallel, no timing
+./scripts/run_benchmarks.sh --benchmark-enable -n0   # sequential with timing
+./scripts/run_benchmarks.sh --benchmark-enable -n0 --benchmark-histogram=bench  # + histogram
+```
+
+The histogram option generates `bench.svg` with matplotlib. Requires `pygal` or `pygaljs`:
+```bash
+pip install pygal
+./scripts/run_benchmarks.sh --benchmark-enable -n0 --benchmark-histogram=reports/bench
+```
+
 ### `run_tests.sh`
 Runs pytest with correct environment. Preferred way to run tests:
 
