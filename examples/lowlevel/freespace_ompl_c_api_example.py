@@ -26,12 +26,17 @@ if "pytest" not in sys.modules:
         pass
 
 
-def main():
+def run():
+    """Run example and return trajectory results for testing.
+
+    Returns:
+        dict with result, robot, joint_names
+    """
     # Load KUKA IIWA robot
     robot = Robot.from_tesseract_support("lbr_iiwa_14_r820")
     print(f"Loaded robot with {len(robot.get_link_names())} links")
 
-    # Add sphere obstacle (one-liner vs 20+ lines before)
+    # Add sphere obstacle
     create_obstacle(
         robot,
         name="sphere_attached",
@@ -50,7 +55,7 @@ def main():
     # Set initial state
     robot.set_joints(joint_start_pos, joint_names=joint_names)
 
-    # Create motion program with fluent API (vs 20+ lines of manual poly wrapping)
+    # Create motion program
     program = (MotionProgram("manipulator", tcp_frame="tool0")
         .set_joint_names(joint_names)
         .move_to(JointTarget(joint_start_pos))
@@ -63,21 +68,20 @@ def main():
     composer = TaskComposer.from_config()
     result = composer.plan(robot, program, pipeline="FreespacePipeline")
 
-    if not result.successful:
-        print(f"Planning failed: {result.message}")
-        return False
+    assert result.successful, f"Planning failed: {result.message}"
+    print(f"Planning successful! {len(result)} waypoints")
 
-    print("Planning successful!")
-    print(f"\nTrajectory has {len(result)} waypoints:")
-    for i, point in enumerate(result.trajectory):
-        print(f"  [{i}] {point.positions}")
+    return {"result": result, "robot": robot, "joint_names": joint_names}
 
-    # Optional: visualize with viewer
-    if TesseractViewer is not None and result.raw_results is not None:
+
+def main():
+    results = run()
+
+    if TesseractViewer is not None and results["result"].raw_results is not None:
         print("\nStarting viewer at http://localhost:8000")
         viewer = TesseractViewer()
-        viewer.update_environment(robot.env, [0, 0, 0])
-        viewer.update_trajectory(result.raw_results)
+        viewer.update_environment(results["robot"].env, [0, 0, 0])
+        viewer.update_trajectory(results["result"].raw_results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
 

@@ -27,7 +27,11 @@ if "pytest" not in sys.modules:
         pass
 
 
-def main():
+def run():
+    """Run example and return trajectory results for testing.
+    Returns:
+        dict with result, robot, joint_names
+    """
     robot = Robot.from_tesseract_support("lbr_iiwa_14_r820")
 
     create_obstacle(robot, "box_obstacle", box(0.5, 0.5, 0.5), Pose.from_xyz(1.0, 0, 0))
@@ -53,12 +57,18 @@ def main():
     assert result.successful, f"Planning failed: {result.message}"
     print(f"Planning successful! Trajectory: {len(result)} waypoints")
 
-    if TesseractViewer is not None and result.raw_results is not None:
+    return {"result": result, "robot": robot, "joint_names": joint_names}
+
+
+def main():
+    results = run()
+    if TesseractViewer is not None and results["result"].raw_results is not None:
         viewer = TesseractViewer()
-        viewer.update_environment(robot.env, [0, 0, 0])
-        viewer.update_trajectory(result.raw_results)
+        viewer.update_environment(results["robot"].env, [0, 0, 0])
+        viewer.update_trajectory(results["result"].raw_results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
+    return True
 
 
 if __name__ == "__main__":

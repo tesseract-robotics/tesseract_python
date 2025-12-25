@@ -26,7 +26,11 @@ if "pytest" not in sys.modules:
         pass
 
 
-def main():
+def run():
+    """Run example and return trajectory results for testing.
+    Returns:
+        dict with result, robot, joint_names
+    """
     # Load KUKA IIWA robot
     robot = Robot.from_tesseract_support("lbr_iiwa_14_r820")
     print(f"Loaded robot with {len(robot.get_link_names())} links")
@@ -67,24 +71,24 @@ def main():
     composer = TaskComposer.from_config()
     result = composer.plan(robot, program, pipeline="TrajOptPipeline")
 
-    if not result.successful:
-        print(f"Planning failed: {result.message}")
-        return False
-
+    assert result.successful, f"Planning failed: {result.message}"
     print("Planning successful!")
     print(f"\nTrajectory has {len(result)} waypoints:")
     for i, point in enumerate(result.trajectory):
         print(f"  [{i}] {point.positions}")
 
-    # Optional: visualize with viewer
-    if TesseractViewer is not None and result.raw_results is not None:
+    return {"result": result, "robot": robot, "joint_names": joint_names}
+
+
+def main():
+    results = run()
+    if TesseractViewer is not None and results["result"].raw_results is not None:
         print("\nStarting viewer at http://localhost:8000")
         viewer = TesseractViewer()
-        viewer.update_environment(robot.env, [0, 0, 0])
-        viewer.update_trajectory(result.raw_results)
+        viewer.update_environment(results["robot"].env, [0, 0, 0])
+        viewer.update_trajectory(results["result"].raw_results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
-
     return True
 
 

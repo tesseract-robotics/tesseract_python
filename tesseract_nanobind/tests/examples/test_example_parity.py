@@ -106,3 +106,84 @@ def test_pick_and_place_parity():
             highlevel_place_final, lowlevel_place_final, decimal=1,
             err_msg="PLACE final positions differ"
         )
+
+
+@pytest.mark.planning
+def test_freespace_ompl_parity():
+    """Verify freespace_ompl_example.py matches freespace_ompl_c_api_example.py."""
+    highlevel_mod = _load_module("freespace_ompl_example", EXAMPLES / "freespace_ompl_example.py")
+    lowlevel_mod = _load_module("freespace_ompl_c_api_example", LOWLEVEL / "freespace_ompl_c_api_example.py")
+
+    highlevel = highlevel_mod.run()
+    lowlevel = lowlevel_mod.run()
+
+    # Both should succeed
+    assert highlevel["result"].successful
+    assert lowlevel["result"].successful
+
+    # Waypoint counts should be similar (OMPL may vary)
+    diff = abs(len(highlevel["result"]) - len(lowlevel["result"]))
+    assert diff <= 5, f"Waypoint count differs: {len(highlevel['result'])} vs {len(lowlevel['result'])}"
+
+    # Final positions should match
+    highlevel_final = _get_final_positions(highlevel["result"])
+    lowlevel_final = _get_final_positions(lowlevel["result"])
+    if highlevel_final is not None and lowlevel_final is not None:
+        np.testing.assert_array_almost_equal(
+            highlevel_final, lowlevel_final, decimal=2,
+            err_msg="Final positions differ"
+        )
+
+
+@pytest.mark.planning
+def test_basic_cartesian_parity():
+    """Verify basic_cartesian_example.py matches basic_cartesian_c_api_example.py."""
+    highlevel_mod = _load_module("basic_cartesian_example", EXAMPLES / "basic_cartesian_example.py")
+    lowlevel_mod = _load_module("basic_cartesian_c_api_example", LOWLEVEL / "basic_cartesian_c_api_example.py")
+
+    highlevel = highlevel_mod.run()
+    lowlevel = lowlevel_mod.run()
+
+    # Both should succeed
+    assert highlevel["result"].successful
+    assert lowlevel["result"].successful
+
+    # Waypoint counts should be similar (Descartes may vary)
+    diff = abs(len(highlevel["result"]) - len(lowlevel["result"]))
+    assert diff <= 5, f"Waypoint count differs: {len(highlevel['result'])} vs {len(lowlevel['result'])}"
+
+    # Final positions should match
+    highlevel_final = _get_final_positions(highlevel["result"])
+    lowlevel_final = _get_final_positions(lowlevel["result"])
+    if highlevel_final is not None and lowlevel_final is not None:
+        np.testing.assert_array_almost_equal(
+            highlevel_final, lowlevel_final, decimal=2,
+            err_msg="Final positions differ"
+        )
+
+
+@pytest.mark.planning
+def test_glass_upright_parity():
+    """Verify glass_upright_example.py matches glass_upright_c_api_example.py."""
+    highlevel_mod = _load_module("glass_upright_example", EXAMPLES / "glass_upright_example.py")
+    lowlevel_mod = _load_module("glass_upright_c_api_example", LOWLEVEL / "glass_upright_c_api_example.py")
+
+    highlevel = highlevel_mod.run()
+    lowlevel = lowlevel_mod.run()
+
+    # Both should succeed
+    assert highlevel["result"].successful
+    assert lowlevel["result"].successful
+
+    # Waypoint counts should be similar (TrajOpt may vary)
+    diff = abs(len(highlevel["result"]) - len(lowlevel["result"]))
+    assert diff <= 5, f"Waypoint count differs: {len(highlevel['result'])} vs {len(lowlevel['result'])}"
+
+    # Final positions should match
+    highlevel_final = _get_final_positions(highlevel["result"])
+    lowlevel_final = _get_final_positions(lowlevel["result"])
+    if highlevel_final is not None and lowlevel_final is not None:
+        np.testing.assert_array_almost_equal(
+            highlevel_final, lowlevel_final, decimal=2,
+            err_msg="Final positions differ"
+        )
