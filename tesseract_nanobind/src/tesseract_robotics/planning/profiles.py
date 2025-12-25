@@ -94,7 +94,7 @@ def create_ompl_default_profiles(
         max_solutions: Max solutions to find before exiting (default: 10)
         optimize: Use all planning time to optimize trajectory (default: True)
         simplify: Simplify trajectory after planning (default: False)
-        num_planners: Number of parallel RRTConnect planners (default: 2, matching C++)
+        num_planners: Number of parallel RRTConnect planners (default: all CPUs)
 
     Returns:
         ProfileDictionary with configured OMPL profiles
@@ -108,9 +108,9 @@ def create_ompl_default_profiles(
     if profile_names is None:
         profile_names = ["DEFAULT"]
 
-    # Default to 2 planners (matches C++ OMPLRealVectorPlanProfile constructor)
+    # Default to CPU count for maximum parallelism
     if num_planners is None:
-        num_planners = 2
+        num_planners = _get_cpu_count()
 
     profiles = ProfileDictionary()
 

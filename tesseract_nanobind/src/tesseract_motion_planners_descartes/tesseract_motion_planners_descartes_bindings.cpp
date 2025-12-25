@@ -82,9 +82,9 @@ NB_MODULE(_tesseract_motion_planners_descartes, m) {
     nb::class_<tp::DescartesMotionPlanner<double>>(m, "DescartesMotionPlannerD")
         .def(nb::init<std::string>(), "name"_a)
         .def("getName", &tp::DescartesMotionPlanner<double>::getName)
-        // Note: Descartes uses OpenMP internally, so we don't release the GIL here
-        // (OpenMP threads + GIL release causes thread safety issues)
-        .def("solve", &tp::DescartesMotionPlanner<double>::solve, "request"_a)
+        // Release GIL during solve - Descartes uses OpenMP internally but that's safe
+        // as long as we use a single OpenMP runtime (conda's llvm-openmp, not Homebrew's)
+        .def("solve", &tp::DescartesMotionPlanner<double>::solve, "request"_a, nb::call_guard<nb::gil_scoped_release>())
         .def("terminate", &tp::DescartesMotionPlanner<double>::terminate)
         .def("clear", &tp::DescartesMotionPlanner<double>::clear);
 }
