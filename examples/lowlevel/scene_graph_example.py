@@ -158,6 +158,7 @@ def main():
         viewer = TesseractViewer()
         viewer.update_environment(env, [0, 0, 0])
         viewer.start_serve_background()
+        input("Press Enter to exit...")
 
     return True
 

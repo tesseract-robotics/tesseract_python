@@ -9,6 +9,9 @@ Based on: tesseract_examples/src/pick_and_place_example.cpp
 Uses custom TrajOpt profiles for planning with attached collision objects.
 """
 
+import gc
+gc.disable()
+
 import sys
 import numpy as np
 
@@ -238,6 +241,7 @@ def main():
         viewer.update_environment(robot.env, [0, 0, 0])
         viewer.update_trajectory(place_result.raw_results)
         viewer.start_serve_background()
+        input("Press Enter to exit...")
 
     print("\nDone!")
     return True

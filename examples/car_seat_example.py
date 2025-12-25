@@ -170,6 +170,7 @@ def main():
         viewer.update_environment(robot.env, [0, 0, 0])
         viewer.update_trajectory(place_result.raw_results)
         viewer.start_serve_background()
+        input("Press Enter to exit...")
 
     print("\nDone!")
 

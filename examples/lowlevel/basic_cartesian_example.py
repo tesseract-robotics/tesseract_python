@@ -90,6 +90,7 @@ def main():
         viewer.update_environment(robot.env, [0, 0, 0])
         viewer.update_trajectory(result.raw_results)
         viewer.start_serve_background()
+        input("Press Enter to exit...")
 
     return True
 

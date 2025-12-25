@@ -72,6 +72,7 @@ def main():
         viewer.update_joint_positions(joint_names, np.array([1, -.2, .01, .3, -.5, 1]))
         viewer.start_serve_background()
         viewer.update_trajectory(result.raw_results)
+        input("Press Enter to exit...")
 
     return True
 
