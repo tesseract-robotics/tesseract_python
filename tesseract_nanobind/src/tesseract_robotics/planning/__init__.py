@@ -87,6 +87,7 @@ from tesseract_robotics.planning.composer import (
 )
 
 from tesseract_robotics.planning.profiles import (
+    STANDARD_PROFILE_NAMES,
     create_trajopt_default_profiles,
     create_ompl_default_profiles,
     create_descartes_default_profiles,
@@ -131,11 +132,11 @@ __all__ = [
     "assign_current_state_as_seed",
     # Task Composer
     "TaskComposer",
-    # Profiles (planner-specific)
+    # Profiles
+    "STANDARD_PROFILE_NAMES",
     "create_trajopt_default_profiles",
     "create_ompl_default_profiles",
     "create_descartes_default_profiles",
-    # Profiles (pipeline-aware, recommended)
     "create_freespace_pipeline_profiles",
     "create_cartesian_pipeline_profiles",
 ]

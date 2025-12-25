@@ -17,6 +17,17 @@ def _get_cpu_count() -> int:
     return os.cpu_count() or 1
 
 
+# Standard profile names used across examples and pipelines
+STANDARD_PROFILE_NAMES = ["DEFAULT", "FREESPACE", "CARTESIAN", "RASTER", "UPRIGHT"]
+
+# Planner-specific relevant profile names
+# OMPL: only freespace planning, Cartesian/Raster/Upright don't apply
+OMPL_PROFILE_NAMES = ["DEFAULT", "FREESPACE"]
+# TrajOpt: can optimize any motion type
+TRAJOPT_PROFILE_NAMES = STANDARD_PROFILE_NAMES
+# Descartes: Cartesian sampling, freespace doesn't apply
+DESCARTES_PROFILE_NAMES = ["DEFAULT", "CARTESIAN", "RASTER"]
+
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
 
@@ -29,7 +40,7 @@ def create_trajopt_default_profiles(
     match the tesseract_examples C++ code (car_seat_example.cpp, etc.).
 
     Args:
-        profile_names: Profile names to register. Default: ["DEFAULT", "FREESPACE"]
+        profile_names: Profile names to register. Default: TRAJOPT_PROFILE_NAMES
 
     Returns:
         ProfileDictionary with configured TrajOpt profiles
@@ -42,29 +53,27 @@ def create_trajopt_default_profiles(
     )
 
     if profile_names is None:
-        profile_names = ["DEFAULT", "FREESPACE"]
+        profile_names = TRAJOPT_PROFILE_NAMES
 
+    # Create ONE set of profiles
+    composite = TrajOptDefaultCompositeProfile()
+    composite.collision_constraint_config.enabled = True
+    composite.collision_constraint_config.safety_margin = 0.00
+    composite.collision_constraint_config.safety_margin_buffer = 0.005
+    composite.collision_constraint_config.coeff = 10
+    composite.collision_cost_config.safety_margin = 0.005
+    composite.collision_cost_config.safety_margin_buffer = 0.01
+    composite.collision_cost_config.coeff = 50
+
+    plan = TrajOptDefaultPlanProfile()
+    plan.cartesian_cost_config.enabled = False
+    plan.cartesian_constraint_config.enabled = True
+    plan.joint_cost_config.enabled = False
+    plan.joint_constraint_config.enabled = True
+
+    # Register under all requested names
     profiles = ProfileDictionary()
-
     for name in profile_names:
-        # Composite profile: collision settings matching C++ car_seat_example.cpp:323-331
-        composite = TrajOptDefaultCompositeProfile()
-        composite.collision_constraint_config.enabled = True
-        composite.collision_constraint_config.safety_margin = 0.00
-        composite.collision_constraint_config.safety_margin_buffer = 0.005
-        composite.collision_constraint_config.coeff = 10
-        composite.collision_cost_config.safety_margin = 0.005
-        composite.collision_cost_config.safety_margin_buffer = 0.01
-        composite.collision_cost_config.coeff = 50
-
-        # Plan profile: cost/constraint toggles matching C++ car_seat_example.cpp:333-337
-        plan = TrajOptDefaultPlanProfile()
-        plan.cartesian_cost_config.enabled = False
-        plan.cartesian_constraint_config.enabled = True
-        plan.joint_cost_config.enabled = False
-        plan.joint_constraint_config.enabled = True
-
-        # Register profiles for this name
         ProfileDictionary_addTrajOptCompositeProfile(
             profiles, TRAJOPT_DEFAULT_NAMESPACE, name, composite
         )
@@ -89,7 +98,7 @@ def create_ompl_default_profiles(
     """Create OMPL profiles with sensible defaults.
 
     Args:
-        profile_names: Profile names to register. Default: ["DEFAULT"]
+        profile_names: Profile names to register. Default: OMPL_PROFILE_NAMES
         planning_time: Max planning time in seconds (default: 5.0)
         max_solutions: Max solutions to find before exiting (default: 10)
         optimize: Use all planning time to optimize trajectory (default: True)
@@ -106,28 +115,27 @@ def create_ompl_default_profiles(
     )
 
     if profile_names is None:
-        profile_names = ["DEFAULT"]
+        profile_names = OMPL_PROFILE_NAMES
 
     # Default to CPU count for maximum parallelism
     if num_planners is None:
         num_planners = _get_cpu_count()
 
+    # Create ONE profile with the configured settings
+    profile = OMPLRealVectorPlanProfile()
+    profile.solver_config.planning_time = planning_time
+    profile.solver_config.max_solutions = max_solutions
+    profile.solver_config.optimize = optimize
+    profile.solver_config.simplify = simplify
+
+    # Add parallel RRTConnect planners (C++ default is 2)
+    profile.solver_config.clearPlanners()
+    for _ in range(num_planners):
+        profile.solver_config.addPlanner(RRTConnectConfigurator())
+
+    # Register under all requested names
     profiles = ProfileDictionary()
-
     for name in profile_names:
-        profile = OMPLRealVectorPlanProfile()
-
-        # Configure solver settings
-        profile.solver_config.planning_time = planning_time
-        profile.solver_config.max_solutions = max_solutions
-        profile.solver_config.optimize = optimize
-        profile.solver_config.simplify = simplify
-
-        # Add parallel RRTConnect planners (C++ default is 2)
-        profile.solver_config.clearPlanners()
-        for _ in range(num_planners):
-            profile.solver_config.addPlanner(RRTConnectConfigurator())
-
         ProfileDictionary_addOMPLProfile(
             profiles, OMPL_DEFAULT_NAMESPACE, name, profile
         )
@@ -150,7 +158,7 @@ def create_descartes_default_profiles(
     (ladder graph solver configuration).
 
     Args:
-        profile_names: Profile names to register. Default: ["DEFAULT"]
+        profile_names: Profile names to register. Default: DESCARTES_PROFILE_NAMES
         enable_collision: Enable vertex collision checking (default: True)
         enable_edge_collision: Enable edge collision checking (default: False)
         num_threads: Number of threads for solver (default: all CPUs)
@@ -158,8 +166,6 @@ def create_descartes_default_profiles(
     Returns:
         ProfileDictionary with configured Descartes profiles
     """
-    if num_threads is None:
-        num_threads = _get_cpu_count()
     from tesseract_robotics.tesseract_motion_planners_descartes import (
         DescartesDefaultPlanProfileD,
         DescartesLadderGraphSolverProfileD,
@@ -168,22 +174,25 @@ def create_descartes_default_profiles(
     )
 
     if profile_names is None:
-        profile_names = ["DEFAULT"]
+        profile_names = DESCARTES_PROFILE_NAMES
 
+    if num_threads is None:
+        num_threads = _get_cpu_count()
+
+    # Create ONE set of profiles
+    plan_profile = DescartesDefaultPlanProfileD()
+    plan_profile.enable_collision = enable_collision
+    plan_profile.enable_edge_collision = enable_edge_collision
+    base_plan = cast_DescartesPlanProfileD(plan_profile)
+
+    solver_profile = DescartesLadderGraphSolverProfileD()
+    solver_profile.num_threads = num_threads
+    base_solver = cast_DescartesSolverProfileD(solver_profile)
+
+    # Register under all requested names
     profiles = ProfileDictionary()
-
     for name in profile_names:
-        # Plan profile (waypoint sampling, collision)
-        plan_profile = DescartesDefaultPlanProfileD()
-        plan_profile.enable_collision = enable_collision
-        plan_profile.enable_edge_collision = enable_edge_collision
-        base_plan = cast_DescartesPlanProfileD(plan_profile)
         profiles.addProfile(DESCARTES_DEFAULT_NAMESPACE, name, base_plan)
-
-        # Solver profile (ladder graph solver)
-        solver_profile = DescartesLadderGraphSolverProfileD()
-        solver_profile.num_threads = num_threads
-        base_solver = cast_DescartesSolverProfileD(solver_profile)
         profiles.addProfile(DESCARTES_DEFAULT_NAMESPACE, name, base_solver)
 
     return profiles
@@ -212,24 +221,26 @@ def _add_trajopt_to_profiles(
     )
 
     if profile_names is None:
-        profile_names = ["DEFAULT", "FREESPACE"]
+        profile_names = TRAJOPT_PROFILE_NAMES
 
+    # Create ONE set of profiles
+    composite = TrajOptDefaultCompositeProfile()
+    composite.collision_constraint_config.enabled = True
+    composite.collision_constraint_config.safety_margin = 0.00
+    composite.collision_constraint_config.safety_margin_buffer = 0.005
+    composite.collision_constraint_config.coeff = 10
+    composite.collision_cost_config.safety_margin = 0.005
+    composite.collision_cost_config.safety_margin_buffer = 0.01
+    composite.collision_cost_config.coeff = 50
+
+    plan = TrajOptDefaultPlanProfile()
+    plan.cartesian_cost_config.enabled = False
+    plan.cartesian_constraint_config.enabled = True
+    plan.joint_cost_config.enabled = False
+    plan.joint_constraint_config.enabled = True
+
+    # Register under all requested names
     for name in profile_names:
-        composite = TrajOptDefaultCompositeProfile()
-        composite.collision_constraint_config.enabled = True
-        composite.collision_constraint_config.safety_margin = 0.00
-        composite.collision_constraint_config.safety_margin_buffer = 0.005
-        composite.collision_constraint_config.coeff = 10
-        composite.collision_cost_config.safety_margin = 0.005
-        composite.collision_cost_config.safety_margin_buffer = 0.01
-        composite.collision_cost_config.coeff = 50
-
-        plan = TrajOptDefaultPlanProfile()
-        plan.cartesian_cost_config.enabled = False
-        plan.cartesian_constraint_config.enabled = True
-        plan.joint_cost_config.enabled = False
-        plan.joint_constraint_config.enabled = True
-
         ProfileDictionary_addTrajOptCompositeProfile(
             profiles, TRAJOPT_DEFAULT_NAMESPACE, name, composite
         )
@@ -250,7 +261,7 @@ def create_freespace_pipeline_profiles(
     2. TrajOpt for trajectory optimization/smoothing
 
     Args:
-        profile_names: Profile names to register. Default: ["DEFAULT"]
+        profile_names: Profile names to register. Default: STANDARD_PROFILE_NAMES
         num_planners: Number of parallel OMPL planners (default: all CPUs)
         planning_time: OMPL planning time in seconds (default: 5.0)
 
@@ -258,7 +269,7 @@ def create_freespace_pipeline_profiles(
         ProfileDictionary with both OMPL and TrajOpt profiles
     """
     if profile_names is None:
-        profile_names = ["DEFAULT"]
+        profile_names = STANDARD_PROFILE_NAMES
 
     # Start with OMPL profiles
     profiles = create_ompl_default_profiles(
@@ -284,14 +295,14 @@ def create_cartesian_pipeline_profiles(
     2. TrajOpt for trajectory optimization
 
     Args:
-        profile_names: Profile names to register. Default: ["DEFAULT"]
+        profile_names: Profile names to register. Default: STANDARD_PROFILE_NAMES
         num_threads: Number of Descartes solver threads (default: all CPUs)
 
     Returns:
         ProfileDictionary with both Descartes and TrajOpt profiles
     """
     if profile_names is None:
-        profile_names = ["DEFAULT"]
+        profile_names = STANDARD_PROFILE_NAMES
 
     # Start with Descartes profiles
     profiles = create_descartes_default_profiles(
