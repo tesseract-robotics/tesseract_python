@@ -134,21 +134,22 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     # Set library paths for macOS
     export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$WORKSPACE_DIR/install/lib
 
-    # Configure OpenMP paths if available
-    if [ -d "$BREW_PREFIX/opt/libomp" ]; then
-        echo "✓ Found libomp at $BREW_PREFIX/opt/libomp"
+    # Configure OpenMP paths - use conda's llvm-openmp (not Homebrew's)
+    # This avoids duplicate library crashes when both are loaded at runtime
+    if [ -f "$CONDA_PREFIX/lib/libomp.dylib" ]; then
+        echo "✓ Found libomp at $CONDA_PREFIX/lib/libomp.dylib (conda)"
         OPENMP_CMAKE_ARGS=(
-            -DOpenMP_CXX_INCLUDE_DIR=$BREW_PREFIX/opt/libomp/include
-            -DOpenMP_C_INCLUDE_DIR=$BREW_PREFIX/opt/libomp/include
+            -DOpenMP_CXX_INCLUDE_DIR=$CONDA_PREFIX/include
+            -DOpenMP_C_INCLUDE_DIR=$CONDA_PREFIX/include
             -DOpenMP_CXX_LIB_NAMES=libomp
             -DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp"
             -DOpenMP_C_LIB_NAMES=libomp
             -DOpenMP_C_FLAGS="-Xpreprocessor -fopenmp"
-            -DOpenMP_libomp_LIBRARY=$BREW_PREFIX/opt/libomp/lib/libomp.dylib
+            -DOpenMP_libomp_LIBRARY=$CONDA_PREFIX/lib/libomp.dylib
         )
     else
-        echo "⚠️  libomp not found at $BREW_PREFIX/opt/libomp"
-        echo "   Install with: brew install libomp"
+        echo "⚠️  libomp not found in conda env"
+        echo "   Install with: conda install llvm-openmp"
         OPENMP_CMAKE_ARGS=()
     fi
     # Set rpath to @loader_path so libs find deps in same directory

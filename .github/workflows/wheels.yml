@@ -44,7 +44,8 @@ jobs:
     - name: brew (macOS)
       if: matrix.config.os == 'macos'
       run: |
-        brew install libomp automake autoconf libtool
+        brew install automake autoconf libtool
+        # Note: libomp comes from conda (llvm-openmp) to avoid duplicate library crashes
     - name: cache conda env
       uses: actions/cache@v4
       id: conda-cache
@@ -100,11 +101,11 @@ jobs:
             -DCMAKE_INSTALL_RPATH=@loader_path \
             -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
             -DQT_HOST_PATH=$CONDA_PREFIX \
-            -DOpenMP_CXX_INCLUDE_DIR=/opt/homebrew/opt/libomp/include \
-            -DOpenMP_C_INCLUDE_DIR=/opt/homebrew/opt/libomp/include \
+            -DOpenMP_CXX_INCLUDE_DIR=$CONDA_PREFIX/include \
+            -DOpenMP_C_INCLUDE_DIR=$CONDA_PREFIX/include \
             -DOpenMP_CXX_LIB_NAMES=libomp -DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp" \
             -DOpenMP_C_LIB_NAMES=libomp -DOpenMP_C_FLAGS="-Xpreprocessor -fopenmp" \
-            -DOpenMP_libomp_LIBRARY=/opt/homebrew/opt/libomp/lib/libomp.dylib
+            -DOpenMP_libomp_LIBRARY=$CONDA_PREFIX/lib/libomp.dylib
     - name: colcon build C++ deps (Linux)
       if: matrix.config.os == 'linux' && steps.colcon-cache.outputs.cache-hit != 'true'
       working-directory: ws
@@ -147,7 +148,7 @@ jobs:
       if: matrix.config.os == 'macos'
       working-directory: ws/src/tesseract_nanobind/tesseract_nanobind
       run: |
-        export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib:/opt/homebrew/opt/libomp/lib
+        export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
         mkdir -p wheelhouse
         delocate-wheel -w wheelhouse -v dist/*.whl
     - name: bundle plugins (macOS)
@@ -179,7 +180,7 @@ jobs:
         done
 
         # Fix rpaths in newly added plugins
-        export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib:/opt/homebrew/opt/libomp/lib
+        export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$GITHUB_WORKSPACE/ws/install/lib
         delocate-path "$WHEEL_DIR/tesseract_robotics/.dylibs" -L "$GITHUB_WORKSPACE/ws/install/lib:$CONDA_PREFIX/lib"
 
         # Patch task_composer_config YAMLs only (resolved at runtime by __init__.py)

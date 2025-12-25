@@ -33,6 +33,7 @@ dependencies:
   - gtest
   - qpoases
   - taskflow
+  - llvm-openmp  # OpenMP runtime (use conda's, not Homebrew's, to avoid duplicate lib crashes)
   # Note: libosqp/osqp-eigen removed - trajopt needs OSQP 0.6.x, conda has 1.0.x
   # trajopt_ext/osqp builds compatible version automatically
 
@@ -52,8 +53,8 @@ dependencies:
     - vcstool
 
 # Notes:
-# - Some packages require brew on macOS: libomp, swig, automake, autoconf, libtool
-# - Install with: brew install libomp swig automake autoconf libtool
+# - Some packages require brew on macOS: swig, automake, autoconf, libtool
+# - Install with: brew install swig automake autoconf libtool
 #
 # Usage:
 #   conda env create -f environment.yml
