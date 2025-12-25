@@ -86,6 +86,14 @@ See the `examples/` directory for:
 - `puzzle_piece_example.py` - Cartesian path following
 - And more...
 
+## Development
+
+Enable pre-commit hook (runs test suite before each commit):
+
+```bash
+git config core.hooksPath .githooks
+```
+
 ## Acknowledgments
 
 This project builds upon the excellent work of [John Wason](https://github.com/johnwason) and the [Tesseract Robotics](https://github.com/tesseract-robotics) team. The original [tesseract_python](https://github.com/tesseract-robotics/tesseract_python) SWIG bindings laid the foundation for this nanobind implementation.
