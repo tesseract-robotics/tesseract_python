@@ -310,15 +310,25 @@ class TaskComposer:
         # Auto-seed Cartesian waypoints with current robot state
         assignCurrentStateAsSeed(composite, robot.env)
 
-        # Setup profiles - create planner-specific defaults if not provided
+        # Setup profiles - create pipeline-specific defaults if not provided
+        # Each pipeline may use multiple planners (e.g., OMPL + TrajOpt)
         if profiles is None:
-            if "TrajOpt" in pipeline:
+            if pipeline == "FreespacePipeline" or "Freespace" in pipeline:
+                # FreespacePipeline: OMPL (global planning) + TrajOpt (smoothing)
+                from .profiles import create_freespace_pipeline_profiles
+                profiles = create_freespace_pipeline_profiles()
+            elif pipeline == "CartesianPipeline" or "Cartesian" in pipeline:
+                # CartesianPipeline: Descartes (sampling) + TrajOpt (optimization)
+                from .profiles import create_cartesian_pipeline_profiles
+                profiles = create_cartesian_pipeline_profiles()
+            elif "TrajOpt" in pipeline:
+                # TrajOptPipeline: TrajOpt only
                 from .profiles import create_trajopt_default_profiles
                 profiles = create_trajopt_default_profiles()
-            elif "OMPL" in pipeline or "Freespace" in pipeline:
+            elif "OMPL" in pipeline:
                 from .profiles import create_ompl_default_profiles
                 profiles = create_ompl_default_profiles()
-            elif "Descartes" in pipeline or "Cartesian" in pipeline:
+            elif "Descartes" in pipeline:
                 from .profiles import create_descartes_default_profiles
                 profiles = create_descartes_default_profiles()
             else:

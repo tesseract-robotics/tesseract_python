@@ -187,3 +187,119 @@ def create_descartes_default_profiles(
         profiles.addProfile(DESCARTES_DEFAULT_NAMESPACE, name, base_solver)
 
     return profiles
+
+
+# =============================================================================
+# Pipeline-aware profile helpers
+# =============================================================================
+# These create profiles for complete pipelines (which use multiple planners)
+# Based on task_composer_plugins.yaml:
+#   FreespacePipeline → FreespaceTask → OMPL + TrajOpt
+#   CartesianPipeline → CartesianTask → Descartes + TrajOpt
+#   TrajOptPipeline → TrajOptTask → TrajOpt only
+
+
+def _add_trajopt_to_profiles(
+    profiles: ProfileDictionary,
+    profile_names: Optional[List[str]] = None,
+) -> None:
+    """Add TrajOpt profiles to existing ProfileDictionary (internal helper)."""
+    from tesseract_robotics.tesseract_motion_planners_trajopt import (
+        TrajOptDefaultCompositeProfile,
+        TrajOptDefaultPlanProfile,
+        ProfileDictionary_addTrajOptPlanProfile,
+        ProfileDictionary_addTrajOptCompositeProfile,
+    )
+
+    if profile_names is None:
+        profile_names = ["DEFAULT", "FREESPACE"]
+
+    for name in profile_names:
+        composite = TrajOptDefaultCompositeProfile()
+        composite.collision_constraint_config.enabled = True
+        composite.collision_constraint_config.safety_margin = 0.00
+        composite.collision_constraint_config.safety_margin_buffer = 0.005
+        composite.collision_constraint_config.coeff = 10
+        composite.collision_cost_config.safety_margin = 0.005
+        composite.collision_cost_config.safety_margin_buffer = 0.01
+        composite.collision_cost_config.coeff = 50
+
+        plan = TrajOptDefaultPlanProfile()
+        plan.cartesian_cost_config.enabled = False
+        plan.cartesian_constraint_config.enabled = True
+        plan.joint_cost_config.enabled = False
+        plan.joint_constraint_config.enabled = True
+
+        ProfileDictionary_addTrajOptCompositeProfile(
+            profiles, TRAJOPT_DEFAULT_NAMESPACE, name, composite
+        )
+        ProfileDictionary_addTrajOptPlanProfile(
+            profiles, TRAJOPT_DEFAULT_NAMESPACE, name, plan
+        )
+
+
+def create_freespace_pipeline_profiles(
+    profile_names: Optional[List[str]] = None,
+    num_planners: Optional[int] = None,
+    planning_time: float = 5.0,
+) -> ProfileDictionary:
+    """Create profiles for FreespacePipeline (OMPL + TrajOpt).
+
+    FreespacePipeline uses:
+    1. OMPL for global path planning (parallel RRTConnect)
+    2. TrajOpt for trajectory optimization/smoothing
+
+    Args:
+        profile_names: Profile names to register. Default: ["DEFAULT"]
+        num_planners: Number of parallel OMPL planners (default: all CPUs)
+        planning_time: OMPL planning time in seconds (default: 5.0)
+
+    Returns:
+        ProfileDictionary with both OMPL and TrajOpt profiles
+    """
+    if profile_names is None:
+        profile_names = ["DEFAULT"]
+
+    # Start with OMPL profiles
+    profiles = create_ompl_default_profiles(
+        profile_names=profile_names,
+        num_planners=num_planners,
+        planning_time=planning_time,
+    )
+
+    # Add TrajOpt profiles for smoothing step
+    _add_trajopt_to_profiles(profiles, profile_names)
+
+    return profiles
+
+
+def create_cartesian_pipeline_profiles(
+    profile_names: Optional[List[str]] = None,
+    num_threads: Optional[int] = None,
+) -> ProfileDictionary:
+    """Create profiles for CartesianPipeline (Descartes + TrajOpt).
+
+    CartesianPipeline uses:
+    1. Descartes for Cartesian path sampling (ladder graph)
+    2. TrajOpt for trajectory optimization
+
+    Args:
+        profile_names: Profile names to register. Default: ["DEFAULT"]
+        num_threads: Number of Descartes solver threads (default: all CPUs)
+
+    Returns:
+        ProfileDictionary with both Descartes and TrajOpt profiles
+    """
+    if profile_names is None:
+        profile_names = ["DEFAULT"]
+
+    # Start with Descartes profiles
+    profiles = create_descartes_default_profiles(
+        profile_names=profile_names,
+        num_threads=num_threads,
+    )
+
+    # Add TrajOpt profiles for optimization step
+    _add_trajopt_to_profiles(profiles, profile_names)
+
+    return profiles
