@@ -124,20 +124,27 @@ def create_descartes_default_profiles(
     profile_names: Optional[List[str]] = None,
     enable_collision: bool = True,
     enable_edge_collision: bool = False,
+    num_threads: int = 1,
 ) -> ProfileDictionary:
     """Create Descartes profiles with sensible defaults.
+
+    Creates both plan profiles (waypoint sampling) and solver profiles
+    (ladder graph solver configuration).
 
     Args:
         profile_names: Profile names to register. Default: ["DEFAULT"]
         enable_collision: Enable vertex collision checking (default: True)
         enable_edge_collision: Enable edge collision checking (default: False)
+        num_threads: Number of threads for solver (default: 1)
 
     Returns:
         ProfileDictionary with configured Descartes profiles
     """
     from tesseract_robotics.tesseract_motion_planners_descartes import (
         DescartesDefaultPlanProfileD,
+        DescartesLadderGraphSolverProfileD,
         cast_DescartesPlanProfileD,
+        cast_DescartesSolverProfileD,
     )
 
     if profile_names is None:
@@ -146,14 +153,17 @@ def create_descartes_default_profiles(
     profiles = ProfileDictionary()
 
     for name in profile_names:
-        profile = DescartesDefaultPlanProfileD()
+        # Plan profile (waypoint sampling, collision)
+        plan_profile = DescartesDefaultPlanProfileD()
+        plan_profile.enable_collision = enable_collision
+        plan_profile.enable_edge_collision = enable_edge_collision
+        base_plan = cast_DescartesPlanProfileD(plan_profile)
+        profiles.addProfile(DESCARTES_DEFAULT_NAMESPACE, name, base_plan)
 
-        # Configure collision settings
-        profile.enable_collision = enable_collision
-        profile.enable_edge_collision = enable_edge_collision
-
-        # Cast to base Profile type and add to dictionary
-        base_profile = cast_DescartesPlanProfileD(profile)
-        profiles.addProfile(DESCARTES_DEFAULT_NAMESPACE, name, base_profile)
+        # Solver profile (ladder graph solver)
+        solver_profile = DescartesLadderGraphSolverProfileD()
+        solver_profile.num_threads = num_threads
+        base_solver = cast_DescartesSolverProfileD(solver_profile)
+        profiles.addProfile(DESCARTES_DEFAULT_NAMESPACE, name, base_solver)
 
     return profiles

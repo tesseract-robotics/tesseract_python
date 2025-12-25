@@ -16,6 +16,7 @@
 #include <tesseract_motion_planners/descartes/descartes_motion_planner.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_profile.h>
 #include <tesseract_motion_planners/descartes/profile/descartes_default_plan_profile.h>
+#include <tesseract_motion_planners/descartes/profile/descartes_ladder_graph_solver_profile.h>
 
 // tesseract_collision for CollisionCheckConfig
 #include <tesseract_collision/core/types.h>
@@ -30,6 +31,23 @@ NB_MODULE(_tesseract_motion_planners_descartes, m) {
 
     // Import tesseract_collision for CollisionCheckConfig
     nb::module_::import_("tesseract_robotics.tesseract_collision._tesseract_collision");
+
+    // ========== DescartesSolverProfile<double> (base for solver profiles) ==========
+    nb::class_<tp::DescartesSolverProfile<double>, tp::Profile>(m, "DescartesSolverProfileD")
+        .def("getKey", &tp::DescartesSolverProfile<double>::getKey)
+        .def_static("getStaticKey", &tp::DescartesSolverProfile<double>::getStaticKey);
+
+    // ========== DescartesLadderGraphSolverProfile<double> ==========
+    nb::class_<tp::DescartesLadderGraphSolverProfile<double>, tp::DescartesSolverProfile<double>>(m, "DescartesLadderGraphSolverProfileD")
+        .def(nb::init<>())
+        .def_rw("num_threads", &tp::DescartesLadderGraphSolverProfile<double>::num_threads,
+            "Number of threads to use during planning (default: 1)");
+
+    // Helper to cast DescartesLadderGraphSolverProfileD to Profile
+    m.def("cast_DescartesSolverProfileD", [](std::shared_ptr<tp::DescartesLadderGraphSolverProfile<double>> profile) {
+        return std::static_pointer_cast<tp::Profile>(profile);
+    }, "profile"_a,
+    "Cast DescartesLadderGraphSolverProfileD to Profile for use with ProfileDictionary");
 
     // ========== DescartesPlanProfile<double> (base) ==========
     nb::class_<tp::DescartesPlanProfile<double>, tp::Profile>(m, "DescartesPlanProfileD")
