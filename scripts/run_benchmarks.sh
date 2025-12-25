@@ -8,5 +8,4 @@ cd "$PROJECT_ROOT"
 
 source "$SCRIPT_DIR/env.sh"
 
-# xdist auto-disables benchmark timing, but tests still run in parallel
-exec pytest tesseract_nanobind/tests/benchmarks --benchmark-disable -n auto -v "$@"
+exec pytest tesseract_nanobind/tests/benchmarks --benchmark-enable -n0 --benchmark-histogram=bench -v "$@"
