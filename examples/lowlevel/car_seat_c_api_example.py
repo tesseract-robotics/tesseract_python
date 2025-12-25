@@ -219,7 +219,12 @@ def attach_seat_to_effector(robot, seat_name="seat_1"):
     print(f"Attached {seat_name} to end effector")
 
 
-def main():
+def run():
+    """Run example and return trajectory results for testing.
+
+    Returns:
+        dict with pick_result, place_result, robot, joint_names
+    """
     # Load car seat demo robot using high-level API
     robot = Robot.from_urdf(
         "package://tesseract_support/urdf/car_seat_demo.urdf",
@@ -263,10 +268,7 @@ def main():
 
     pick_result = composer.plan(robot, pick_program, pipeline="TrajOptPipeline")
 
-    if not pick_result.successful:
-        print(f"PICK planning failed: {pick_result.message}")
-        return False
-
+    assert pick_result.successful, f"PICK planning failed: {pick_result.message}"
     print(f"PICK successful! {len(pick_result)} waypoints")
 
     # ==================== ATTACH SEAT ====================
@@ -291,18 +293,26 @@ def main():
 
     place_result = composer.plan(robot, place_program, pipeline="TrajOptPipeline")
 
-    if not place_result.successful:
-        print(f"PLACE planning failed: {place_result.message}")
-        return False
-
+    assert place_result.successful, f"PLACE planning failed: {place_result.message}"
     print(f"PLACE successful! {len(place_result)} waypoints")
+
+    return {
+        "pick_result": pick_result,
+        "place_result": place_result,
+        "robot": robot,
+        "joint_names": joint_names,
+    }
+
+
+def main():
+    results = run()
 
     # Optional: visualize with viewer
     if TesseractViewer is not None:
         print("\nStarting viewer at http://localhost:8000")
         viewer = TesseractViewer()
-        viewer.update_environment(robot.env, [0, 0, 0])
-        viewer.update_trajectory(place_result.raw_results)
+        viewer.update_environment(results["robot"].env, [0, 0, 0])
+        viewer.update_trajectory(results["place_result"].raw_results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
 

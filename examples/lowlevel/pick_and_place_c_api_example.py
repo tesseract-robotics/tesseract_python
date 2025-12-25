@@ -91,7 +91,12 @@ def create_pick_and_place_profiles():
     return profiles
 
 
-def main():
+def run():
+    """Run example and return trajectory results for testing.
+
+    Returns:
+        dict with pick_result, place_result, robot, joint_names
+    """
     box_position = [-0.2, 0.55]
     box_size = 0.1
 
@@ -227,19 +232,26 @@ def main():
 
     place_result = composer.plan(robot, place_program, pipeline="TrajOptPipeline", profiles=profiles)
 
-    if not place_result.successful:
-        print(f"PLACE planning failed: {place_result.message}")
-        return False
-
+    assert place_result.successful, f"PLACE planning failed: {place_result.message}"
     print("PLACE planning successful!")
     print(f"Place trajectory has {len(place_result)} waypoints")
 
-    # Optional: visualize with viewer
+    return {
+        "pick_result": pick_result,
+        "place_result": place_result,
+        "robot": robot,
+        "joint_names": joint_names,
+    }
+
+
+def main():
+    results = run()
+
     if TesseractViewer is not None:
         print("\nStarting viewer at http://localhost:8000")
         viewer = TesseractViewer()
-        viewer.update_environment(robot.env, [0, 0, 0])
-        viewer.update_trajectory(place_result.raw_results)
+        viewer.update_environment(results["robot"].env, [0, 0, 0])
+        viewer.update_trajectory(results["place_result"].raw_results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
 

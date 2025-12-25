@@ -310,9 +310,13 @@ class TaskComposer:
         # Auto-seed Cartesian waypoints with current robot state
         assignCurrentStateAsSeed(composite, robot.env)
 
-        # Setup profiles
+        # Setup profiles - create TrajOpt defaults if using TrajOpt pipeline
         if profiles is None:
-            profiles = ProfileDictionary()
+            if "TrajOpt" in pipeline:
+                from .profiles import create_trajopt_default_profiles
+                profiles = create_trajopt_default_profiles()
+            else:
+                profiles = ProfileDictionary()
 
         # Create task
         task = self.factory.createTaskComposerNode(pipeline)

@@ -30,12 +30,26 @@ if "pytest" not in sys.modules:
     except ImportError:
         pass
 
-# Predefined joint positions
+# Predefined joint positions (dicts for order-independent access)
 POSITIONS = {
-    "Home": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-    "Pick1": [2.22, 0.39, 0.0, 0.5, 0.0, -3.14, -0.29, -1.45],
-    "Place1": [4.15466, 0.537218, 0.0189056, 0.801223, 0.0580309, -0.0481182, -0.325783, -1.2813],
+    "Home": {
+        "carriage_rail": 0.0, "joint_b": 0.0, "joint_e": 0.0, "joint_l": 0.0,
+        "joint_r": 0.0, "joint_s": 0.0, "joint_t": 0.0, "joint_u": 0.0,
+    },
+    "Pick1": {
+        "carriage_rail": 2.22, "joint_b": 0.39, "joint_e": 0.0, "joint_l": 0.5,
+        "joint_r": 0.0, "joint_s": -3.14, "joint_t": -0.29, "joint_u": -1.45,
+    },
+    "Place1": {
+        "carriage_rail": 4.15466, "joint_b": 0.537218, "joint_e": 0.0189056, "joint_l": 0.801223,
+        "joint_r": 0.0580309, "joint_s": -0.0481182, "joint_t": -0.325783, "joint_u": -1.2813,
+    },
 }
+
+
+def get_position_vector(joint_names, pos_dict):
+    """Get joint position vector from a position dictionary."""
+    return np.array([pos_dict[name] for name in joint_names])
 
 
 def add_seats(robot):
@@ -127,7 +141,12 @@ def plan_motion(robot, composer, joint_names, start_pos, end_pos, phase_name):
     return result
 
 
-def main():
+def run():
+    """Run example and return trajectory results for testing.
+
+    Returns:
+        dict with pick_result, place_result, robot, joint_names
+    """
     # Load robot
     robot = Robot.from_urdf(
         "package://tesseract_support/urdf/car_seat_demo.urdf",
@@ -143,12 +162,12 @@ def main():
     # Add seats and initialize
     add_seats(robot)
 
-    # Convert position lists to arrays
-    home_pos = np.array(POSITIONS["Home"])
-    pick_pos = np.array(POSITIONS["Pick1"])
-    place_pos = np.array(POSITIONS["Place1"])
+    # Get position vectors in correct joint order
+    home_pos = get_position_vector(joint_names, POSITIONS["Home"])
+    pick_pos = get_position_vector(joint_names, POSITIONS["Pick1"])
+    place_pos = get_position_vector(joint_names, POSITIONS["Place1"])
 
-    robot.set_joints(home_pos, joint_names=joint_names)
+    robot.set_joints(POSITIONS["Home"])
 
     composer = TaskComposer.from_config()
 
@@ -157,18 +176,29 @@ def main():
 
     # Phase 2: Attach seat
     print("\n=== ATTACH SEAT ===")
-    robot.set_joints(pick_pos, joint_names=joint_names)
+    robot.set_joints(POSITIONS["Pick1"])
     attach_seat(robot, "seat_1")
 
     # Phase 3: Move to place position
     place_result = plan_motion(robot, composer, joint_names, pick_pos, place_pos, "PLACE")
 
+    return {
+        "pick_result": pick_result,
+        "place_result": place_result,
+        "robot": robot,
+        "joint_names": joint_names,
+    }
+
+
+def main():
+    results = run()
+
     # Visualize
     if TesseractViewer is not None:
         print("\nViewer at http://localhost:8000")
         viewer = TesseractViewer()
-        viewer.update_environment(robot.env, [0, 0, 0])
-        viewer.update_trajectory(place_result.raw_results)
+        viewer.update_environment(results["robot"].env, [0, 0, 0])
+        viewer.update_trajectory(results["place_result"].raw_results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
 

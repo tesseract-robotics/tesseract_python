@@ -56,7 +56,12 @@ def create_profiles():
     return profiles
 
 
-def main():
+def run():
+    """Run example and return trajectory results for testing.
+
+    Returns:
+        dict with pick_result, place_result, robot, joint_names
+    """
     box_pos = [-0.2, 0.55]
 
     # Load robot
@@ -86,11 +91,12 @@ def main():
     # === PICK ===
     print("\n=== PICK ===")
 
-    # Pick pose: pointing down (-Z), using 180deg rotation around X
-    # Pose.from_xyz_quat uses scalar-last: (qx, qy, qz, qw)
+    # Pick pose: pointing down (-Z), 180deg rotation around Y axis
+    # Rotation matrix: [[-1,0,0], [0,1,0], [0,0,-1]] matches C++ original
     pick_z = BOX_SIZE + 0.772 + OFFSET
-    pick_pose = Pose.from_xyz_quat(box_pos[0], box_pos[1], pick_z, 1, 0, 0, 0)
-    approach_pose = Pose.from_xyz_quat(box_pos[0], box_pos[1], pick_z + 0.15, 1, 0, 0, 0)
+    pick_rotation = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, -1]])
+    pick_pose = Pose.from_matrix_position(pick_rotation, [box_pos[0], box_pos[1], pick_z])
+    approach_pose = Pose.from_matrix_position(pick_rotation, [box_pos[0], box_pos[1], pick_z + 0.15])
 
     pick_program = (MotionProgram("manipulator", tcp_frame=LINK_TCP, working_frame=LINK_BASE)
         .set_joint_names(joint_names)
@@ -123,15 +129,14 @@ def main():
     # === PLACE ===
     print("\n=== PLACE ===")
 
-    # Place pose: C++ Eigen::Quaterniond(w=0, x=0, y=0.7071, z=0.7071)
-    # scalar-last: (qx=0, qy=0.7071, qz=0.7071, qw=0)
+    # Place pose: C++ Eigen::Quaterniond(w=0, x=0, y=0.7071, z=0.7071) = rotation matrix [[-1,0,0],[0,0,1],[0,1,0]]
+    place_rotation = np.array([[-1.0, 0.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0, 0.0]])
     place_pos = [-0.148856, 0.73085, 1.16]
-    place_pose = Pose.from_xyz_quat(place_pos[0], place_pos[1], place_pos[2], 0, 0.7071068, 0.7071068, 0)
+    place_pose = Pose.from_matrix_position(place_rotation, place_pos)
 
     # Approach: 25cm back in Y
-    place_approach_pose = Pose.from_xyz_quat(
-        place_pos[0], place_pos[1] - 0.25, place_pos[2], 0, 0.7071068, 0.7071068, 0
-    )
+    place_approach_pos = [place_pos[0], place_pos[1] - 0.25, place_pos[2]]
+    place_approach_pose = Pose.from_matrix_position(place_rotation, place_approach_pos)
 
     place_program = (MotionProgram("manipulator", tcp_frame=LINK_TCP, working_frame=LINK_BASE)
         .set_joint_names(joint_names)
@@ -145,11 +150,22 @@ def main():
     assert place_result.successful, f"PLACE failed: {place_result.message}"
     print(f"PLACE OK: {len(place_result)} waypoints")
 
+    return {
+        "pick_result": pick_result,
+        "place_result": place_result,
+        "robot": robot,
+        "joint_names": joint_names,
+    }
+
+
+def main():
+    results = run()
+
     if TesseractViewer is not None:
         print("\nViewer at http://localhost:8000")
         viewer = TesseractViewer()
-        viewer.update_environment(robot.env, [0, 0, 0])
-        viewer.update_trajectory(place_result.raw_results)
+        viewer.update_environment(results["robot"].env, [0, 0, 0])
+        viewer.update_trajectory(results["place_result"].raw_results)
         viewer.start_serve_background()
         input("Press Enter to exit...")
 

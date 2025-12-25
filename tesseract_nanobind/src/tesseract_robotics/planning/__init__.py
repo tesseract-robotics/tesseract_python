@@ -86,6 +86,10 @@ from tesseract_robotics.planning.composer import (
     TaskComposer,
 )
 
+from tesseract_robotics.planning.profiles import (
+    create_trajopt_default_profiles,
+)
+
 __all__ = [
     # Core
     "Robot",
@@ -123,4 +127,6 @@ __all__ = [
     "assign_current_state_as_seed",
     # Task Composer
     "TaskComposer",
+    # Profiles
+    "create_trajopt_default_profiles",
 ]
