@@ -84,6 +84,7 @@ def create_ompl_default_profiles(
     max_solutions: int = 10,
     optimize: bool = True,
     simplify: bool = False,
+    num_planners: Optional[int] = None,
 ) -> ProfileDictionary:
     """Create OMPL profiles with sensible defaults.
 
@@ -93,6 +94,7 @@ def create_ompl_default_profiles(
         max_solutions: Max solutions to find before exiting (default: 10)
         optimize: Use all planning time to optimize trajectory (default: True)
         simplify: Simplify trajectory after planning (default: False)
+        num_planners: Number of parallel RRTConnect planners (default: 2, matching C++)
 
     Returns:
         ProfileDictionary with configured OMPL profiles
@@ -100,10 +102,15 @@ def create_ompl_default_profiles(
     from tesseract_robotics.tesseract_motion_planners_ompl import (
         OMPLRealVectorPlanProfile,
         ProfileDictionary_addOMPLProfile,
+        RRTConnectConfigurator,
     )
 
     if profile_names is None:
         profile_names = ["DEFAULT"]
+
+    # Default to 2 planners (matches C++ OMPLRealVectorPlanProfile constructor)
+    if num_planners is None:
+        num_planners = 2
 
     profiles = ProfileDictionary()
 
@@ -115,6 +122,11 @@ def create_ompl_default_profiles(
         profile.solver_config.max_solutions = max_solutions
         profile.solver_config.optimize = optimize
         profile.solver_config.simplify = simplify
+
+        # Add parallel RRTConnect planners (C++ default is 2)
+        profile.solver_config.clearPlanners()
+        for _ in range(num_planners):
+            profile.solver_config.addPlanner(RRTConnectConfigurator())
 
         ProfileDictionary_addOMPLProfile(
             profiles, OMPL_DEFAULT_NAMESPACE, name, profile

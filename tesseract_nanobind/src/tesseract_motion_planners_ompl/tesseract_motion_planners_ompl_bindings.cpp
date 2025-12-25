@@ -43,8 +43,16 @@ NB_MODULE(_tesseract_motion_planners_ompl, m) {
         .def_rw("simplify", &tp::OMPLSolverConfig::simplify,
             "Simplify trajectory (default: false). Ignores n_output_states if true.")
         .def_rw("optimize", &tp::OMPLSolverConfig::optimize,
-            "Use all planning time to optimize trajectory (default: true)");
-    // Note: planners vector not exposed - requires OMPLPlannerConfigurator shared_ptr handling
+            "Use all planning time to optimize trajectory (default: true)")
+        .def("addPlanner", [](tp::OMPLSolverConfig& self, std::shared_ptr<tp::OMPLPlannerConfigurator> planner) {
+            self.planners.push_back(planner);
+        }, "planner"_a, "Add a planner configurator (each runs in parallel)")
+        .def("clearPlanners", [](tp::OMPLSolverConfig& self) {
+            self.planners.clear();
+        }, "Clear all planners")
+        .def("getNumPlanners", [](const tp::OMPLSolverConfig& self) {
+            return self.planners.size();
+        }, "Get number of planners (threads)");
 
     // ========== OMPLPlannerType enum ==========
     nb::enum_<tp::OMPLPlannerType>(m, "OMPLPlannerType")
