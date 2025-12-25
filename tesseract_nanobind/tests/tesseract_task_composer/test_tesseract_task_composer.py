@@ -3,7 +3,7 @@ import os
 import gc
 import pytest
 
-import tesseract_robotics  # triggers env var setup
+import tesseract_robotics
 from tesseract_robotics.tesseract_common import FilesystemPath, GeneralResourceLocator
 from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory
 
@@ -13,7 +13,14 @@ class TestTaskComposerPluginFactory:
 
     def test_create_factory_and_nodes(self):
         """Test factory creation and pipeline node creation."""
-        config_path = FilesystemPath(os.environ["TESSERACT_TASK_COMPOSER_CONFIG_FILE"])
+        # Try env var first (set during test runs), then package config
+        config_file = os.environ.get("TESSERACT_TASK_COMPOSER_CONFIG_FILE")
+        if not config_file or not os.path.isfile(config_file):
+            pkg_config = tesseract_robotics.get_task_composer_config_path()
+            if pkg_config and pkg_config.is_file():
+                config_file = str(pkg_config)
+        assert config_file and os.path.isfile(config_file), "No task composer config found"
+        config_path = FilesystemPath(config_file)
         locator = GeneralResourceLocator()
         factory = TaskComposerPluginFactory(config_path, locator)
         assert factory is not None

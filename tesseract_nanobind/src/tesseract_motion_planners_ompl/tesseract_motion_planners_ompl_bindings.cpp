@@ -118,7 +118,7 @@ NB_MODULE(_tesseract_motion_planners_ompl, m) {
     nb::class_<tp::OMPLMotionPlanner>(m, "OMPLMotionPlanner")
         .def(nb::init<std::string>(), "name"_a)
         .def("getName", &tp::OMPLMotionPlanner::getName)
-        .def("solve", &tp::OMPLMotionPlanner::solve, "request"_a)
+        .def("solve", &tp::OMPLMotionPlanner::solve, "request"_a, nb::call_guard<nb::gil_scoped_release>())
         .def("terminate", &tp::OMPLMotionPlanner::terminate)
         .def("clear", &tp::OMPLMotionPlanner::clear);
 }

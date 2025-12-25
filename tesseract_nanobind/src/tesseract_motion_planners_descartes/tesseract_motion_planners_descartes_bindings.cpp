@@ -82,7 +82,7 @@ NB_MODULE(_tesseract_motion_planners_descartes, m) {
     nb::class_<tp::DescartesMotionPlanner<double>>(m, "DescartesMotionPlannerD")
         .def(nb::init<std::string>(), "name"_a)
         .def("getName", &tp::DescartesMotionPlanner<double>::getName)
-        .def("solve", &tp::DescartesMotionPlanner<double>::solve, "request"_a)
+        .def("solve", &tp::DescartesMotionPlanner<double>::solve, "request"_a, nb::call_guard<nb::gil_scoped_release>())
         .def("terminate", &tp::DescartesMotionPlanner<double>::terminate)
         .def("clear", &tp::DescartesMotionPlanner<double>::clear);
 }

@@ -135,7 +135,7 @@ NB_MODULE(_tesseract_motion_planners_trajopt, m) {
     nb::class_<tp::TrajOptMotionPlanner>(m, "TrajOptMotionPlanner")
         .def(nb::init<std::string>(), "name"_a)
         .def("getName", &tp::TrajOptMotionPlanner::getName)
-        .def("solve", &tp::TrajOptMotionPlanner::solve, "request"_a)
+        .def("solve", &tp::TrajOptMotionPlanner::solve, "request"_a, nb::call_guard<nb::gil_scoped_release>())
         .def("terminate", &tp::TrajOptMotionPlanner::terminate)
         .def("clear", &tp::TrajOptMotionPlanner::clear);
 }

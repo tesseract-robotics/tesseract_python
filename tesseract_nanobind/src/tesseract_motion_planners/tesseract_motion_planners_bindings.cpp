@@ -49,7 +49,7 @@ NB_MODULE(_tesseract_motion_planners, m) {
     // ========== MotionPlanner (abstract base) ==========
     nb::class_<tp::MotionPlanner>(m, "MotionPlanner")
         .def("getName", &tp::MotionPlanner::getName)
-        .def("solve", &tp::MotionPlanner::solve, "request"_a)
+        .def("solve", &tp::MotionPlanner::solve, "request"_a, nb::call_guard<nb::gil_scoped_release>())
         .def("terminate", &tp::MotionPlanner::terminate)
         .def("clear", &tp::MotionPlanner::clear)
         .def_static("checkRequest", nb::overload_cast<const tp::PlannerRequest&>(&tp::MotionPlanner::checkRequest),

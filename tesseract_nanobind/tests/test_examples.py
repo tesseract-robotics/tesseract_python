@@ -503,7 +503,7 @@ class TestSceneGraphExampleRun:
 
     def test_scene_graph_example_runs(self):
         """Run the scene graph example end-to-end"""
-        script = LOWLEVEL_EXAMPLES_DIR / "scene_graph_example.py"
+        script = LOWLEVEL_EXAMPLES_DIR / "scene_graph_c_api_example.py"
         assert script.exists(), f"Example script not found: {script}"
 
         result = subprocess.run(

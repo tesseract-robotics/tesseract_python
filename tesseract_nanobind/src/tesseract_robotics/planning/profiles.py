@@ -6,9 +6,15 @@ matching C++ example defaults (collision margins, cost coefficients, etc.).
 """
 from __future__ import annotations
 
+import os
 from typing import List, Optional
 
 from tesseract_robotics.tesseract_command_language import ProfileDictionary
+
+
+def _get_cpu_count() -> int:
+    """Get number of available CPUs for parallel planning."""
+    return os.cpu_count() or 1
 
 
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
@@ -124,7 +130,7 @@ def create_descartes_default_profiles(
     profile_names: Optional[List[str]] = None,
     enable_collision: bool = True,
     enable_edge_collision: bool = False,
-    num_threads: int = 1,
+    num_threads: Optional[int] = None,
 ) -> ProfileDictionary:
     """Create Descartes profiles with sensible defaults.
 
@@ -135,11 +141,13 @@ def create_descartes_default_profiles(
         profile_names: Profile names to register. Default: ["DEFAULT"]
         enable_collision: Enable vertex collision checking (default: True)
         enable_edge_collision: Enable edge collision checking (default: False)
-        num_threads: Number of threads for solver (default: 1)
+        num_threads: Number of threads for solver (default: all CPUs)
 
     Returns:
         ProfileDictionary with configured Descartes profiles
     """
+    if num_threads is None:
+        num_threads = _get_cpu_count()
     from tesseract_robotics.tesseract_motion_planners_descartes import (
         DescartesDefaultPlanProfileD,
         DescartesLadderGraphSolverProfileD,

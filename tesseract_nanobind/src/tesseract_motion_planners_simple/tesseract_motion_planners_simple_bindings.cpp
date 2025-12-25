@@ -29,7 +29,7 @@ NB_MODULE(_tesseract_motion_planners_simple, m) {
     nb::class_<tp::SimpleMotionPlanner>(m, "SimpleMotionPlanner")
         .def(nb::init<std::string>(), "name"_a = "SIMPLE")
         .def("getName", &tp::SimpleMotionPlanner::getName)
-        .def("solve", &tp::SimpleMotionPlanner::solve, "request"_a)
+        .def("solve", &tp::SimpleMotionPlanner::solve, "request"_a, nb::call_guard<nb::gil_scoped_release>())
         .def("terminate", &tp::SimpleMotionPlanner::terminate)
         .def("clear", &tp::SimpleMotionPlanner::clear);
 
