@@ -21,6 +21,9 @@ build/
 *.so
 .env
 
+# testing
+.pytest_cache/
+
 # OS
 .DS_Store
 
