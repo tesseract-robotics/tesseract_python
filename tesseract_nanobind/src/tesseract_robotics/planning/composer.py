@@ -310,11 +310,17 @@ class TaskComposer:
         # Auto-seed Cartesian waypoints with current robot state
         assignCurrentStateAsSeed(composite, robot.env)
 
-        # Setup profiles - create TrajOpt defaults if using TrajOpt pipeline
+        # Setup profiles - create planner-specific defaults if not provided
         if profiles is None:
             if "TrajOpt" in pipeline:
                 from .profiles import create_trajopt_default_profiles
                 profiles = create_trajopt_default_profiles()
+            elif "OMPL" in pipeline or "Freespace" in pipeline:
+                from .profiles import create_ompl_default_profiles
+                profiles = create_ompl_default_profiles()
+            elif "Descartes" in pipeline or "Cartesian" in pipeline:
+                from .profiles import create_descartes_default_profiles
+                profiles = create_descartes_default_profiles()
             else:
                 profiles = ProfileDictionary()
 

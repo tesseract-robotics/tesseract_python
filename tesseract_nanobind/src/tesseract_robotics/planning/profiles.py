@@ -1,7 +1,7 @@
 """
-TrajOpt profile creation helpers.
+Motion planner profile creation helpers.
 
-These helpers create ProfileDictionary objects with TrajOpt profiles
+These helpers create ProfileDictionary objects with planner profiles
 matching C++ example defaults (collision margins, cost coefficients, etc.).
 """
 from __future__ import annotations
@@ -65,5 +65,95 @@ def create_trajopt_default_profiles(
         ProfileDictionary_addTrajOptPlanProfile(
             profiles, TRAJOPT_DEFAULT_NAMESPACE, name, plan
         )
+
+    return profiles
+
+
+OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
+
+
+def create_ompl_default_profiles(
+    profile_names: Optional[List[str]] = None,
+    planning_time: float = 5.0,
+    max_solutions: int = 10,
+    optimize: bool = True,
+    simplify: bool = False,
+) -> ProfileDictionary:
+    """Create OMPL profiles with sensible defaults.
+
+    Args:
+        profile_names: Profile names to register. Default: ["DEFAULT"]
+        planning_time: Max planning time in seconds (default: 5.0)
+        max_solutions: Max solutions to find before exiting (default: 10)
+        optimize: Use all planning time to optimize trajectory (default: True)
+        simplify: Simplify trajectory after planning (default: False)
+
+    Returns:
+        ProfileDictionary with configured OMPL profiles
+    """
+    from tesseract_robotics.tesseract_motion_planners_ompl import (
+        OMPLRealVectorPlanProfile,
+        ProfileDictionary_addOMPLProfile,
+    )
+
+    if profile_names is None:
+        profile_names = ["DEFAULT"]
+
+    profiles = ProfileDictionary()
+
+    for name in profile_names:
+        profile = OMPLRealVectorPlanProfile()
+
+        # Configure solver settings
+        profile.solver_config.planning_time = planning_time
+        profile.solver_config.max_solutions = max_solutions
+        profile.solver_config.optimize = optimize
+        profile.solver_config.simplify = simplify
+
+        ProfileDictionary_addOMPLProfile(
+            profiles, OMPL_DEFAULT_NAMESPACE, name, profile
+        )
+
+    return profiles
+
+
+DESCARTES_DEFAULT_NAMESPACE = "DescartesMotionPlannerTask"
+
+
+def create_descartes_default_profiles(
+    profile_names: Optional[List[str]] = None,
+    enable_collision: bool = True,
+    enable_edge_collision: bool = False,
+) -> ProfileDictionary:
+    """Create Descartes profiles with sensible defaults.
+
+    Args:
+        profile_names: Profile names to register. Default: ["DEFAULT"]
+        enable_collision: Enable vertex collision checking (default: True)
+        enable_edge_collision: Enable edge collision checking (default: False)
+
+    Returns:
+        ProfileDictionary with configured Descartes profiles
+    """
+    from tesseract_robotics.tesseract_motion_planners_descartes import (
+        DescartesDefaultPlanProfileD,
+        cast_DescartesPlanProfileD,
+    )
+
+    if profile_names is None:
+        profile_names = ["DEFAULT"]
+
+    profiles = ProfileDictionary()
+
+    for name in profile_names:
+        profile = DescartesDefaultPlanProfileD()
+
+        # Configure collision settings
+        profile.enable_collision = enable_collision
+        profile.enable_edge_collision = enable_edge_collision
+
+        # Cast to base Profile type and add to dictionary
+        base_profile = cast_DescartesPlanProfileD(profile)
+        profiles.addProfile(DESCARTES_DEFAULT_NAMESPACE, name, base_profile)
 
     return profiles

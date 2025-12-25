@@ -88,6 +88,8 @@ from tesseract_robotics.planning.composer import (
 
 from tesseract_robotics.planning.profiles import (
     create_trajopt_default_profiles,
+    create_ompl_default_profiles,
+    create_descartes_default_profiles,
 )
 
 __all__ = [
@@ -129,4 +131,6 @@ __all__ = [
     "TaskComposer",
     # Profiles
     "create_trajopt_default_profiles",
+    "create_ompl_default_profiles",
+    "create_descartes_default_profiles",
 ]

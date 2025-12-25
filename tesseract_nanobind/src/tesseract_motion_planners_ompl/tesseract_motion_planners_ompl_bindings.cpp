@@ -15,7 +15,11 @@
 // tesseract_motion_planners OMPL
 #include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
 #include <tesseract_motion_planners/ompl/ompl_planner_configurator.h>
+#include <tesseract_motion_planners/ompl/ompl_solver_config.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_real_vector_plan_profile.h>
+
+// tesseract_collision for CollisionCheckConfig
+#include <tesseract_collision/core/types.h>
 
 namespace tp = tesseract_planning;
 
@@ -25,6 +29,22 @@ NB_MODULE(_tesseract_motion_planners_ompl, m) {
     // Import Profile type from tesseract_command_language for cross-module inheritance
     auto cl_module = nb::module_::import_("tesseract_robotics.tesseract_command_language._tesseract_command_language");
     auto profile_type = cl_module.attr("Profile");
+
+    // Import tesseract_collision for CollisionCheckConfig
+    nb::module_::import_("tesseract_robotics.tesseract_collision._tesseract_collision");
+
+    // ========== OMPLSolverConfig ==========
+    nb::class_<tp::OMPLSolverConfig>(m, "OMPLSolverConfig")
+        .def(nb::init<>())
+        .def_rw("planning_time", &tp::OMPLSolverConfig::planning_time,
+            "Max planning time allowed in seconds (default: 5.0)")
+        .def_rw("max_solutions", &tp::OMPLSolverConfig::max_solutions,
+            "Max number of solutions to find before exiting (default: 10)")
+        .def_rw("simplify", &tp::OMPLSolverConfig::simplify,
+            "Simplify trajectory (default: false). Ignores n_output_states if true.")
+        .def_rw("optimize", &tp::OMPLSolverConfig::optimize,
+            "Use all planning time to optimize trajectory (default: true)");
+    // Note: planners vector not exposed - requires OMPLPlannerConfigurator shared_ptr handling
 
     // ========== OMPLPlannerType enum ==========
     nb::enum_<tp::OMPLPlannerType>(m, "OMPLPlannerType")
@@ -72,7 +92,11 @@ NB_MODULE(_tesseract_motion_planners_ompl, m) {
 
     // ========== OMPLRealVectorPlanProfile ==========
     nb::class_<tp::OMPLRealVectorPlanProfile, tp::OMPLPlanProfile>(m, "OMPLRealVectorPlanProfile")
-        .def(nb::init<>());
+        .def(nb::init<>())
+        .def_rw("solver_config", &tp::OMPLRealVectorPlanProfile::solver_config,
+            "The OMPL parallel planner solver config")
+        .def_rw("collision_check_config", &tp::OMPLRealVectorPlanProfile::collision_check_config,
+            "The collision check configuration");
 
     // Helper to convert OMPLPlanProfile to Profile::ConstPtr for ProfileDictionary
     // This explicitly casts to the base type for cross-module compatibility
