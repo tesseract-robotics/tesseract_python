@@ -8,4 +8,10 @@ cd "$PROJECT_ROOT"
 
 source "$SCRIPT_DIR/env.sh"
 
-exec pytest tesseract_nanobind/tests/benchmarks --benchmark-enable -n0 --benchmark-histogram=bench -v "$@"
+# Group by param:num_planners to show CPU scaling impact clearly
+exec pytest tesseract_nanobind/tests/benchmarks \
+    --benchmark-enable \
+    --benchmark-group-by=param:num_planners \
+    --benchmark-sort=fullname \
+    --benchmark-histogram=bench \
+    -v "$@"
