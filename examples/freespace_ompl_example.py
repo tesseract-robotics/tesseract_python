@@ -17,7 +17,7 @@ from tesseract_robotics.planning import (
     create_obstacle,
     TaskComposer,
 )
-from tesseract_robotics.planning.profiles import create_ompl_default_profiles
+from tesseract_robotics.planning.profiles import create_freespace_pipeline_profiles
 
 TesseractViewer = None
 if "pytest" not in sys.modules:
@@ -27,10 +27,11 @@ if "pytest" not in sys.modules:
         pass
 
 
-def run(num_planners=None):
+def run(pipeline="FreespacePipeline", num_planners=None):
     """Run example and return trajectory results for testing.
 
     Args:
+        pipeline: Planning pipeline to use (default: FreespacePipeline)
         num_planners: Number of parallel OMPL planners (default: all CPUs)
 
     Returns:
@@ -68,10 +69,10 @@ def run(num_planners=None):
     print(f"\nCreated program with {len(program)} waypoints")
 
     # Plan using TaskComposer
-    print("\nRunning OMPL planner (FreespacePipeline)...")
+    print(f"\nRunning planner ({pipeline})...")
     composer = TaskComposer.from_config()
-    profiles = create_ompl_default_profiles(num_planners=num_planners)
-    result = composer.plan(robot, program, pipeline="FreespacePipeline", profiles=profiles)
+    profiles = create_freespace_pipeline_profiles(num_planners=num_planners)
+    result = composer.plan(robot, program, pipeline=pipeline, profiles=profiles)
 
     assert result.successful, f"Planning failed: {result.message}"
     print(f"Planning successful! {len(result)} waypoints")

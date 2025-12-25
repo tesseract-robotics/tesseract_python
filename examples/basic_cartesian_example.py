@@ -18,6 +18,7 @@ from tesseract_robotics.planning import (
     create_obstacle,
     TaskComposer,
 )
+from tesseract_robotics.planning.profiles import create_freespace_pipeline_profiles, create_trajopt_default_profiles
 
 TesseractViewer = None
 if "pytest" not in sys.modules:
@@ -27,8 +28,13 @@ if "pytest" not in sys.modules:
         pass
 
 
-def run():
+def run(pipeline="TrajOptPipeline", num_planners=None):
     """Run example and return trajectory results for testing.
+
+    Args:
+        pipeline: Planning pipeline to use (default: TrajOptPipeline)
+        num_planners: Number of parallel OMPL planners (for FreespacePipeline)
+
     Returns:
         dict with result, robot, joint_names
     """
@@ -51,8 +57,14 @@ def run():
         .move_to(StateTarget(joint_pos, names=joint_names, profile="freespace_profile"))
     )
 
+    # Create profiles based on pipeline
+    if "Freespace" in pipeline or "OMPL" in pipeline:
+        profiles = create_freespace_pipeline_profiles(num_planners=num_planners)
+    else:
+        profiles = create_trajopt_default_profiles()
+
     composer = TaskComposer.from_config()
-    result = composer.plan(robot, program, pipeline="TrajOptPipeline")
+    result = composer.plan(robot, program, pipeline=pipeline, profiles=profiles)
 
     assert result.successful, f"Planning failed: {result.message}"
     print(f"Planning successful! Trajectory: {len(result)} waypoints")

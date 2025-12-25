@@ -460,7 +460,7 @@ class TestFreespaceOMPLExampleRun:
         # Verify expected output (nanobind leak warnings may cause exit=1)
         assert "Loaded robot" in result.stdout, f"Missing 'Loaded robot':\n{result.stdout}"
         assert "Added sphere obstacle" in result.stdout
-        assert "Running OMPL planner" in result.stdout
+        assert "Running planner" in result.stdout
         assert "Planning successful" in result.stdout, f"Planning failed:\n{result.stdout}\n{result.stderr}"
         assert "waypoints" in result.stdout
 

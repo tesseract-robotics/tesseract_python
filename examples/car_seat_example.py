@@ -12,6 +12,7 @@ import sys
 import numpy as np
 
 from tesseract_robotics.planning import Robot, MotionProgram, StateTarget, TaskComposer
+from tesseract_robotics.planning.profiles import create_freespace_pipeline_profiles, create_trajopt_default_profiles
 from tesseract_robotics.tesseract_common import Isometry3d, AllowedCollisionMatrix
 from tesseract_robotics.tesseract_environment import (
     AddLinkCommand,
@@ -124,7 +125,7 @@ def attach_seat(robot, seat_name="seat_1"):
     print(f"Attached {seat_name} to end effector")
 
 
-def plan_motion(robot, composer, joint_names, start_pos, end_pos, phase_name):
+def plan_motion(robot, composer, joint_names, start_pos, end_pos, phase_name, pipeline="TrajOptPipeline", profiles=None):
     """Plan a motion from start to end position."""
     program = (MotionProgram("manipulator", tcp_frame="end_effector")
         .set_joint_names(joint_names)
@@ -133,16 +134,20 @@ def plan_motion(robot, composer, joint_names, start_pos, end_pos, phase_name):
     )
 
     print(f"\n=== {phase_name} ===")
-    print(f"Planning with TrajOpt...")
-    result = composer.plan(robot, program, pipeline="TrajOptPipeline")
+    print(f"Planning with {pipeline}...")
+    result = composer.plan(robot, program, pipeline=pipeline, profiles=profiles)
 
     assert result.successful, f"{phase_name} failed: {result.message}"
     print(f"{phase_name} OK: {len(result)} waypoints")
     return result
 
 
-def run():
+def run(pipeline="TrajOptPipeline", num_planners=None):
     """Run example and return trajectory results for testing.
+
+    Args:
+        pipeline: Planning pipeline to use (default: TrajOptPipeline)
+        num_planners: Number of parallel OMPL planners (for FreespacePipeline)
 
     Returns:
         dict with pick_result, place_result, robot, joint_names
@@ -171,8 +176,14 @@ def run():
 
     composer = TaskComposer.from_config()
 
+    # Create profiles based on pipeline
+    if "Freespace" in pipeline or "OMPL" in pipeline:
+        profiles = create_freespace_pipeline_profiles(num_planners=num_planners)
+    else:
+        profiles = create_trajopt_default_profiles()
+
     # Phase 1: Move to pick position
-    pick_result = plan_motion(robot, composer, joint_names, home_pos, pick_pos, "PICK")
+    pick_result = plan_motion(robot, composer, joint_names, home_pos, pick_pos, "PICK", pipeline, profiles)
 
     # Phase 2: Attach seat
     print("\n=== ATTACH SEAT ===")
@@ -180,7 +191,7 @@ def run():
     attach_seat(robot, "seat_1")
 
     # Phase 3: Move to place position
-    place_result = plan_motion(robot, composer, joint_names, pick_pos, place_pos, "PLACE")
+    place_result = plan_motion(robot, composer, joint_names, pick_pos, place_pos, "PLACE", pipeline, profiles)
 
     return {
         "pick_result": pick_result,

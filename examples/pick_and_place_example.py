@@ -26,6 +26,7 @@ from tesseract_robotics.tesseract_motion_planners_trajopt import (
     TrajOptDefaultCompositeProfile,
     ProfileDictionary_addTrajOptCompositeProfile,
 )
+from tesseract_robotics.planning.profiles import create_freespace_pipeline_profiles
 
 TRAJOPT_NS = "TrajOptMotionPlannerTask"
 
@@ -56,8 +57,12 @@ def create_profiles():
     return profiles
 
 
-def run():
+def run(pipeline="TrajOptPipeline", num_planners=None):
     """Run example and return trajectory results for testing.
+
+    Args:
+        pipeline: Planning pipeline to use (default: TrajOptPipeline)
+        num_planners: Number of parallel OMPL planners (for FreespacePipeline)
 
     Returns:
         dict with pick_result, place_result, robot, joint_names
@@ -86,7 +91,12 @@ def run():
     print(f"Added box at {box_pos}")
 
     composer = TaskComposer.from_config()
-    profiles = create_profiles()
+
+    # Create profiles based on pipeline
+    if "Freespace" in pipeline or "OMPL" in pipeline:
+        profiles = create_freespace_pipeline_profiles(num_planners=num_planners)
+    else:
+        profiles = create_profiles()
 
     # === PICK ===
     print("\n=== PICK ===")
@@ -105,7 +115,7 @@ def run():
         .linear_to(CartesianTarget(pick_pose, profile="CARTESIAN"))
     )
 
-    pick_result = composer.plan(robot, pick_program, pipeline="TrajOptPipeline", profiles=profiles)
+    pick_result = composer.plan(robot, pick_program, pipeline=pipeline, profiles=profiles)
     assert pick_result.successful, f"PICK failed: {pick_result.message}"
     print(f"PICK OK: {len(pick_result)} waypoints")
 
@@ -146,7 +156,7 @@ def run():
         .linear_to(CartesianTarget(place_pose, profile="CARTESIAN"))
     )
 
-    place_result = composer.plan(robot, place_program, pipeline="TrajOptPipeline", profiles=profiles)
+    place_result = composer.plan(robot, place_program, pipeline=pipeline, profiles=profiles)
     assert place_result.successful, f"PLACE failed: {place_result.message}"
     print(f"PLACE OK: {len(place_result)} waypoints")
 
