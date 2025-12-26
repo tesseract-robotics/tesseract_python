@@ -232,7 +232,7 @@ class TaskComposer:
                 # Fall back to TESSERACT_TASK_COMPOSER_DIR
                 composer_dir = os.environ.get("TESSERACT_TASK_COMPOSER_DIR")
                 if composer_dir:
-                    dir_path = Path(composer_dir) / "config/task_composer_plugins_no_trajopt_ifopt.yaml"
+                    dir_path = Path(composer_dir) / "config/task_composer_plugins.yaml"
                     tried_paths.append(f"TESSERACT_TASK_COMPOSER_DIR: {dir_path}")
                     if dir_path.is_file():
                         config_path = str(dir_path)

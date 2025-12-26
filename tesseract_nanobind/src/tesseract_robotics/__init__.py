@@ -77,7 +77,7 @@ def _configure_environment():
     ws_support = project_root / "ws" / "src" / "tesseract" / "tesseract_support"
     ws_resource = project_root / "ws" / "src" / "tesseract"
     ws_composer = project_root / "ws" / "src" / "tesseract_planning" / "tesseract_task_composer"
-    ws_config = ws_composer / "config" / "task_composer_plugins_no_trajopt_ifopt.yaml"
+    ws_config = ws_composer / "config" / "task_composer_plugins.yaml"
 
     # TESSERACT_SUPPORT_DIR
     if "TESSERACT_SUPPORT_DIR" not in os.environ:
@@ -121,7 +121,7 @@ def _configure_environment():
             cfg_resolved = _resolve_config_paths(env_cfg_path, plugin_path)
             os.environ["TESSERACT_TASK_COMPOSER_CONFIG_FILE"] = str(cfg_resolved)
     elif "TESSERACT_TASK_COMPOSER_CONFIG_FILE" not in os.environ:
-        cfg = config_dir / "task_composer_plugins_no_trajopt_ifopt.yaml"
+        cfg = config_dir / "task_composer_plugins.yaml"
         if cfg.is_file():
             cfg_resolved = _resolve_config_paths(cfg, plugin_path) if plugin_path else cfg
             os.environ["TESSERACT_TASK_COMPOSER_CONFIG_FILE"] = str(cfg_resolved)
@@ -159,7 +159,7 @@ def get_tesseract_support_path() -> Path:
 
 def get_task_composer_config_path() -> Path:
     """Get path to bundled task composer config file."""
-    return Path(__file__).parent / "data" / "task_composer_config" / "task_composer_plugins_no_trajopt_ifopt.yaml"
+    return Path(__file__).parent / "data" / "task_composer_config" / "task_composer_plugins.yaml"
 
 
 _configure_environment()

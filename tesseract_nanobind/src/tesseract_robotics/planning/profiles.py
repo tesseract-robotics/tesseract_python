@@ -33,6 +33,91 @@ TRAJOPT_PROFILE_NAMES = STANDARD_PROFILE_NAMES
 DESCARTES_PROFILE_NAMES = ["DEFAULT", "CARTESIAN", "RASTER"]
 
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
+TRAJOPT_IFOPT_DEFAULT_NAMESPACE = "TrajOptIfoptMotionPlannerTask"
+
+
+def create_trajopt_ifopt_default_profiles(
+    profile_names: Optional[List[str]] = None,
+) -> ProfileDictionary:
+    """Create TrajOptIfopt profiles matching C++ example defaults.
+
+    TrajOptIfopt uses Sequential Quadratic Programming (SQP) with OSQP solver
+    to optimize trajectories. It provides a modern alternative to the original
+    TrajOpt implementation using the IFOPT interface.
+
+    Profile Configuration:
+        Composite Profile (applies to entire trajectory):
+        - smooth_velocities: True (penalize velocity changes)
+        - smooth_accelerations: False
+        - smooth_jerks: False
+
+        Plan Profile (applies per waypoint):
+        - cartesian_constraint: enabled (enforce Cartesian targets exactly)
+        - joint_constraint: enabled (enforce joint targets exactly)
+
+        Solver Profile (OSQP configuration):
+        - Uses default OSQP settings for QP solving
+
+    Args:
+        profile_names: Profile names to register (default: TRAJOPT_PROFILE_NAMES)
+            Standard names: ["DEFAULT", "FREESPACE", "CARTESIAN", "RASTER", "UPRIGHT"]
+
+    Returns:
+        ProfileDictionary with configured TrajOptIfopt profiles
+
+    Usage:
+        from tesseract_robotics.planning.profiles import (
+            create_trajopt_ifopt_default_profiles
+        )
+
+        # Create profiles with standard names
+        profiles = create_trajopt_ifopt_default_profiles()
+
+        # Use with TrajOptIfoptPipeline
+        result = composer.plan(robot, program,
+                              pipeline='TrajOptIfoptPipeline',
+                              profiles=profiles)
+    """
+    from tesseract_robotics.tesseract_motion_planners_trajopt_ifopt import (
+        TrajOptIfoptDefaultCompositeProfile,
+        TrajOptIfoptDefaultPlanProfile,
+        TrajOptIfoptOSQPSolverProfile,
+        ProfileDictionary_addTrajOptIfoptPlanProfile,
+        ProfileDictionary_addTrajOptIfoptCompositeProfile,
+        ProfileDictionary_addTrajOptIfoptSolverProfile,
+    )
+
+    if profile_names is None:
+        profile_names = TRAJOPT_PROFILE_NAMES
+
+    # Create profiles with default settings
+    composite = TrajOptIfoptDefaultCompositeProfile()
+    composite.smooth_velocities = True
+    composite.smooth_accelerations = False
+    composite.smooth_jerks = False
+
+    plan = TrajOptIfoptDefaultPlanProfile()
+    plan.cartesian_cost_config.enabled = False
+    plan.cartesian_constraint_config.enabled = True
+    plan.joint_cost_config.enabled = False
+    plan.joint_constraint_config.enabled = True
+
+    solver = TrajOptIfoptOSQPSolverProfile()
+
+    # Register under all requested names
+    profiles = ProfileDictionary()
+    for name in profile_names:
+        ProfileDictionary_addTrajOptIfoptCompositeProfile(
+            profiles, TRAJOPT_IFOPT_DEFAULT_NAMESPACE, name, composite
+        )
+        ProfileDictionary_addTrajOptIfoptPlanProfile(
+            profiles, TRAJOPT_IFOPT_DEFAULT_NAMESPACE, name, plan
+        )
+        ProfileDictionary_addTrajOptIfoptSolverProfile(
+            profiles, TRAJOPT_IFOPT_DEFAULT_NAMESPACE, name, solver
+        )
+
+    return profiles
 
 
 def create_trajopt_default_profiles(

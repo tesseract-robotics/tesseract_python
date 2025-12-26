@@ -249,6 +249,27 @@ else()
   message(STATUS "tesseract_motion_planners trajopt component not found - skipping bindings")
 endif()
 
+# Add tesseract_motion_planners_trajopt_ifopt module (optional - only if trajopt_ifopt component was built)
+find_package(tesseract_motion_planners QUIET COMPONENTS trajopt_ifopt)
+find_package(trajopt_ifopt QUIET)
+find_package(trajopt_sqp QUIET)
+if(tesseract_motion_planners_trajopt_ifopt_FOUND AND trajopt_ifopt_FOUND AND trajopt_sqp_FOUND)
+  message(STATUS "tesseract_motion_planners trajopt_ifopt component found - building bindings")
+  add_tesseract_nanobind_extension(
+    tesseract_motion_planners_trajopt_ifopt
+    src/tesseract_motion_planners_trajopt_ifopt/tesseract_motion_planners_trajopt_ifopt_bindings.cpp
+    tesseract::tesseract_motion_planners_trajopt_ifopt
+    tesseract::tesseract_motion_planners_core
+    tesseract::tesseract_environment
+    tesseract::tesseract_command_language
+    tesseract::tesseract_common
+    trajopt::trajopt_ifopt
+    trajopt::trajopt_sqp
+  )
+else()
+  message(STATUS "tesseract_motion_planners trajopt_ifopt component not found - skipping bindings")
+endif()
+
 # Find and add tesseract_time_parameterization
 find_package(tesseract_time_parameterization REQUIRED)
 

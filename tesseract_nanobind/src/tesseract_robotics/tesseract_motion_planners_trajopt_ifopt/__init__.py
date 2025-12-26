@@ -1,0 +1,2 @@
+# tesseract_motion_planners_trajopt_ifopt Python bindings
+from ._tesseract_motion_planners_trajopt_ifopt import *

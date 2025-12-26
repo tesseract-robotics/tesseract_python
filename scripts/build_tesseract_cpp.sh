@@ -181,12 +181,14 @@ echo ""
 
 colcon build \
     --merge-install \
-    --packages-ignore tesseract_examples tesseract_python trajopt_ifopt trajopt_sqp ifopt vhacd qpoases osqp_eigen tesseract_nanobind tesseract_viewer_python \
+    --packages-ignore tesseract_examples tesseract_python vhacd qpoases tesseract_nanobind tesseract_viewer_python \
     --event-handlers console_cohesion+ \
     --cmake-force-configure \
     --cmake-args \
         -GNinja \
         -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_STANDARD=17 \
+        -DBUILD_TESTING=OFF \
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
         -DINSTALL_OMPL=OFF \
         -DINSTALL_OMPL_TAG=master \
@@ -194,7 +196,7 @@ colcon build \
         -DBUILD_SNOPT=OFF \
         -DBUILD_SHARED_LIBS=ON \
         -DTESSERACT_ENABLE_EXAMPLES=OFF \
-        -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF \
+        -DTESSERACT_BUILD_TRAJOPT_IFOPT=ON \
         -DVCPKG_APPLOCAL_DEPS=OFF \
         -DTESSERACT_ENABLE_TESTING=OFF \
         -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
