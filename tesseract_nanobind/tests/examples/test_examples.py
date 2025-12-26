@@ -53,6 +53,11 @@ def test_kinematics_example():
     _load_module("tesseract_kinematics_example", EXAMPLES / "tesseract_kinematics_example.py").main()
 
 
+@pytest.mark.basic
+def test_geometry_showcase_example():
+    _load_module("geometry_showcase_example", EXAMPLES / "geometry_showcase_example.py").main()
+
+
 @pytest.mark.planning
 def test_freespace_ompl_example():
     _load_module("freespace_ompl_example", EXAMPLES / "freespace_ompl_example.py").main()
@@ -81,6 +86,11 @@ def test_car_seat_example():
 @pytest.mark.planning
 def test_puzzle_piece_auxillary_axes_example():
     _load_module("puzzle_piece_auxillary_axes_example", EXAMPLES / "puzzle_piece_auxillary_axes_example.py").main()
+
+
+@pytest.mark.planning
+def test_raster_example():
+    _load_module("raster_example", EXAMPLES / "raster_example.py").main()
 
 
 # === Low-Level API Examples ===
