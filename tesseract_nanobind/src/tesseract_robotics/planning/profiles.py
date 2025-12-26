@@ -91,8 +91,11 @@ def create_trajopt_ifopt_default_profiles(
         profile_names = TRAJOPT_PROFILE_NAMES
 
     # Create profiles with default settings
+    # Note: smooth_velocities requires velocity_coeff to be set (size 1 or n_dof)
+    # We disable velocity smoothing by default since coeff size depends on robot DOF
+    # Users can enable it by setting velocity_coeff before calling this
     composite = TrajOptIfoptDefaultCompositeProfile()
-    composite.smooth_velocities = True
+    composite.smooth_velocities = False
     composite.smooth_accelerations = False
     composite.smooth_jerks = False
 

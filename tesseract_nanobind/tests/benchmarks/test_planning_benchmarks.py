@@ -18,7 +18,7 @@ sys.path.insert(0, str(examples_dir))
 # Skip if benchmark not installed
 pytest.importorskip("pytest_benchmark")
 
-EXAMPLES = ["freespace_ompl", "car_seat", "pick_and_place", "glass_upright", "basic_cartesian", "raster"]
+EXAMPLES = ["freespace_ompl", "car_seat", "pick_and_place", "glass_upright", "basic_cartesian", "raster", "online_planning"]
 
 
 def load_example(name: str):
