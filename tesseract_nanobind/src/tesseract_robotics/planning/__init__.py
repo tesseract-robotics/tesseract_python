@@ -90,9 +90,12 @@ from tesseract_robotics.planning.profiles import (
     STANDARD_PROFILE_NAMES,
     create_trajopt_default_profiles,
     create_ompl_default_profiles,
+    create_ompl_planner_configurators,
     create_descartes_default_profiles,
     create_freespace_pipeline_profiles,
     create_cartesian_pipeline_profiles,
+    create_time_optimal_parameterization,
+    create_iterative_spline_parameterization,
 )
 
 __all__ = [
@@ -136,7 +139,11 @@ __all__ = [
     "STANDARD_PROFILE_NAMES",
     "create_trajopt_default_profiles",
     "create_ompl_default_profiles",
+    "create_ompl_planner_configurators",
     "create_descartes_default_profiles",
     "create_freespace_pipeline_profiles",
     "create_cartesian_pipeline_profiles",
+    # Time Parameterization
+    "create_time_optimal_parameterization",
+    "create_iterative_spline_parameterization",
 ]

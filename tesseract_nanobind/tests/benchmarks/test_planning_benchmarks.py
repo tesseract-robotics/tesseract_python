@@ -30,7 +30,7 @@ class TestExampleBenchmarks:
     """Benchmark planning examples with default settings."""
 
     @pytest.mark.parametrize("example_name", EXAMPLES)
-    def test_example_timing(self, benchmark, example_name):
+    def test_default(self, benchmark, example_name):
         """Time each example's run() function with default pipeline."""
         module = load_example(example_name)
         result = benchmark(module.run)
@@ -40,35 +40,22 @@ class TestExampleBenchmarks:
 
 
 class TestOMPLScaling:
-    """Benchmark OMPL planner CPU scaling."""
+    """Benchmark examples with OMPL parallel planners at different CPU counts.
 
-    @pytest.mark.parametrize("num_planners", [1, 2, 4, 8])
-    def test_freespace_ompl_scaling(self, benchmark, num_planners):
-        """Time freespace_ompl with varying planner counts."""
-        module = load_example("freespace_ompl")
-        result = benchmark(module.run, num_planners=num_planners)
-        assert result, "freespace_ompl failed"
-        benchmark.extra_info["num_planners"] = num_planners
-        benchmark.extra_info["cpus"] = os.cpu_count()
-
-
-class TestPipelineScaling:
-    """Benchmark examples with FreespacePipeline (OMPL) at different CPU counts."""
+    Tests all examples with FreespacePipeline and varying num_planners.
+    Examples that require TrajOpt for constrained motions will be skipped.
+    """
 
     @pytest.mark.parametrize("example_name", EXAMPLES)
-    @pytest.mark.parametrize("num_planners", [1, 2, 4])
-    def test_example_ompl_scaling(self, benchmark, example_name, num_planners):
-        """Time examples with FreespacePipeline and varying planner counts.
-
-        Note: Some examples may fail with FreespacePipeline if they have
-        constrained motions that OMPL cannot handle.
-        """
+    @pytest.mark.parametrize("num_planners", [1, 2, 4, 8])
+    def test_scaling(self, benchmark, example_name, num_planners):
+        """Time examples with FreespacePipeline and varying planner counts."""
         module = load_example(example_name)
         try:
             result = benchmark(module.run, pipeline="FreespacePipeline", num_planners=num_planners)
             assert result, f"{example_name} failed"
         except (AssertionError, RuntimeError) as e:
-            pytest.skip(f"{example_name} doesn't work with FreespacePipeline: {e}")
+            pytest.skip(f"{example_name} requires TrajOpt: {e}")
         benchmark.extra_info["example"] = example_name
         benchmark.extra_info["num_planners"] = num_planners
         benchmark.extra_info["cpus"] = os.cpu_count()

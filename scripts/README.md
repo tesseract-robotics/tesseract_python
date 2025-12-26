@@ -34,17 +34,15 @@ Sets:
 - `TESSERACT_TASK_COMPOSER_CONFIG_FILE` - task composer plugin config
 
 ### `run_benchmarks.sh`
-Runs planning benchmarks with timing, grouped by `num_planners` to show CPU scaling impact:
+Runs all planning benchmarks and shows summary report.
 
 ```bash
-./scripts/run_benchmarks.sh                    # timing + histogram (bench.svg)
-./scripts/run_benchmarks.sh -k "scaling"       # only CPU scaling tests
-./scripts/run_benchmarks.sh --benchmark-disable -n auto  # fast parallel, no timing
+./scripts/run_benchmarks.sh
 ```
 
-Output: `bench.svg` histogram grouped by planner count (1, 2, 4, 8 CPUs).
-
-Requires `pygal` for histogram: `pip install pygal`
+Tests all 5 examples:
+- Default pipeline timing (5 tests)
+- OMPL CPU scaling with 1/2/4/8 planners (skips if example needs TrajOpt)
 
 ### `run_tests.sh`
 Runs pytest with correct environment. Preferred way to run tests:
