@@ -140,6 +140,7 @@ class _TesseractViewerAIOServer:
         self._ws.append(ws)
 
         await handler.message_listener()
+        return ws
     
     async def send_ws_message(self, msg):
         async with self._ws_send_lock:
