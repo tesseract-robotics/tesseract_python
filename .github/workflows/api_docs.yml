@@ -11,7 +11,7 @@ jobs:
   collect_documentation:
     runs-on: ubuntu-latest
     steps:
-      - uses: dawidd6/action-download-artifact@v11
+      - uses: dawidd6/action-download-artifact@v12
         with:
           workflow: 'wheels.yml'
           run_number: ${{ github.event.inputs.run_number }}
