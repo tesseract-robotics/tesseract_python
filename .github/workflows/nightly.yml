@@ -60,7 +60,7 @@ jobs:
           message("::set-output name=timestamp::${current_date}")
 
       - name: ccache cache files
-        uses: actions/cache@v4.3.0
+        uses: actions/cache@v5.0.3
         with:
           path: ${{ matrix.env.CI_NAME }}/.ccache
           key: ${{ matrix.env.CI_NAME }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
