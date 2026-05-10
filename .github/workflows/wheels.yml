@@ -57,21 +57,28 @@ jobs:
           runs_on: ubuntu-22.04
           container: ubuntu:22.04
           py_platform: manylinux_2_35_x86_64
-          python_version: "3.11.0"
+          python_version: "3.11"
           docs: true
           docs_cmake: ON
         - os: ubuntu-22.04
           runs_on: ubuntu-22.04
           container: ubuntu:22.04
           py_platform: manylinux_2_35_x86_64
-          python_version: "3.12.0"
+          python_version: "3.12"
           docs: true
           docs_cmake: ON
         - os: ubuntu-22.04
           runs_on: ubuntu-22.04
           container: ubuntu:22.04
           py_platform: manylinux_2_35_x86_64
-          python_version: "3.13.0"
+          python_version: "3.13"
+          docs: true
+          docs_cmake: ON
+        - os: ubuntu-22.04
+          runs_on: ubuntu-22.04
+          container: ubuntu:22.04
+          py_platform: manylinux_2_35_x86_64
+          python_version: "3.14"
           docs: true
           docs_cmake: ON
     env:
@@ -100,7 +107,7 @@ jobs:
       uses: johnwason/swig-build-action@v1.2
       with:
         cache-key: ${{ matrix.config.os }}-${{ matrix.config.python_version }}
-        version: "4.1.1"
+        version: "4.4.1"
 
     - uses: actions/setup-python@v6
       id: setup-python
@@ -109,7 +116,7 @@ jobs:
     - name: pip
       run: |
         python -m pip install --upgrade pip
-        python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcstool patchelf
+        python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcs2l patchelf
     - name: pip
       if: matrix.config.docs == true
       run: |
@@ -185,15 +192,19 @@ jobs:
           - arch: x64
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
-            python_version: "3.11.0"
+            python_version: "3.11"
           - arch: x64
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
-            python_version: "3.12.0"
+            python_version: "3.12"
           - arch: x64
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
-            python_version: "3.13.0"
+            python_version: "3.13"
+          - arch: x64
+            vcpkg_triplet: x64-windows-release
+            cmake_arch: x64
+            python_version: "3.14"
     steps:
     - uses: actions/checkout@v6
       with:
@@ -204,7 +215,7 @@ jobs:
         python-version: '${{ matrix.config.python_version }}'
         architecture: ${{ matrix.config.arch }}
     - name: vcpkg build
-      uses: johnwason/vcpkg-action@v7
+      uses: johnwason/vcpkg-action@v8
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
@@ -212,10 +223,9 @@ jobs:
         extra-args: --clean-after-build
         token: ${{ github.token }}
         cache-key: win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}
-        github-binarycache: true
     - name: pip3
       run: |
-        python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool
+        python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcs2l
     - name: choco
       run: |
         choco install swig ninja -r
@@ -307,6 +317,11 @@ jobs:
           arch: arm64
           runner: macos-15
           brew_prefix: /opt/homebrew
+        - py_platform: macosx-12.0-arm64
+          python_version: "3.14"
+          arch: arm64
+          runner: macos-15
+          brew_prefix: /opt/homebrew
       
     steps:
     - uses: actions/checkout@v6
@@ -320,7 +335,7 @@ jobs:
       run: |
         brew install libomp cmake automake autoconf libtool gcc ninja swig
     - name: vcpkg build
-      uses: johnwason/vcpkg-action@v7
+      uses: johnwason/vcpkg-action@v8
       with:
         pkgs: >-
           ${{ env.VCPKG_PKGS }}
@@ -328,11 +343,9 @@ jobs:
         extra-args: --clean-after-build --overlay-triplets=${{ github.workspace }}/ws/src/tesseract_python/.github/workflows/vcpkg_triplets
         token: ${{ github.token }}
         cache-key: osx-${{ matrix.config.arch }}-vcpkg
-        github-binarycache: true
-        revision: master
     - name: pip3
       run: |
-        python3 -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcstool delocate
+        python3 -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcs2l delocate
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_python/dependencies.rosinstall
