@@ -130,7 +130,7 @@ jobs:
         colcon build --packages-up-to tesseract_python --merge-install
         --cmake-force-configure
         --packages-ignore bullet
-        --event-handlers console_cohesion+
+        --event-handlers console_direct+
         --cmake-args -DCMAKE_BUILD_TYPE=Release
         -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF
         -DPYTHON_EXECUTABLE="${{ steps.setup-python.outputs.python-path }}"
@@ -241,21 +241,20 @@ jobs:
       shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=amd64 -host_arch=amd64
-        set CXXFLAGS=%CXXFLAGS% -DEIGEN_DONT_ALIGN=1 -DEIGEN_DONT_VECTORIZE=1
         set CMAKE_PREFIX_PATH=%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}
         set PATH=%PATH%;%GITHUB_WORKSPACE%\vcpkg\installed\${{ matrix.config.vcpkg_triplet }}\bin
         set CC=cl
         set CCX=cl
         colcon build --packages-up-to tesseract_python --merge-install ^
         --cmake-force-configure ^
-        --event-handlers console_cohesion+ ^
-        --packages-ignore tesseract_examples trajopt_ifopt trajopt_sqp gtest ^
+        --event-handlers console_direct+ ^
+        --packages-ignore tesseract_examples gtest ^
         --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release ^
         -DPYTHON_EXECUTABLE="${{ steps.setup-python.outputs.python-path }}" ^
         -DTESSERACT_PYTHON_BUILD_WHEEL=ON ^
         -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_PLUGIN_FACTORY_CALLBACKS=ON ^
         -DVCPKG_APPLOCAL_DEPS=OFF ^
-        -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF ^
+        -DTESSERACT_BUILD_TRAJOPT_IFOPT=ON ^
         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_VERBOSE_MAKEFILE=ON
         if %ERRORLEVEL% GEQ 1 exit 1
     - name: test
@@ -363,12 +362,12 @@ jobs:
         export CMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/vcpkg/installed/${{ matrix.config.arch }}-osx-dynamic-release
 
         colcon build --merge-install \
-            --packages-ignore tesseract_examples trajopt_ifopt trajopt_sqp ifopt vhacd \
-            --event-handlers console_cohesion+ \
+            --packages-ignore tesseract_examples ifopt vhacd \
+            --event-handlers console_direct+ \
             --cmake-force-configure \
             --cmake-args -GNinja -DCMAKE_BUILD_TYPE=Release \
             -DINSTALL_OMPL=OFF -DINSTALL_OMPL_TAG=master -DBUILD_IPOPT=OFF -DBUILD_SNOPT=OFF \
-            -DBUILD_SHARED_LIBS=ON -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_BUILD_TRAJOPT_IFOPT=OFF \
+            -DBUILD_SHARED_LIBS=ON -DTESSERACT_ENABLE_EXAMPLES=OFF -DTESSERACT_BUILD_TRAJOPT_IFOPT=ON \
             -DVCPKG_APPLOCAL_DEPS=OFF -DTESSERACT_ENABLE_TESTING=ON \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
             -DOpenMP_CXX_INCLUDE_DIR=${{ matrix.config.brew_prefix }}/opt/libomp/include \
