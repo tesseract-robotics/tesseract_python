@@ -32,52 +32,52 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - os: ubuntu-22.04
-          runs_on: ubuntu-22.04
-          container: ubuntu:22.04
-          py_platform: manylinux_2_35_x86_64
+        - os: ubuntu-24.04
+          runs_on: ubuntu-24.04
+          container: ubuntu:24.04
+          py_platform: manylinux_2_39_x86_64
           python_version: "3.8"
           docs: true
           docs_cmake: ON
-        - os: ubuntu-22.04
-          runs_on: ubuntu-22.04
-          container: ubuntu:22.04
-          py_platform: manylinux_2_35_x86_64
+        - os: ubuntu-24.04
+          runs_on: ubuntu-24.04
+          container: ubuntu:24.04
+          py_platform: manylinux_2_39_x86_64
           python_version: "3.9"
           docs: true
           docs_cmake: ON
-        - os: ubuntu-22.04
-          runs_on: ubuntu-22.04
-          container: ubuntu:22.04
-          py_platform: manylinux_2_35_x86_64
+        - os: ubuntu-24.04
+          runs_on: ubuntu-24.04
+          container: ubuntu:24.04
+          py_platform: manylinux_2_39_x86_64
           python_version: "3.10"
           docs: true
           docs_cmake: ON
-        - os: ubuntu-22.04
-          runs_on: ubuntu-22.04
-          container: ubuntu:22.04
-          py_platform: manylinux_2_35_x86_64
+        - os: ubuntu-24.04
+          runs_on: ubuntu-24.04
+          container: ubuntu:24.04
+          py_platform: manylinux_2_39_x86_64
           python_version: "3.11"
           docs: true
           docs_cmake: ON
-        - os: ubuntu-22.04
-          runs_on: ubuntu-22.04
-          container: ubuntu:22.04
-          py_platform: manylinux_2_35_x86_64
+        - os: ubuntu-24.04
+          runs_on: ubuntu-24.04
+          container: ubuntu:24.04
+          py_platform: manylinux_2_39_x86_64
           python_version: "3.12"
           docs: true
           docs_cmake: ON
-        - os: ubuntu-22.04
-          runs_on: ubuntu-22.04
-          container: ubuntu:22.04
-          py_platform: manylinux_2_35_x86_64
+        - os: ubuntu-24.04
+          runs_on: ubuntu-24.04
+          container: ubuntu:24.04
+          py_platform: manylinux_2_39_x86_64
           python_version: "3.13"
           docs: true
           docs_cmake: ON
-        - os: ubuntu-22.04
-          runs_on: ubuntu-22.04
-          container: ubuntu:22.04
-          py_platform: manylinux_2_35_x86_64
+        - os: ubuntu-24.04
+          runs_on: ubuntu-24.04
+          container: ubuntu:24.04
+          py_platform: manylinux_2_39_x86_64
           python_version: "3.14"
           docs: true
           docs_cmake: ON
@@ -407,7 +407,7 @@ jobs:
       - build-win
       - build-ubuntu
       - build-macos
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v6
       with:
