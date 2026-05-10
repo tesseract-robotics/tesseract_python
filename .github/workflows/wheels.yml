@@ -333,7 +333,7 @@ jobs:
         python-version: '${{ matrix.config.python_version }}'
     - name: brew
       run: |
-        brew install libomp cmake automake autoconf libtool gcc ninja swig
+        brew install libomp cmake automake autoconf autoconf-archive libtool gcc ninja swig
     - name: vcpkg build
       uses: johnwason/vcpkg-action@v8
       with:
