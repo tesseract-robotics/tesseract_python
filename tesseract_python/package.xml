@@ -13,19 +13,8 @@
 
   <build_depend>ros_industrial_cmake_boilerplate</build_depend>
   <depend>trajopt</depend>
-  <depend>tesseract_motion_planners</depend>
-  <depend>tesseract_common</depend>
-  <depend>tesseract_geometry</depend>
-  <depend>tesseract_visualization</depend>
-  <depend>tesseract_collision</depend>
-  <depend>tesseract_urdf</depend>
-  <depend>tesseract_srdf</depend>
-  <depend>tesseract_kinematics</depend>
-  <depend>tesseract_scene_graph</depend>
-  <depend>tesseract_environment</depend>
-  <depend>tesseract_command_language</depend>
-  <depend>tesseract_time_parameterization</depend>
-  <depend>tesseract_task_composer</depend>
+  <depend>tesseract</depend>
+  <depend>tesseract_planning</depend>
   <depend>libjsoncpp-dev</depend>
 
   <depend condition="$ROS_PYTHON_VERSION == 2">python</depend>
