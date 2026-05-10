@@ -178,10 +178,6 @@ jobs:
           - arch: x64
             vcpkg_triplet: x64-windows-release
             cmake_arch: x64
-            python_version: "3.7"
-          - arch: x64
-            vcpkg_triplet: x64-windows-release
-            cmake_arch: x64
             python_version: "3.8"
           - arch: x64
             vcpkg_triplet: x64-windows-release
