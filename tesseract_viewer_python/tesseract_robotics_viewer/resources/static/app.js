@@ -75,7 +75,7 @@ class TesseractViewer {
             renderer.setSize( window.innerWidth, window.innerHeight );
         }
 
-        const light = new THREE.HemisphereLight( 0xffffbb, 0x202018, 1 );
+        const light = new THREE.HemisphereLight( 0xffffff, 0x202018, 1 );
         this._scene.add( light );
         this._light = light;
 
