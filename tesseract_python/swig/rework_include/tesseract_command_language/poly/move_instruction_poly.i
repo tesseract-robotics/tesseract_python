@@ -1,4 +1,4 @@
-namespace tesseract_planning
+namespace tesseract::planning
 {
 struct MoveInstructionPoly;
 
@@ -8,9 +8,9 @@ enum class MoveInstructionType : int
   FREESPACE = 1,
   CIRCULAR = 2,
 };
-}  // namespace tesseract_planning
+}  // namespace tesseract::planning
 
-namespace tesseract_planning
+namespace tesseract::planning
 {
 class MoveInstruction;
 struct MoveInstructionPoly
@@ -72,4 +72,4 @@ struct MoveInstructionPoly
 
 };
 
-}  // namespace tesseract_planning
+}  // namespace tesseract::planning

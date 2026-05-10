@@ -77,8 +77,8 @@
 %unique_ptr_value_wrapper(tesseract::collision::ContinuousContactManager);
 %unique_ptr_value_wrapper(tesseract::collision::DiscreteContactManager);
 %unique_ptr_value_wrapper(tesseract::scene_graph::StateSolver);
-// %unique_ptr_value_wrapper(tesseract_kinematics::KinematicGroup)
-// %unique_ptr_value_wrapper(tesseract_kinematics::JointGroup)
+// %unique_ptr_value_wrapper(tesseract::kinematics::KinematicGroup)
+// %unique_ptr_value_wrapper(tesseract::kinematics::JointGroup)
 
 %tesseract_std_function(FindTCPOffsetCallbackFn,tesseract,Eigen::Isometry3d,const tesseract::common::ManipulatorInfo&,a);
 %tesseract_std_function(EventCallbackFn,tesseract::environment,void,const tesseract::environment::Event&,a);

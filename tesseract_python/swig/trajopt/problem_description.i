@@ -183,8 +183,8 @@ public:
   // VarArray& GetVars();  
   int GetNumSteps();  
   int GetNumDOF();
-  std::shared_ptr<const tesseract_kinematics::JointGroup> GetKin();
-  std::shared_ptr<const tesseract_environment::Environment> GetEnv();
+  std::shared_ptr<const tesseract::kinematics::JointGroup> GetKin();
+  std::shared_ptr<const tesseract::environment::Environment> GetEnv();
   void SetInitTraj(const TrajArray& x);
   TrajArray GetInitTraj();  
   bool GetHasTime();  
@@ -255,10 +255,10 @@ public:
   std::vector<TermInfo::Ptr> cnt_infos;
   InitInfo init_info;
 
-  std::shared_ptr<const tesseract_environment::Environment> env;
-  std::shared_ptr<const tesseract_kinematics::JointGroup> kin;
+  std::shared_ptr<const tesseract::environment::Environment> env;
+  std::shared_ptr<const tesseract::kinematics::JointGroup> kin;
 
-  ProblemConstructionInfo(std::shared_ptr<const tesseract_environment::Environment> env);
+  ProblemConstructionInfo(std::shared_ptr<const tesseract::environment::Environment> env);
   void fromJson(const Json::Value& v);
 };
 
@@ -374,8 +374,8 @@ struct TotalTimeTermInfo : public TermInfo
 };
 
 TrajOptProb::Ptr ConstructProblem(const ProblemConstructionInfo&);
-TrajOptProb::Ptr ConstructProblem(const Json::Value&, const tesseract_environment::Environment::ConstPtr& tesseract);
+TrajOptProb::Ptr ConstructProblem(const Json::Value&, const tesseract::environment::Environment::ConstPtr& tesseract);
 TrajOptResult::Ptr OptimizeProblem(TrajOptProb::Ptr,
-                                               const tesseract_visualization::Visualization::Ptr& plotter = nullptr);
+                                               const tesseract::visualization::Visualization::Ptr& plotter = nullptr);
 
 }

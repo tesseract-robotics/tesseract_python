@@ -35,10 +35,10 @@
 
 %{
 // tesseract_motion_planners_ompl
-#include <tesseract_motion_planners/ompl/ompl_planner_configurator.h>
-#include <tesseract_motion_planners/ompl/profile/ompl_profile.h>
-#include <tesseract_motion_planners/ompl/profile/ompl_real_vector_move_profile.h>
-#include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
+#include <tesseract/motion_planners/ompl/ompl_planner_configurator.h>
+#include <tesseract/motion_planners/ompl/profile/ompl_profile.h>
+#include <tesseract/motion_planners/ompl/profile/ompl_real_vector_move_profile.h>
+#include <tesseract/motion_planners/ompl/ompl_motion_planner.h>
 
 // tesseract_kinematics
 #include <tesseract/kinematics/joint_group.h>
@@ -50,14 +50,14 @@
 #include <tesseract/environment/environment.h>
 
 // tesseract_command_language
-#include <tesseract_command_language/fwd.h>
-#include <tesseract_command_language/move_instruction.h>
-#include <tesseract_command_language/composite_instruction.h>
+#include <tesseract/command_language/fwd.h>
+#include <tesseract/command_language/move_instruction.h>
+#include <tesseract/command_language/composite_instruction.h>
 #include <tesseract/common/profile_dictionary.h>
 
 // tesseract_motion_planners
-#include <tesseract_motion_planners/core/planner.h>
-#include <tesseract_motion_planners/core/types.h>
+#include <tesseract/motion_planners/planner.h>
+#include <tesseract/motion_planners/types.h>
 
 // tesseract_visualization
 #include <tesseract/visualization/visualization.h>
@@ -84,58 +84,58 @@
 %ignore createSimpleSetup;
 %ignore omplPlanFromXMLString;
 
-%include "tesseract_motion_planners/ompl/types.h"
+%include "tesseract/motion_planners/ompl/types.h"
 
-%shared_ptr(tesseract_planning::OMPLPlannerConfigurator)
-%shared_ptr(tesseract_planning::SBLConfigurator)
-%shared_ptr(tesseract_planning::ESTConfigurator)
-%shared_ptr(tesseract_planning::LBKPIECE1Configurator)
-%shared_ptr(tesseract_planning::BKPIECE1Configurator)
-%shared_ptr(tesseract_planning::KPIECE1Configurator)
-%shared_ptr(tesseract_planning::BiTRRTConfigurator)
-%shared_ptr(tesseract_planning::RRTConfigurator)
-%shared_ptr(tesseract_planning::RRTConnectConfigurator)
-%shared_ptr(tesseract_planning::RRTstarConfigurator)
-%shared_ptr(tesseract_planning::TRRTConfigurator)
-%shared_ptr(tesseract_planning::PRMConfigurator)
-%shared_ptr(tesseract_planning::PRMstarConfigurator)
-%shared_ptr(tesseract_planning::LazyPRMstarConfigurator)
-%shared_ptr(tesseract_planning::SPARSConfigurator)
+%shared_ptr(tesseract::motion_planners::OMPLPlannerConfigurator)
+%shared_ptr(tesseract::motion_planners::SBLConfigurator)
+%shared_ptr(tesseract::motion_planners::ESTConfigurator)
+%shared_ptr(tesseract::motion_planners::LBKPIECE1Configurator)
+%shared_ptr(tesseract::motion_planners::BKPIECE1Configurator)
+%shared_ptr(tesseract::motion_planners::KPIECE1Configurator)
+%shared_ptr(tesseract::motion_planners::BiTRRTConfigurator)
+%shared_ptr(tesseract::motion_planners::RRTConfigurator)
+%shared_ptr(tesseract::motion_planners::RRTConnectConfigurator)
+%shared_ptr(tesseract::motion_planners::RRTstarConfigurator)
+%shared_ptr(tesseract::motion_planners::TRRTConfigurator)
+%shared_ptr(tesseract::motion_planners::PRMConfigurator)
+%shared_ptr(tesseract::motion_planners::PRMstarConfigurator)
+%shared_ptr(tesseract::motion_planners::LazyPRMstarConfigurator)
+%shared_ptr(tesseract::motion_planners::SPARSConfigurator)
 %ignore create(ompl::base::SpaceInformationPtr si) const;
-%include "tesseract_motion_planners/ompl/ompl_planner_configurator.h"
-%template(OMPLPlanners) std::vector<tesseract_planning::OMPLPlannerConfigurator::ConstPtr>;
+%include "tesseract/motion_planners/ompl/ompl_planner_configurator.h"
+%template(OMPLPlanners) std::vector<tesseract::motion_planners::OMPLPlannerConfigurator::ConstPtr>;
 %shared_factory(
-  tesseract_planning::OMPLPlannerConfigurator,
-  tesseract_planning::SBLConfigurator,
-  tesseract_planning::ESTConfigurator,
-  tesseract_planning::LBKPIECE1Configurator,
-  tesseract_planning::BKPIECE1Configurator,
-  tesseract_planning::KPIECE1Configurator,
-  tesseract_planning::BiTRRTConfigurator,
-  tesseract_planning::RRTConfigurator,
-  tesseract_planning::RRTConnectConfigurator,
-  tesseract_planning::RRTstarConfigurator,
-  tesseract_planning::TRRTConfigurator,
-  tesseract_planning::PRMConfigurator,
-  tesseract_planning::PRMstarConfigurator,
-  tesseract_planning::LazyPRMstarConfigurator,
-  tesseract_planning::SPARSConfigurator
+  tesseract::motion_planners::OMPLPlannerConfigurator,
+  tesseract::motion_planners::SBLConfigurator,
+  tesseract::motion_planners::ESTConfigurator,
+  tesseract::motion_planners::LBKPIECE1Configurator,
+  tesseract::motion_planners::BKPIECE1Configurator,
+  tesseract::motion_planners::KPIECE1Configurator,
+  tesseract::motion_planners::BiTRRTConfigurator,
+  tesseract::motion_planners::RRTConfigurator,
+  tesseract::motion_planners::RRTConnectConfigurator,
+  tesseract::motion_planners::RRTstarConfigurator,
+  tesseract::motion_planners::TRRTConfigurator,
+  tesseract::motion_planners::PRMConfigurator,
+  tesseract::motion_planners::PRMstarConfigurator,
+  tesseract::motion_planners::LazyPRMstarConfigurator,
+  tesseract::motion_planners::SPARSConfigurator
 )
 
-%pythondynamic tesseract_planning::OMPLMoveProfile;
-%shared_ptr(tesseract_planning::OMPLMoveProfile)
-%include "tesseract_motion_planners/ompl/profile/ompl_profile.h"
-// %template(OMPLMoveProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract_planning::OMPLMoveProfile>>;
+%pythondynamic tesseract::motion_planners::OMPLMoveProfile;
+%shared_ptr(tesseract::motion_planners::OMPLMoveProfile)
+%include "tesseract/motion_planners/ompl/profile/ompl_profile.h"
+// %template(OMPLMoveProfileMap) std::unordered_map<std::string, std::shared_ptr<const tesseract::motion_planners::OMPLMoveProfile>>;
 %tesseract_command_language_add_profile_type(OMPLMoveProfile);
 
-%pythondynamic tesseract_planning::OMPLRealVectorMoveProfile;
-%shared_ptr(tesseract_planning::OMPLRealVectorMoveProfile)
-%include "tesseract_motion_planners/ompl/profile/ompl_real_vector_move_profile.h"
+%pythondynamic tesseract::motion_planners::OMPLRealVectorMoveProfile;
+%shared_ptr(tesseract::motion_planners::OMPLRealVectorMoveProfile)
+%include "tesseract/motion_planners/ompl/profile/ompl_real_vector_move_profile.h"
 
-// %tesseract_std_function_base(OMPLProblemGeneratorFn,tesseract_planning,std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::OMPLMoveProfileMap&,c);
-// %tesseract_std_function(OMPLProblemGeneratorFn,tesseract_planning,std::vector<std::shared_ptr<tesseract_planning::OMPLProblem>>,const std::string&,a,const tesseract_planning::PlannerRequest&,b,const tesseract_planning::OMPLMoveProfileMap&,c);
+// %tesseract_std_function_base(OMPLProblemGeneratorFn,tesseract_planning,std::vector<std::shared_ptr<tesseract::motion_planners::OMPLProblem>>,const std::string&,a,const tesseract::motion_planners::PlannerRequest&,b,const tesseract::motion_planners::OMPLMoveProfileMap&,c);
+// %tesseract_std_function(OMPLProblemGeneratorFn,tesseract_planning,std::vector<std::shared_ptr<tesseract::motion_planners::OMPLProblem>>,const std::string&,a,const tesseract::motion_planners::PlannerRequest&,b,const tesseract::motion_planners::OMPLMoveProfileMap&,c);
 
-%pythondynamic tesseract_planning::OMPLMotionPlanner;
-%shared_ptr(tesseract_planning::OMPLMotionPlanner)
-%ignore tesseract_planning::OMPLMotionPlanner::clone;
-%include "tesseract_motion_planners/ompl/ompl_motion_planner.h"
+%pythondynamic tesseract::motion_planners::OMPLMotionPlanner;
+%shared_ptr(tesseract::motion_planners::OMPLMotionPlanner)
+%ignore tesseract::motion_planners::OMPLMotionPlanner::clone;
+%include "tesseract/motion_planners/ompl/ompl_motion_planner.h"

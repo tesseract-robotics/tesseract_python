@@ -1,4 +1,4 @@
-namespace tesseract_planning
+namespace tesseract::planning
 {
 class JointWaypoint;
 struct JointWaypointPoly
@@ -34,4 +34,4 @@ struct JointWaypointPoly
 
 };
 
-}  // namespace tesseract_planning
+}  // namespace tesseract::planning

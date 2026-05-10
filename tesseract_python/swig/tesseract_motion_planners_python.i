@@ -35,10 +35,10 @@
 
 %{
 // tesseract_motion_planners
-#include <tesseract_motion_planners/core/planner.h>
-#include <tesseract_motion_planners/robot_config.h>
-#include <tesseract_motion_planners/core/utils.h>
-#include <tesseract_motion_planners/core/types.h>
+#include <tesseract/motion_planners/planner.h>
+#include <tesseract/motion_planners/robot_config.h>
+#include <tesseract/motion_planners/utils.h>
+#include <tesseract/motion_planners/types.h>
 
 #include <tesseract/geometry/geometries.h>
 #include <tesseract/common/resource_locator.h>
@@ -60,8 +60,8 @@
 #include <tesseract/environment/environment.h>
 
 // tesseract_command_language
-#include <tesseract_command_language/fwd.h>
-#include <tesseract_command_language/move_instruction.h>
+#include <tesseract/command_language/fwd.h>
+#include <tesseract/command_language/move_instruction.h>
 
 // tesseract_collision
 #include <tesseract/collision/types.h>
@@ -70,20 +70,20 @@
 
 %}
 
-%unique_ptr_value_wrapper(tesseract_kinematics::KinematicGroup);
-%unique_ptr_value_wrapper(tesseract_kinematics::JointGroup);
+%unique_ptr_value_wrapper(tesseract::kinematics::KinematicGroup);
+%unique_ptr_value_wrapper(tesseract::kinematics::JointGroup);
 
 // tesseract_motion_planners
 #define TESSERACT_MOTION_PLANNERS_CORE_PUBLIC
 
-%include "tesseract_motion_planners/core/types.h"
+%include "tesseract/motion_planners/types.h"
 
-%shared_ptr(tesseract_planning::MotionPlanner)
-%wrap_unique_ptr(MotionPlannerUPtr,tesseract_planning::MotionPlanner)
-%include "tesseract_motion_planners/core/planner.h"
+%shared_ptr(tesseract::motion_planners::MotionPlanner)
+%wrap_unique_ptr(MotionPlannerUPtr,tesseract::motion_planners::MotionPlanner)
+%include "tesseract/motion_planners/planner.h"
 
-%include "tesseract_motion_planners/core/utils.h"
+%include "tesseract/motion_planners/utils.h"
 
-%include "tesseract_motion_planners/robot_config.h"
-%template(getRobotConfig) tesseract_planning::getRobotConfig<double>;
-%template(getJointTurns) tesseract_planning::getJointTurns<double>;
+%include "tesseract/motion_planners/robot_config.h"
+%template(getRobotConfig) tesseract::motion_planners::getRobotConfig<double>;
+%template(getJointTurns) tesseract::motion_planners::getJointTurns<double>;

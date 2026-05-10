@@ -1,4 +1,4 @@
-namespace tesseract_planning
+namespace tesseract::planning
 {
 
 struct WaypointPoly
@@ -19,4 +19,4 @@ struct WaypointPoly
 
 };
 
-}  // namespace tesseract_planning
+}  // namespace tesseract::planning

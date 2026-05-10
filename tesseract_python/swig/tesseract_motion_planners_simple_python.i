@@ -35,13 +35,13 @@
 
 %{
 // tesseract_motion_planners_simple
-#include <tesseract_motion_planners/simple/profile/simple_planner_profile.h>
-#include <tesseract_motion_planners/simple/profile/simple_planner_lvs_move_profile.h>
-#include <tesseract_motion_planners/simple/profile/simple_planner_lvs_no_ik_move_profile.h>
-#include <tesseract_motion_planners/simple/profile/simple_planner_fixed_size_move_profile.h>
-#include <tesseract_motion_planners/simple/profile/simple_planner_fixed_size_assign_move_profile.h>
-#include <tesseract_motion_planners/simple/simple_motion_planner.h>
-#include <tesseract_motion_planners/simple/interpolation.h>
+#include <tesseract/motion_planners/simple/profile/simple_planner_profile.h>
+#include <tesseract/motion_planners/simple/profile/simple_planner_lvs_move_profile.h>
+#include <tesseract/motion_planners/simple/profile/simple_planner_lvs_no_ik_move_profile.h>
+#include <tesseract/motion_planners/simple/profile/simple_planner_fixed_size_move_profile.h>
+#include <tesseract/motion_planners/simple/profile/simple_planner_fixed_size_assign_move_profile.h>
+#include <tesseract/motion_planners/simple/simple_motion_planner.h>
+#include <tesseract/motion_planners/simple/interpolation.h>
 
 
 #include <tesseract/geometry/geometries.h>
@@ -64,14 +64,14 @@
 #include <tesseract/environment/environment.h>
 
 // tesseract_command_language
-#include <tesseract_command_language/fwd.h>
-#include <tesseract_command_language/move_instruction.h>
-#include <tesseract_command_language/composite_instruction.h>
+#include <tesseract/command_language/fwd.h>
+#include <tesseract/command_language/move_instruction.h>
+#include <tesseract/command_language/composite_instruction.h>
 #include <tesseract/common/profile_dictionary.h>
 
 // tesseract_motion_planners
-#include <tesseract_motion_planners/core/planner.h>
-#include <tesseract_motion_planners/core/types.h>
+#include <tesseract/motion_planners/planner.h>
+#include <tesseract/motion_planners/types.h>
 
 #include "tesseract_environment_python_std_functions.h"
 
@@ -80,32 +80,32 @@
 // tesseract_motion_planners_simple
 #define TESSERACT_MOTION_PLANNERS_SIMPLE_PUBLIC
 
-%ignore tesseract_planning::JointGroupInstructionInfo::getWorkingFrame;
-%include "tesseract_motion_planners/simple/interpolation.h"
+%ignore tesseract::motion_planners::JointGroupInstructionInfo::getWorkingFrame;
+%include "tesseract/motion_planners/simple/interpolation.h"
 
-%pythondynamic tesseract_planning::SimplePlannerMoveProfile;
-%pythondynamic tesseract_planning::SimplePlannerCompositeProfile;
-%shared_ptr(tesseract_planning::SimplePlannerMoveProfile)
-%shared_ptr(tesseract_planning::SimplePlannerCompositeProfile)
-%include "tesseract_motion_planners/simple/profile/simple_planner_profile.h"
+%pythondynamic tesseract::motion_planners::SimplePlannerMoveProfile;
+%pythondynamic tesseract::motion_planners::SimplePlannerCompositeProfile;
+%shared_ptr(tesseract::motion_planners::SimplePlannerMoveProfile)
+%shared_ptr(tesseract::motion_planners::SimplePlannerCompositeProfile)
+%include "tesseract/motion_planners/simple/profile/simple_planner_profile.h"
 %tesseract_command_language_add_profile_type(SimplePlannerMoveProfile);
 %tesseract_command_language_add_profile_type(SimplePlannerCompositeProfile);
 
-%pythondynamic tesseract_planning::SimplePlannerLVSMoveProfile;
-%shared_ptr(tesseract_planning::SimplePlannerLVSMoveProfile)
-%include "tesseract_motion_planners/simple/profile/simple_planner_lvs_move_profile.h"
+%pythondynamic tesseract::motion_planners::SimplePlannerLVSMoveProfile;
+%shared_ptr(tesseract::motion_planners::SimplePlannerLVSMoveProfile)
+%include "tesseract/motion_planners/simple/profile/simple_planner_lvs_move_profile.h"
 
-%pythondynamic tesseract_planning::SimplePlannerLVSNoIKMoveProfile;
-%shared_ptr(tesseract_planning::SimplePlannerLVSNoIKMoveProfile)
-%include "tesseract_motion_planners/simple/profile/simple_planner_lvs_no_ik_move_profile.h"
-%pythondynamic tesseract_planning::SimplePlannerFixedSizeMoveProfile;
-%shared_ptr(tesseract_planning::SimplePlannerFixedSizeMoveProfile)
-%include "tesseract_motion_planners/simple/profile/simple_planner_fixed_size_move_profile.h"
+%pythondynamic tesseract::motion_planners::SimplePlannerLVSNoIKMoveProfile;
+%shared_ptr(tesseract::motion_planners::SimplePlannerLVSNoIKMoveProfile)
+%include "tesseract/motion_planners/simple/profile/simple_planner_lvs_no_ik_move_profile.h"
+%pythondynamic tesseract::motion_planners::SimplePlannerFixedSizeMoveProfile;
+%shared_ptr(tesseract::motion_planners::SimplePlannerFixedSizeMoveProfile)
+%include "tesseract/motion_planners/simple/profile/simple_planner_fixed_size_move_profile.h"
 
-%pythondynamic tesseract_planning::SimplePlannerFixedSizeAssignMoveProfile;
-%shared_ptr(tesseract_planning::SimplePlannerFixedSizeAssignMoveProfile)
-%include "tesseract_motion_planners/simple/profile/simple_planner_fixed_size_assign_move_profile.h"
-%pythondynamic tesseract_planning::SimpleMotionPlanner;
-%shared_ptr(tesseract_planning::SimpleMotionPlanner)
-%ignore tesseract_planning::SimpleMotionPlanner::clone;
-%include "tesseract_motion_planners/simple/simple_motion_planner.h"
+%pythondynamic tesseract::motion_planners::SimplePlannerFixedSizeAssignMoveProfile;
+%shared_ptr(tesseract::motion_planners::SimplePlannerFixedSizeAssignMoveProfile)
+%include "tesseract/motion_planners/simple/profile/simple_planner_fixed_size_assign_move_profile.h"
+%pythondynamic tesseract::motion_planners::SimpleMotionPlanner;
+%shared_ptr(tesseract::motion_planners::SimpleMotionPlanner)
+%ignore tesseract::motion_planners::SimpleMotionPlanner::clone;
+%include "tesseract/motion_planners/simple/simple_motion_planner.h"

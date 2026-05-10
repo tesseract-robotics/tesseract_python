@@ -1,4 +1,4 @@
-namespace tesseract_planning
+namespace tesseract::planning
 {
 class CartesianWaypoint;
 struct CartesianWaypointPoly
@@ -39,4 +39,4 @@ struct CartesianWaypointPoly
   bool isToleranced() const;
 };
 
-}  // namespace tesseract_planning
+}  // namespace tesseract::planning
