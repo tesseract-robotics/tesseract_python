@@ -215,6 +215,15 @@ jobs:
       with:
         python-version: '${{ matrix.config.python_version }}'
         architecture: ${{ matrix.config.arch }}
+    - name: pip3
+      run: |
+        python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcs2l
+    - name: choco
+      run: |
+        choco install swig ninja -r
+    - name: vcs import
+      working-directory: ws/src
+      run: vcs import --input tesseract_python\dependencies.rosinstall
     - name: vcpkg build
       uses: johnwason/vcpkg-action@v8
       with:
@@ -227,15 +236,6 @@ jobs:
           --overlay-ports=${{ github.workspace }}/ws/src/tesseract_planning/.github/workflows/vcpkg_overlays
         token: ${{ github.token }}
         cache-key: win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}
-    - name: pip3
-      run: |
-        python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcs2l
-    - name: choco
-      run: |
-        choco install swig ninja -r
-    - name: vcs import
-      working-directory: ws/src
-      run: vcs import --input tesseract_python\dependencies.rosinstall
     - name: colcon build
       working-directory: ws
       shell: cmd
@@ -338,6 +338,12 @@ jobs:
     - name: brew
       run: |
         brew install libomp cmake automake autoconf autoconf-archive libtool gcc ninja swig
+    - name: pip3
+      run: |
+        python3 -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcs2l delocate
+    - name: vcs import
+      working-directory: ws/src
+      run: vcs import --input tesseract_python/dependencies.rosinstall
     - name: vcpkg build
       uses: johnwason/vcpkg-action@v8
       with:
@@ -350,12 +356,6 @@ jobs:
           --overlay-ports=${{ github.workspace }}/ws/src/tesseract_planning/.github/workflows/vcpkg_overlays
         token: ${{ github.token }}
         cache-key: osx-${{ matrix.config.arch }}-vcpkg
-    - name: pip3
-      run: |
-        python3 -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcs2l delocate
-    - name: vcs import
-      working-directory: ws/src
-      run: vcs import --input tesseract_python/dependencies.rosinstall
     - name: colcon build
       working-directory: ws
       run: |
