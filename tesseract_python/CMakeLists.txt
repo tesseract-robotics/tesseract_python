@@ -191,7 +191,7 @@ tesseract_python_module(tesseract_motion_planners_trajopt_python SWIG_SRCS swig/
 tesseract_python_module(tesseract_motion_planners_ompl_python SWIG_SRCS swig/tesseract_motion_planners_ompl_python.i PACKAGE tesseract_motion_planners_ompl LIBS tesseract::motion_planners_ompl )
 tesseract_python_module(tesseract_motion_planners_descartes_python SWIG_SRCS swig/tesseract_motion_planners_descartes_python.i PACKAGE tesseract_motion_planners_descartes LIBS tesseract::motion_planners_descartes )
 tesseract_python_module(tesseract_time_parameterization_python SWIG_SRCS swig/tesseract_time_parameterization_python.i PACKAGE tesseract_time_parameterization LIBS tesseract::time_parameterization tesseract::time_parameterization_isp tesseract::time_parameterization_totg tesseract::time_parameterization_ruckig)
-# tesseract_python_module(tesseract_task_composer_python SWIG_SRCS swig/tesseract_task_composer_python.i PACKAGE tesseract_task_composer LIBS tesseract::task_composer tesseract::task_composer_nodes tesseract::task_composer_taskflow tesseract::collision  tesseract::task_composer_factories tesseract::task_composer_planning_factories tesseract::task_composer_planning_nodes tesseract::task_composer_taskflow_factories )
+tesseract_python_module(tesseract_task_composer_python SWIG_SRCS swig/tesseract_task_composer_python.i PACKAGE tesseract_task_composer LIBS tesseract::task_composer tesseract::task_composer_nodes tesseract::task_composer_taskflow tesseract::collision  tesseract_task_composer_factories tesseract_task_composer_planning_factories tesseract_task_composer_planning_nodes tesseract_task_composer_taskflow_factories tesseract::motion_planners_trajopt )
 
 set(TESSERACT_PYTHON_MODULE_TARGETS 
   _tesseract_common_python
@@ -211,7 +211,7 @@ set(TESSERACT_PYTHON_MODULE_TARGETS
   _tesseract_motion_planners_ompl_python
   _tesseract_motion_planners_descartes_python
   _tesseract_time_parameterization_python
-  # _tesseract_task_composer_python
+  _tesseract_task_composer_python
 )
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)

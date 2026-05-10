@@ -87,7 +87,7 @@ def test_task_composer_trajopt_example():
 
     env, manip_info = get_environment()
 
-    config_path = FilesystemPath(os.path.join(TESSERACT_TASK_COMPOSER_DIR, "config/task_composer_plugins_no_trajopt_ifopt.yaml"))
+    config_path = FilesystemPath(os.path.join(TESSERACT_TASK_COMPOSER_DIR, "config/task_composer_plugins.yaml"))
     p_locator = TesseractSupportResourceLocator()
     factory = TaskComposerPluginFactory(config_path, p_locator)
 
