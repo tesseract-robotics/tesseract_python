@@ -95,7 +95,7 @@ def test_task_composer_trajopt_example():
     print("trajopt task name: " + task.getName())
     
     output_key = task.getOutputKeys().get("program")
-    input_key = task.getInputKeys().get("planning_input")
+    # input_key = task.getInputKeys().get("program")
 
     profiles = ProfileDictionary()
 
@@ -106,7 +106,7 @@ def test_task_composer_trajopt_example():
     profiles_anypoly = AnyPoly_wrap_ProfileDictionary(profiles)
 
     task_data = TaskComposerDataStorage()
-    task_data.setData("input_key", problem_anypoly)
+    task_data.setData("planning_input", problem_anypoly)
     task_data.setData("environment", environment_anypoly)
     task_data.setData("profiles", profiles_anypoly)
     log = TaskComposerLog()
