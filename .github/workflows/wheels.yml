@@ -15,7 +15,7 @@ env:
     boost-dll boost-program-options
     boost-serialization boost-filesystem
     boost-stacktrace boost-algorithm
-    boost-format
+    boost-format cereal
     tinyxml2 console-bridge assimp
     urdfdom octomap orocos-kdl pcl
     gtest benchmark flann jsoncpp
