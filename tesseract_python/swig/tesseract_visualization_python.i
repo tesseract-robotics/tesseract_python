@@ -36,37 +36,37 @@
 
 // tesseract_geometry
 
-#include <tesseract_geometry/geometries.h>
+#include <tesseract/geometry/geometries.h>
 
 // tesseract_visualization
-#include <tesseract_visualization/markers/marker.h>
-#include <tesseract_visualization/markers/arrow_marker.h>
-#include <tesseract_visualization/markers/axis_marker.h>
-#include <tesseract_visualization/markers/contact_results_marker.h>
-#include <tesseract_visualization/markers/geometry_marker.h>
-#include <tesseract_visualization/markers/toolpath_marker.h>
-#include <tesseract_visualization/visualization.h>
-#include <tesseract_visualization/visualization_loader.h>
-#include <tesseract_visualization/trajectory_interpolator.h>
-#include <tesseract_visualization/trajectory_player.h>
+#include <tesseract/visualization/markers/marker.h>
+#include <tesseract/visualization/markers/arrow_marker.h>
+#include <tesseract/visualization/markers/axis_marker.h>
+#include <tesseract/visualization/markers/contact_results_marker.h>
+#include <tesseract/visualization/markers/geometry_marker.h>
+#include <tesseract/visualization/markers/toolpath_marker.h>
+#include <tesseract/visualization/visualization.h>
+#include <tesseract/visualization/visualization_loader.h>
+#include <tesseract/visualization/trajectory_interpolator.h>
+#include <tesseract/visualization/trajectory_player.h>
 
 
-#include <tesseract_common/resource_locator.h>
+#include <tesseract/common/resource_locator.h>
 
 // tesseract_state_solver
-#include <tesseract_state_solver/mutable_state_solver.h>
-#include <tesseract_state_solver/state_solver.h>
-#include <tesseract_state_solver/kdl/kdl_state_solver.h>
-#include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
+#include <tesseract/state_solver/mutable_state_solver.h>
+#include <tesseract/state_solver/state_solver.h>
+#include <tesseract/state_solver/kdl/kdl_state_solver.h>
+#include <tesseract/state_solver/ofkt/ofkt_state_solver.h>
 
 // tesseract_kinematics
-#include <tesseract_kinematics/core/joint_group.h>
-#include <tesseract_kinematics/core/kinematic_group.h>
+#include <tesseract/kinematics/joint_group.h>
+#include <tesseract/kinematics/kinematic_group.h>
 
 // tesseract_environment
-#include <tesseract_environment/commands.h>
-#include <tesseract_environment/events.h>
-#include <tesseract_environment/environment.h>
+#include <tesseract/environment/commands.h>
+#include <tesseract/environment/events.h>
+#include <tesseract/environment/environment.h>
 
 #include "tesseract_environment_python_std_functions.h"
 
@@ -75,28 +75,28 @@
 // tesseract_visualization
 #define TESSERACT_VISUALIZATION_PUBLIC
 
-%shared_ptr(tesseract_visualization::Marker)
-%include "tesseract_visualization/markers/marker.h"
+%shared_ptr(tesseract::visualization::Marker)
+%include "tesseract/visualization/markers/marker.h"
 
-%shared_ptr(tesseract_visualization::ArrowMarker)
-%include "tesseract_visualization/markers/arrow_marker.h"
+%shared_ptr(tesseract::visualization::ArrowMarker)
+%include "tesseract/visualization/markers/arrow_marker.h"
 
-%shared_ptr(tesseract_visualization::AxisMarker)
-%include "tesseract_visualization/markers/axis_marker.h"
+%shared_ptr(tesseract::visualization::AxisMarker)
+%include "tesseract/visualization/markers/axis_marker.h"
 
-%shared_ptr(tesseract_visualization::ContactResultsMarker)
-%include "tesseract_visualization/markers/contact_results_marker.h"
+%shared_ptr(tesseract::visualization::ContactResultsMarker)
+%include "tesseract/visualization/markers/contact_results_marker.h"
 
-%shared_ptr(tesseract_visualization::GeometryMarker)
-%include "tesseract_visualization/markers/geometry_marker.h"
+%shared_ptr(tesseract::visualization::GeometryMarker)
+%include "tesseract/visualization/markers/geometry_marker.h"
 
-%shared_ptr(tesseract_visualization::ToolpathMarker)
-%include "tesseract_visualization/markers/toolpath_marker.h"
-%include "tesseract_visualization/trajectory_interpolator.h"
-%include "tesseract_visualization/trajectory_player.h"
+%shared_ptr(tesseract::visualization::ToolpathMarker)
+%include "tesseract/visualization/markers/toolpath_marker.h"
+%include "tesseract/visualization/trajectory_interpolator.h"
+%include "tesseract/visualization/trajectory_player.h"
 
-%shared_ptr(tesseract_visualization::Visualization)
-%include "tesseract_visualization/visualization.h"
-%include "tesseract_visualization/visualization_loader.h"
+%shared_ptr(tesseract::visualization::Visualization)
+%include "tesseract/visualization/visualization.h"
+%include "tesseract/visualization/visualization_loader.h"
 
 

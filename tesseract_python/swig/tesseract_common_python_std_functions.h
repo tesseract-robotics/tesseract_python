@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-#include <tesseract_common/resource_locator.h>
+#include <tesseract/common/resource_locator.h>
 
 #pragma once
 

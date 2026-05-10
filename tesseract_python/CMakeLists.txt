@@ -23,24 +23,9 @@ else()
   add_compile_options(/bigobj)
 endif()
 
-# find_package(tesseract_motion_planners REQUIRED)
-# find_package(tesseract_common REQUIRED)
-# find_package(tesseract_geometry REQUIRED)
-# find_package(tesseract_visualization REQUIRED)
-find_package(tesseract_collision REQUIRED)
-# find_package(tesseract_urdf REQUIRED)
-# find_package(tesseract_srdf REQUIRED)
-find_package(tesseract_kinematics REQUIRED)
-# find_package(tesseract_environment REQUIRED)
-# find_package(tesseract_scene_graph REQUIRED)
-# find_package(tesseract_command_language REQUIRED)
-# find_package(tesseract_time_parameterization REQUIRED)
-# find_package(PCL REQUIRED COMPONENTS core features filters io segmentation surface)
-# find_package(trajopt REQUIRED)
-# find_package(TinyXML2 REQUIRED)
-# find_package(opw_kinematics REQUIRED)
+find_package(tesseract REQUIRED)
 
-find_package(tesseract_task_composer REQUIRED COMPONENTS core planning taskflow)
+find_package(tesseract_planning REQUIRED)
 
 if(NOT TinyXML2_INCLUDE_DIRS AND TARGET tinyxml2::tinyxml2)
 get_target_property(TinyXML2_INCLUDE_DIRS tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
@@ -51,24 +36,42 @@ tesseract_variables()
 
 find_bullet()
 
-include_directories(
-  ${trajopt_INCLUDE_DIRS} 
-  ${tesseract_common_INCLUDE_DIRS}
-  ${tesseract_geometry_INCLUDE_DIRS}
-  ${tesseract_collision_INCLUDE_DIRS}
-  ${tesseract_motion_planners_INCLUDE_DIRS}
-  ${tesseract_kinematics_INCLUDE_DIRS}
-  ${tesseract_urdf_INCLUDE_DIRS}
-  ${tesseract_scene_graph_INCLUDE_DIRS}
-  ${tesseract_srdf_INCLUDE_DIRS}
-  ${tesseract_environment_INCLUDE_DIRS}
-  ${tesseract_command_language_INCLUDE_DIRS}
-  ${tesseract_time_parameterization_INCLUDE_DIRS}
-  ${tesseract_visualization_INCLUDE_DIRS}
-  ${tesseract_task_composer_INCLUDE_DIRS}
-  ${opw_kinematics_INCLUDE_DIRS}
-  ${TinyXML2_INCLUDE_DIRS}
+set(TARGET_INCLUDES_LIST
+  trajopt::trajopt
+  tesseract::common
+  tesseract::geometry
+  tesseract::collision
+  tesseract::motion_planners
+  tesseract::kinematics
+  tesseract::urdf
+  tesseract::scene_graph
+  tesseract::srdf
+  tesseract::environment
+  tesseract::command_language
+  tesseract::time_parameterization
+  tesseract::visualization
+  tesseract::task_composer
+  tinyxml2::tinyxml2
 )
+
+set(TESSERACT_INCLUDE_PATHS "")
+
+foreach(TGT IN LISTS TARGET_INCLUDES_LIST)
+    if(TARGET ${TGT})
+        get_target_property(INT_DIRS ${TGT} INTERFACE_INCLUDE_DIRECTORIES)
+        if(INT_DIRS)
+            list(APPEND TESSERACT_INCLUDE_PATHS ${INT_DIRS})
+        endif()
+    endif()
+endforeach()
+
+if(TESSERACT_INCLUDE_PATHS)
+    list(REMOVE_DUPLICATES TESSERACT_INCLUDE_PATHS)
+endif()
+
+include_directories(${TESSERACT_INCLUDE_PATHS})
+
+message(STATUS "TESSERACT_INCLUDE_PATHS=${TESSERACT_INCLUDE_PATHS}")
 
 if(NOT PYTHON_VERSION)
   set(PYTHON_VERSION  $ENV{ROS_PYTHON_VERSION})
@@ -79,7 +82,7 @@ if(PYTHON_VERSION)
   if(${PYTHON_VERSION} LESS 3)
     set(Python_ADDITIONAL_VERSIONS 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0)
   else()
-    set(Python_ADDITIONAL_VERSIONS 3.8 3.7 3.6 3.5 3.4 3.3 3.2 3.1 3.0)
+    set(Python_ADDITIONAL_VERSIONS 3.14 3.13 3.12 3.11 3.10 3.9 3.8 3.7 3.6 3.5 3.4 3.3 3.2 3.1 3.0)
   endif()
 endif()
 
@@ -158,37 +161,37 @@ macro(tesseract_python_find_target lib_name search_target)
   endif()
 endmacro()
 
-tesseract_python_find_target(tesseract_collision_fcl_factories tesseract::tesseract_collision_core)
-tesseract_python_find_target(tesseract_collision_bullet_factories tesseract::tesseract_collision_core)
-tesseract_python_find_target(tesseract_kinematics_kdl_factories tesseract::tesseract_kinematics_core)
-tesseract_python_find_target(tesseract_kinematics_ur_factory tesseract::tesseract_kinematics_core)
-tesseract_python_find_target(tesseract_kinematics_opw_factory tesseract::tesseract_kinematics_core)
-#tesseract_python_find_target(tesseract_kinematics_core_factories tesseract::tesseract_kinematics_core)
-tesseract_python_find_target(tesseract_task_composer_factories tesseract::tesseract_task_composer)
-tesseract_python_find_target(tesseract_task_composer_planning_factories tesseract::tesseract_task_composer)
-# tesseract_python_find_target(tesseract_task_composer_planning_nodes tesseract::tesseract_task_composer)
-tesseract_python_find_target(tesseract_task_composer_taskflow_factories tesseract::tesseract_task_composer)
+tesseract_python_find_target(tesseract_collision_fcl_factories tesseract::collision)
+tesseract_python_find_target(tesseract_collision_bullet_factories tesseract::collision)
+tesseract_python_find_target(tesseract_kinematics_kdl_factories tesseract::kinematics)
+tesseract_python_find_target(tesseract_kinematics_ur_factory tesseract::kinematics)
+tesseract_python_find_target(tesseract_kinematics_opw_factory tesseract::kinematics)
+#tesseract_python_find_target(tesseract_kinematics_core_factories tesseract::kinematics)
+tesseract_python_find_target(tesseract_task_composer_factories tesseract::task_composer)
+tesseract_python_find_target(tesseract_task_composer_planning_factories tesseract::task_composer)
+# tesseract_python_find_target(tesseract_task_composer_planning_nodes tesseract::task_composer)
+tesseract_python_find_target(tesseract_task_composer_taskflow_factories tesseract::task_composer)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/tesseract_python_module.cmake)
 
-tesseract_python_module(tesseract_common_python SWIG_SRCS swig/tesseract_common_python.i PACKAGE tesseract_common LIBS tesseract::tesseract_common )
-tesseract_python_module(tesseract_geometry_python SWIG_SRCS swig/tesseract_geometry_python.i PACKAGE tesseract_geometry LIBS tesseract::tesseract_geometry )
-tesseract_python_module(tesseract_collision_python SWIG_SRCS swig/tesseract_collision_python.i PACKAGE tesseract_collision LIBS tesseract::tesseract_collision_core Bullet3::Bullet tesseract::tesseract_collision_bullet_factories tesseract::tesseract_collision_fcl_factories )
-tesseract_python_module(tesseract_scene_graph_python SWIG_SRCS swig/tesseract_scene_graph_python.i PACKAGE tesseract_scene_graph LIBS tesseract::tesseract_scene_graph )
-tesseract_python_module(tesseract_srdf_python SWIG_SRCS swig/tesseract_srdf_python.i PACKAGE tesseract_srdf LIBS tesseract::tesseract_srdf )
-tesseract_python_module(tesseract_urdf_python SWIG_SRCS swig/tesseract_urdf_python.i PACKAGE tesseract_urdf LIBS tesseract::tesseract_urdf )
-tesseract_python_module(tesseract_state_solver_python SWIG_SRCS swig/tesseract_state_solver_python.i PACKAGE tesseract_state_solver LIBS tesseract::tesseract_state_solver_core tesseract::tesseract_state_solver_ofkt tesseract::tesseract_state_solver_kdl)
-tesseract_python_module(tesseract_kinematics_python SWIG_SRCS swig/tesseract_kinematics_python.i PACKAGE tesseract_kinematics LIBS tesseract::tesseract_kinematics_core tesseract::tesseract_kinematics_kdl_factories tesseract::tesseract_kinematics_ur_factory tesseract::tesseract_kinematics_opw_factory tesseract::tesseract_kinematics_core_factories )
-tesseract_python_module(tesseract_environment_python SWIG_SRCS swig/tesseract_environment_python.i PACKAGE tesseract_environment LIBS tesseract::tesseract_environment )
-tesseract_python_module(tesseract_visualization_python SWIG_SRCS swig/tesseract_visualization_python.i PACKAGE tesseract_visualization LIBS tesseract::tesseract_visualization)
-tesseract_python_module(tesseract_command_language_python SWIG_SRCS swig/tesseract_command_language_python.i PACKAGE tesseract_command_language LIBS tesseract::tesseract_command_language)
-tesseract_python_module(tesseract_motion_planners_python SWIG_SRCS swig/tesseract_motion_planners_python.i PACKAGE tesseract_motion_planners LIBS tesseract::tesseract_motion_planners_simple tesseract::tesseract_motion_planners_core )
-tesseract_python_module(tesseract_motion_planners_simple_python SWIG_SRCS swig/tesseract_motion_planners_simple_python.i PACKAGE tesseract_motion_planners_simple LIBS tesseract::tesseract_motion_planners_simple )
-tesseract_python_module(tesseract_motion_planners_trajopt_python SWIG_SRCS swig/tesseract_motion_planners_trajopt_python.i PACKAGE tesseract_motion_planners_trajopt LIBS tesseract::tesseract_motion_planners_trajopt )
-tesseract_python_module(tesseract_motion_planners_ompl_python SWIG_SRCS swig/tesseract_motion_planners_ompl_python.i PACKAGE tesseract_motion_planners_ompl LIBS tesseract::tesseract_motion_planners_ompl )
-tesseract_python_module(tesseract_motion_planners_descartes_python SWIG_SRCS swig/tesseract_motion_planners_descartes_python.i PACKAGE tesseract_motion_planners_descartes LIBS tesseract::tesseract_motion_planners_descartes )
-tesseract_python_module(tesseract_time_parameterization_python SWIG_SRCS swig/tesseract_time_parameterization_python.i PACKAGE tesseract_time_parameterization LIBS tesseract::tesseract_time_parameterization_core tesseract::tesseract_time_parameterization_isp tesseract::tesseract_time_parameterization_totg tesseract::tesseract_time_parameterization_ruckig)
-tesseract_python_module(tesseract_task_composer_python SWIG_SRCS swig/tesseract_task_composer_python.i PACKAGE tesseract_task_composer LIBS tesseract::tesseract_task_composer tesseract::tesseract_task_composer_nodes tesseract::tesseract_task_composer_taskflow tesseract::tesseract_collision_core  tesseract::tesseract_task_composer_factories tesseract::tesseract_task_composer_planning_factories tesseract::tesseract_task_composer_planning_nodes tesseract::tesseract_task_composer_taskflow_factories )
+tesseract_python_module(tesseract_common_python SWIG_SRCS swig/tesseract_common_python.i PACKAGE tesseract_common LIBS tesseract::common)
+tesseract_python_module(tesseract_geometry_python SWIG_SRCS swig/tesseract_geometry_python.i PACKAGE tesseract_geometry LIBS tesseract::geometry )
+tesseract_python_module(tesseract_collision_python SWIG_SRCS swig/tesseract_collision_python.i PACKAGE tesseract_collision LIBS tesseract::collision Bullet3::Bullet tesseract_collision_bullet_factories tesseract_collision_fcl_factories )
+tesseract_python_module(tesseract_scene_graph_python SWIG_SRCS swig/tesseract_scene_graph_python.i PACKAGE tesseract_scene_graph LIBS tesseract::scene_graph )
+tesseract_python_module(tesseract_srdf_python SWIG_SRCS swig/tesseract_srdf_python.i PACKAGE tesseract_srdf LIBS tesseract::srdf )
+tesseract_python_module(tesseract_urdf_python SWIG_SRCS swig/tesseract_urdf_python.i PACKAGE tesseract_urdf LIBS tesseract::urdf )
+tesseract_python_module(tesseract_state_solver_python SWIG_SRCS swig/tesseract_state_solver_python.i PACKAGE tesseract_state_solver LIBS tesseract::state_solver tesseract::state_solver_ofkt tesseract::state_solver_kdl)
+tesseract_python_module(tesseract_kinematics_python SWIG_SRCS swig/tesseract_kinematics_python.i PACKAGE tesseract_kinematics LIBS tesseract::kinematics tesseract_kinematics_kdl_factories tesseract_kinematics_ur_factory tesseract_kinematics_opw_factory tesseract::kinematics_factories )
+tesseract_python_module(tesseract_environment_python SWIG_SRCS swig/tesseract_environment_python.i PACKAGE tesseract_environment LIBS tesseract::environment )
+tesseract_python_module(tesseract_visualization_python SWIG_SRCS swig/tesseract_visualization_python.i PACKAGE tesseract_visualization LIBS tesseract::visualization)
+# tesseract_python_module(tesseract_command_language_python SWIG_SRCS swig/tesseract_command_language_python.i PACKAGE tesseract_command_language LIBS tesseract::command_language)
+# tesseract_python_module(tesseract_motion_planners_python SWIG_SRCS swig/tesseract_motion_planners_python.i PACKAGE tesseract_motion_planners LIBS tesseract::motion_planners_simple tesseract::motion_planners_core )
+# tesseract_python_module(tesseract_motion_planners_simple_python SWIG_SRCS swig/tesseract_motion_planners_simple_python.i PACKAGE tesseract_motion_planners_simple LIBS tesseract::motion_planners_simple )
+# tesseract_python_module(tesseract_motion_planners_trajopt_python SWIG_SRCS swig/tesseract_motion_planners_trajopt_python.i PACKAGE tesseract_motion_planners_trajopt LIBS tesseract::motion_planners_trajopt )
+# tesseract_python_module(tesseract_motion_planners_ompl_python SWIG_SRCS swig/tesseract_motion_planners_ompl_python.i PACKAGE tesseract_motion_planners_ompl LIBS tesseract::motion_planners_ompl )
+# tesseract_python_module(tesseract_motion_planners_descartes_python SWIG_SRCS swig/tesseract_motion_planners_descartes_python.i PACKAGE tesseract_motion_planners_descartes LIBS tesseract::motion_planners_descartes )
+# tesseract_python_module(tesseract_time_parameterization_python SWIG_SRCS swig/tesseract_time_parameterization_python.i PACKAGE tesseract_time_parameterization LIBS tesseract::time_parameterization_core tesseract::time_parameterization_isp tesseract::time_parameterization_totg tesseract::time_parameterization_ruckig)
+# tesseract_python_module(tesseract_task_composer_python SWIG_SRCS swig/tesseract_task_composer_python.i PACKAGE tesseract_task_composer LIBS tesseract::task_composer tesseract::task_composer_nodes tesseract::task_composer_taskflow tesseract::collision  tesseract::task_composer_factories tesseract::task_composer_planning_factories tesseract::task_composer_planning_nodes tesseract::task_composer_taskflow_factories )
 
 set(TESSERACT_PYTHON_MODULE_TARGETS 
   _tesseract_common_python
@@ -201,14 +204,14 @@ set(TESSERACT_PYTHON_MODULE_TARGETS
   _tesseract_kinematics_python
   _tesseract_environment_python
   _tesseract_visualization_python
-  _tesseract_command_language_python
-  _tesseract_motion_planners_python
-  _tesseract_motion_planners_simple_python
-  _tesseract_motion_planners_trajopt_python
-  _tesseract_motion_planners_ompl_python
-  _tesseract_motion_planners_descartes_python
-  _tesseract_time_parameterization_python
-  _tesseract_task_composer_python
+  # _tesseract_command_language_python
+  # _tesseract_motion_planners_python
+  # _tesseract_motion_planners_simple_python
+  # _tesseract_motion_planners_trajopt_python
+  # _tesseract_motion_planners_ompl_python
+  # _tesseract_motion_planners_descartes_python
+  # _tesseract_time_parameterization_python
+  # _tesseract_task_composer_python
 )
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
@@ -258,25 +261,11 @@ endif()
 if(TESSERACT_ENABLE_TESTING)
   enable_testing()
 
-  add_run_tests_target(ENABLE ${TESSERACT_ENABLE_RUN_TESTING})
-
-  if (${TESSERACT_ENABLE_RUN_TESTING})
-  add_dependencies(run_tests ${TESSERACT_PYTHON_MODULE_TARGETS})
-    endif()
-
   add_test (NAME python-tests
   COMMAND ${PYTHON_EXECUTABLE} -m pytest -p no:cacheprovider
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
   
-  find_package(tesseract_support REQUIRED)
-  if (WIN32)
-  set_tests_properties(python-tests PROPERTIES ENVIRONMENT "TESSERACT_SUPPORT_DIR=${TESSERACT_SUPPORT_DIR}")
-  else()
-  set_tests_properties(python-tests PROPERTIES ENVIRONMENT "TESSERACT_SUPPORT_DIR=${TESSERACT_SUPPORT_DIR}")
-  endif()
-  
-
 endif()
 
 else()

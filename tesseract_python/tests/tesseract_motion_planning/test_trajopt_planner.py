@@ -4,18 +4,19 @@ import os
 import numpy as np
 import numpy.testing as nptest
 
-from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
+from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource, ProfileDictionary
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo
 from tesseract_robotics.tesseract_command_language import  JointWaypoint, CartesianWaypoint, WaypointPoly, \
     MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, \
-    CompositeInstruction, ProfileDictionary, CartesianWaypointPoly, JointWaypointPoly, MoveInstructionPoly, \
+    CompositeInstruction, CartesianWaypointPoly, JointWaypointPoly, MoveInstructionPoly, \
     InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
     JointWaypointPoly_wrap_JointWaypoint, CartesianWaypointPoly_wrap_CartesianWaypoint, \
-    MoveInstructionPoly_wrap_MoveInstruction
+    MoveInstructionPoly_wrap_MoveInstruction, InstructionPoly_wrap_MoveInstruction, \
+    WaypointPoly_wrap_JointWaypoint, WaypointPoly_wrap_CartesianWaypoint
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
-from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
+from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultMoveProfile, TrajOptDefaultCompositeProfile, \
     TrajOptMotionPlanner
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 
@@ -46,17 +47,17 @@ def test_trajopt_freespace_joint_cart():
     wp1 = JointWaypoint(joint_names, np.array([0,0,0,-1.57,0,0,0],dtype=np.float64))
     wp2 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(-.2,.4,0.2) * Quaterniond(0,0,1.0,0))
 
-    start_instruction = MoveInstruction(JointWaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE")
-    plan_f1 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE")
+    start_instruction = MoveInstruction(WaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE")
+    plan_f1 = MoveInstruction(WaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE")
 
     program = CompositeInstruction("TEST_PROFILE")
     program.setManipulatorInfo(manip)
-    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
-    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
+    program.append(InstructionPoly_wrap_MoveInstruction(start_instruction))
+    program.append(InstructionPoly_wrap_MoveInstruction(plan_f1))
 
     interpolated_program = generateInterpolatedProgram(program, env, 3.14, 1.0, 3.14, 10)
 
-    plan_profile = TrajOptDefaultPlanProfile()
+    plan_profile = TrajOptDefaultMoveProfile()
     composite_profile = TrajOptDefaultCompositeProfile()
 
     profiles = ProfileDictionary()

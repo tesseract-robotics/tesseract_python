@@ -40,28 +40,31 @@
 #include <tesseract_motion_planners/core/utils.h>
 #include <tesseract_motion_planners/core/types.h>
 
-#include <tesseract_geometry/geometries.h>
-#include <tesseract_common/resource_locator.h>
-#include <tesseract_srdf/kinematics_information.h>
+#include <tesseract/geometry/geometries.h>
+#include <tesseract/common/resource_locator.h>
+#include <tesseract/srdf/kinematics_information.h>
 
 // tesseract_state_solver
-#include <tesseract_state_solver/mutable_state_solver.h>
-#include <tesseract_state_solver/state_solver.h>
-#include <tesseract_state_solver/kdl/kdl_state_solver.h>
-#include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
+#include <tesseract/state_solver/mutable_state_solver.h>
+#include <tesseract/state_solver/state_solver.h>
+#include <tesseract/state_solver/kdl/kdl_state_solver.h>
+#include <tesseract/state_solver/ofkt/ofkt_state_solver.h>
 
 // tesseract_kinematics
-#include <tesseract_kinematics/core/joint_group.h>
-#include <tesseract_kinematics/core/kinematic_group.h>
+#include <tesseract/kinematics/joint_group.h>
+#include <tesseract/kinematics/kinematic_group.h>
 
 // tesseract_environment
-#include <tesseract_environment/commands.h>
-#include <tesseract_environment/events.h>
-#include <tesseract_environment/environment.h>
+#include <tesseract/environment/commands.h>
+#include <tesseract/environment/events.h>
+#include <tesseract/environment/environment.h>
 
 // tesseract_command_language
 #include <tesseract_command_language/fwd.h>
 #include <tesseract_command_language/move_instruction.h>
+
+// tesseract_collision
+#include <tesseract/collision/types.h>
 
 #include "tesseract_environment_python_std_functions.h"
 

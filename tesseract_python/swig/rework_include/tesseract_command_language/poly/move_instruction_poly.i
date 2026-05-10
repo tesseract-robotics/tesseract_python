@@ -30,9 +30,9 @@ struct MoveInstructionPoly
   WaypointPoly& getWaypoint();
   const WaypointPoly& getWaypoint() const;
 
-  void setManipulatorInfo(tesseract_common::ManipulatorInfo info);
-  const tesseract_common::ManipulatorInfo& getManipulatorInfo() const;
-  tesseract_common::ManipulatorInfo& getManipulatorInfo();
+  void setManipulatorInfo(tesseract::common::ManipulatorInfo info);
+  const tesseract::common::ManipulatorInfo& getManipulatorInfo() const;
+  tesseract::common::ManipulatorInfo& getManipulatorInfo();
 
   void setProfile(const std::string& profile);
   const std::string& getProfile() const;

@@ -24,20 +24,20 @@
  * limitations under the License.
  */
 
-#include <tesseract_environment/environment.h>
+#include <tesseract/environment/environment.h>
 
 #pragma once
 
 class FindTCPOffsetCallbackFnBase
 {
 public:
-  virtual Eigen::Isometry3d call(const tesseract_common::ManipulatorInfo& a) = 0;
+  virtual Eigen::Isometry3d call(const tesseract::common::ManipulatorInfo& a) = 0;
   virtual ~FindTCPOffsetCallbackFnBase() {}
 };
 
 class EventCallbackFnBase
 {
 public:
-  virtual void call(const tesseract_environment::Event& a) = 0;
+  virtual void call(const tesseract::environment::Event& a) = 0;
   virtual ~EventCallbackFnBase() {}
 };

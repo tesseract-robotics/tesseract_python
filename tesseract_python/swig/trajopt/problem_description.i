@@ -16,7 +16,7 @@
 %shared_ptr(trajopt::JointJerkTermInfo);
 %shared_ptr(trajopt::CollisionTermInfo);
 %shared_ptr(trajopt::TotalTimeTermInfo);
-%shared_ptr(trajopt_common::SafetyMarginData);
+//%shared_ptr(trajopt_common::SafetyMarginData);
 %shared_ptr(trajopt::ProblemConstructionInfo);
 
 
@@ -56,7 +56,7 @@
 }
 
 
-%template(SafetyMarginDataPtr_vector) std::vector<std::shared_ptr<trajopt_common::SafetyMarginData>>;
+//%template(SafetyMarginDataPtr_vector) std::vector<std::shared_ptr<trajopt_common::SafetyMarginData>>;
 %template(TermInfoPtr_vector) std::vector<std::shared_ptr<trajopt::TermInfo>>;
 
 
@@ -123,28 +123,28 @@ struct BasicTrustRegionSQPParameters
 
 namespace trajopt_common
 {
-struct SafetyMarginData
-{
+// struct SafetyMarginData
+// {
 
-    using Ptr = std::shared_ptr<SafetyMarginData>;
-    using ConstPtr = std::shared_ptr<const SafetyMarginData>;
+//     using Ptr = std::shared_ptr<SafetyMarginData>;
+//     using ConstPtr = std::shared_ptr<const SafetyMarginData>;
 
-	SafetyMarginData(const double& default_safety_margin, const double& default_safety_margin_coeff);
+// 	SafetyMarginData(const double& default_safety_margin, const double& default_safety_margin_coeff);
 	
-	void setPairSafetyMarginData(const std::string& obj1,
-                               const std::string& obj2,
-                               const double& safety_margin,
-                               const double& safety_margin_coeff);
+// 	void setPairSafetyMarginData(const std::string& obj1,
+//                                const std::string& obj2,
+//                                const double& safety_margin,
+//                                const double& safety_margin_coeff);
 	
-	const std::array<double,2>& getPairSafetyMarginData(const std::string& obj1, const std::string& obj2) const;
+// 	const std::array<double,2>& getPairSafetyMarginData(const std::string& obj1, const std::string& obj2) const;
 	
-	const double getMaxSafetyMargin() const;	
+// 	const double getMaxSafetyMargin() const;	
 	
-};
+// };
 
-std::vector<std::shared_ptr<SafetyMarginData> > createSafetyMarginDataVector(int num_elements,
-                                                                const double& default_safety_margin,
-                                                                const double& default_safety_margin_coeff);
+// std::vector<std::shared_ptr<SafetyMarginData> > createSafetyMarginDataVector(int num_elements,
+//                                                                 const double& default_safety_margin,
+//                                                                 const double& default_safety_margin_coeff);
 }
 
 namespace trajopt
@@ -348,22 +348,18 @@ struct JointJerkTermInfo : public TermInfo
   void hatch(TrajOptProb& prob);  
 };
 
-enum class CollisionEvaluatorType
-{
-  SINGLE_TIMESTEP = 0,
-  DISCRETE_CONTINUOUS = 1,
-  CAST_CONTINUOUS = 2,
-};
+// enum class CollisionEvaluatorType
+// {
+//   SINGLE_TIMESTEP = 0,
+//   DISCRETE_CONTINUOUS = 1,
+//   CAST_CONTINUOUS = 2,
+// };
 
 class CollisionTermInfo : public TermInfo
 {
 public:
   int first_step, last_step;
-  CollisionEvaluatorType evaluator_type;
   std::vector<int> fixed_steps;
-  double longest_valid_segment_length = 0.5;
-  std::vector<std::shared_ptr<trajopt_common::SafetyMarginData> > info;
-  tesseract_collision::ContactTestType contact_test_type;
   void fromJson(ProblemConstructionInfo& pci, const Json::Value& v);
   void hatch(TrajOptProb& prob);
 };

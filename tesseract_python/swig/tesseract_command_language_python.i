@@ -39,7 +39,7 @@
 #include <tinyxml2.h>
 
 // tesseract_common
-#include <tesseract_common/manipulator_info.h>
+#include <tesseract/common/manipulator_info.h>
 
 // tesseract_command_language
 #include <tesseract_command_language/poly/waypoint_poly.h>
@@ -56,7 +56,6 @@
 #include <tesseract_command_language/instruction_type.h>
 #include <tesseract_command_language/joint_waypoint.h>
 #include <tesseract_command_language/move_instruction.h>
-#include <tesseract_command_language/profile_dictionary.h>
 #include <tesseract_command_language/set_analog_instruction.h>
 #include <tesseract_command_language/set_tool_instruction.h>
 #include <tesseract_command_language/state_waypoint.h>
@@ -67,11 +66,11 @@
 
 
 
-#include <tesseract_common/resource_locator.h>
+#include <tesseract/common/resource_locator.h>
 
 #include "tesseract_command_language_python_std_functions.h"
 
-#include <tesseract_common/type_erasure.h>
+#include <tesseract/common/type_erasure.h>
 %}
 
 %include "tesseract_vector_reference_wrapper_instruction_typemaps.i"
@@ -144,22 +143,26 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 
 %include "tesseract_command_language/types.h"
 
-%pythondynamic tesseract_planning::WaypointPoly;
-%shared_ptr(tesseract_planning::Profile)
-%include "tesseract_command_language/profile.h"
 
-%shared_ptr(tesseract_planning::ProfileDictionary)
-%include "tesseract_command_language/profile_dictionary.h"
+// Temporarily override return of non-const eigen reference
+%typemap(out, fragment="Eigen_Fragments") Eigen::VectorXd &
+{
+  if (!ConvertFromEigenToNumPyMatrix<Eigen::VectorXd>(&$result, $1))
+    SWIG_fail;
+}
+
+%pythondynamic tesseract_planning::WaypointPoly;
+
 
 %pythondynamic tesseract_planning::InstructionPoly;
 %pythondynamic tesseract_planning::WaypointPoly;
 
-%include "rework_include/tesseract_command_language/poly/waypoint_poly.i"
-%include "rework_include/tesseract_command_language/poly/cartesian_waypoint_poly.i"
-%include "rework_include/tesseract_command_language/poly/joint_waypoint_poly.i"
-%include "rework_include/tesseract_command_language/poly/state_waypoint_poly.i"
-%include "rework_include/tesseract_command_language/poly/instruction_poly.i"
-%include "rework_include/tesseract_command_language/poly/move_instruction_poly.i"
+%include "tesseract_command_language/poly/waypoint_poly.h"
+%include "tesseract_command_language/poly/cartesian_waypoint_poly.h"
+%include "tesseract_command_language/poly/joint_waypoint_poly.h"
+%include "tesseract_command_language/poly/state_waypoint_poly.h"
+%include "tesseract_command_language/poly/instruction_poly.h"
+%include "tesseract_command_language/poly/move_instruction_poly.h"
 
 %tesseract_command_language_add_waypoint_poly_type(CartesianWaypointPoly)
 %tesseract_erasure_ctor_planning(CartesianWaypointPoly,CartesianWaypoint);
@@ -175,6 +178,19 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %template(Instructions) std::vector<tesseract_planning::InstructionPoly>;
 
 %template(MoveInstructionPolyVector) std::vector<tesseract_planning::MoveInstructionPoly>;
+
+%wrap_unique_ptr(WaypointPolyUPtr,tesseract_planning::WaypointPoly)
+%wrap_unique_ptr(InstructionPolyUPtr,tesseract_planning::InstructionPoly)
+%wrap_unique_ptr(MoveInstructionPolyUPtr,tesseract_planning::MoveInstructionPoly)
+%wrap_unique_ptr(CartesianWaypointPolyUPtr,tesseract_planning::CartesianWaypointPoly)
+%wrap_unique_ptr(JointWaypointPolyUPtr,tesseract_planning::JointWaypointPoly)
+%wrap_unique_ptr(StateWaypointPolyUPtr,tesseract_planning::StateWaypointPoly)   
+%wrap_unique_ptr(WaypointInterfaceUPtr,tesseract_planning::WaypointInterface)
+%wrap_unique_ptr(InstructionInterfaceUPtr,tesseract_planning::InstructionInterface)
+%wrap_unique_ptr(MoveInstructionInterfaceUPtr,tesseract_planning::MoveInstructionInterface)
+%wrap_unique_ptr(CartesianWaypointInterfaceUPtr,tesseract_planning::CartesianWaypointInterface)
+%wrap_unique_ptr(JointWaypointInterfaceUPtr,tesseract_planning::JointWaypointInterface)
+%wrap_unique_ptr(StateWaypointInterfaceUPtr,tesseract_planning::StateWaypointInterface)
 
 %include "tesseract_command_language/instruction_type.h"
 
@@ -234,5 +250,3 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 %enddef
 
 %include "tesseract_command_language/constants.h"
-
-%tesseract_any_poly_type_shared_ptr(ProfileDictionary,tesseract_planning);

@@ -15,8 +15,8 @@ struct CartesianWaypointPoly
   void setLowerTolerance(const Eigen::VectorXd& lower_tol);
   const Eigen::VectorXd& getLowerTolerance() const;
 
-  void setSeed(const tesseract_common::JointState& seed);
-  const tesseract_common::JointState& getSeed() const;
+  void setSeed(const tesseract::common::JointState& seed);
+  const tesseract::common::JointState& getSeed() const;
 
   void setName(const std::string& name);
   const std::string& getName() const;

@@ -44,40 +44,40 @@
 #include <boost/graph/breadth_first_search.hpp>
 
 
-#include <tesseract_geometry/geometries.h>
-#include <tesseract_common/resource_locator.h>
-#include <tesseract_srdf/kinematics_information.h>
+#include <tesseract/geometry/geometries.h>
+#include <tesseract/common/resource_locator.h>
+#include <tesseract/srdf/kinematics_information.h>
 
 // tesseract_state_solver
-#include <tesseract_state_solver/mutable_state_solver.h>
-#include <tesseract_state_solver/state_solver.h>
-#include <tesseract_state_solver/kdl/kdl_state_solver.h>
-#include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
+#include <tesseract/state_solver/mutable_state_solver.h>
+#include <tesseract/state_solver/state_solver.h>
+#include <tesseract/state_solver/kdl/kdl_state_solver.h>
+#include <tesseract/state_solver/ofkt/ofkt_state_solver.h>
 
 %}
 
 // tesseract_state_solver
 #define TESSERACT_STATE_SOLVER_CORE_PUBLIC
 
-namespace tesseract_scene_graph
+namespace tesseract::scene_graph
 {
     class KDLTreeData;
 }
 
-%ignore KDLStateSolver(const tesseract_scene_graph::SceneGraph& scene_graph, tesseract_scene_graph::KDLTreeData data);
+%ignore KDLStateSolver(const tesseract::scene_graph::SceneGraph& scene_graph, tesseract::scene_graph::KDLTreeData data);
 
-%shared_ptr(tesseract_scene_graph::StateSolver)
-%wrap_unique_ptr(StateSolverUPtr,tesseract_scene_graph::StateSolver)
-%include "tesseract_state_solver/state_solver.h"
+%shared_ptr(tesseract::scene_graph::StateSolver)
+%wrap_unique_ptr(StateSolverUPtr,tesseract::scene_graph::StateSolver)
+%include "tesseract/state_solver/state_solver.h"
 
-%shared_ptr(tesseract_scene_graph::MutableStateSolver)
-%wrap_unique_ptr(MutableStateSolverUPtr,tesseract_scene_graph::MutableStateSolver)
-%include "tesseract_state_solver/mutable_state_solver.h"
+%shared_ptr(tesseract::scene_graph::MutableStateSolver)
+%wrap_unique_ptr(MutableStateSolverUPtr,tesseract::scene_graph::MutableStateSolver)
+%include "tesseract/state_solver/mutable_state_solver.h"
 
-%shared_ptr(tesseract_scene_graph::KDLStateSolver)
-%include "tesseract_state_solver/kdl/kdl_state_solver.h"
+%shared_ptr(tesseract::scene_graph::KDLStateSolver)
+%include "tesseract/state_solver/kdl/kdl_state_solver.h"
 
-%shared_ptr(tesseract_scene_graph::OFKTStateSolver)
-%include "tesseract_state_solver/ofkt/ofkt_state_solver.h"
+%shared_ptr(tesseract::scene_graph::OFKTStateSolver)
+%include "tesseract/state_solver/ofkt/ofkt_state_solver.h"
 
 

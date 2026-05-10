@@ -36,7 +36,7 @@
 %{
 
 
-#include <tesseract_common/resource_locator.h>
+#include <tesseract/common/resource_locator.h>
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/directed_graph.hpp>
@@ -44,14 +44,14 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/breadth_first_search.hpp>
 
-#include <tesseract_geometry/geometries.h>
-#include <tesseract_scene_graph/graph.h>
+#include <tesseract/geometry/geometries.h>
+#include <tesseract/scene_graph/graph.h>
 
 // tesseract_urdf
-#include <tesseract_urdf/urdf_parser.h>
+#include <tesseract/urdf/urdf_parser.h>
 
 %}
 
-%unique_ptr_value_wrapper(tesseract_scene_graph::SceneGraph);
+%unique_ptr_value_wrapper(tesseract::scene_graph::SceneGraph);
 
-%include "tesseract_urdf/urdf_parser.h"
+%include "tesseract/urdf/urdf_parser.h"

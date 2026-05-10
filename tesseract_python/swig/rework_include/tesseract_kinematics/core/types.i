@@ -1,4 +1,4 @@
-namespace tesseract_kinematics
+namespace tesseract::kinematics
 {
 /** @brief The inverse kinematics solutions container */
 using IKSolutions = std::vector<Eigen::VectorXd>;

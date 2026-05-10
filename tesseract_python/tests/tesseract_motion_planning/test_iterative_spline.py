@@ -1,10 +1,30 @@
 from tesseract_robotics.tesseract_command_language import CompositeInstruction, StateWaypoint, WaypointPoly, \
     InstructionPoly, MoveInstruction, Instructions, MoveInstructionType_FREESPACE, StateWaypointPoly, \
      MoveInstructionPoly, InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
-     MoveInstructionPoly_wrap_MoveInstruction, StateWaypointPoly_wrap_StateWaypoint
+     InstructionPoly_wrap_MoveInstruction, WaypointPoly_wrap_StateWaypoint, DEFAULT_PROFILE_KEY
 from tesseract_robotics.tesseract_time_parameterization import IterativeSplineParameterization, \
-    InstructionsTrajectory
+    InstructionsTrajectory, IterativeSplineParameterizationCompositeProfile
+from tesseract_robotics.tesseract_environment import Environment
+from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo, ProfileDictionary
+from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 import numpy as np
+import os
+
+
+def get_environment():
+    env = Environment()
+    locator = TesseractSupportResourceLocator()
+    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
+    urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf"))
+    srdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf"))
+    assert env.init(urdf_path, srdf_path, locator)
+    manip_info = ManipulatorInfo()
+    manip_info.manipulator = "manipulator"
+    manip_info.tcp_frame = "tool0"
+    manip_info.working_frame = "base_link"
+    joint_names = list(env.getJointGroup("manipulator").getJointNames())
+
+    return env, manip_info, joint_names
 
 def create_straight_trajectory():
 
@@ -18,32 +38,39 @@ def create_straight_trajectory():
         p = np.zeros((6,),dtype=np.float64)
         p[0] = i * (max_/num)
         swp = StateWaypoint(joint_names, p)        
-        program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(MoveInstruction(
-                                        StateWaypointPoly_wrap_StateWaypoint(swp), 
+        program.append(InstructionPoly_wrap_MoveInstruction(MoveInstruction(
+                                        WaypointPoly_wrap_StateWaypoint(swp), 
                                         MoveInstructionType_FREESPACE)))
 
     p = np.zeros((6,),dtype=np.float64)
     p[0] = max_
     swp = StateWaypoint(joint_names, p)
-    program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(MoveInstruction(
-                                    StateWaypointPoly_wrap_StateWaypoint(swp), 
+    program.append(InstructionPoly_wrap_MoveInstruction(MoveInstruction(
+                                    WaypointPoly_wrap_StateWaypoint(swp), 
                                     MoveInstructionType_FREESPACE)))
 
     return program
 
 def test_time_parameterization():
 
-    time_parameterization = IterativeSplineParameterization(False)
+    time_parameterization = IterativeSplineParameterization("test")
 
     program = create_straight_trajectory()
-    traj = InstructionsTrajectory(program)
+    env = get_environment()
+    program.setManipulatorInfo(env[1])
     max_velocity = np.array([[2.088, 2.082, 3.27, 3.6, 3.3, 3.078]],dtype=np.float64)
     max_velocity = np.hstack((-max_velocity.T, max_velocity.T))
     max_acceleration = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
     max_acceleration = np.hstack((-max_acceleration.T, max_acceleration.T))
     max_jerk = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
     max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
-    assert time_parameterization.compute(traj, max_velocity, max_acceleration, max_jerk)
+    profile = IterativeSplineParameterizationCompositeProfile()
+    profile.velocity_limits = max_velocity
+    profile.acceleration_limits = max_velocity
+    profile.override_limits = True
+    profiles = ProfileDictionary()
+    profiles.addProfile("unit_test","TEST_PROFILE",profile)
+    assert time_parameterization.compute(program, env[0], profiles)
     res_instr1 = InstructionPoly_as_MoveInstructionPoly(program[-1])
     WaypointPoly_as_StateWaypointPoly(res_instr1.getWaypoint()).getTime() > 1.0
     res_instr2 = InstructionPoly_as_MoveInstructionPoly(program[-1])
@@ -51,17 +78,24 @@ def test_time_parameterization():
 
 def test_time_parameterization_vec():
 
-    time_parameterization = IterativeSplineParameterization(False)
+    time_parameterization = IterativeSplineParameterization("test")
 
     program = create_straight_trajectory()
-    traj = InstructionsTrajectory(program)
+    env = get_environment()
+    program.setManipulatorInfo(env[1])
     max_velocity = np.array([[2.088, 2.082, 3.27, 3.6, 3.3, 3.078]],dtype=np.float64)
     max_velocity = np.hstack((-max_velocity.T, max_velocity.T))
     max_acceleration = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
     max_acceleration = np.hstack((-max_acceleration.T, max_acceleration.T))
     max_jerk = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
     max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
-    assert time_parameterization.compute(traj, max_velocity, max_acceleration, max_jerk)
+    profile = IterativeSplineParameterizationCompositeProfile()
+    profile.velocity_limits = max_velocity
+    profile.acceleration_limits = max_velocity
+    profile.override_limits = True
+    profiles = ProfileDictionary()
+    profiles.addProfile("unit_test","TEST_PROFILE",profile)
+    assert time_parameterization.compute(program, env[0], profiles)
     res_instr1 = InstructionPoly_as_MoveInstructionPoly(program[-1])
     WaypointPoly_as_StateWaypointPoly(res_instr1.getWaypoint()).getTime() > 1.0
     res_instr2 = InstructionPoly_as_MoveInstructionPoly(program[-1])
