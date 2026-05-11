@@ -7,7 +7,7 @@ import numpy.testing as nptest
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource, ProfileDictionary
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
-    ManipulatorInfo
+    ManipulatorInfo, GeneralResourceLocator
 from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, WaypointPoly, \
     MoveInstructionType_LINEAR, MoveInstruction, InstructionPoly, CartesianWaypointPoly, MoveInstructionPoly, \
     CompositeInstruction, InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly,\
@@ -16,16 +16,14 @@ from tesseract_robotics.tesseract_motion_planners import PlannerRequest, Planner
 from tesseract_robotics.tesseract_motion_planners_descartes import DescartesDefaultMoveProfileD, \
     DescartesMotionPlannerD, DescartesMoveProfileD, cast_DescartesMoveProfileD
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
-from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 DESCARTES_DEFAULT_NAMESPACE = "DescartesMotionPlannerTask"
 
 def get_environment():
-    locator = TesseractSupportResourceLocator()
-    env = Environment()
-    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-    urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/abb_irb2400.urdf"))
-    srdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/abb_irb2400.srdf"))
+    locator = GeneralResourceLocator()
+    env = Environment()    
+    urdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/abb_irb2400.urdf").getFilePath())
+    srdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/abb_irb2400.srdf").getFilePath())
     assert env.init(urdf_path, srdf_path, locator)
     manip_info = ManipulatorInfo()
     manip_info.tcp_frame = "tool0"

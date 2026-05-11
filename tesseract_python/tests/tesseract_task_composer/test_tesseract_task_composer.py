@@ -5,7 +5,7 @@ import numpy as np
 import numpy.testing as nptest
 
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource, ProfileDictionary, \
-    AnyPoly_wrap_ProfileDictionary
+    AnyPoly_wrap_ProfileDictionary, GeneralResourceLocator
 from tesseract_robotics.tesseract_environment import Environment, AnyPoly_wrap_EnvironmentConst
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo, AnyPoly, AnyPoly_wrap_double
@@ -30,22 +30,17 @@ from tesseract_robotics import tesseract_common
 from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, \
     TaskComposerDataStorage, TaskComposerContext, TaskComposerDataStorageUPtr, TaskComposerLog
 
-from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
-
-TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
-TESSERACT_TASK_COMPOSER_DIR = os.environ["TESSERACT_TASK_COMPOSER_DIR"]
 
 tesseract_common.setLogLevel(tesseract_common.CONSOLE_BRIDGE_LOG_DEBUG)
 
 def get_environment():
     env = Environment()
-    locator = TesseractSupportResourceLocator()
-    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-    urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf"))
-    srdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf"))
+    locator = GeneralResourceLocator()
+    urdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.urdf").getFilePath())
+    srdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.srdf").getFilePath())
     assert env.init(urdf_path, srdf_path, locator)
     manip_info = ManipulatorInfo()
     manip_info.tcp_frame = "tool0"
@@ -87,8 +82,8 @@ def test_task_composer_trajopt_example():
 
     env, manip_info = get_environment()
 
-    config_path = FilesystemPath(os.path.join(TESSERACT_TASK_COMPOSER_DIR, "config/task_composer_plugins.yaml"))
-    p_locator = TesseractSupportResourceLocator()
+    p_locator = GeneralResourceLocator()
+    config_path = FilesystemPath(p_locator.locateResource("package://tesseract_planning/task_composer/config/task_composer_plugins.yaml").getFilePath())
     factory = TaskComposerPluginFactory(config_path, p_locator)
 
     task = factory.createTaskComposerNode("TrajOptPipeline")

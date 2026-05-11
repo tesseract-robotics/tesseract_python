@@ -4,9 +4,6 @@ from tesseract_robotics import tesseract_geometry
 from tesseract_robotics import tesseract_common
 from tesseract_robotics import tesseract_collision
 import os
-from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
-
-TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
 
 def addCollisionObjects(checker):
 
@@ -123,8 +120,8 @@ def run_test(checker):
     # Further C++ code not relevant to testing Python wrappers
 
 def get_plugin_factory():
-    collision_config = tesseract_common.FilesystemPath(TESSERACT_SUPPORT_DIR + "/urdf/" + "contact_manager_plugins.yaml")
-    locator = TesseractSupportResourceLocator()
+    locator = tesseract_common.GeneralResourceLocator()
+    collision_config = tesseract_common.FilesystemPath(locator.locateResource("package://tesseract/support/urdf/contact_manager_plugins.yaml").getFilePath())
     return tesseract_collision.ContactManagersPluginFactory(collision_config, locator), locator
 
 def test_bullet_discrete_simple():

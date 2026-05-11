@@ -147,8 +147,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install ws/build/tesseract_python/python/wheelhouse/*
         python -m pip install pytest        
-        export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/support
-        export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/install/share/tesseract_planning/task_composer
+        export TESSERACT_RESOURCE_PATH=$GITHUB_WORKSPACE/ws/install/share
         cd ws/src/tesseract_python/tesseract_python
         pytest -s
     - name: build docs
@@ -271,8 +270,7 @@ jobs:
         if %errorlevel% neq 0 exit /b %errorlevel%
         python -m pip install pytest
         if %errorlevel% neq 0 exit /b %errorlevel%
-        set TESSERACT_SUPPORT_DIR=%GITHUB_WORKSPACE%\ws\src\tesseract\support
-        set TESSERACT_TASK_COMPOSER_DIR=%GITHUB_WORKSPACE%\ws\install\share\tesseract_planning\task_composer
+        set TESSERACT_RESOURCE_PATH=%GITHUB_WORKSPACE%\ws\install\share
         if %errorlevel% neq 0 exit /b %errorlevel%
         cd %GITHUB_WORKSPACE%\ws\src\tesseract_python\tesseract_python
         if %errorlevel% neq 0 exit /b %errorlevel%
@@ -385,8 +383,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install ws/build/tesseract_python/python/wheelhouse/*
         python -m pip install pytest        
-        export TESSERACT_SUPPORT_DIR=$GITHUB_WORKSPACE/ws/src/tesseract/support
-        export TESSERACT_TASK_COMPOSER_DIR=$GITHUB_WORKSPACE/ws/install/share/tesseract_planning/task_composer
+        export TESSERACT_RESOURCE_PATH=$GITHUB_WORKSPACE/ws/install/share
         cd ws/src/tesseract_python/tesseract_python
         pytest -s    
     - name: archive wheels

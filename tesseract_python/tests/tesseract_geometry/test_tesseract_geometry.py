@@ -83,21 +83,22 @@ def test_geometry_plane():
 #TODO: Mesh constructors
 
 def test_geometry_load_mesh():
-    TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
+
+    locator = tesseract_common.GeneralResourceLocator()
     
-    mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/sphere_p25m.stl")
+    mesh_file = locator.locateResource("package://tesseract/support/meshes/sphere_p25m.stl").getFilePath()
     meshes = tesseract_geometry.createMeshFromPath(mesh_file)
     assert(len(meshes)==1)
     assert(meshes[0].getFaceCount() == 80)
     assert(meshes[0].getVertexCount() == 42)
 
-    mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/sphere_p25m.ply")
+    mesh_file = locator.locateResource("package://tesseract/support/meshes/sphere_p25m.ply").getFilePath()
     meshes = tesseract_geometry.createMeshFromPath(mesh_file)
     assert(len(meshes)==1)
     assert(meshes[0].getFaceCount() == 80)
     assert(meshes[0].getVertexCount() == 42)
 
-    mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/sphere_p25m.dae")
+    mesh_file = locator.locateResource("package://tesseract/support/meshes/sphere_p25m.dae").getFilePath()
     meshes = tesseract_geometry.createMeshFromPath(mesh_file)
     assert(len(meshes)==2)
     assert(meshes[0].getFaceCount() == 80)
@@ -105,19 +106,19 @@ def test_geometry_load_mesh():
     assert(meshes[1].getFaceCount() == 80)
     assert(meshes[1].getVertexCount() == 42)
 
-    mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/sphere_p25m.dae")
+    mesh_file = locator.locateResource("package://tesseract/support/meshes/sphere_p25m.dae").getFilePath()
     meshes = tesseract_geometry.createMeshFromPath(mesh_file, np.array((1,1,1),dtype=np.float64), False, True)
     assert(len(meshes)==1)
     assert(meshes[0].getFaceCount() == 2*80)
     assert(meshes[0].getVertexCount() == 2*42)
 
-    mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/box_2m.ply")
+    mesh_file = locator.locateResource("package://tesseract/support/meshes/box_2m.ply").getFilePath()
     meshes = tesseract_geometry.createMeshFromPath(mesh_file, np.array((1,1,1),dtype=np.float64), True, True)
     assert(len(meshes)==1)
     assert(meshes[0].getFaceCount() == 12)
     assert(meshes[0].getVertexCount() == 8)
     
-    mesh_file = os.path.join(TESSERACT_SUPPORT_DIR, "meshes/box_2m.ply")
+    mesh_file = locator.locateResource("package://tesseract/support/meshes/box_2m.ply").getFilePath()
     meshes = tesseract_geometry.createConvexMeshFromPath(mesh_file, np.array((1,1,1),dtype=np.float64), False, False)
     assert(len(meshes)==1)
     assert(meshes[0].getFaceCount() == 6)

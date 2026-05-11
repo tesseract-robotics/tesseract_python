@@ -5,7 +5,7 @@ import numpy as np
 
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
 from tesseract_robotics.tesseract_environment import Environment
-from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo
+from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo, GeneralResourceLocator
 from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, WaypointPoly, \
     MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, \
     MoveInstructionPoly, MoveInstructionType_LINEAR, JointWaypointPoly, CartesianWaypointPoly, \
@@ -15,14 +15,12 @@ from tesseract_robotics.tesseract_command_language import JointWaypoint, Cartesi
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest
 from tesseract_robotics.tesseract_motion_planners_simple import SimplePlannerLVSMoveProfile
 
-from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 def get_environment():
     env = Environment()
-    locator = TesseractSupportResourceLocator()
-    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-    urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf"))
-    srdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf"))
+    locator = GeneralResourceLocator()
+    urdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.urdf").getFilePath())
+    srdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.srdf").getFilePath())
     assert env.init(urdf_path, srdf_path, locator)
     manip_info = ManipulatorInfo()
     manip_info.manipulator = "manipulator"

@@ -6,17 +6,16 @@ from tesseract_robotics.tesseract_command_language import CompositeInstruction, 
 from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
     InstructionsTrajectory, TimeOptimalTrajectoryGenerationCompositeProfile 
 from tesseract_robotics.tesseract_environment import Environment
-from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo, ProfileDictionary
-from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
+from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo, ProfileDictionary, \
+    GeneralResourceLocator
 import numpy as np
 import os
 
 def get_environment():
     env = Environment()
-    locator = TesseractSupportResourceLocator()
-    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-    urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf"))
-    srdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf"))
+    locator = GeneralResourceLocator()
+    urdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.urdf").getFilePath())
+    srdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.srdf").getFilePath())
     assert env.init(urdf_path, srdf_path, locator)
     manip_info = ManipulatorInfo()
     manip_info.manipulator = "manipulator"

@@ -5,7 +5,7 @@ from tesseract_robotics.tesseract_common import Isometry3d, Translation3d, Angle
 from tesseract_robotics import tesseract_common
 from tesseract_robotics import tesseract_collision
 from tesseract_robotics import tesseract_urdf
-from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
+
 import os
 import re
 import traceback
@@ -35,7 +35,7 @@ mesh_urdf="""
 """
 
 def get_scene_graph():
-    locator = TesseractSupportResourceLocator()
+    locator = tesseract_common.GeneralResourceLocator()
     return tesseract_urdf.parseURDFString(mesh_urdf, locator).release()
     
 def test_mesh_material_loading():

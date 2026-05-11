@@ -7,7 +7,7 @@ import numpy.testing as nptest
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource, ProfileDictionary
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
-    ManipulatorInfo
+    ManipulatorInfo, GeneralResourceLocator
 from tesseract_robotics.tesseract_command_language import  JointWaypoint, CartesianWaypoint, WaypointPoly, \
     MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, \
     CompositeInstruction, CartesianWaypointPoly, JointWaypointPoly, MoveInstructionPoly, \
@@ -20,16 +20,13 @@ from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultM
     TrajOptMotionPlanner
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 
-from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
-
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
 def get_environment():
-    locator = TesseractSupportResourceLocator()
+    locator = GeneralResourceLocator()
     env = Environment()
-    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-    urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf"))
-    srdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf"))
+    urdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.urdf").getFilePath())
+    srdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.srdf").getFilePath())
     assert env.init(urdf_path, srdf_path, locator)
     manip_info = ManipulatorInfo()
     manip_info.tcp_frame = "tool0"

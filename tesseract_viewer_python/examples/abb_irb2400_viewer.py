@@ -27,8 +27,6 @@ import sys
 OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
-TESSERACT_SUPPORT_DIR = os.environ["TESSERACT_SUPPORT_DIR"]
-
 locator = GeneralResourceLocator()
 abb_irb2400_urdf_package_url = "package://tesseract_support/urdf/abb_irb2400.urdf"
 abb_irb2400_srdf_package_url = "package://tesseract_support/urdf/abb_irb2400.srdf"
