@@ -107,7 +107,7 @@ jobs:
       uses: johnwason/swig-build-action@v1.2
       with:
         cache-key: ${{ matrix.config.os }}-${{ matrix.config.python_version }}
-        version: "4.3.1"
+        version: "4.2.1"
 
     - uses: actions/setup-python@v6
       id: setup-python
