@@ -9,7 +9,7 @@
 - git:
     local-name: tesseract_planning
     uri: https://github.com/johnwason/tesseract_planning.git
-    version: task_anchor
+    version: master
 - git:
     local-name: trajopt
     uri: https://github.com/tesseract-robotics/trajopt.git
