@@ -46,6 +46,9 @@
 // Define typemaps for types used by Mesh classes
 
 %define %tesseract_vector_eigen_shared_ptr_adaptor(TYPE)
+
+%template() std::shared_ptr<const TYPE>;
+
 %typemap(in, noblock=0) std::shared_ptr<const TYPE > (void  *argp = 0, int res = 0, TYPE* temp1) {
 
   // Override for "in" std::shared_ptr<const TYPE> by value instead of shared_ptr
@@ -55,7 +58,7 @@
   }
    temp1 = %reinterpret_cast(argp, TYPE*);
    
-   $1 = std::make_shared< TYPE >(*temp1);
+   $1 = std::make_shared< TYPE >(static_cast<const TYPE &>(*temp1));
 }
 
 %typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER,noblock=1) std::shared_ptr<const TYPE > {
@@ -85,12 +88,14 @@
 
 %define %tesseract_eigen_shared_ptr_adaptor(TYPE)
 
+%template() std::shared_ptr<const TYPE>;
+
 %typemap(in, fragment="Eigen_Fragments") std::shared_ptr<const TYPE > (TYPE temp)
 {
   // Override for "in" TYPE by value instead of shared_ptr
   if (!ConvertFromNumpyToEigenMatrix< TYPE >(&temp, $input))
     SWIG_fail;
-  $1 = std::make_shared< TYPE >(temp);
+  $1 = std::make_shared< TYPE >(static_cast<const TYPE &>(temp));
 }
 
 %typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER,noblock=1) std::shared_ptr<const TYPE >
