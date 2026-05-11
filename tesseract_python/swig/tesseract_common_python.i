@@ -37,26 +37,26 @@
 %{
 
 // tesseract_common
-#include <tesseract_common/types.h>
+#include <tesseract/common/types.h>
 
-#include <tesseract_common/resource_locator.h>
-#include <tesseract_common/manipulator_info.h>
-#include <tesseract_common/joint_state.h>
-#include <tesseract_common/collision_margin_data.h>
-#include <tesseract_common/allowed_collision_matrix.h>
-#include <tesseract_common/kinematic_limits.h>
-#include <tesseract_common/timer.h>
-#include <tesseract_common/type_erasure.h>
+#include <tesseract/common/resource_locator.h>
+#include <tesseract/common/manipulator_info.h>
+#include <tesseract/common/joint_state.h>
+#include <tesseract/common/collision_margin_data.h>
+#include <tesseract/common/allowed_collision_matrix.h>
+#include <tesseract/common/kinematic_limits.h>
+#include <tesseract/common/timer.h>
 #include <console_bridge/console.h>
-#include <tesseract_common/any_poly.h>
-#include <tesseract_common/plugin_info.h>
+#include <tesseract/common/any_poly.h>
+#include <tesseract/common/plugin_info.h>
+#include <tesseract/common/profile_dictionary.h>
 
 #include "tesseract_common_python_std_functions.h"
 
 %}
 
 %include "tinyxml2.i"
-%include "boost_filesystem_path.i"
+%include "std_filesystem_path.i"
 %include "boost_uuid.i"
 %include "eigen_geometry.i"
 %include "console_bridge.i"
@@ -113,7 +113,7 @@ using VectorVector3d = std::vector<Eigen::Vector3d>;
 %template(VectorVectorXd) std::vector<Eigen::VectorXd>;
 %tesseract_aligned_vector(VectorVector2d, Eigen::Vector2d);
 %tesseract_aligned_vector(VectorVector4d, Eigen::Vector4d);
-%tesseract_aligned_map(TransformMap, std::string, Eigen::Isometry3d);
+%tesseract_aligned_unordered_map(TransformMap, std::string, Eigen::Isometry3d);
 
 // SWIG is not smart enough to expand templated using, override the behavior
 %define %tesseract_aligned_vector_using(name,T)
@@ -124,16 +124,24 @@ using name = std::vector<T , Eigen::aligned_allocator<T >>;
 using name = std::map<Key, Value, std::less<Key>, Eigen::aligned_allocator<std::pair<const Key, Value>>>;
 %enddef
 
+%define %tesseract_aligned_unordered_map_using(name,Key,Value)
+using name = std::unordered_map<Key, Value, std::hash<Key>, std::equal_to<Key>, Eigen::aligned_allocator<std::pair<const Key, Value>>>;
+%enddef
+
 %define %tesseract_aligned_map_of_aligned_vector_using(name,Key,Value)
 %tesseract_aligned_map_using(name, %arg(Key), %arg(std::vector<Value , Eigen::aligned_allocator<Value >>));
 %enddef
 
-namespace tesseract_common
+%define %tesseract_aligned_map_of_aligned_vector_using(name,Key,Value)
+%tesseract_aligned_map_using(name, %arg(Key), %arg(std::vector<Value , Eigen::aligned_allocator<Value >>));
+%enddef
+
+namespace tesseract::common
 {
 %tesseract_aligned_vector_using(VectorIsometry3d, Eigen::Isometry3d);
 %tesseract_aligned_vector_using(VectorVector2d, Eigen::Vector2d);
 %tesseract_aligned_vector_using(VectorVector4d, Eigen::Vector4d);
-%tesseract_aligned_map_using(TransformMap, std::string, Eigen::Isometry3d);
+%tesseract_aligned_unordered_map_using(TransformMap, std::string, Eigen::Isometry3d);
 }
 
 %template(VectorUuid) std::vector<boost::uuids::uuid>;
@@ -176,47 +184,51 @@ namespace std
 #define TESSERACT_COMMON_IGNORE_WARNINGS_POP
 #define DEPRECATED(msg)
 
-%pythondynamic tesseract_common::ResourceLocator;
+%pythondynamic tesseract::common::ResourceLocator;
 
 %include "tesseract_std_function.i"
 
-%tesseract_std_function(SimpleResourceLocatorFn,tesseract_common,std::string,const std::string&,a);
+%tesseract_std_function(SimpleResourceLocatorFn,tesseract::common,std::string,const std::string&,a);
 
-%shared_ptr(tesseract_common::AllowedCollisionMatrix)
+%shared_ptr(tesseract::common::AllowedCollisionMatrix)
 
-%shared_ptr(tesseract_common::Resource)
+%shared_ptr(tesseract::common::Resource)
 %template(VectorUInt8) std::vector<uint8_t>;
 %pybuffer_binary(const uint8_t* bytes, size_t bytes_len);
-%shared_ptr(tesseract_common::BytesResource)
-%feature("director") tesseract_common::ResourceLocator;
-%shared_ptr(tesseract_common::ResourceLocator)
-%shared_ptr(tesseract_common::SimpleResourceLocator)
-%shared_ptr(tesseract_common::SimpleLocatedResource)
-%shared_ptr(tesseract_common::GeneralResourceLocator)
+%shared_ptr(tesseract::common::BytesResource)
+%feature("director") tesseract::common::ResourceLocator;
+%shared_ptr(tesseract::common::ResourceLocator)
+%shared_ptr(tesseract::common::SimpleResourceLocator)
+%shared_ptr(tesseract::common::SimpleLocatedResource)
+%shared_ptr(tesseract::common::GeneralResourceLocator)
 
 
 // tesseract_common
 #define TESSERACT_COMMON_PUBLIC
-%include "tesseract_common/types.h"
-%template(AllowedCollisionEntries) std::unordered_map<std::pair<std::string,std::string>, std::string, tesseract_common::PairHash>;
-%template(PluginInfoMap) std::map<std::string, tesseract_common::PluginInfo>;
-%include "tesseract_common/resource_locator.h"
+%include "tesseract/common/types.h"
+%template(AllowedCollisionEntries) std::unordered_map<std::pair<std::string,std::string>, std::string>;
+%template(PluginInfoMap) std::map<std::string, tesseract::common::PluginInfo>;
+%include "tesseract/common/resource_locator.h"
 %ignore tcp_offset;
-%include "tesseract_common/manipulator_info.h"
+%include "tesseract/common/manipulator_info.h"
 %rename("%s") tcp_offset;
 %include "rework_include/tesseract_common/joint_state.i"
-%include "tesseract_common/collision_margin_data.h"
-%include "tesseract_common/allowed_collision_matrix.h"
-%include "tesseract_common/kinematic_limits.h"
-%include "tesseract_common/timer.h"
-%include "tesseract_common/filesystem.h"
+%include "tesseract/common/collision_margin_data.h"
+%include "tesseract/common/allowed_collision_matrix.h"
+%include "tesseract/common/kinematic_limits.h"
+%include "tesseract/common/timer.h"
 
+%shared_ptr(tesseract::common::Profile)
+%include "tesseract/common/profile.h"
+
+%shared_ptr(tesseract::common::ProfileDictionary)
+%include "tesseract/common/profile_dictionary.h"
 
 // TODO: ?
-//%template(Instructions) std::vector<tesseract_common::Any>;
+//%template(Instructions) std::vector<tesseract::common::Any>;
 
 
-%extend tesseract_common::ManipulatorInfo {
+%extend tesseract::common::ManipulatorInfo {
   void _setTcpOffset(const Eigen::Isometry3d& offset)
   {
     self->tcp_offset = offset;
@@ -256,21 +268,20 @@ namespace std
   %}
 }
 
-%template(isWithinLimits) tesseract_common::isWithinLimits<double>;
-%template(satisfiesLimits) tesseract_common::satisfiesLimits<double>;
-//%template(enforcePositionLimits) tesseract_common::enforcePositionLimits<double>;
-
-%ignore tesseract_common::TypeErasureInterface::clone;
-%include "tesseract_common/type_erasure.h"
+%template(isWithinLimits) tesseract::common::isWithinLimits<double>;
+%template(satisfiesLimits) tesseract::common::satisfiesLimits<double>;
+//%template(enforcePositionLimits) tesseract::common::enforcePositionLimits<double>;
 
 %include "tesseract_type_erasure_macros.i"
 
-namespace tesseract_common
+namespace tesseract::common
 {
 class AnyPoly {};
 }
 
 %tesseract_any_poly_type2(double)
 %tesseract_any_poly_type(string,std)
+
+%tesseract_any_poly_type_shared_ptr(ProfileDictionary,tesseract::common);
 
 

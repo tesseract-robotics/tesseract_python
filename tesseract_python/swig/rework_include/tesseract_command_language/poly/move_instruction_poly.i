@@ -1,4 +1,4 @@
-namespace tesseract_planning
+namespace tesseract::planning
 {
 struct MoveInstructionPoly;
 
@@ -8,9 +8,9 @@ enum class MoveInstructionType : int
   FREESPACE = 1,
   CIRCULAR = 2,
 };
-}  // namespace tesseract_planning
+}  // namespace tesseract::planning
 
-namespace tesseract_planning
+namespace tesseract::planning
 {
 class MoveInstruction;
 struct MoveInstructionPoly
@@ -30,9 +30,9 @@ struct MoveInstructionPoly
   WaypointPoly& getWaypoint();
   const WaypointPoly& getWaypoint() const;
 
-  void setManipulatorInfo(tesseract_common::ManipulatorInfo info);
-  const tesseract_common::ManipulatorInfo& getManipulatorInfo() const;
-  tesseract_common::ManipulatorInfo& getManipulatorInfo();
+  void setManipulatorInfo(tesseract::common::ManipulatorInfo info);
+  const tesseract::common::ManipulatorInfo& getManipulatorInfo() const;
+  tesseract::common::ManipulatorInfo& getManipulatorInfo();
 
   void setProfile(const std::string& profile);
   const std::string& getProfile() const;
@@ -72,4 +72,4 @@ struct MoveInstructionPoly
 
 };
 
-}  // namespace tesseract_planning
+}  // namespace tesseract::planning

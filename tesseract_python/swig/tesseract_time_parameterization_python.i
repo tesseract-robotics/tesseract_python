@@ -31,36 +31,78 @@
 %include "tesseract_swig_include.i"
 
 %import "tesseract_command_language_python.i"
+%import "tesseract_environment_python.i"
 
 %{
 
 
-#include <tesseract_common/resource_locator.h>
+#include <tesseract/common/resource_locator.h>
 
 // tesseract_time_parameterization
-#include <tesseract_time_parameterization/isp/iterative_spline_parameterization.h>
-#include <tesseract_time_parameterization/totg/time_optimal_trajectory_generation.h>
-#include <tesseract_time_parameterization/ruckig/ruckig_trajectory_smoothing.h>
-#include <tesseract_time_parameterization/core/instructions_trajectory.h>
+#include <tesseract/time_parameterization/isp/iterative_spline_parameterization.h>
+#include <tesseract/time_parameterization/isp/iterative_spline_parameterization_profiles.h>
+#include <tesseract/time_parameterization/totg/time_optimal_trajectory_generation.h>
+#include <tesseract/time_parameterization/totg/time_optimal_trajectory_generation_profiles.h>
+#include <tesseract/time_parameterization/ruckig/ruckig_trajectory_smoothing.h>
+#include <tesseract/time_parameterization/ruckig/ruckig_trajectory_smoothing_profiles.h>
+#include <tesseract/time_parameterization/instructions_trajectory.h>
+#include <tesseract/time_parameterization/kdl/constant_tcp_speed_parameterization.h>
+#include <tesseract/time_parameterization/kdl/constant_tcp_speed_parameterization_profiles.h>
+
+// tesseract_state_solver
+#include <tesseract/state_solver/mutable_state_solver.h>
+#include <tesseract/state_solver/state_solver.h>
+#include <tesseract/state_solver/kdl/kdl_state_solver.h>
+#include <tesseract/state_solver/ofkt/ofkt_state_solver.h>
+
+// tesseract_kinematics
+#include <tesseract/kinematics/joint_group.h>
+#include <tesseract/kinematics/kinematic_group.h>
+
+// tesseract_environment
+#include <tesseract/environment/commands.h>
+#include <tesseract/environment/events.h>
+#include <tesseract/environment/environment.h>
+
+#include <tesseract/geometry/geometries.h>
+#include <tesseract/common/resource_locator.h>
+#include <tesseract/srdf/kinematics_information.h>
 %}
 
-%ignore tesseract_planning::totg;
+%ignore tesseract::time_parameterization::totg;
 
 // tesseract_time_parameterization
 #define TESSERACT_TIME_PARAMETERIZATION_PUBLIC
-%shared_ptr(tesseract_planning::TrajectoryContainer)
-%include "tesseract_time_parameterization/core/trajectory_container.h"
 
-%shared_ptr(tesseract_planning::InstructionsTrajectory)
-%include "tesseract_time_parameterization/core/instructions_trajectory.h"
+%shared_ptr(tesseract::time_parameterization::InstructionsTrajectory)
+%include "tesseract/time_parameterization/instructions_trajectory.h"
 
 // tesseract_time_parameterization_isp
-%include "tesseract_time_parameterization/isp/iterative_spline_parameterization.h"
+%shared_ptr(tesseract::time_parameterization::IterativeSplineParameterization)
+%pythondynamic tesseract::time_parameterization::IterativeSplineParameterizationCompositeProfile;
+%pythondynamic tesseract::time_parameterization::IterativeSplineParameterizationMoveProfile;
+%shared_ptr(tesseract::time_parameterization::IterativeSplineParameterizationCompositeProfile)
+%shared_ptr(tesseract::time_parameterization::IterativeSplineParameterizationMoveProfile)
+%include "tesseract/time_parameterization/isp/iterative_spline_parameterization.h"
+%include "tesseract/time_parameterization/isp/iterative_spline_parameterization_profiles.h"
 
 // tesseract_time_parameterization_totg
-%shared_ptr(tesseract_planning::TimeOptimalTrajectoryGeneration)
-%include "tesseract_time_parameterization/totg/time_optimal_trajectory_generation.h"
+%shared_ptr(tesseract::time_parameterization::TimeOptimalTrajectoryGeneration)
+%pythondynamic tesseract::time_parameterization::TimeOptimalTrajectoryGenerationCompositeProfile;
+%shared_ptr(tesseract::time_parameterization::TimeOptimalTrajectoryGenerationCompositeProfile)
+%include "tesseract/time_parameterization/totg/time_optimal_trajectory_generation.h"
+%include "tesseract/time_parameterization/totg/time_optimal_trajectory_generation_profiles.h"
 
 // tesseract_time_parameterization_ruckig
-%include "tesseract_time_parameterization/ruckig/ruckig_trajectory_smoothing.h"
+%shared_ptr(tesseract::time_parameterization::RuckigTrajectorySmoothing)
+%pythondynamic tesseract::time_parameterization::RuckigTrajectorySmoothingCompositeProfile;
+%shared_ptr(tesseract::time_parameterization::RuckigTrajectorySmoothingCompositeProfile)
+%include "tesseract/time_parameterization/ruckig/ruckig_trajectory_smoothing.h"
+%include "tesseract/time_parameterization/ruckig/ruckig_trajectory_smoothing_profiles.h" 
+
+// tesseract_time_parameterization_kdl
+// %shared_ptr(tesseract::time_parameterization::ConstantTCPSpeedParameterization)
+// %shared_ptr(tesseract::time_parameterization::ConstantTCPSpeedParameterizationCompositeProfile)
+// %include "tesseract/time_parameterization/kdl/constant_tcp_speed_parameterization.h"
+// %include "tesseract/time_parameterization/kdl/constant_tcp_speed_parameterization_profiles.h"
 

@@ -98,19 +98,19 @@
 %enddef
 
 %define %tesseract_any_poly_type(TYPE,NAMESPACE)
-%tesseract_erasure_ctor(AnyPoly,tesseract_common,TYPE,NAMESPACE)
-%tesseract_erasure_as(AnyPoly,tesseract_common,TYPE,NAMESPACE)
-%tesseract_erasure_is(AnyPoly,tesseract_common,TYPE,NAMESPACE)
+%tesseract_erasure_ctor(AnyPoly,tesseract::common,TYPE,NAMESPACE)
+%tesseract_erasure_as(AnyPoly,tesseract::common,TYPE,NAMESPACE)
+%tesseract_erasure_is(AnyPoly,tesseract::common,TYPE,NAMESPACE)
 %enddef
 
 %define %tesseract_any_poly_type_shared_ptr(TYPE,NAMESPACE)
-%tesseract_erasure_ctor_shared_ptr(AnyPoly,tesseract_common,TYPE,NAMESPACE)
-%tesseract_erasure_as_shared_ptr(AnyPoly,tesseract_common,TYPE,NAMESPACE)
-%tesseract_erasure_is_shared_ptr(AnyPoly,tesseract_common,TYPE,NAMESPACE)
+%tesseract_erasure_ctor_shared_ptr(AnyPoly,tesseract::common,TYPE,NAMESPACE)
+%tesseract_erasure_as_shared_ptr(AnyPoly,tesseract::common,TYPE,NAMESPACE)
+%tesseract_erasure_is_shared_ptr(AnyPoly,tesseract::common,TYPE,NAMESPACE)
 %enddef
 
 %define %tesseract_any_poly_type2(TYPE)
-%tesseract_erasure_ctor2(AnyPoly,tesseract_common,TYPE)
-%tesseract_erasure_as2(AnyPoly,tesseract_common,TYPE)
-%tesseract_erasure_is2(AnyPoly,tesseract_common,TYPE)
+%tesseract_erasure_ctor2(AnyPoly,tesseract::common,TYPE)
+%tesseract_erasure_as2(AnyPoly,tesseract::common,TYPE)
+%tesseract_erasure_is2(AnyPoly,tesseract::common,TYPE)
 %enddef

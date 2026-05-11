@@ -10,19 +10,15 @@ import traceback
 import numpy as np
 import numpy.testing as nptest
 
-from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
-
 def get_scene_graph():
-    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-    path =  os.path.join(tesseract_support, "urdf/abb_irb2400.urdf")
-    locator = TesseractSupportResourceLocator()
+    locator = tesseract_common.GeneralResourceLocator()
+    path =  locator.locateResource("package://tesseract/support/urdf/abb_irb2400.urdf").getFilePath()
     return tesseract_urdf.parseURDFFile(path, locator).release()
 
 
 def get_plugin_factory():
-    support_dir = os.environ["TESSERACT_SUPPORT_DIR"]
-    kin_config = tesseract_common.FilesystemPath(support_dir + "/urdf/" + "abb_irb2400_plugins.yaml")
-    locator = TesseractSupportResourceLocator()
+    locator = tesseract_common.GeneralResourceLocator()
+    kin_config = tesseract_common.FilesystemPath(locator.locateResource("package://tesseract/support/urdf/abb_irb2400_plugins.yaml").getFilePath())
     return tesseract_kinematics.KinematicsPluginFactory(kin_config, locator), locator
 
 

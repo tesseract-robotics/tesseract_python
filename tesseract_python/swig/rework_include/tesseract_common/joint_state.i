@@ -1,4 +1,4 @@
-namespace tesseract_common
+namespace tesseract::common
 {
 class JointState
 {
@@ -30,11 +30,11 @@ public:
 
 };
 
-}  // namespace tesseract_common
+}  // namespace tesseract::common
 
-%template(JointStates) std::vector<tesseract_common::JointState>;
+%template(JointStates) std::vector<tesseract::common::JointState>;
 
-namespace tesseract_common
+namespace tesseract::common
 {
 /** @brief Represents a joint trajectory */
 class JointTrajectory
@@ -78,9 +78,9 @@ public:
   %ignore JointTrajectory(const JointTrajectory&);
   %ignore JointTrajectory(size_type);
   %ignore JointTrajectory(size_type, value_type const &);
-  %swig_vector_methods(tesseract_common::JointTrajectory)
+  %swig_vector_methods(tesseract::common::JointTrajectory)
   %std_vector_methods(JointTrajectory)
 };
 
-}  // namespace tesseract_common
+}  // namespace tesseract::common
 

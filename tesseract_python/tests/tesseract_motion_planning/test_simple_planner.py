@@ -5,24 +5,22 @@ import numpy as np
 
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
 from tesseract_robotics.tesseract_environment import Environment
-from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo
+from tesseract_robotics.tesseract_common import FilesystemPath, ManipulatorInfo, GeneralResourceLocator
 from tesseract_robotics.tesseract_command_language import JointWaypoint, CartesianWaypoint, WaypointPoly, \
     MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, \
     MoveInstructionPoly, MoveInstructionType_LINEAR, JointWaypointPoly, CartesianWaypointPoly, \
     InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
-    JointWaypointPoly_wrap_JointWaypoint, CartesianWaypointPoly_wrap_CartesianWaypoint, \
-    MoveInstructionPoly_wrap_MoveInstruction
+    WaypointPoly_wrap_JointWaypoint, WaypointPoly_wrap_CartesianWaypoint, \
+    InstructionPoly_wrap_MoveInstruction, MoveInstructionPoly_wrap_MoveInstruction
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest
-from tesseract_robotics.tesseract_motion_planners_simple import SimplePlannerLVSPlanProfile
+from tesseract_robotics.tesseract_motion_planners_simple import SimplePlannerLVSMoveProfile
 
-from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
 
 def get_environment():
     env = Environment()
-    locator = TesseractSupportResourceLocator()
-    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-    urdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf"))
-    srdf_path = FilesystemPath(os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf"))
+    locator = GeneralResourceLocator()
+    urdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.urdf").getFilePath())
+    srdf_path = FilesystemPath(locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.srdf").getFilePath())
     assert env.init(urdf_path, srdf_path, locator)
     manip_info = ManipulatorInfo()
     manip_info.manipulator = "manipulator"
@@ -42,14 +40,14 @@ def test_interpolatestatewaypoint_jointcart_freespace():
     wp1 = JointWaypoint(joint_names, np.zeros((7,),dtype=np.float64))
     wp1_seed = JointWaypoint(joint_names, env.getState().getJointValues(joint_names))
     wp2 = CartesianWaypoint(joint_group.calcFwdKin(np.ones((7,),dtype=np.float64))[manip_info.tcp_frame])
-    instr1 = MoveInstruction(JointWaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
-    instr1_seed = MoveInstruction(JointWaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_LINEAR, "TEST_PROFILE", manip_info)
-    instr1_seed.assignJointWaypoint(JointWaypointPoly_wrap_JointWaypoint(wp1_seed))
-    instr2 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
+    instr1 = MoveInstruction(WaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
+    instr1_seed = MoveInstruction(WaypointPoly_wrap_JointWaypoint(wp1_seed), MoveInstructionType_LINEAR, "TEST_PROFILE", manip_info)
+    # instr1_seed.assignJointWaypoint(WaypointPoly_wrap_JointWaypoint(wp1_seed))
+    instr2 = MoveInstruction(WaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "TEST_PROFILE", manip_info)
  
     instr3 = InstructionPoly()
 
-    profile = SimplePlannerLVSPlanProfile(3.14,0.5,1.57,5)
+    profile = SimplePlannerLVSMoveProfile(3.14,0.5,1.57,5)
     composite = profile.generate(MoveInstructionPoly_wrap_MoveInstruction(instr1),MoveInstructionPoly_wrap_MoveInstruction(instr1_seed),
                                  MoveInstructionPoly_wrap_MoveInstruction(instr2),instr3,env,manip_info)
 

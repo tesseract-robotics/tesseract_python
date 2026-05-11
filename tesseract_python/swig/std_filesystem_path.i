@@ -1,6 +1,6 @@
 /**
- * @file boost_filesystem_path.i
- * @brief Implement very simple wrapper for boost::filesystem::path
+ * @file std_filesystem_path.i
+ * @brief Implement very simple wrapper for std::filesystem::path
  *
  * @author John Wason
  * @date December 18, 2020
@@ -25,17 +25,17 @@
  */
 
 %{
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 %}
 
-namespace boost
+namespace std
 {
 namespace filesystem
 {
 
 %rename(FilesystemPath) path;
 /**
- * @brief Wrapper for boost::filesystem::path
+ * @brief Wrapper for std::filesystem::path
  */
 class path
 {
@@ -63,4 +63,4 @@ def __str__(self):
 }
 }
 
-%template(VectorFilesystemPath) std::vector<boost::filesystem::path>;
+%template(VectorFilesystemPath) std::vector<std::filesystem::path>;

@@ -28,12 +28,12 @@
 
 #pragma SWIG nowarn=473
 
-namespace tesseract_collision
+namespace tesseract::collision
 {
     class ContactResult;
 }
 
-%pythondynamic tesseract_collision::ContactResult;
+%pythondynamic tesseract::collision::ContactResult;
 
 %include "tesseract_swig_include.i"
 %include "tesseract_std_function.i"
@@ -43,65 +43,78 @@ namespace tesseract_collision
 
 %{
 // tesseract_collision
-#include <tesseract_collision/core/types.h>
-#include <tesseract_collision/core/discrete_contact_manager.h>
-#include <tesseract_collision/core/continuous_contact_manager.h>
-#include <tesseract_collision/core/contact_managers_plugin_factory.h>
-#include <tesseract_collision/bullet/bullet_factories.h>
-#include <tesseract_collision/fcl/fcl_factories.h>
-#include <tesseract_collision/bullet/bullet_cast_bvh_manager.h>
-#include <tesseract_collision/bullet/bullet_cast_simple_manager.h>
-#include <tesseract_collision/bullet/bullet_discrete_bvh_manager.h>
-#include <tesseract_collision/bullet/bullet_discrete_simple_manager.h>
-#include <tesseract_collision/fcl/fcl_discrete_managers.h>
+#include <tesseract/collision/types.h>
+#include <tesseract/collision/discrete_contact_manager.h>
+#include <tesseract/collision/continuous_contact_manager.h>
+#include <tesseract/collision/contact_managers_plugin_factory.h>
+#include <tesseract/collision/bullet/bullet_factories.h>
+#include <tesseract/collision/fcl/fcl_factories.h>
+#include <tesseract/collision/bullet/bullet_cast_bvh_manager.h>
+#include <tesseract/collision/bullet/bullet_cast_simple_manager.h>
+#include <tesseract/collision/bullet/bullet_discrete_bvh_manager.h>
+#include <tesseract/collision/bullet/bullet_discrete_simple_manager.h>
+#include <tesseract/collision/fcl/fcl_discrete_managers.h>
 
 // tesseract_common
-#include <tesseract_common/resource_locator.h>
-#include <tesseract_geometry/geometries.h>
+#include <tesseract/common/resource_locator.h>
+#include <tesseract/geometry/geometries.h>
+
+#include <boost_plugin_loader/plugin_loader.h>
+#include <boost_plugin_loader/utils.h>
 
 #include "tesseract_collisions_python_std_functions.h"
 %}
 
 %ignore getIsContactAllowedFn;
-%ignore tesseract_collision::ContactTestData;
+%ignore tesseract::collision::ContactTestData;
 
 %tesseract_std_function(IsContactAllowedFn,tesseract_collision,bool,const std::string&,a,const std::string&,b);
-%tesseract_std_function(IsContactValidFn,tesseract_collision,bool,const tesseract_collision::ContactResult&,a);
+%tesseract_std_function(IsContactValidFn,tesseract_collision,bool,const tesseract::collision::ContactResult&,a);
 
-%shared_ptr(tesseract_collision::tesseract_collision_bullet::BulletCastBVHManager)
-%shared_ptr(tesseract_collision::tesseract_collision_bullet::BulletCastSimpleManager)
-%shared_ptr(tesseract_collision::tesseract_collision_bullet::BulletDiscreteBVHManager)
-%shared_ptr(tesseract_collision::tesseract_collision_bullet::BulletDiscreteSimpleManager)
-%shared_ptr(tesseract_collision::ContactManagersPluginFactory)
-%shared_ptr(tesseract_collision::DiscreteContactManagerFactory)
-%shared_ptr(tesseract_collision::ContinuousContactManagerFactory)
-%shared_ptr(tesseract_collision::ContinuousContactManager)
-%wrap_unique_ptr(ContinuousContactManagerUPtr,tesseract_collision::ContinuousContactManager)
-%shared_ptr(tesseract_collision::DiscreteContactManager)
-%wrap_unique_ptr(DiscreteContactManagerUPtr,tesseract_collision::DiscreteContactManager)
-%shared_ptr(tesseract_collision::tesseract_collision_fcl::FCLDiscreteBVHManager)
-%tesseract_aligned_vector(ContactResultVector, tesseract_collision::ContactResult);
-// %tesseract_aligned_map_of_aligned_vector(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
+%shared_ptr(tesseract::collision::tesseract_collision_bullet::BulletCastBVHManager)
+%shared_ptr(tesseract::collision::tesseract_collision_bullet::BulletCastSimpleManager)
+%shared_ptr(tesseract::collision::tesseract_collision_bullet::BulletDiscreteBVHManager)
+%shared_ptr(tesseract::collision::tesseract_collision_bullet::BulletDiscreteSimpleManager)
+%shared_ptr(tesseract::collision::ContinuousContactManager)
+%wrap_unique_ptr(ContinuousContactManagerUPtr,tesseract::collision::ContinuousContactManager)
+%shared_ptr(tesseract::collision::DiscreteContactManager)
+%wrap_unique_ptr(DiscreteContactManagerUPtr,tesseract::collision::DiscreteContactManager)
+%shared_ptr(tesseract::collision::tesseract_collision_fcl::FCLDiscreteBVHManager)
+%tesseract_aligned_vector(ContactResultVector, tesseract::collision::ContactResult);
+// %tesseract_aligned_map_of_aligned_vector(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract::collision::ContactResult);
 
-namespace tesseract_collision { 
+namespace tesseract::collision { 
 class ContactResult;
-%tesseract_aligned_vector_using(ContactResultVector, tesseract_collision::ContactResult);
-// %tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract_collision::ContactResult);
+%tesseract_aligned_vector_using(ContactResultVector, tesseract::collision::ContactResult);
+// %tesseract_aligned_map_of_aligned_vector_using(ContactResultMap, %arg(std::pair<std::string,std::string>), tesseract::collision::ContactResult);
 }
 %ignore ContactResultVector;
 %ignore trajectoryCollisionResultsTable;
 // %ignore ContactResultMap;
 // tesseract_collision
 #define TESSERACT_COLLISION_CORE_PUBLIC
-%ignore tesseract_collision::ContactTrajectoryResults::trajectoryCollisionResultsTable;
-%ignore tesseract_collision::ContactTrajectoryResults::collisionFrequencyPerLink;
-%include "tesseract_collision/core/types.h"
-%include "tesseract_collision/core/discrete_contact_manager.h"
-%include "tesseract_collision/core/continuous_contact_manager.h"
-%include "tesseract_collision/core/contact_managers_plugin_factory.h"
+%ignore tesseract::collision::ContactTrajectoryResults::trajectoryCollisionResultsTable;
+%ignore tesseract::collision::ContactTrajectoryResults::collisionFrequencyPerLink;
+%ignore tesseract::collision::ContactTrajectoryResults::condensedSummary;
+%include "tesseract/collision/types.h"
+%include "tesseract/collision/discrete_contact_manager.h"
+%include "tesseract/collision/continuous_contact_manager.h"
+
+// ignore copy and move constructors for ContactManagersPluginFactory
+// Disable copy constructors
+%nocopyctor tesseract::collision::ContactManagersPluginFactory;
+%ignore tesseract::collision::ContactManagersPluginFactory::ContactManagersPluginFactory;
+%rename("%s") tesseract::collision::ContactManagersPluginFactory::ContactManagersPluginFactory();
+%rename("%s") tesseract::collision::ContactManagersPluginFactory::ContactManagersPluginFactory(YAML::Node config, const tesseract::common::ResourceLocator& locator);
+%rename("%s") tesseract::collision::ContactManagersPluginFactory::ContactManagersPluginFactory(const std::filesystem::path& config, const tesseract::common::ResourceLocator& locator);
+%rename("%s") tesseract::collision::ContactManagersPluginFactory::ContactManagersPluginFactory(const std::string& config, const tesseract::common::ResourceLocator& locator);
+%shared_ptr(tesseract::collision::ContactManagersPluginFactory)
+%shared_ptr(tesseract::collision::DiscreteContactManagerFactory)
+%shared_ptr(tesseract::collision::ContinuousContactManagerFactory)
+%include "tesseract/collision/contact_managers_plugin_factory.h"
 
 %init %{
 // TODO: fix anchors
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_collision::tesseract_collision_bullet::BulletFactoriesAnchor(), "TESSERACT_CONTACT_MANAGERS_PLUGINS");
-tesseract_common::PluginLoader::addSymbolLibraryToSearchLibrariesEnv(tesseract_collision::tesseract_collision_fcl::FCLFactoriesAnchor(), "TESSERACT_CONTACT_MANAGERS_PLUGINS");
+boost_plugin_loader::addSymbolLibraryToSearchLibrariesEnv(tesseract::collision::BulletFactoriesAnchor(), "TESSERACT_CONTACT_MANAGERS_PLUGINS");
+boost_plugin_loader::addSymbolLibraryToSearchLibrariesEnv(tesseract::collision::FCLFactoriesAnchor(), "TESSERACT_CONTACT_MANAGERS_PLUGINS");
 %}

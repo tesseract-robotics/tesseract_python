@@ -35,52 +35,55 @@
 
 %{
 // tesseract_motion_planners
-#include <tesseract_motion_planners/core/planner.h>
-#include <tesseract_motion_planners/robot_config.h>
-#include <tesseract_motion_planners/core/utils.h>
-#include <tesseract_motion_planners/core/types.h>
+#include <tesseract/motion_planners/planner.h>
+#include <tesseract/motion_planners/robot_config.h>
+#include <tesseract/motion_planners/utils.h>
+#include <tesseract/motion_planners/types.h>
 
-#include <tesseract_geometry/geometries.h>
-#include <tesseract_common/resource_locator.h>
-#include <tesseract_srdf/kinematics_information.h>
+#include <tesseract/geometry/geometries.h>
+#include <tesseract/common/resource_locator.h>
+#include <tesseract/srdf/kinematics_information.h>
 
 // tesseract_state_solver
-#include <tesseract_state_solver/mutable_state_solver.h>
-#include <tesseract_state_solver/state_solver.h>
-#include <tesseract_state_solver/kdl/kdl_state_solver.h>
-#include <tesseract_state_solver/ofkt/ofkt_state_solver.h>
+#include <tesseract/state_solver/mutable_state_solver.h>
+#include <tesseract/state_solver/state_solver.h>
+#include <tesseract/state_solver/kdl/kdl_state_solver.h>
+#include <tesseract/state_solver/ofkt/ofkt_state_solver.h>
 
 // tesseract_kinematics
-#include <tesseract_kinematics/core/joint_group.h>
-#include <tesseract_kinematics/core/kinematic_group.h>
+#include <tesseract/kinematics/joint_group.h>
+#include <tesseract/kinematics/kinematic_group.h>
 
 // tesseract_environment
-#include <tesseract_environment/commands.h>
-#include <tesseract_environment/events.h>
-#include <tesseract_environment/environment.h>
+#include <tesseract/environment/commands.h>
+#include <tesseract/environment/events.h>
+#include <tesseract/environment/environment.h>
 
 // tesseract_command_language
-#include <tesseract_command_language/fwd.h>
-#include <tesseract_command_language/move_instruction.h>
+#include <tesseract/command_language/fwd.h>
+#include <tesseract/command_language/move_instruction.h>
+
+// tesseract_collision
+#include <tesseract/collision/types.h>
 
 #include "tesseract_environment_python_std_functions.h"
 
 %}
 
-%unique_ptr_value_wrapper(tesseract_kinematics::KinematicGroup);
-%unique_ptr_value_wrapper(tesseract_kinematics::JointGroup);
+%unique_ptr_value_wrapper(tesseract::kinematics::KinematicGroup);
+%unique_ptr_value_wrapper(tesseract::kinematics::JointGroup);
 
 // tesseract_motion_planners
 #define TESSERACT_MOTION_PLANNERS_CORE_PUBLIC
 
-%include "tesseract_motion_planners/core/types.h"
+%include "tesseract/motion_planners/types.h"
 
-%shared_ptr(tesseract_planning::MotionPlanner)
-%wrap_unique_ptr(MotionPlannerUPtr,tesseract_planning::MotionPlanner)
-%include "tesseract_motion_planners/core/planner.h"
+%shared_ptr(tesseract::motion_planners::MotionPlanner)
+%wrap_unique_ptr(MotionPlannerUPtr,tesseract::motion_planners::MotionPlanner)
+%include "tesseract/motion_planners/planner.h"
 
-%include "tesseract_motion_planners/core/utils.h"
+%include "tesseract/motion_planners/utils.h"
 
-%include "tesseract_motion_planners/robot_config.h"
-%template(getRobotConfig) tesseract_planning::getRobotConfig<double>;
-%template(getJointTurns) tesseract_planning::getJointTurns<double>;
+%include "tesseract/motion_planners/robot_config.h"
+%template(getRobotConfig) tesseract::motion_planners::getRobotConfig<double>;
+%template(getJointTurns) tesseract::motion_planners::getJointTurns<double>;

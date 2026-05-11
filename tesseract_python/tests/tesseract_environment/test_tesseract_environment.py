@@ -6,23 +6,21 @@ from tesseract_robotics import tesseract_common
 from tesseract_robotics import tesseract_collision
 from tesseract_robotics import tesseract_urdf
 from tesseract_robotics import tesseract_srdf
-from ..tesseract_support_resource_locator import TesseractSupportResourceLocator
+
 import traceback
 import os
 import re
 import numpy as np
 
 def get_scene_graph():
-    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-    path =  os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.urdf")
-    locator = TesseractSupportResourceLocator()
+    locator = tesseract_common.GeneralResourceLocator()
+    path = locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.urdf").getFilePath()
     return tesseract_urdf.parseURDFFile(path, locator).release()
 
 def get_srdf_model(scene_graph):
-    tesseract_support = os.environ["TESSERACT_SUPPORT_DIR"]
-    path =  os.path.join(tesseract_support, "urdf/lbr_iiwa_14_r820.srdf")
     srdf = tesseract_srdf.SRDFModel()
-    locator = TesseractSupportResourceLocator()
+    locator = tesseract_common.GeneralResourceLocator()
+    path = locator.locateResource("package://tesseract/support/urdf/lbr_iiwa_14_r820.srdf").getFilePath()
     srdf.initFile(scene_graph, path, locator)
     return srdf
 

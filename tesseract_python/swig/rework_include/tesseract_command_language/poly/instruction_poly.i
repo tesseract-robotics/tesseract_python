@@ -1,4 +1,4 @@
-namespace tesseract_planning
+namespace tesseract::planning
 {
 struct InstructionPoly
 {
@@ -22,4 +22,4 @@ struct InstructionPoly
 
 };
 
-}  // namespace tesseract_planning
+}  // namespace tesseract::planning

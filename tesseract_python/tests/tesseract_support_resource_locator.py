@@ -14,9 +14,9 @@ class TesseractSupportResourceLocator(ResourceLocator):
                     return SimpleLocatedResource(url, url, self)
             except:
                 pass
-            url_match = re.match(r"^package:\/\/tesseract_support\/(.*)$",url)
+            url_match = re.match(r"^package:\/\/tesseract\/support\/(.*)$",url)
             if (url_match is None):
-                print("url_match failed")
+                print("url_match failed: " + url)
                 return None
             if not "TESSERACT_SUPPORT_DIR" in os.environ:
                 return None

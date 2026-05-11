@@ -39,39 +39,37 @@
 #include <tinyxml2.h>
 
 // tesseract_common
-#include <tesseract_common/manipulator_info.h>
+#include <tesseract/common/manipulator_info.h>
 
 // tesseract_command_language
-#include <tesseract_command_language/poly/waypoint_poly.h>
-#include <tesseract_command_language/poly/instruction_poly.h>
-#include <tesseract_command_language/poly/cartesian_waypoint_poly.h>
-#include <tesseract_command_language/poly/joint_waypoint_poly.h>
-#include <tesseract_command_language/poly/move_instruction_poly.h>
-#include <tesseract_command_language/poly/state_waypoint_poly.h>
+#include <tesseract/command_language/poly/waypoint_poly.h>
+#include <tesseract/command_language/poly/instruction_poly.h>
+#include <tesseract/command_language/poly/cartesian_waypoint_poly.h>
+#include <tesseract/command_language/poly/joint_waypoint_poly.h>
+#include <tesseract/command_language/poly/move_instruction_poly.h>
+#include <tesseract/command_language/poly/state_waypoint_poly.h>
 
-#include <tesseract_command_language/instruction_type.h>
-#include <tesseract_command_language/cartesian_waypoint.h>
-#include <tesseract_command_language/composite_instruction.h>
-#include <tesseract_command_language/constants.h>
-#include <tesseract_command_language/instruction_type.h>
-#include <tesseract_command_language/joint_waypoint.h>
-#include <tesseract_command_language/move_instruction.h>
-#include <tesseract_command_language/profile_dictionary.h>
-#include <tesseract_command_language/set_analog_instruction.h>
-#include <tesseract_command_language/set_tool_instruction.h>
-#include <tesseract_command_language/state_waypoint.h>
-#include <tesseract_command_language/timer_instruction.h>
-#include <tesseract_command_language/utils.h>
-#include <tesseract_command_language/fwd.h>
-#include <tesseract_command_language/wait_instruction.h>
-
+#include <tesseract/command_language/instruction_type.h>
+#include <tesseract/command_language/cartesian_waypoint.h>
+#include <tesseract/command_language/composite_instruction.h>
+#include <tesseract/command_language/constants.h>
+#include <tesseract/command_language/instruction_type.h>
+#include <tesseract/command_language/joint_waypoint.h>
+#include <tesseract/command_language/move_instruction.h>
+#include <tesseract/command_language/set_analog_instruction.h>
+#include <tesseract/command_language/set_tool_instruction.h>
+#include <tesseract/command_language/state_waypoint.h>
+#include <tesseract/command_language/timer_instruction.h>
+#include <tesseract/command_language/utils.h>
+#include <tesseract/command_language/fwd.h>
+#include <tesseract/command_language/wait_instruction.h>
 
 
-#include <tesseract_common/resource_locator.h>
+
+#include <tesseract/common/resource_locator.h>
 
 #include "tesseract_command_language_python_std_functions.h"
 
-#include <tesseract_common/type_erasure.h>
 %}
 
 %include "tesseract_vector_reference_wrapper_instruction_typemaps.i"
@@ -85,125 +83,142 @@
 #define TESSERACT_STATE_WAYPOINT_EXPORT_KEY(a,b)
 #define TESSERACT_INSTRUCTION_EXPORT_KEY(a,b)
 
-%define %tesseract_erasure_ctor_planning(source_class_type,dest_class_type)
-%tesseract_erasure_ctor(source_class_type,tesseract_planning,dest_class_type,tesseract_planning);
+%define %tesseract_erasure_ctor_command_language(source_class_type,dest_class_type)
+%tesseract_erasure_ctor(source_class_type,tesseract::command_language,dest_class_type,tesseract::command_language);
 %enddef
 
-%define %tesseract_erasure_as_planning(source_class_type,dest_class_type)
-%tesseract_erasure_as(source_class_type,tesseract_planning,dest_class_type,tesseract_planning);
+%define %tesseract_erasure_as_command_language(source_class_type,dest_class_type)
+%tesseract_erasure_as(source_class_type,tesseract::command_language,dest_class_type,tesseract::command_language);
 %enddef
 
-%define %tesseract_any_poly_type_planning(TYPE)
-%tesseract_any_poly_type(TYPE,tesseract_planning);
+%define %tesseract_any_poly_type_command_language(TYPE)
+%tesseract_any_poly_type(TYPE,tesseract::command_language);
 %enddef
 
 %define %tesseract_command_language_add_waypoint_type(TYPE)
-/*%extend tesseract_planning::WaypointPoly {
-tesseract_planning::TYPE as_ ## TYPE() {return $self->as<tesseract_planning::TYPE>();}
-const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesseract_planning::TYPE>();}
+/*%extend tesseract::command_language::WaypointPoly {
+tesseract::command_language::TYPE as_ ## TYPE() {return $self->as<tesseract::command_language::TYPE>();}
+const tesseract::command_language::TYPE as_const_ ## TYPE() {return $self->as<const tesseract::command_language::TYPE>();}
 }*/
-%tesseract_erasure_ctor_planning(WaypointPoly,TYPE);
-%tesseract_erasure_as_planning(WaypointPoly,TYPE);
-%tesseract_any_poly_type_planning(TYPE);
+%tesseract_erasure_ctor_command_language(WaypointPoly,TYPE);
+%tesseract_erasure_as_command_language(WaypointPoly,TYPE);
+%tesseract_any_poly_type_command_language(TYPE);
 %enddef
 
 %define %tesseract_command_language_add_instruction_type(TYPE)
-/*%extend tesseract_planning::InstructionPoly {
-tesseract_planning::TYPE  as_ ## TYPE() {return $self->as<tesseract_planning::TYPE>();}
-const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesseract_planning::TYPE>();}
+/*%extend tesseract::command_language::InstructionPoly {
+tesseract::command_language::TYPE  as_ ## TYPE() {return $self->as<tesseract::command_language::TYPE>();}
+const tesseract::command_language::TYPE as_const_ ## TYPE() {return $self->as<const tesseract::command_language::TYPE>();}
 }*/
-%tesseract_erasure_ctor_planning(InstructionPoly,TYPE);
-%tesseract_erasure_as_planning(InstructionPoly,TYPE);
-%tesseract_any_poly_type_planning(TYPE);
+%tesseract_erasure_ctor_command_language(InstructionPoly,TYPE);
+%tesseract_erasure_as_command_language(InstructionPoly,TYPE);
+%tesseract_any_poly_type_command_language(TYPE);
 %enddef
 
 %define %tesseract_command_language_add_waypoint_poly_type(TYPE)
-/*%extend tesseract_planning::WaypointPoly {
-tesseract_planning::TYPE as_ ## TYPE() {return $self->as<tesseract_planning::TYPE>();}
-const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesseract_planning::TYPE>();}
+/*%extend tesseract::command_language::WaypointPoly {
+tesseract::command_language::TYPE as_ ## TYPE() {return $self->as<tesseract::command_language::TYPE>();}
+const tesseract::command_language::TYPE as_const_ ## TYPE() {return $self->as<const tesseract::command_language::TYPE>();}
 }*/
-%tesseract_erasure_as_planning(WaypointPoly,TYPE);
-%tesseract_erasure_as_planning(TYPE,WaypointPoly);
-%tesseract_any_poly_type_planning(TYPE);
+%tesseract_erasure_as_command_language(WaypointPoly,TYPE);
+%tesseract_erasure_as_command_language(TYPE,WaypointPoly);
+%tesseract_any_poly_type_command_language(TYPE);
 %enddef
 
 %define %tesseract_command_language_add_instruction_poly_type(TYPE)
-/*%extend tesseract_planning::InstructionPoly {
-tesseract_planning::TYPE  as_ ## TYPE() {return $self->as<tesseract_planning::TYPE>();}
-const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesseract_planning::TYPE>();}
+/*%extend tesseract::command_language::InstructionPoly {
+tesseract::command_language::TYPE  as_ ## TYPE() {return $self->as<tesseract::command_language::TYPE>();}
+const tesseract::command_language::TYPE as_const_ ## TYPE() {return $self->as<const tesseract::command_language::TYPE>();}
 }*/
-%tesseract_erasure_as_planning(InstructionPoly,TYPE);
-%tesseract_erasure_as_planning(TYPE,InstructionPoly);
-%tesseract_any_poly_type_planning(TYPE);
+%tesseract_erasure_as_command_language(InstructionPoly,TYPE);
+%tesseract_erasure_as_command_language(TYPE,InstructionPoly);
+%tesseract_any_poly_type_command_language(TYPE);
 %enddef
 
-%tesseract_std_function(flattenFilterFn,tesseract_planning,bool,const tesseract_planning::InstructionPoly&,a,const tesseract_planning::CompositeInstruction&,b,bool,c);
-%tesseract_std_function(locateFilterFn,tesseract_planning,bool,const tesseract_planning::InstructionPoly&,a,const tesseract_planning::CompositeInstruction&,b,bool,c);
+%tesseract_std_function(flattenFilterFn,tesseract::command_language,bool,const tesseract::command_language::InstructionPoly&,a,const tesseract::command_language::CompositeInstruction&,b,bool,c);
+%tesseract_std_function(locateFilterFn,tesseract::command_language,bool,const tesseract::command_language::InstructionPoly&,a,const tesseract::command_language::CompositeInstruction&,b,bool,c);
 
-// %include "tesseract_command_language/fwd.h"
+// %include "tesseract/command_language/fwd.h"
 
-%include "tesseract_command_language/types.h"
+%include "tesseract/command_language/types.h"
 
-%pythondynamic tesseract_planning::WaypointPoly;
-%shared_ptr(tesseract_planning::Profile)
-%include "tesseract_command_language/profile.h"
 
-%shared_ptr(tesseract_planning::ProfileDictionary)
-%include "tesseract_command_language/profile_dictionary.h"
+// Temporarily override return of non-const eigen reference
+%typemap(out, fragment="Eigen_Fragments") Eigen::VectorXd &
+{
+  if (!ConvertFromEigenToNumPyMatrix<Eigen::VectorXd>(&$result, $1))
+    SWIG_fail;
+}
 
-%pythondynamic tesseract_planning::InstructionPoly;
-%pythondynamic tesseract_planning::WaypointPoly;
+%pythondynamic tesseract::command_language::WaypointPoly;
 
-%include "rework_include/tesseract_command_language/poly/waypoint_poly.i"
-%include "rework_include/tesseract_command_language/poly/cartesian_waypoint_poly.i"
-%include "rework_include/tesseract_command_language/poly/joint_waypoint_poly.i"
-%include "rework_include/tesseract_command_language/poly/state_waypoint_poly.i"
-%include "rework_include/tesseract_command_language/poly/instruction_poly.i"
-%include "rework_include/tesseract_command_language/poly/move_instruction_poly.i"
+
+%pythondynamic tesseract::command_language::InstructionPoly;
+%pythondynamic tesseract::command_language::WaypointPoly;
+
+%include "tesseract/command_language/poly/waypoint_poly.h"
+%include "tesseract/command_language/poly/cartesian_waypoint_poly.h"
+%include "tesseract/command_language/poly/joint_waypoint_poly.h"
+%include "tesseract/command_language/poly/state_waypoint_poly.h"
+%include "tesseract/command_language/poly/instruction_poly.h"
+%include "tesseract/command_language/poly/move_instruction_poly.h"
 
 %tesseract_command_language_add_waypoint_poly_type(CartesianWaypointPoly)
-%tesseract_erasure_ctor_planning(CartesianWaypointPoly,CartesianWaypoint);
+%tesseract_erasure_ctor_command_language(CartesianWaypointPoly,CartesianWaypoint);
 %tesseract_command_language_add_waypoint_poly_type(JointWaypointPoly)
-%tesseract_erasure_ctor_planning(JointWaypointPoly,JointWaypoint);
+%tesseract_erasure_ctor_command_language(JointWaypointPoly,JointWaypoint);
 %tesseract_command_language_add_waypoint_poly_type(StateWaypointPoly)
-%tesseract_erasure_ctor_planning(StateWaypointPoly,StateWaypoint);
+%tesseract_erasure_ctor_command_language(StateWaypointPoly,StateWaypoint);
 
 %tesseract_command_language_add_instruction_poly_type(MoveInstructionPoly)
-%tesseract_erasure_ctor_planning(MoveInstructionPoly,MoveInstruction);
+%tesseract_erasure_ctor_command_language(MoveInstructionPoly,MoveInstruction);
 
-%template(Waypoints) std::vector<tesseract_planning::WaypointPoly>;
-%template(Instructions) std::vector<tesseract_planning::InstructionPoly>;
+%template(Waypoints) std::vector<tesseract::command_language::WaypointPoly>;
+%template(Instructions) std::vector<tesseract::command_language::InstructionPoly>;
 
-%template(MoveInstructionPolyVector) std::vector<tesseract_planning::MoveInstructionPoly>;
+%template(MoveInstructionPolyVector) std::vector<tesseract::command_language::MoveInstructionPoly>;
 
-%include "tesseract_command_language/instruction_type.h"
+%wrap_unique_ptr(WaypointPolyUPtr,tesseract::command_language::WaypointPoly)
+%wrap_unique_ptr(InstructionPolyUPtr,tesseract::command_language::InstructionPoly)
+%wrap_unique_ptr(MoveInstructionPolyUPtr,tesseract::command_language::MoveInstructionPoly)
+%wrap_unique_ptr(CartesianWaypointPolyUPtr,tesseract::command_language::CartesianWaypointPoly)
+%wrap_unique_ptr(JointWaypointPolyUPtr,tesseract::command_language::JointWaypointPoly)
+%wrap_unique_ptr(StateWaypointPolyUPtr,tesseract::command_language::StateWaypointPoly)   
+%wrap_unique_ptr(WaypointInterfaceUPtr,tesseract::command_language::WaypointInterface)
+%wrap_unique_ptr(InstructionInterfaceUPtr,tesseract::command_language::InstructionInterface)
+%wrap_unique_ptr(MoveInstructionInterfaceUPtr,tesseract::command_language::MoveInstructionInterface)
+%wrap_unique_ptr(CartesianWaypointInterfaceUPtr,tesseract::command_language::CartesianWaypointInterface)
+%wrap_unique_ptr(JointWaypointInterfaceUPtr,tesseract::command_language::JointWaypointInterface)
+%wrap_unique_ptr(StateWaypointInterfaceUPtr,tesseract::command_language::StateWaypointInterface)
 
-%include "tesseract_command_language/cartesian_waypoint.h"
+%include "tesseract/command_language/instruction_type.h"
+
+%include "tesseract/command_language/cartesian_waypoint.h"
 %tesseract_command_language_add_waypoint_type(CartesianWaypoint)
 
 #define TESSERACT_JOINT_WAYPOINT_EXPORT_KEY(a,b)
-%include "tesseract_command_language/joint_waypoint.h"
+%include "tesseract/command_language/joint_waypoint.h"
 %tesseract_command_language_add_waypoint_type(JointWaypoint)
 
-%pythondynamic tesseract_planning::StateWaypoint;
-%include "tesseract_command_language/state_waypoint.h"
+%pythondynamic tesseract::command_language::StateWaypoint;
+%include "tesseract/command_language/state_waypoint.h"
 %tesseract_command_language_add_waypoint_type(StateWaypoint)
 
 
 #define TESSERACT_MOVE_INSTRUCTION_EXPORT_KEY(a,b)
-%include "tesseract_command_language/move_instruction.h"
+%include "tesseract/command_language/move_instruction.h"
 %tesseract_command_language_add_instruction_type(MoveInstruction)
 
-%include "tesseract_command_language/timer_instruction.h"
+%include "tesseract/command_language/timer_instruction.h"
 %tesseract_command_language_add_instruction_type(TimerInstruction)
 
-%include "tesseract_command_language/wait_instruction.h"
+%include "tesseract/command_language/wait_instruction.h"
 %tesseract_command_language_add_instruction_type(WaitInstruction)
 
-%include "tesseract_command_language/set_tool_instruction.h"
+%include "tesseract/command_language/set_tool_instruction.h"
 %tesseract_command_language_add_instruction_type(SetToolInstruction)
 
-%include "tesseract_command_language/set_analog_instruction.h"
+%include "tesseract/command_language/set_analog_instruction.h"
 %tesseract_command_language_add_instruction_type(SetAnalogInstruction)
 
 %include "rework_include/tesseract_command_language/composite_instruction.i"
@@ -211,28 +226,26 @@ const tesseract_planning::TYPE as_const_ ## TYPE() {return $self->as<const tesse
 
 // TODO: implement validateSeedStructure
 %ignore validateSeedStructure;
-%include "tesseract_command_language/utils.h"
+%include "tesseract/command_language/utils.h"
 
 %define %tesseract_command_language_add_profile_type( TYPE )
-// %template(ProfileDictionary_hasProfileEntry_##TYPE) tesseract_planning::ProfileDictionary_hasProfileEntry<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_removeProfileEntry_##TYPE) tesseract_planning::ProfileDictionary_removeProfileEntry<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_getProfileEntry_##TYPE) tesseract_planning::ProfileDictionary_getProfileEntry<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_addProfile_##TYPE) tesseract_planning::ProfileDictionary_addProfile<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_getProfile_##TYPE) tesseract_planning::ProfileDictionary_getProfile<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_hasProfile_##TYPE) tesseract_planning::ProfileDictionary_hasProfile<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_removeProfile_##TYPE) tesseract_planning::ProfileDictionary_removeProfile<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_hasProfileEntry_##TYPE) tesseract::command_language::ProfileDictionary_hasProfileEntry<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_removeProfileEntry_##TYPE) tesseract::command_language::ProfileDictionary_removeProfileEntry<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_getProfileEntry_##TYPE) tesseract::command_language::ProfileDictionary_getProfileEntry<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_addProfile_##TYPE) tesseract::command_language::ProfileDictionary_addProfile<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_getProfile_##TYPE) tesseract::command_language::ProfileDictionary_getProfile<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_hasProfile_##TYPE) tesseract::command_language::ProfileDictionary_hasProfile<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_removeProfile_##TYPE) tesseract::command_language::ProfileDictionary_removeProfile<tesseract::command_language::TYPE>;
 %enddef
 
 %define %tesseract_command_language_add_profile_type2(NAME, TYPE )
-// %template(ProfileDictionary_hasProfileEntry_##NAME) tesseract_planning::ProfileDictionary_hasProfileEntry<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_removeProfileEntry_##NAME) tesseract_planning::ProfileDictionary_removeProfileEntry<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_getProfileEntry_##NAME) tesseract_planning::ProfileDictionary_getProfileEntry<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_addProfile_##NAME) tesseract_planning::ProfileDictionary_addProfile<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_getProfile_##NAME) tesseract_planning::ProfileDictionary_getProfile<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_hasProfile_##NAME) tesseract_planning::ProfileDictionary_hasProfile<tesseract_planning::TYPE>;
-// %template(ProfileDictionary_removeProfile_##NAME) tesseract_planning::ProfileDictionary_removeProfile<tesseract_planning::TYPE>;
+// %template(ProfileDictionary_hasProfileEntry_##NAME) tesseract::command_language::ProfileDictionary_hasProfileEntry<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_removeProfileEntry_##NAME) tesseract::command_language::ProfileDictionary_removeProfileEntry<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_getProfileEntry_##NAME) tesseract::command_language::ProfileDictionary_getProfileEntry<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_addProfile_##NAME) tesseract::command_language::ProfileDictionary_addProfile<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_getProfile_##NAME) tesseract::command_language::ProfileDictionary_getProfile<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_hasProfile_##NAME) tesseract::command_language::ProfileDictionary_hasProfile<tesseract::command_language::TYPE>;
+// %template(ProfileDictionary_removeProfile_##NAME) tesseract::command_language::ProfileDictionary_removeProfile<tesseract::command_language::TYPE>;
 %enddef
 
-%include "tesseract_command_language/constants.h"
-
-%tesseract_any_poly_type_shared_ptr(ProfileDictionary,tesseract_planning);
+%include "tesseract/command_language/constants.h"

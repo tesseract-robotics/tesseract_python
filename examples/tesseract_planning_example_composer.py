@@ -60,12 +60,12 @@ from tesseract_robotics_viewer import TesseractViewer
 # This can be done by running:
 #
 # git clone https://github.com/tesseract-robotics/tesseract-planning.git
-# export TESSERACT_TASK_COMPOSER_CONFIG_FILE="$(pwd)/tesseract_planning/tesseract_task_composer/config/task_composer_plugins_no_trajopt_ifopt.yaml"
+# export TESSERACT_TASK_COMPOSER_CONFIG_FILE="$(pwd)/tesseract_planning/task_composer/config/task_composer_plugins.yaml"
 #
 # or on Windows
 #
 # git clone https://github.com/tesseract-robotics/tesseract-planning.git
-# set TESSERACT_TASK_COMPOSER_CONFIG_FILE=%cd%\tesseract_planning\tesseract_task_composer\config\task_composer_plugins_no_trajopt_ifopt.yaml
+# set TESSERACT_TASK_COMPOSER_CONFIG_FILE=%cd%\tesseract_planning\task_composer\config\task_composer_plugins.yaml
 #
 # This file can be distributed with the application, and modified as needed.
 

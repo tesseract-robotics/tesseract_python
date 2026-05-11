@@ -24,7 +24,7 @@
  * limitations under the License.
  */
 
-#include <tesseract_collision/core/types.h>
+#include <tesseract/collision/types.h>
 
 #pragma once
 
@@ -38,6 +38,6 @@ public:
 class IsContactValidFnBase
 {
 public:
-  virtual bool call(const tesseract_collision::ContactResult& a) = 0;
+  virtual bool call(const tesseract::collision::ContactResult& a) = 0;
   virtual ~IsContactValidFnBase() {}
 };

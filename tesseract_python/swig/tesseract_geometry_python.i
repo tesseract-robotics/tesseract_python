@@ -36,16 +36,19 @@
 
 
 // tesseract_geometry
-#include <tesseract_geometry/geometry.h>
-#include "tesseract_geometry/impl/mesh_material.h"
-#include <tesseract_geometry/geometries.h>
-#include <tesseract_geometry/utils.h>
-#include <tesseract_geometry/mesh_parser.h>
+#include <tesseract/geometry/geometry.h>
+#include "tesseract/geometry/impl/mesh_material.h"
+#include <tesseract/geometry/geometries.h>
+#include <tesseract/geometry/utils.h>
+#include <tesseract/geometry/mesh_parser.h>
 %}
 
 // Define typemaps for types used by Mesh classes
 
 %define %tesseract_vector_eigen_shared_ptr_adaptor(TYPE)
+
+%template() std::shared_ptr<const TYPE>;
+
 %typemap(in, noblock=0) std::shared_ptr<const TYPE > (void  *argp = 0, int res = 0, TYPE* temp1) {
 
   // Override for "in" std::shared_ptr<const TYPE> by value instead of shared_ptr
@@ -55,7 +58,7 @@
   }
    temp1 = %reinterpret_cast(argp, TYPE*);
    
-   $1 = std::make_shared< TYPE >(*temp1);
+   $1 = std::make_shared< TYPE >(static_cast<const TYPE &>(*temp1));
 }
 
 %typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER,noblock=1) std::shared_ptr<const TYPE > {
@@ -81,16 +84,18 @@
 %tesseract_vector_eigen_shared_ptr_adaptor(%arg(std::vector< Eigen::Vector2d, Eigen::aligned_allocator<Eigen::Vector2d> >))
 %tesseract_vector_eigen_shared_ptr_adaptor(std::vector< Eigen::Vector3d >)
 %tesseract_vector_eigen_shared_ptr_adaptor(%arg(std::vector< Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d> >))
-%tesseract_vector_eigen_shared_ptr_adaptor(std::vector< std::shared_ptr<tesseract_geometry::MeshTexture> >)
+%tesseract_vector_eigen_shared_ptr_adaptor(std::vector< std::shared_ptr<tesseract::geometry::MeshTexture> >)
 
 %define %tesseract_eigen_shared_ptr_adaptor(TYPE)
+
+%template() std::shared_ptr<const TYPE>;
 
 %typemap(in, fragment="Eigen_Fragments") std::shared_ptr<const TYPE > (TYPE temp)
 {
   // Override for "in" TYPE by value instead of shared_ptr
   if (!ConvertFromNumpyToEigenMatrix< TYPE >(&temp, $input))
     SWIG_fail;
-  $1 = std::make_shared< TYPE >(temp);
+  $1 = std::make_shared< TYPE >(static_cast<const TYPE &>(temp));
 }
 
 %typemap(typecheck,precedence=SWIG_TYPECHECK_POINTER,noblock=1) std::shared_ptr<const TYPE >
@@ -119,101 +124,101 @@ $1 = is_array($input);
 // tesseract_geometry
 #define TESSERACT_GEOMETRY_PUBLIC
 
-%shared_ptr(tesseract_geometry::MeshMaterial)
-%shared_ptr(tesseract_geometry::MeshTexture)
-%template(VectorMeshTexture) std::vector<std::shared_ptr<tesseract_geometry::MeshTexture>>;
-%include "tesseract_geometry/impl/mesh_material.h"
+%shared_ptr(tesseract::geometry::MeshMaterial)
+%shared_ptr(tesseract::geometry::MeshTexture)
+%template(VectorMeshTexture) std::vector<std::shared_ptr<tesseract::geometry::MeshTexture>>;
+%include "tesseract/geometry/impl/mesh_material.h"
 
 
-%shared_ptr(tesseract_geometry::Geometry)
-%nodefaultctor tesseract_geometry::Geometry;
+%shared_ptr(tesseract::geometry::Geometry)
+%nodefaultctor tesseract::geometry::Geometry;
 
-%include "tesseract_geometry/geometry.h"
+%include "tesseract/geometry/geometry.h"
 
-%template(Geometries) std::vector<std::shared_ptr<tesseract_geometry::Geometry> >;
-%template(GeometriesConst) std::vector<std::shared_ptr<const tesseract_geometry::Geometry> >;
+%template(Geometries) std::vector<std::shared_ptr<tesseract::geometry::Geometry> >;
+%template(GeometriesConst) std::vector<std::shared_ptr<const tesseract::geometry::Geometry> >;
 
 %shared_factory(
-    tesseract_geometry::Geometry,
-    tesseract_geometry::Box,
-    tesseract_geometry::Capsule,
-    tesseract_geometry::Cone,
-    tesseract_geometry::ConvexMesh,
-    tesseract_geometry::Cylinder,
-    tesseract_geometry::Octree,
-    tesseract_geometry::Plane,
-    tesseract_geometry::PolygonMesh,
-    tesseract_geometry::Mesh,
-    tesseract_geometry::SDFMesh,
-    tesseract_geometry::Sphere,
-    tesseract_geometry::CompoundMesh
+    tesseract::geometry::Geometry,
+    tesseract::geometry::Box,
+    tesseract::geometry::Capsule,
+    tesseract::geometry::Cone,
+    tesseract::geometry::ConvexMesh,
+    tesseract::geometry::Cylinder,
+    tesseract::geometry::Octree,
+    tesseract::geometry::Plane,
+    tesseract::geometry::PolygonMesh,
+    tesseract::geometry::Mesh,
+    tesseract::geometry::SDFMesh,
+    tesseract::geometry::Sphere,
+    tesseract::geometry::CompoundMesh
 )
 
 
-%shared_ptr(tesseract_geometry::Box)
-%include <tesseract_geometry/impl/box.h>
+%shared_ptr(tesseract::geometry::Box)
+%include <tesseract/geometry/impl/box.h>
 
-%shared_ptr(tesseract_geometry::Capsule)
-%include <tesseract_geometry/impl/capsule.h>
+%shared_ptr(tesseract::geometry::Capsule)
+%include <tesseract/geometry/impl/capsule.h>
 
-%shared_ptr(tesseract_geometry::PolygonMesh)
-%template(PolygonMeshVector) std::vector<std::shared_ptr<tesseract_geometry::PolygonMesh> >;
-%include <tesseract_geometry/impl/polygon_mesh.h>
+%shared_ptr(tesseract::geometry::PolygonMesh)
+%template(PolygonMeshVector) std::vector<std::shared_ptr<tesseract::geometry::PolygonMesh> >;
+%include <tesseract/geometry/impl/polygon_mesh.h>
 
-%shared_ptr(tesseract_geometry::Cone)
-%include <tesseract_geometry/impl/cone.h>
+%shared_ptr(tesseract::geometry::Cone)
+%include <tesseract/geometry/impl/cone.h>
 
-%shared_ptr(tesseract_geometry::ConvexMesh)
-%template(ConvexMeshVector) std::vector<std::shared_ptr<tesseract_geometry::ConvexMesh> >;
-%include <tesseract_geometry/impl/convex_mesh.h>
+%shared_ptr(tesseract::geometry::ConvexMesh)
+%template(ConvexMeshVector) std::vector<std::shared_ptr<tesseract::geometry::ConvexMesh> >;
+%include <tesseract/geometry/impl/convex_mesh.h>
 
-%shared_ptr(tesseract_geometry::Cylinder)
-%include <tesseract_geometry/impl/cylinder.h>
+%shared_ptr(tesseract::geometry::Cylinder)
+%include <tesseract/geometry/impl/cylinder.h>
 
-%shared_ptr(tesseract_geometry::Mesh)
-%template(MeshVector) std::vector<std::shared_ptr<tesseract_geometry::Mesh> >;
-%include <tesseract_geometry/impl/mesh.h>
-%include <tesseract_geometry/impl/mesh_material.h>
+%shared_ptr(tesseract::geometry::Mesh)
+%template(MeshVector) std::vector<std::shared_ptr<tesseract::geometry::Mesh> >;
+%include <tesseract/geometry/impl/mesh.h>
+%include <tesseract/geometry/impl/mesh_material.h>
 
-%shared_ptr(tesseract_geometry::Octree)
-%nodefaultctor tesseract_geometry::Octree;
+%shared_ptr(tesseract::geometry::Octree)
+%nodefaultctor tesseract::geometry::Octree;
 namespace octomap 
 { 
 %nodefaultctor OcTree;
 class OcTree {}; 
 }
 %shared_ptr(octomap::OcTree);
-%include <tesseract_geometry/impl/octree.h>
+%include <tesseract/geometry/impl/octree.h>
 
-%shared_ptr(tesseract_geometry::Plane)
-%include <tesseract_geometry/impl/plane.h>
+%shared_ptr(tesseract::geometry::Plane)
+%include <tesseract/geometry/impl/plane.h>
 
-%shared_ptr(tesseract_geometry::SDFMesh)
-%template(SDFMeshVector) std::vector<std::shared_ptr<tesseract_geometry::SDFMesh> >;
-%include <tesseract_geometry/impl/sdf_mesh.h>
+%shared_ptr(tesseract::geometry::SDFMesh)
+%template(SDFMeshVector) std::vector<std::shared_ptr<tesseract::geometry::SDFMesh> >;
+%include <tesseract/geometry/impl/sdf_mesh.h>
 
-%shared_ptr(tesseract_geometry::Sphere)
-%include <tesseract_geometry/impl/sphere.h>
+%shared_ptr(tesseract::geometry::Sphere)
+%include <tesseract/geometry/impl/sphere.h>
 
-%shared_ptr(tesseract_geometry::CompoundMesh)
-%include <tesseract_geometry/impl/compound_mesh.h>
+%shared_ptr(tesseract::geometry::CompoundMesh)
+%include <tesseract/geometry/impl/compound_mesh.h>
 
-%include "tesseract_geometry/geometries.h"
-%include "tesseract_geometry/utils.h"
+%include "tesseract/geometry/geometries.h"
+%include "tesseract/geometry/utils.h"
 
-%include "tesseract_geometry/mesh_parser.h"
+%include "tesseract/geometry/mesh_parser.h"
 %pybuffer_binary(const uint8_t* bytes, size_t bytes_len);
 // %pybuffer_binary does not automatically create a typecheck
 %typemap(typecheck) (const uint8_t* bytes, size_t bytes_len) {
     // Check if the input is a Python bytes or bytearray object
     $1 = PyBytes_Check($input) || PyByteArray_Check($input);
 }
-%template(createMeshFromResource) tesseract_geometry::createMeshFromResource<tesseract_geometry::Mesh>;
-%template(createSDFMeshFromResource) tesseract_geometry::createMeshFromResource<tesseract_geometry::SDFMesh>;
-%template(createConvexMeshFromResource) tesseract_geometry::createMeshFromResource<tesseract_geometry::ConvexMesh>;
-%template(createMeshFromPath) tesseract_geometry::createMeshFromPath<tesseract_geometry::Mesh>;
-%template(createSDFMeshFromPath) tesseract_geometry::createMeshFromPath<tesseract_geometry::SDFMesh>;
-%template(createConvexMeshFromPath) tesseract_geometry::createMeshFromPath<tesseract_geometry::ConvexMesh>;
-%template(createMeshFromBytes) tesseract_geometry::createMeshFromBytes<tesseract_geometry::Mesh>;
-%template(createSDFMeshFromBytes) tesseract_geometry::createMeshFromBytes<tesseract_geometry::SDFMesh>;
-%template(createConvexMeshFromBytes) tesseract_geometry::createMeshFromBytes<tesseract_geometry::ConvexMesh>;
+%template(createMeshFromResource) tesseract::geometry::createMeshFromResource<tesseract::geometry::Mesh>;
+%template(createSDFMeshFromResource) tesseract::geometry::createMeshFromResource<tesseract::geometry::SDFMesh>;
+%template(createConvexMeshFromResource) tesseract::geometry::createMeshFromResource<tesseract::geometry::ConvexMesh>;
+%template(createMeshFromPath) tesseract::geometry::createMeshFromPath<tesseract::geometry::Mesh>;
+%template(createSDFMeshFromPath) tesseract::geometry::createMeshFromPath<tesseract::geometry::SDFMesh>;
+%template(createConvexMeshFromPath) tesseract::geometry::createMeshFromPath<tesseract::geometry::ConvexMesh>;
+%template(createMeshFromBytes) tesseract::geometry::createMeshFromBytes<tesseract::geometry::Mesh>;
+%template(createSDFMeshFromBytes) tesseract::geometry::createMeshFromBytes<tesseract::geometry::SDFMesh>;
+%template(createConvexMeshFromBytes) tesseract::geometry::createMeshFromBytes<tesseract::geometry::ConvexMesh>;

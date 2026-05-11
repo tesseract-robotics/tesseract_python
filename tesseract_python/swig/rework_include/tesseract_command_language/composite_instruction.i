@@ -1,4 +1,4 @@
-namespace tesseract_planning
+namespace tesseract::command_language
 {
 enum class CompositeInstructionOrder
 {
@@ -15,7 +15,7 @@ class CompositeInstruction
 public:
 
   CompositeInstruction(std::string profile = DEFAULT_PROFILE_KEY,
-                       tesseract_common::ManipulatorInfo manipulator_info = tesseract_common::ManipulatorInfo(),
+                       tesseract::common::ManipulatorInfo manipulator_info = tesseract::common::ManipulatorInfo(),
                        CompositeInstructionOrder order = CompositeInstructionOrder::ORDERED);
 
   CompositeInstructionOrder getOrder() const;
@@ -36,16 +36,13 @@ public:
   void setProfileOverrides(ProfileOverrides profile_overrides);
   ProfileOverrides getProfileOverrides() const;
 
-  void setManipulatorInfo(tesseract_common::ManipulatorInfo info);
-  const tesseract_common::ManipulatorInfo& getManipulatorInfo() const;
-  tesseract_common::ManipulatorInfo& getManipulatorInfo();
+  void setManipulatorInfo(tesseract::common::ManipulatorInfo info);
+  const tesseract::common::ManipulatorInfo& getManipulatorInfo() const;
+  tesseract::common::ManipulatorInfo& getManipulatorInfo();
 
-  void setInstructions(std::vector<tesseract_planning::InstructionPoly> instructions);
-  std::vector<tesseract_planning::InstructionPoly>& getInstructions();
-  const std::vector<tesseract_planning::InstructionPoly>& getInstructions() const;
-
-  void appendMoveInstruction(const MoveInstructionPoly& mi);
-  void appendMoveInstruction(const MoveInstructionPoly&& mi);
+  void setInstructions(std::vector<tesseract::command_language::InstructionPoly> instructions);
+  std::vector<tesseract::command_language::InstructionPoly>& getInstructions();
+  const std::vector<tesseract::command_language::InstructionPoly>& getInstructions() const;
 
   void print(const std::string& prefix = "") const;
 
@@ -161,7 +158,7 @@ public:
   // C++ container support
 
   /** value_type */
-  using value_type = tesseract_planning::InstructionPoly;
+  using value_type = tesseract::command_language::InstructionPoly;
   /** pointer */
   using pointer = typename std::vector<value_type>::pointer;
   /** const_pointer */
@@ -184,9 +181,9 @@ public:
   %ignore CompositeInstruction(const CompositeInstruction&);
   %ignore CompositeInstruction(size_type);
   %ignore CompositeInstruction(size_type, value_type const &); 
-  %swig_vector_methods(tesseract_planning::CompositeInstruction)
+  %swig_vector_methods(tesseract::command_language::CompositeInstruction)
   %std_vector_methods(CompositeInstruction)
 
 };
 
-}  // namespace tesseract_planning
+}  // namespace tesseract::command_language
