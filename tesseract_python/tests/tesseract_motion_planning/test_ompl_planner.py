@@ -48,7 +48,8 @@ def test_ompl_freespace_joint_cart():
 
     wp1 = JointWaypoint(joint_names, start_state)
 
-    goal = kin_group.calcFwdKin(end_state)[manip.tcp_frame]
+    fwdkin_res = kin_group.calcFwdKin(end_state)
+    goal = fwdkin_res[manip.tcp_frame]
     wp2 = CartesianWaypoint(goal)
 
     start_instruction = MoveInstruction(WaypointPoly_wrap_JointWaypoint(wp1), MoveInstructionType_FREESPACE, "TEST_PROFILE")

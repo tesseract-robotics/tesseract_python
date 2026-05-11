@@ -1,4 +1,8 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.5.0...3.99)
+
+if(${CMAKE_VERSION} VERSION_GREATER "3.27.0" OR ${CMAKE_VERSION} VERSION_EQUAL "3.27.0")
+cmake_policy(SET CMP0148 OLD)
+endif()
 
 # Extract package name and version
 find_package(ros_industrial_cmake_boilerplate REQUIRED)
