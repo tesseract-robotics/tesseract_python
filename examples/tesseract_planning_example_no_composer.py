@@ -1,20 +1,21 @@
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
-    ManipulatorInfo, GeneralResourceLocator
+    ManipulatorInfo, GeneralResourceLocator, ProfileDictionary
 from tesseract_robotics.tesseract_environment import Environment
 from tesseract_robotics.tesseract_common import ResourceLocator, SimpleLocatedResource
 from tesseract_robotics.tesseract_command_language import CartesianWaypoint, WaypointPoly, \
     MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, \
-    CompositeInstruction, MoveInstructionPoly, CartesianWaypointPoly, ProfileDictionary, \
+    CompositeInstruction, MoveInstructionPoly, CartesianWaypointPoly, \
     CartesianWaypointPoly_wrap_CartesianWaypoint, MoveInstructionPoly_wrap_MoveInstruction, \
-    InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly
+    InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
+    WaypointPoly_wrap_CartesianWaypoint, InstructionPoly_wrap_MoveInstruction
 
 from tesseract_robotics.tesseract_motion_planners import PlannerRequest, PlannerResponse
 from tesseract_robotics.tesseract_motion_planners_simple import generateInterpolatedProgram
 from tesseract_robotics.tesseract_motion_planners_ompl import RRTConnectConfigurator, \
-    OMPLMotionPlanner, OMPLRealVectorPlanProfile
+    OMPLMotionPlanner, OMPLRealVectorMoveProfile
 from tesseract_robotics.tesseract_time_parameterization import TimeOptimalTrajectoryGeneration, \
-    InstructionsTrajectory
-from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultPlanProfile, TrajOptDefaultCompositeProfile, \
+    InstructionsTrajectory, TimeOptimalTrajectoryGenerationCompositeProfile
+from tesseract_robotics.tesseract_motion_planners_trajopt import TrajOptDefaultMoveProfile, TrajOptDefaultCompositeProfile, \
     TrajOptMotionPlanner
 
 import os
@@ -37,16 +38,16 @@ import sys
 # This example uses the GeneralResourceLocator to find resources on the file system. The GeneralResourceLocator
 # uses the TESSERACT_RESOURCE_PATH environmental variable.
 #
-# TESSERACT_RESOURCE_PATH must be set to the directory containing the `tesseract_support` package. This can be done
+# TESSERACT_RESOURCE_PATH must be set to the directory containing the `tesseract` package. This can be done
 # by running:
 #
 # git clone https://github.com/tesseract-robotics/tesseract.git
-# export TESSERACT_RESOURCE_PATH="$(pwd)/tesseract/"
+# export TESSERACT_RESOURCE_PATH="$(pwd)"
 #
 # or on Windows
 #
 # git clone https://github.com/tesseract-robotics/tesseract.git
-# set TESSERACT_RESOURCE_PATH=%cd%\tesseract\
+# set TESSERACT_RESOURCE_PATH=%cd%
 
 
 
@@ -55,8 +56,8 @@ TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
 # Initialize the resource locator and environment
 locator = GeneralResourceLocator()
-abb_irb2400_urdf_package_url = "package://tesseract_support/urdf/abb_irb2400.urdf"
-abb_irb2400_srdf_package_url = "package://tesseract_support/urdf/abb_irb2400.srdf"
+abb_irb2400_urdf_package_url = "package://tesseract/support/urdf/abb_irb2400.urdf"
+abb_irb2400_srdf_package_url = "package://tesseract/support/urdf/abb_irb2400.srdf"
 abb_irb2400_urdf_fname = FilesystemPath(locator.locateResource(abb_irb2400_urdf_package_url).getFilePath())
 abb_irb2400_srdf_fname = FilesystemPath(locator.locateResource(abb_irb2400_srdf_package_url).getFilePath())
 
@@ -94,23 +95,23 @@ wp3 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.5,1.455) * Q
 # Create the input command program instructions. Note the use of explicit construction of the CartesianWaypointPoly
 # using the *_wrap_CartesianWaypoint functions. This is required because the Python bindings do not support implicit
 # conversion from the CartesianWaypoint to the CartesianWaypointPoly.
-start_instruction = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp1), MoveInstructionType_FREESPACE, "DEFAULT")
-plan_f1 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
-plan_f2 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp3), MoveInstructionType_FREESPACE, "DEFAULT")
+start_instruction = MoveInstruction(WaypointPoly_wrap_CartesianWaypoint(wp1), MoveInstructionType_FREESPACE, "DEFAULT")
+plan_f1 = MoveInstruction(WaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
+plan_f2 = MoveInstruction(WaypointPoly_wrap_CartesianWaypoint(wp3), MoveInstructionType_FREESPACE, "DEFAULT")
 
 # Create the input command program. Note the use of *_wrap_MoveInstruction functions. This is required because the
 # Python bindings do not support implicit conversion from the MoveInstruction to the MoveInstructionPoly.
 program = CompositeInstruction("DEFAULT")
 program.setManipulatorInfo(manip_info)
-program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
-program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
+program.append(InstructionPoly_wrap_MoveInstruction(start_instruction))
+program.append(InstructionPoly_wrap_MoveInstruction(plan_f1))
 # program.appendMoveInstruction(MoveInstructionPoly(plan_f2))
 
 # Initialize the OMPL planner for RRTConnect algorithm
-plan_profile = OMPLRealVectorPlanProfile()
+plan_profile = OMPLRealVectorMoveProfile()
 
 # Create the profile dictionary. Profiles can be used to customize the behavior of the planner. The module
-# level function `ProfileDictionary_addProfile_OMPLPlanProfile` is used to add a profile to the dictionary. All
+# level function `ProfileDictionary_addProfile_OMPLMoveProfile` is used to add a profile to the dictionary. All
 # profile types have associated profile dictionary functions.
 profiles = ProfileDictionary()
 profiles.addProfile(OMPL_DEFAULT_NAMESPACE, "DEFAULT", plan_profile)
@@ -134,7 +135,7 @@ interpolated_results_instruction = generateInterpolatedProgram(results_instructi
 
 # Create the TrajOpt planner profile configurations. TrajOpt is used to optimize the random program generated
 # by OMPL
-trajopt_plan_profile = TrajOptDefaultPlanProfile()
+trajopt_plan_profile = TrajOptDefaultMoveProfile()
 trajopt_composite_profile = TrajOptDefaultCompositeProfile()
 
 trajopt_profiles = ProfileDictionary()
@@ -159,15 +160,20 @@ trajopt_results_instruction =trajopt_response.results
 # results using the TimeOptimalTrajectoryGeneration class. This class uses the velocity and acceleration limits
 # to compute timestamps for the results. The input program is modified to assign timestamps, so there is no
 # output program since the input is modified.
-time_parameterization = TimeOptimalTrajectoryGeneration()
-instructions_trajectory = InstructionsTrajectory(trajopt_results_instruction)
+time_parameterization = TimeOptimalTrajectoryGeneration("example")
 max_velocity = np.array([[2.088, 2.082, 3.27, 3.6, 3.3, 3.078]],dtype=np.float64)
 max_velocity = np.hstack((-max_velocity.T, max_velocity.T))
 max_acceleration = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
 max_acceleration = np.hstack((-max_acceleration.T, max_acceleration.T))
 max_jerk = np.array([[ 1, 1, 1, 1, 1, 1]],dtype=np.float64)
 max_jerk = np.hstack((-max_jerk.T, max_jerk.T))
-assert time_parameterization.compute(instructions_trajectory, max_velocity, max_acceleration, max_jerk)
+profile = TimeOptimalTrajectoryGenerationCompositeProfile()
+profile.velocity_limits = max_velocity
+profile.acceleration_limits = max_velocity
+profile.override_limits = True
+profiles = ProfileDictionary()
+profiles.addProfile("totp","DEFAULT",profile)
+assert time_parameterization.compute(trajopt_results_instruction, t_env, profiles)
 
 # Flatten the results into a single list of instructions
 trajopt_results = trajopt_results_instruction.flatten()

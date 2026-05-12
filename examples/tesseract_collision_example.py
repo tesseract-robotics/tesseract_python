@@ -16,21 +16,21 @@ import numpy as np
 # This example uses the GeneralResourceLocator to find resources on the file system. The GeneralResourceLocator
 # uses the TESSERACT_RESOURCE_PATH environmental variable.
 #
-# TESSERACT_RESOURCE_PATH must be set to the directory containing the `tesseract_support` package. This can be done
+# TESSERACT_RESOURCE_PATH must be set to the directory containing the `tesseract` package. This can be done
 # by running:
 #
 # git clone https://github.com/tesseract-robotics/tesseract.git
-# export TESSERACT_RESOURCE_PATH="$(pwd)/tesseract/"
+# export TESSERACT_RESOURCE_PATH="$(pwd)"
 #
 # or on Windows
 #
 # git clone https://github.com/tesseract-robotics/tesseract.git
-# set TESSERACT_RESOURCE_PATH=%cd%\tesseract\
+# set TESSERACT_RESOURCE_PATH=%cd%
 
 locator = GeneralResourceLocator()
 env = Environment()
-urdf_path_str = locator.locateResource("package://tesseract_support/urdf/abb_irb2400.urdf").getFilePath()
-srdf_path_str = locator.locateResource("package://tesseract_support/urdf/abb_irb2400.srdf").getFilePath()
+urdf_path_str = locator.locateResource("package://tesseract/support/urdf/abb_irb2400.urdf").getFilePath()
+srdf_path_str = locator.locateResource("package://tesseract/support/urdf/abb_irb2400.srdf").getFilePath()
 urdf_path = FilesystemPath(urdf_path_str)
 srdf_path = FilesystemPath(srdf_path_str)
 assert env.init(urdf_path, srdf_path, locator)

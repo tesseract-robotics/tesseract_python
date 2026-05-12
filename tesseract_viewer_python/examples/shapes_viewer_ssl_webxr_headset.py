@@ -24,7 +24,7 @@ import sys
 import ssl
 
 shapes_urdf="""
-<robot name="multipleshapes">
+<robot name="multipleshapes" tesseract:make_convex="true">
   
   <link name="world"/>
   <link name="cylinder_link">
@@ -101,8 +101,5 @@ viewer.update_environment(t_env, [0,0,0])
 
 viewer.start_serve_background()
 
-if sys.version_info[0] < 3:
-    raw_input("press enter")
-else:
-    input("press enter")
+input("press enter")
 
