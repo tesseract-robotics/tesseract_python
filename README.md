@@ -36,19 +36,18 @@ See https://tesseract-robotics.github.io/tesseract_python/ for documentation.
 ## Installation
 
 Standalone packages are provided on PyPi (pip install) for Windows and Linux, containing Tesseract, Tesseract
-Planning, andall the native dependencies 
-for Python 3.8+. These packages have been tested on Windows 10, and Ubuntu 22.04, but should work
-on any relatively recent x64 Windows or Linux operating system. Packages are available for Python 3.8 - 3.13
+Planning, and all the native dependencies
+for Python 3.8+. These packages have been tested on Windows 11, and Ubuntu 24.04, but should work
+on any relatively recent x64 Windows or Linux operating system. Packages are available for Python 3.8 - 3.14
 
 To install on Windows:
 ```
 python -m pip install tesseract-robotics tesseract-robotics-viewer
 ```
-To install on Ubuntu 24.04 and Ubuntu 22.04:
+To install on Ubuntu 24.04 and Ubuntu 26.04:
 
 ```
 sudo apt install python3-pip python3-numpy
-python3 -m pip install -U pip
 python3 -m pip install --user  tesseract_robotics tesseract_robotics_viewer
 ```
 
@@ -67,21 +66,19 @@ git clone --depth=1 https://github.com/tesseract-robotics/tesseract_planning.git
 git clone --depth=1 https://github.com/tesseract-robotics/tesseract_python.git
 ```
 
-Set the `TESSERACT_RESOURCE_PATH` and `TESSERACT_TASK_COMPOSER_CONFIG_FILE` environmental variables so the example 
+Set the `TESSERACT_RESOURCE_PATH` environmental variables so the example 
 can find required resources:
 
 Linux:
 
 ```
-export TESSERACT_RESOURCE_PATH=`pwd`/tesseract
-export TESSERACT_TASK_COMPOSER_CONFIG_FILE=`pwd`/tesseract_planning/tesseract_task_composer/config/task_composer_plugins_no_trajopt_ifopt.yaml
+export TESSERACT_RESOURCE_PATH=`pwd`
 ```
 
 Windows:
 
 ```
-set TESSERACT_RESOURCE_PATH=%CD%/tesseract
-set TESSERACT_TASK_COMPOSER_CONFIG_FILE=%CD%/tesseract_planning/tesseract_task_composer/config/task_composer_plugins_no_trajopt_ifopt.yaml
+set TESSERACT_RESOURCE_PATH=%CD%
 ```
 
 Now run the example!
@@ -111,22 +108,23 @@ import os
 import numpy as np
 import numpy.testing as nptest
 
-from tesseract_robotics.tesseract_common import GeneralResourceLocator
+from tesseract_robotics.tesseract_common import GeneralResourceLocator, ProfileDictionary, \
+    AnyPoly_wrap_ProfileDictionary
 from tesseract_robotics.tesseract_environment import Environment, AnyPoly_wrap_EnvironmentConst
 from tesseract_robotics.tesseract_common import FilesystemPath, Isometry3d, Translation3d, Quaterniond, \
     ManipulatorInfo, AnyPoly, AnyPoly_wrap_double
 from tesseract_robotics.tesseract_command_language import CartesianWaypoint, WaypointPoly, \
     MoveInstructionType_FREESPACE, MoveInstruction, InstructionPoly, StateWaypoint, StateWaypointPoly, \
-    CompositeInstruction, MoveInstructionPoly, CartesianWaypointPoly, ProfileDictionary, \
+    CompositeInstruction, MoveInstructionPoly, CartesianWaypointPoly, \
         AnyPoly_as_CompositeInstruction, CompositeInstructionOrder_ORDERED, DEFAULT_PROFILE_KEY, \
         AnyPoly_wrap_CompositeInstruction, DEFAULT_PROFILE_KEY, JointWaypoint, JointWaypointPoly, \
         InstructionPoly_as_MoveInstructionPoly, WaypointPoly_as_StateWaypointPoly, \
         MoveInstructionPoly_wrap_MoveInstruction, StateWaypointPoly_wrap_StateWaypoint, \
         CartesianWaypointPoly_wrap_CartesianWaypoint, JointWaypointPoly_wrap_JointWaypoint, \
-        AnyPoly_wrap_ProfileDictionary
+        WaypointPoly_wrap_CartesianWaypoint, InstructionPoly_wrap_MoveInstruction
 
 from tesseract_robotics.tesseract_task_composer import TaskComposerPluginFactory, \
-    TaskComposerDataStorage, TaskComposerContext
+    TaskComposerDataStorage, TaskComposerContext, TaskComposerLog
 
 from tesseract_robotics_viewer import TesseractViewer
 
@@ -135,14 +133,16 @@ from tesseract_robotics_viewer import TesseractViewer
 OMPL_DEFAULT_NAMESPACE = "OMPLMotionPlannerTask"
 TRAJOPT_DEFAULT_NAMESPACE = "TrajOptMotionPlannerTask"
 
-task_composer_filename = os.environ["TESSERACT_TASK_COMPOSER_CONFIG_FILE"]
-
 # Initialize the resource locator and environment
 locator = GeneralResourceLocator()
-abb_irb2400_urdf_package_url = "package://tesseract_support/urdf/abb_irb2400.urdf"
-abb_irb2400_srdf_package_url = "package://tesseract_support/urdf/abb_irb2400.srdf"
+abb_irb2400_urdf_package_url = "package://tesseract/support/urdf/abb_irb2400.urdf"
+abb_irb2400_srdf_package_url = "package://tesseract/support/urdf/abb_irb2400.srdf"
 abb_irb2400_urdf_fname = FilesystemPath(locator.locateResource(abb_irb2400_urdf_package_url).getFilePath())
 abb_irb2400_srdf_fname = FilesystemPath(locator.locateResource(abb_irb2400_srdf_package_url).getFilePath())
+
+composer_config_url = "package://tesseract_planning/task_composer/config/task_composer_plugins.yaml"
+config_path = FilesystemPath(locator.locateResource(composer_config_url).getFilePath())
+
 
 t_env = Environment()
 
@@ -178,20 +178,19 @@ wp3 = CartesianWaypoint(Isometry3d.Identity() * Translation3d(0.8,0.5,1.455) * Q
 # Create the input command program instructions. Note the use of explicit construction of the CartesianWaypointPoly
 # using the *_wrap_CartesianWaypoint functions. This is required because the Python bindings do not support implicit
 # conversion from the CartesianWaypoint to the CartesianWaypointPoly.
-start_instruction = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp1), MoveInstructionType_FREESPACE, "DEFAULT")
-plan_f1 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
-plan_f2 = MoveInstruction(CartesianWaypointPoly_wrap_CartesianWaypoint(wp3), MoveInstructionType_FREESPACE, "DEFAULT")
+start_instruction = MoveInstruction(WaypointPoly_wrap_CartesianWaypoint(wp1), MoveInstructionType_FREESPACE, "DEFAULT")
+plan_f1 = MoveInstruction(WaypointPoly_wrap_CartesianWaypoint(wp2), MoveInstructionType_FREESPACE, "DEFAULT")
+plan_f2 = MoveInstruction(WaypointPoly_wrap_CartesianWaypoint(wp3), MoveInstructionType_FREESPACE, "DEFAULT")
 
 # Create the input command program. Note the use of *_wrap_MoveInstruction functions. This is required because the
 # Python bindings do not support implicit conversion from the MoveInstruction to the MoveInstructionPoly.
 program = CompositeInstruction("DEFAULT")
 program.setManipulatorInfo(manip_info)
-program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(start_instruction))
-program.appendMoveInstruction(MoveInstructionPoly_wrap_MoveInstruction(plan_f1))
+program.append(InstructionPoly_wrap_MoveInstruction(start_instruction))
+program.append(InstructionPoly_wrap_MoveInstruction(plan_f1))
 # program.appendMoveInstruction(MoveInstructionPoly(plan_f2))
 
 # Create the task composer plugin factory and load the plugins
-config_path = FilesystemPath(task_composer_filename)
 factory = TaskComposerPluginFactory(config_path, locator)
 
 # Create the task composer node. In this case the FreespacePipeline is used. Many other are available.
@@ -216,12 +215,14 @@ task_data = TaskComposerDataStorage()
 task_data.setData(input_key, program_anypoly)
 task_data.setData("environment", environment_anypoly)
 task_data.setData("profiles", profiles_anypoly)
+log = TaskComposerLog()
+log.context = TaskComposerContext(task.getName(), task_data, True)
 
 # Create an executor to run the task
 task_executor = factory.createTaskComposerExecutor("TaskflowExecutor")
 
 # Run the task and wait for completion
-future = task_executor.run(task.get(), task_data)
+future = task_executor.run(task.get(), log.context)
 future.wait()
 
 if not future.context.isSuccessful():

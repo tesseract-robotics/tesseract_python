@@ -9,13 +9,13 @@ import time
 import sys
 
 shapes_urdf="""
-<robot name="mesh_viewer">
+<robot name="mesh_viewer" tesseract:make_convex="true">
   
   <link name="world"/>
   <link name="mesh_gltf2_link">
     <visual>
       <geometry>
-        <mesh filename="package://tesseract_support/meshes/tesseract_material_mesh.glb"/>
+        <mesh filename="package://tesseract/support/meshes/tesseract_material_mesh.glb"/>
       </geometry>
     </visual>
   </link>
@@ -31,7 +31,7 @@ shapes_urdf="""
   <link name="mesh_dae_link">
     <visual>
       <geometry>
-        <mesh filename="package://tesseract_support/meshes/tesseract_material_mesh.dae"/>
+        <mesh filename="package://tesseract/support/meshes/tesseract_material_mesh.dae"/>
       </geometry>
     </visual>
   </link>
@@ -59,8 +59,5 @@ viewer.update_environment(t_env, [0,0,0])
 
 viewer.start_serve_background()
 
-if sys.version_info[0] < 3:
-    raw_input("press enter")
-else:
-    input("press enter")
+input("press enter")
 

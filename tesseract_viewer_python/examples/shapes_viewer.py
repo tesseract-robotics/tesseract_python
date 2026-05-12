@@ -9,7 +9,7 @@ import time
 import sys
 
 shapes_urdf="""
-<robot name="multipleshapes">
+<robot name="multipleshapes" tesseract:make_convex="true">
   
   <link name="world"/>
   <link name="cylinder_link">
