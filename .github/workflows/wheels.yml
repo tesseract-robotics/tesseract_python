@@ -410,7 +410,7 @@ jobs:
       with:
         path: robotraconteur
     - name: Download CI artifacts
-      uses: actions/download-artifact@v6
+      uses: actions/download-artifact@v8
       with:
         path: artifacts/main
     - name: archive wheels
