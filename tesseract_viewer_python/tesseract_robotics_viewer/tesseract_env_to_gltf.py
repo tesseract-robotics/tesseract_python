@@ -217,7 +217,7 @@ def _convert_mesh(gltf_dict, gltf_buf_io, visual_node, visual_name, mesh):
     # if normals_ind is not None:
     #     mesh_dict["primitives"][0]["attributes"]["NORMAL"] = normals_ind
 
-    visual_node["scale"] = list(mesh.getScale().flatten())
+    visual_node["scale"] = [1.0, 1.0, 1.0]
 
     if mesh.getResource() is not None and not mesh.getResource().getUrl().lower().endswith('.stl'):
         mesh_material = mesh.getMaterial()
