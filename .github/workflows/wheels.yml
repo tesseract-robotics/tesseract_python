@@ -159,12 +159,12 @@ jobs:
         cmake --build . --config Release --target tesseract_python_doc
     - name: archive wheels
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: 'python-wheels-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
         path: ws/build/tesseract_python/python/*
     - name: archive docs
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: 'python-docs-${{ matrix.config.os }}-${{ matrix.config.python_version }}'
         path: ws/build/tesseract_python/docs/*
@@ -278,13 +278,13 @@ jobs:
         if %errorlevel% neq 0 exit /b %errorlevel%
     - name: archive wheels
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: 'python-wheels-win-${{matrix.config.python_version}}'
         path: ws/build/tesseract_python/python
     - name: archive logs
       if: failure()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: 'build-logs-win-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}'
         path: "**/*.log"
@@ -388,13 +388,13 @@ jobs:
         pytest -s    
     - name: archive wheels
       if: always()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: 'python-macos-${{ matrix.config.arch }}-python-${{matrix.config.python_version}}'
         path: ws/build/tesseract_python/python
     - name: archive logs
       if: failure()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: 'build-logs-macos-${{ matrix.config.arch }}-python-${{ matrix.config.python_version }}'
         path: "**/*.log"
@@ -414,7 +414,7 @@ jobs:
       with:
         path: artifacts/main
     - name: archive wheels
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: 'python-wheels-all'
         path: artifacts/**/wheelhouse/*.whl
