@@ -1,0 +1,112 @@
+context:
+    name: tesseract_python
+    version: "0.1.0"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+    path: ../../workspace
+
+requirements:
+    build:
+      - ${{ compiler('c') }}
+      - ${{ compiler('cxx') }}
+      - benchmark
+      - gtest
+      - gmock
+      - cmake
+      - ninja
+      - pkg-config
+      - swig
+      - colcon-common-extensions 
+      - lcov
+      - if: linux
+        then:
+          - ${{ cdt('mesa-libgl-devel') }}
+          - ${{ cdt('mesa-dri-drivers') }}
+    host:
+      - libboost-devel
+      - cereal
+      - eigen-abi-devel
+      - tinyxml2
+      - console_bridge
+      - assimp
+      - urdfdom
+      - fcl
+      - octomap 
+      - orocos-kdl 
+      - pcl
+      - gtest
+      - gmock
+      - pkg-config 
+      - xz
+      - flann
+      - jsoncpp
+      - yaml-cpp
+      - bullet-cpp
+      - blas
+      - osqp
+      - osqp-eigen
+      - qpoases
+      - ompl
+      - taskflow <4
+      - python
+      - numpy
+      - if: unix
+        then:
+          - xorg-libx11
+          - xorg-libxext
+          - gperftools
+    run:
+      - libboost-devel
+      - cereal
+      - eigen
+      - tinyxml2
+      - console_bridge
+      - assimp
+      - urdfdom
+      - fcl
+      - octomap 
+      - orocos-kdl 
+      - pcl
+      - gtest
+      - gmock
+      - xz
+      - jsoncpp
+      - taskflow 
+      - yaml-cpp
+      - bullet-cpp
+      - blas
+      - osqp
+      - osqp-eigen
+      - qpoases
+      - ompl
+      - python
+      - numpy
+      - if: unix
+        then:
+          - xorg-libx11
+          - xorg-libxext
+          - gperftools
+
+# tests:
+# - package_contents:
+#       files:
+#       - if: unix
+#         then:
+#           - opt/tesseract_robotics/include/tesseract/task_composer/task_composer_node.h
+#           - if: osx
+#             then: opt/tesseract_robotics/lib/libtesseract_motion_planners.dylib
+#             else: opt/tesseract_robotics/lib/libtesseract_motion_planners.so
+#         else:
+#           - opt/tesseract_robotics/include/tesseract/task_composer/task_composer_node.h
+#           - opt/tesseract_robotics/bin/tesseract_motion_planners.dll
+
+build:
+  number: 0
+
+about:
+  homepage: https://github.com/tesseract-robotics/tesseract_python
+  summary: Tesseract Robotics Python SWIG wrappers
