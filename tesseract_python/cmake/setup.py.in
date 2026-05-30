@@ -22,7 +22,7 @@ class build_ext(build_ext_orig):
 custom_platform = "@TESSERACT_PYTHON_WHEEL_PLATFORM@"
 
 setup_options = {}
-if custom_platform:
+if custom_platform and custom_platform != 'auto':
     setup_options['bdist_wheel'] = {'plat_name': custom_platform}
 
 setup(name='tesseract-robotics',
