@@ -54,6 +54,7 @@ requirements:
       - taskflow <4
       - python
       - numpy
+      - build
       - if: unix
         then:
           - xorg-libx11

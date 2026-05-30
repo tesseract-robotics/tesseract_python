@@ -2,7 +2,7 @@
 message(STATUS "Running install_build_wheel.cmake")
 
 if(WIN32)
-execute_process(COMMAND @Python3_EXECUTABLE@ setup.py bdist_wheel WORKING_DIRECTORY python RESULT_VARIABLE STATUS)
+execute_process(COMMAND @Python3_EXECUTABLE@ -m build --wheel --no-isolation WORKING_DIRECTORY python RESULT_VARIABLE STATUS)
 if(STATUS AND NOT STATUS EQUAL 0)
   message(FATAL_ERROR "Python Build Wheel Failed: ${STATUS}")
 endif()
@@ -15,7 +15,8 @@ endif()
 endforeach()
 
 elseif(APPLE)
-execute_process(COMMAND @Python3_EXECUTABLE@ setup.py bdist_wheel --plat-name=@TESSERACT_PYTHON_WHEEL_PLATFORM@ WORKING_DIRECTORY python RESULT_VARIABLE STATUS)
+execute_process(COMMAND @Python3_EXECUTABLE@ -m build --wheel --no-isolation 
+                --config-setting=--global-option=--plat-name=@TESSERACT_PYTHON_WHEEL_PLATFORM@ WORKING_DIRECTORY python RESULT_VARIABLE STATUS)
 if(STATUS AND NOT STATUS EQUAL 0)
   message(FATAL_ERROR "Python Build Wheel Failed: ${STATUS}")
 endif()
@@ -27,7 +28,8 @@ if(STATUS AND NOT STATUS EQUAL 0)
 endif()
 endforeach()
 else()
-execute_process(COMMAND @Python3_EXECUTABLE@ setup.py bdist_wheel --plat-name=@TESSERACT_PYTHON_WHEEL_PLATFORM@ WORKING_DIRECTORY python RESULT_VARIABLE STATUS)
+execute_process(COMMAND @Python3_EXECUTABLE@ -m build --wheel --no-isolation 
+                --config-setting=--global-option=--plat-name=@TESSERACT_PYTHON_WHEEL_PLATFORM@ WORKING_DIRECTORY python RESULT_VARIABLE STATUS)
 if(STATUS AND NOT STATUS EQUAL 0)
   message(FATAL_ERROR "Python Build Wheel Failed: ${STATUS}")
 endif()

@@ -180,22 +180,20 @@ if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 #install(CODE "MESSAGE(\"INSTALL TODO!\")")
 
 
-set(enable_setuptools_deb_layout OFF)
-if(EXISTS "/etc/debian_version")
-  set(enable_setuptools_deb_layout ON)
-endif()
-option(SETUPTOOLS_DEB_LAYOUT "Enable debian style python package layout" ${enable_setuptools_deb_layout})
-if(SETUPTOOLS_DEB_LAYOUT)
-  message(STATUS "Using Debian Python package layout")
-  set(SETUPTOOLS_ARG_EXTRA "--install-layout=deb")
-endif()
-
-
-install(CODE "message(STATUS \"Running setup.py in ${CMAKE_CURRENT_BINARY_DIR}/python\")
-execute_process(COMMAND ${Python3_EXECUTABLE} setup.py install -f
---root=/ --prefix=${CMAKE_INSTALL_PREFIX} ${SETUPTOOLS_ARG_EXTRA} --single-version-externally-managed WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/python)")
-
-
+install(CODE "
+    message(STATUS \"Installing Python package to ${CMAKE_INSTALL_PREFIX}\")
+    
+    execute_process(
+        COMMAND ${Python3_EXECUTABLE} -m pip install .
+            --root=$ENV{DESTDIR}/
+            --prefix=${CMAKE_INSTALL_PREFIX}
+            --no-deps
+            --no-build-isolation
+            --ignore-installed
+        WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/python\"
+        COMMAND_ERROR_IS_FATAL ANY
+    )
+")
 
   # Allows Colcon to find non-Ament packages when using workspace underlays
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/ament_index/resource_index/packages/${PROJECT_NAME} "")
@@ -209,7 +207,7 @@ if (WIN32)
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/tesseract_python_dll_path.dsv "prepend-non-duplicate;TESSERACT_PYTHON_DLL_PATH;bin")
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/tesseract_python_dll_path.dsv DESTINATION share/${PROJECT_NAME}/hook)    
 else()
-  file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/python3/dist-packages")
+  file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/site-packages")
 endif()
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
 

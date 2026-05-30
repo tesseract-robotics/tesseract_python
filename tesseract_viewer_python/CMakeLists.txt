@@ -18,19 +18,20 @@ MESSAGE(STATUS "tesseract_viewer_python version: ${tesseract_viewer_python_versi
 
 if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 
-set(enable_setuptools_deb_layout OFF)
-if(EXISTS "/etc/debian_version")
-  set(enable_setuptools_deb_layout ON)
-endif()
-option(SETUPTOOLS_DEB_LAYOUT "Enable debian style python package layout" ${enable_setuptools_deb_layout})
-if(SETUPTOOLS_DEB_LAYOUT)
-  message(STATUS "Using Debian Python package layout")
-  set(SETUPTOOLS_ARG_EXTRA "--install-layout=deb")
-endif()
-
-install(CODE "message(STATUS \"Running setup.py in ${CMAKE_CURRENT_SOURCE_DIR}\")
-execute_process(COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/setup.py install -f
---root=/ --prefix=${CMAKE_INSTALL_PREFIX} ${SETUPTOOLS_ARG_EXTRA} --single-version-externally-managed WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})")
+install(CODE "
+    message(STATUS \"Installing Python package to ${CMAKE_INSTALL_PREFIX}\")
+    
+    execute_process(
+        COMMAND ${Python3_EXECUTABLE} -m pip install ${CMAKE_CURRENT_SOURCE_DIR}
+            --root=$ENV{DESTDIR}/
+            --prefix=${CMAKE_INSTALL_PREFIX}
+            --no-deps
+            --no-build-isolation
+            --ignore-installed
+        WORKING_DIRECTORY \"${CMAKE_CURRENT_SOURCE_DIR}\"
+        COMMAND_ERROR_IS_FATAL ANY
+    )
+")
 
   # Allows Colcon to find non-Ament packages when using workspace underlays
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/ament_index/resource_index/packages/${PROJECT_NAME} "")
@@ -38,10 +39,13 @@ execute_process(COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/setup.
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/ament_prefix_path.dsv "prepend-non-duplicate;AMENT_PREFIX_PATH;")
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/ament_prefix_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
 
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/python3/dist-packages")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/site-packages")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
 
 else()
-add_custom_target(tesseract_viewer_python_wheel ALL ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/setup.py bdist_wheel WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
+add_custom_target(tesseract_viewer_python_wheel ALL
+    COMMAND ${Python3_EXECUTABLE} -m build --wheel --no-isolation
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    VERBATIM
+)
 endif()

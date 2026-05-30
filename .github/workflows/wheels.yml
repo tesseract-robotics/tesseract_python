@@ -116,7 +116,7 @@ jobs:
     - name: pip
       run: |
         python -m pip install --upgrade pip
-        python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcs2l patchelf
+        python -m pip install auditwheel wheel numpy setuptools colcon-common-extensions vcs2l patchelf build
     - name: pip
       if: matrix.config.docs == true
       run: |
@@ -213,7 +213,7 @@ jobs:
         architecture: ${{ matrix.config.arch }}
     - name: pip3
       run: |
-        python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcs2l
+        python -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcs2l build
     - name: choco
       run: |
         choco install swig ninja -r
@@ -334,7 +334,7 @@ jobs:
         brew install libomp cmake automake autoconf autoconf-archive libtool gcc ninja swig
     - name: pip3
       run: |
-        python3 -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcs2l delocate
+        python3 -m pip install numpy setuptools wheel pytest delvewheel colcon-common-extensions vcs2l delocate build
     - name: vcs import
       working-directory: ws/src
       run: vcs import --input tesseract_python/dependencies.rosinstall
