@@ -176,6 +176,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/__package_init__.py.in ${CMAKE_
 
 file(TO_CMAKE_PATH "${Python3_EXECUTABLE}" Python3_EXECUTABLE_NORMED)
 
+include(cmake/get_py_install_target_path.cmake)
+
+get_py_install_target_path(PY_INSTALL_TARGET_PATH PY_INSTALL_TARGET_PATH_REL)
+
 option(TESSERACT_PYTHON_BUILD_WHEEL "Build self contained Python wheel")
 if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 
@@ -188,7 +192,7 @@ install(CODE "
     execute_process(
         COMMAND ${Python3_EXECUTABLE_NORMED} -m pip install .
             --root=$ENV{DESTDIR}/
-            --target=${CMAKE_INSTALL_PREFIX}/lib/site-packages
+            --target=${PY_INSTALL_TARGET_PATH}
             --no-deps
             --no-build-isolation
             --ignore-installed
@@ -205,12 +209,10 @@ install(CODE "
 
 
 if (WIN32)
-  file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/site-packages")
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/tesseract_python_dll_path.dsv "prepend-non-duplicate;TESSERACT_PYTHON_DLL_PATH;bin")
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/tesseract_python_dll_path.dsv DESTINATION share/${PROJECT_NAME}/hook)    
-else()
-  file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/site-packages")
 endif()
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;${PY_INSTALL_TARGET_PATH_REL}")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
 
   
