@@ -35,7 +35,7 @@ jobs:
         - os: ubuntu-24.04
           runs_on: ubuntu-24.04
           container: ubuntu:24.04
-          py_platform: auto
+          py_platform: manylinux_2_39_x86_64
           python_version: "3.8"
           docs: true
           docs_cmake: ON
