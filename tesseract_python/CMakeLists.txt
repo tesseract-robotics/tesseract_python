@@ -174,6 +174,8 @@ set(TESSERACT_PYTHON_MODULE_TARGETS
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/__package_init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_robotics/__init__.py @ONLY)
 
+file(TO_CMAKE_PATH "${Python3_EXECUTABLE}" Python3_EXECUTABLE_NORMED)
+
 option(TESSERACT_PYTHON_BUILD_WHEEL "Build self contained Python wheel")
 if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 
@@ -184,7 +186,7 @@ install(CODE "
     message(STATUS \"Installing Python package to ${CMAKE_INSTALL_PREFIX}\")
     
     execute_process(
-        COMMAND ${Python3_EXECUTABLE} -m pip install .
+        COMMAND ${Python3_EXECUTABLE_NORMED} -m pip install .
             --root=$ENV{DESTDIR}/
             --prefix=${CMAKE_INSTALL_PREFIX}
             --no-deps

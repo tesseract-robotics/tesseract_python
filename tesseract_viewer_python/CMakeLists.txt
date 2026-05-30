@@ -16,13 +16,15 @@ STRING (REGEX REPLACE "<version>([0-9]+\\.[0-9]+\\.[0-9]+)</version>" "\\1" tess
 STRING (STRIP ${tesseract_viewer_python_version2} tesseract_viewer_python_version)
 MESSAGE(STATUS "tesseract_viewer_python version: ${tesseract_viewer_python_version}")
 
+file(TO_CMAKE_PATH "${Python3_EXECUTABLE}" Python3_EXECUTABLE_NORMED)
+
 if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 
 install(CODE "
     message(STATUS \"Installing Python package to ${CMAKE_INSTALL_PREFIX}\")
     
     execute_process(
-        COMMAND ${Python3_EXECUTABLE} -m pip install ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND ${Python3_EXECUTABLE_NORMED} -m pip install ${CMAKE_CURRENT_SOURCE_DIR}
             --root=$ENV{DESTDIR}/
             --prefix=${CMAKE_INSTALL_PREFIX}
             --no-deps
