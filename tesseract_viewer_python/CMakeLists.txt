@@ -24,7 +24,7 @@ install(CODE "
     execute_process(
         COMMAND ${Python3_EXECUTABLE} -m pip install ${CMAKE_CURRENT_SOURCE_DIR}
             --root=$ENV{DESTDIR}/
-            --prefix=${CMAKE_INSTALL_PREFIX}
+            --target=${CMAKE_INSTALL_PREFIX}/lib/site-packages
             --no-deps
             --no-build-isolation
             --ignore-installed
