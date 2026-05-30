@@ -47,6 +47,13 @@ function(tesseract_python_module PY_MOD_NAME )
 
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_robotics/${PY_MOD_PACKAGE}/__init__.py @ONLY)
 
+  if(APPLE)
+    target_link_options(${PY_MOD_REAL_NAME} PRIVATE 
+      "-Wl,-undefined,dynamic_lookup"
+      "-Wl,-flat_namespace"
+    )
+  endif()
+
   # Run fix_python_doc_newlines.py after compilation
   # add_custom_command(TARGET ${PY_MOD_REAL_NAME} POST_BUILD
   #   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/cmake/fix_python_doc_newlines.py ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_robotics/${PY_MOD_PACKAGE}
