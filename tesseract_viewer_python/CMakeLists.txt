@@ -18,15 +18,19 @@ MESSAGE(STATUS "tesseract_viewer_python version: ${tesseract_viewer_python_versi
 
 file(TO_CMAKE_PATH "${Python3_EXECUTABLE}" Python3_EXECUTABLE_NORMED)
 
+include(../tesseract_python/cmake/get_py_install_target_path.cmake)
+
+get_py_install_target_path(PY_INSTALL_TARGET_PATH PY_INSTALL_TARGET_PATH_REL)
+
 if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 
 install(CODE "
-    message(STATUS \"Installing Python package to ${CMAKE_INSTALL_PREFIX}\")
+    message(STATUS \"Installing Python package to ${PY_INSTALL_TARGET_PATH}\")
     
     execute_process(
         COMMAND ${Python3_EXECUTABLE_NORMED} -m pip install ${CMAKE_CURRENT_SOURCE_DIR}
             --root=$ENV{DESTDIR}/
-            --prefix=${CMAKE_INSTALL_PREFIX}
+            --target=${PY_INSTALL_TARGET_PATH}
             --no-deps
             --no-build-isolation
             --ignore-installed
@@ -41,7 +45,7 @@ install(CODE "
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/ament_prefix_path.dsv "prepend-non-duplicate;AMENT_PREFIX_PATH;")
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/ament_prefix_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
 
-file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/site-packages")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;${PY_INSTALL_TARGET_PATH_REL}")
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
 
 else()

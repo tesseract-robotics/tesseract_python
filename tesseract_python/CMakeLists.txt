@@ -187,7 +187,7 @@ if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 
 
 install(CODE "
-    message(STATUS \"Installing Python package to ${CMAKE_INSTALL_PREFIX}\")
+    message(STATUS \"Installing Python package to ${PY_INSTALL_TARGET_PATH}\")
     
     execute_process(
         COMMAND ${Python3_EXECUTABLE_NORMED} -m pip install .
