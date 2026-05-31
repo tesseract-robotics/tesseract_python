@@ -29,6 +29,7 @@ colcon build --merge-install --install-base="$PREFIX/opt/tesseract_robotics" \
    -DTESSERACT_WARNINGS_AS_ERRORS=OFF \
    -DTRAJOPT_WARNINGS_AS_ERRORS=OFF \
    -DCMAKE_VERBOSE_MAKEFILE=ON \
+   -DPython3_EXECUTABLE="$PYTHON" \
    -Dtcmalloc_minimal_LIBRARY=$TCMALLOC_LIB_PATH
 
 export TESSERACT_RESOURCE_PATH="$PREFIX/opt/tesseract_robotics/share"

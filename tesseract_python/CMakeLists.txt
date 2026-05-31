@@ -77,53 +77,7 @@ include_directories(${TESSERACT_INCLUDE_PATHS})
 
 message(STATUS "TESSERACT_INCLUDE_PATHS=${TESSERACT_INCLUDE_PATHS}")
 
-if(NOT PYTHON_VERSION)
-  set(PYTHON_VERSION  $ENV{ROS_PYTHON_VERSION})
-  message(STATUS "Setting Python Version: " ${PYTHON_VERSION})
-endif()
-
-if(PYTHON_VERSION)
-  if(${PYTHON_VERSION} LESS 3)
-    set(Python_ADDITIONAL_VERSIONS 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0)
-  else()
-    set(Python_ADDITIONAL_VERSIONS 3.14 3.13 3.12 3.11 3.10 3.9 3.8 3.7 3.6 3.5 3.4 3.3 3.2 3.1 3.0)
-  endif()
-endif()
-
-find_package(PythonInterp ${PYTHON_VERSION} REQUIRED)
-find_package(PythonLibs REQUIRED)
-message(STATUS "Building Python Version: " ${PYTHON_VERSION_MAJOR})
-
-# Find NumPy
-find_path(NUMPY_INCLUDE_NDARRAYOBJECT_DIR numpy/ndarrayobject.h PATHS ${PYTHON_INCLUDE_DIRS} NO_DEFAULT_PATH)
-if(NUMPY_INCLUDE_NDARRAYOBJECT_DIR)
-    set(NUMPY_INCLUDE_DIR ${NUMPY_INCLUDE_NDARRAYOBJECT_DIR})
-else()
-    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; import os; print(os.path.dirname(numpy.__file__))"
-                    RESULT_VARIABLE FIND_NUMPY_RESULT OUTPUT_VARIABLE NUMPY_INCLUDE_DIR1)
-    string(STRIP "${NUMPY_INCLUDE_DIR1}" NUMPY_INCLUDE_DIR1)
-
-    if(${FIND_NUMPY_RESULT})
-        message(FATAL_ERROR "Could not determine NumPy include directory")
-    endif()
-
-    if(EXISTS "${NUMPY_INCLUDE_DIR1}/core/include/numpy/ndarrayobject.h")
-        set(NUMPY_INCLUDE_DIR "${NUMPY_INCLUDE_DIR1}/core/include")
-    else()
-        if(EXISTS "${NUMPY_INCLUDE_DIR1}/_core/include/numpy/ndarrayobject.h")
-            set(NUMPY_INCLUDE_DIR "${NUMPY_INCLUDE_DIR1}/_core/include")
-        endif()
-    endif()
-
-endif()
-
-if(NOT EXISTS "${NUMPY_INCLUDE_DIR}/numpy/ndarrayobject.h")
-    message(FATAL_ERROR "Could not find numpy/ndarrayobject.h include file")
-endif()
-
-message(STATUS "NumPy Include Directory: ${NUMPY_INCLUDE_DIR}")
-
-# End Find NumPy
+find_package(Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
 
 if(${CMAKE_VERSION} VERSION_GREATER "3.13.0" OR ${CMAKE_VERSION} VERSION_EQUAL "3.13.0")
 cmake_policy(SET CMP0078 OLD)
@@ -133,7 +87,6 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.14.0" OR ${CMAKE_VERSION} VERSION_EQUAL "
 cmake_policy(SET CMP0086 OLD)
 endif()
 
-include(FindSWIG)
 find_package(SWIG 4.1.1 REQUIRED)
 include(UseSWIG)
 
@@ -221,32 +174,32 @@ set(TESSERACT_PYTHON_MODULE_TARGETS
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cmake/setup.py.in" "${CMAKE_CURRENT_BINARY_DIR}/python/setup.py" @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/__package_init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_robotics/__init__.py @ONLY)
 
+file(TO_CMAKE_PATH "${Python3_EXECUTABLE}" Python3_EXECUTABLE_NORMED)
+
+include(cmake/get_py_install_target_path.cmake)
+
+get_py_install_target_path(PY_INSTALL_TARGET_PATH PY_INSTALL_TARGET_PATH_REL)
+
 option(TESSERACT_PYTHON_BUILD_WHEEL "Build self contained Python wheel")
 if(NOT TESSERACT_PYTHON_BUILD_WHEEL)
 
 #install(CODE "MESSAGE(\"INSTALL TODO!\")")
 
 
-set(enable_setuptools_deb_layout OFF)
-if(EXISTS "/etc/debian_version")
-  set(enable_setuptools_deb_layout ON)
-endif()
-option(SETUPTOOLS_DEB_LAYOUT "Enable debian style python package layout" ${enable_setuptools_deb_layout})
-if(SETUPTOOLS_DEB_LAYOUT)
-  message(STATUS "Using Debian Python package layout")
-  set(SETUPTOOLS_ARG_EXTRA "--install-layout=deb")
-endif()
-
-if (${PYTHON_VERSION_MAJOR} LESS 3)
-    install(CODE "message(STATUS \"Running setup.py in ${CMAKE_CURRENT_BINARY_DIR}/python\")
-    execute_process(COMMAND python2 setup.py install -f
---root=/ --prefix=${CMAKE_INSTALL_PREFIX} ${SETUPTOOLS_ARG_EXTRA} --single-version-externally-managed WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/python)")
-else()
-  install(CODE "message(STATUS \"Running setup.py in ${CMAKE_CURRENT_BINARY_DIR}/python\")
-  execute_process(COMMAND ${PYTHON_EXECUTABLE} setup.py install -f
-  --root=/ --prefix=${CMAKE_INSTALL_PREFIX} ${SETUPTOOLS_ARG_EXTRA} --single-version-externally-managed WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/python)")
-endif()
-
+install(CODE "
+    message(STATUS \"Installing Python package to ${PY_INSTALL_TARGET_PATH}\")
+    
+    execute_process(
+        COMMAND ${Python3_EXECUTABLE_NORMED} -m pip install .
+            --root=$ENV{DESTDIR}/
+            --target=${PY_INSTALL_TARGET_PATH}
+            --no-deps
+            --no-build-isolation
+            --ignore-installed
+        WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}/python\"
+        COMMAND_ERROR_IS_FATAL ANY
+    )
+")
 
   # Allows Colcon to find non-Ament packages when using workspace underlays
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/ament_index/resource_index/packages/${PROJECT_NAME} "")
@@ -254,25 +207,20 @@ endif()
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/ament_prefix_path.dsv "prepend-non-duplicate;AMENT_PREFIX_PATH;")
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/ament_prefix_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
 
-if (${PYTHON_VERSION_MAJOR} LESS 3)
-  file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/python2.7/dist-packages")
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
-else()
-  if (WIN32)
-    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/site-packages")
-    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/tesseract_python_dll_path.dsv "prepend-non-duplicate;TESSERACT_PYTHON_DLL_PATH;bin")
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/tesseract_python_dll_path.dsv DESTINATION share/${PROJECT_NAME}/hook)    
-  else()
-    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;lib/python3/dist-packages")
-  endif()
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
+
+if (WIN32)
+  file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/tesseract_python_dll_path.dsv "prepend-non-duplicate;TESSERACT_PYTHON_DLL_PATH;bin")
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/tesseract_python_dll_path.dsv DESTINATION share/${PROJECT_NAME}/hook)    
 endif()
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv "prepend-non-duplicate;PYTHONPATH;${PY_INSTALL_TARGET_PATH_REL}")
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv DESTINATION share/${PROJECT_NAME}/hook)
+
   
 if(TESSERACT_ENABLE_TESTING)
   enable_testing()
 
   add_test (NAME python-tests
-  COMMAND ${PYTHON_EXECUTABLE} -m pytest -p no:cacheprovider
+  COMMAND ${Python3_EXECUTABLE} -m pytest -p no:cacheprovider
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
   )
   

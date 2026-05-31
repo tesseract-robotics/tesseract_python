@@ -54,6 +54,9 @@ requirements:
       - taskflow <4
       - python
       - numpy
+      - pip
+      - wheel
+      - setuptools
       - if: unix
         then:
           - xorg-libx11

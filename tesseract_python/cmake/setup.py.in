@@ -19,6 +19,12 @@ class build_ext(build_ext_orig):
     def run(self):
       pass
 
+custom_platform = "@TESSERACT_PYTHON_WHEEL_PLATFORM@"
+
+setup_options = {}
+if custom_platform and custom_platform != 'auto':
+    setup_options['bdist_wheel'] = {'plat_name': custom_platform}
+
 setup(name='tesseract-robotics',
       version='@tesseract_python_version@',
       description='Tesseract Python Library',
@@ -109,5 +115,6 @@ setup(name='tesseract-robotics',
         )
 
       ],
-      cmdclass={'build_ext': build_ext}
+      cmdclass={'build_ext': build_ext},
+      options=setup_options
      )

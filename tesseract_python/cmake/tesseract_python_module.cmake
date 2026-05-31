@@ -6,11 +6,7 @@ function(tesseract_python_module PY_MOD_NAME )
 
   set(SWIG_CXX_EXTENSION cxx)
   set_property(SOURCE ${PY_MOD_SWIG_SRC1} PROPERTY CPLUSPLUS ON)
-  if (${PYTHON_VERSION_MAJOR} LESS 3)
-    set_property(SOURCE ${PY_MOD_SWIG_SRC1} PROPERTY SWIG_FLAGS -relativeimport -threads -doxygen -DSWIGPYTHON2 )
-  else()
-    set_property(SOURCE ${PY_MOD_SWIG_SRC1} PROPERTY SWIG_FLAGS -relativeimport -threads -doxygen -py3 )
-  endif()
+  set_property(SOURCE ${PY_MOD_SWIG_SRC1} PROPERTY SWIG_FLAGS -relativeimport -threads -doxygen -py3 )
   set_property(SOURCE ${PY_MOD_SWIG_SRC1} PROPERTY USE_LIBRARY_INCLUDE_DIRECTORIES TRUE)
 
   set(CMAKE_SWIG_OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/python/tesseract_robotics/${PY_MOD_PACKAGE})
@@ -20,7 +16,7 @@ function(tesseract_python_module PY_MOD_NAME )
   else()
     swig_add_module(${PY_MOD_NAME} python ${PY_MOD_SWIG_SRCS})
   endif()
-  swig_link_libraries(${PY_MOD_NAME} ${PY_MOD_LIBS} jsoncpp_lib ${TinyXML2_LIBRARIES} ${EIGEN3_LIBRARIES} ${PYTHON_LIBRARIES})
+  swig_link_libraries(${PY_MOD_NAME} ${PY_MOD_LIBS} jsoncpp_lib ${TinyXML2_LIBRARIES} ${EIGEN3_LIBRARIES} ${Python3_LIBRARIES})
 
   set(PY_MOD_REAL_NAME1 SWIG_MODULE_${PY_MOD_NAME}_REAL_NAME)
   set(PY_MOD_REAL_NAME ${${PY_MOD_REAL_NAME1}})
@@ -33,8 +29,8 @@ function(tesseract_python_module PY_MOD_NAME )
     ${EIGEN3_INCLUDE_DIRS}
     ${Boost_INCLUDE_DIRS}
     ${TinyXML2_INCLUDE_DIRS}
-    ${PYTHON_INCLUDE_DIRS}
-    ${NUMPY_INCLUDE_DIR}
+    ${Python3_INCLUDE_DIRS}
+    ${Python3_NumPy_INCLUDE_DIRS}
     )
   target_compile_definitions(${PY_MOD_REAL_NAME} PRIVATE -DSWIG_TYPE_TABLE=tesseract_python )
  
