@@ -126,7 +126,7 @@ jobs:
     env:
       DEBIAN_FRONTEND: noninteractive
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         path: ws/src/tesseract_python
     - name: install sudo, tzdata, keyboard-configuration
@@ -245,7 +245,7 @@ jobs:
             cmake_arch: x64
             python_version: "3.14"
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         path: ws/src/tesseract_python
     - uses: actions/setup-python@v6
@@ -364,7 +364,7 @@ jobs:
           brew_prefix: /opt/homebrew
       
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         path: ws/src/tesseract_python
     - uses: actions/setup-python@v6
@@ -449,7 +449,7 @@ jobs:
       - build-macos
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         path: robotraconteur
     - name: Download CI artifacts
